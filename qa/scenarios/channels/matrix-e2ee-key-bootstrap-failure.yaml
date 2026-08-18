@@ -19,7 +19,7 @@ scenario:
         defaultRoomKey: main
         rooms:
           - encrypted: true
-            key: "${ltfx.n.eb63aea06b1a5dc62f12.v1}"
+            key: e2ee-key-bootstrap-failure
             kind: group
             members:
               - driver

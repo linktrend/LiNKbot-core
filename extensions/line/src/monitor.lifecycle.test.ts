@@ -302,8 +302,8 @@ describe("monitorLineProvider lifecycle", () => {
             defaultAccount: "work",
             accounts: {
               work: {
-                channelAccessToken: `ltfx.n.488dc3c9ef1e2576bc04.v1`,
-                channelSecret: `ltfx.n.06f6876c1947f47f409f.v1`,
+                channelAccessToken: "work-token",
+                channelSecret: "work-secret",
               },
             },
           },
@@ -338,15 +338,15 @@ describe("monitorLineProvider lifecycle", () => {
 
   it("dispatches shared-path webhook posts to the account matching the signature", async () => {
     const firstMonitor = await monitorLineProvider({
-      channelAccessToken: `ltfx.n.55b4b48f529c3d2daa02.v1`,
-      channelSecret: `ltfx.n.e0a5091e7f566a510181.v1`, // pragma: allowlist secret
+      channelAccessToken: "first-token",
+      channelSecret: "first-secret", // pragma: allowlist secret
       accountId: "first",
       config: {} as OpenClawConfig,
       runtime: {} as RuntimeEnv,
     });
     const secondMonitor = await monitorLineProvider({
-      channelAccessToken: `ltfx.n.7a35833597e6687c599a.v1`,
-      channelSecret: `ltfx.n.0ae70fa044cf10a0fc38.v1`, // pragma: allowlist secret
+      channelAccessToken: "second-token",
+      channelSecret: "second-secret", // pragma: allowlist secret
       accountId: "second",
       config: {} as OpenClawConfig,
       runtime: {} as RuntimeEnv,
@@ -488,15 +488,15 @@ describe("monitorLineProvider lifecycle", () => {
 
   it("rejects ambiguous shared-path webhook signatures", async () => {
     const firstMonitor = await monitorLineProvider({
-      channelAccessToken: `ltfx.n.55b4b48f529c3d2daa02.v1`,
-      channelSecret: `ltfx.n.d3046ecc8dd3242adf62.v1`, // pragma: allowlist secret
+      channelAccessToken: "first-token",
+      channelSecret: "shared-secret", // pragma: allowlist secret
       accountId: "first",
       config: {} as OpenClawConfig,
       runtime: {} as RuntimeEnv,
     });
     const secondMonitor = await monitorLineProvider({
-      channelAccessToken: `ltfx.n.7a35833597e6687c599a.v1`,
-      channelSecret: `ltfx.n.d3046ecc8dd3242adf62.v1`, // pragma: allowlist secret
+      channelAccessToken: "second-token",
+      channelSecret: "shared-secret", // pragma: allowlist secret
       accountId: "second",
       config: {} as OpenClawConfig,
       runtime: {} as RuntimeEnv,

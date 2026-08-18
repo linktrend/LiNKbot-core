@@ -37,7 +37,7 @@ describe("browser copilot panel contracts", () => {
     expect(normalizeGatewayUrl("ws://gateway.example")).toBeNull();
     const credentialed = new URL("wss://gateway.example");
     credentialed.username = "fixture-user";
-    credentialed.password = `ltfx.n.c638833f69bbfb3c267a.v1`;
+    credentialed.password = "test-password";
     expect(normalizeGatewayUrl(credentialed.toString())).toBeNull();
   });
 

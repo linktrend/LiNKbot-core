@@ -180,7 +180,7 @@ function resolveGeminiOutputDimensionality(model: string, requested?: number): n
   }
   return requested;
 }
-function resolveRemoteApiKey(remoteApiKey: (unknown): string | undefined {)
+function resolveRemoteApiKey(remoteApiKey: unknown): string | undefined {
   const trimmed = resolveMemorySecretInputString({
     value: remoteApiKey,
     path: "agents.*.memorySearch.remote.apiKey",

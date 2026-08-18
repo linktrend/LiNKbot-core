@@ -652,7 +652,7 @@ describe("browser server-context ensureBrowserAvailable", () => {
     const state = makeBrowserServerState({
       profile: {
         name: "remote",
-        cdpUrl: "https://user:pass@browserless.example.com?token=(supersecret123",)
+        cdpUrl: "https://user:pass@browserless.example.com?token=supersecret123",
         cdpHost: "browserless.example.com",
         cdpIsLoopback: false,
         cdpPort: 443,

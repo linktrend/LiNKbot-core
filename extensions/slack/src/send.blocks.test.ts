@@ -7,7 +7,7 @@ import {
 } from "./sent-thread-cache.js";
 
 const { sendMessageSlack } = await import("./send.js");
-const SLACK_TEST_CFG = { channels: { slack: { botToken: `ltfx.n.87894fe048938b686cfb.v1` } } };
+const SLACK_TEST_CFG = { channels: { slack: { botToken: "xoxb-test" } } };
 const SLACK_TEXT_LIMIT = 8000;
 
 type MockCallSource = { mock: { calls: Array<Array<unknown>> } };
@@ -97,7 +97,7 @@ describe("sendMessageSlack NO_REPLY guard", () => {
   it("suppresses NO_REPLY text before any Slack API call", async () => {
     const client = createSlackSendTestClient();
     const result = await sendMessageSlack("channel:C123", "NO_REPLY", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
     });
@@ -110,7 +110,7 @@ describe("sendMessageSlack NO_REPLY guard", () => {
   it("suppresses NO_REPLY with surrounding whitespace", async () => {
     const client = createSlackSendTestClient();
     const result = await sendMessageSlack("channel:C123", "  NO_REPLY  ", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
     });
@@ -122,7 +122,7 @@ describe("sendMessageSlack NO_REPLY guard", () => {
   it("does not suppress substantive text containing NO_REPLY", async () => {
     const client = createSlackSendTestClient();
     await sendMessageSlack("channel:C123", "This is not a NO_REPLY situation", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
     });
@@ -133,7 +133,7 @@ describe("sendMessageSlack NO_REPLY guard", () => {
   it("does not suppress NO_REPLY when blocks are attached", async () => {
     const client = createSlackSendTestClient();
     const result = await sendMessageSlack("channel:C123", "NO_REPLY", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       blocks: [{ type: "section", text: { type: "mrkdwn", text: "content" } }],
@@ -150,7 +150,7 @@ describe("sendMessageSlack thread participation", () => {
     const client = createSlackSendTestClient();
 
     const result = await sendMessageSlack("channel:C123", "hello thread", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       threadTs: "1712345678.123456",
@@ -174,7 +174,7 @@ describe("sendMessageSlack thread participation", () => {
     });
 
     const result = await sendMessageSlack("channel:C123", "hello thread", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       threadTs: "1781932168.648159",
@@ -192,7 +192,7 @@ describe("sendMessageSlack thread participation", () => {
     const client = createSlackSendTestClient();
 
     await sendMessageSlack("channel:C123", "hello channel", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
     });
@@ -205,7 +205,7 @@ describe("sendMessageSlack thread participation", () => {
     const client = createSlackSendTestClient();
 
     await sendMessageSlack("channel:C123", "hello invalid thread", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       threadTs: "not-a-slack-thread",
@@ -236,7 +236,7 @@ describe("sendMessageSlack chunking", () => {
     const message = "a".repeat(4205);
 
     await sendMessageSlack("channel:C123", message, {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
     });
@@ -251,7 +251,7 @@ describe("sendMessageSlack chunking", () => {
     const message = "a".repeat(8500);
 
     await sendMessageSlack("channel:C123", message, {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
     });
@@ -272,7 +272,7 @@ describe("sendMessageSlack chunking", () => {
     const message = `\`${"a".repeat(SLACK_TEXT_LIMIT - 5)}<@U123>${"b".repeat(20)}\``;
 
     await sendMessageSlack("channel:C123", message, {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       textIsSlackMrkdwn: true,
@@ -297,7 +297,7 @@ describe("sendMessageSlack chunking", () => {
 
     await expect(
       sendMessageSlack("channel:C123", "a".repeat(8500), {
-        token: `ltfx.n.87894fe048938b686cfb.v1`,
+        token: "xoxb-test",
         cfg: SLACK_TEST_CFG,
         client,
         onDeliveryResult,
@@ -326,7 +326,7 @@ describe("sendMessageSlack chunking", () => {
     const message = "a".repeat(8500);
 
     const result = await sendMessageSlack("channel:C123", message, {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       threadTs: "1781932168.648159",
@@ -346,7 +346,7 @@ describe("sendMessageSlack blocks", () => {
   it("posts blocks with fallback text when message is empty", async () => {
     const client = createSlackSendTestClient();
     const result = await sendMessageSlack("channel:C123", "", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       blocks: [{ type: "divider" }],
@@ -372,7 +372,7 @@ describe("sendMessageSlack blocks", () => {
     const client = createSlackSendTestClient();
 
     await sendMessageSlack("channel:C123", "Summary", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       blocks: [
@@ -399,7 +399,7 @@ describe("sendMessageSlack blocks", () => {
     const blocks = interleavedNativeDataBlocks();
 
     await sendMessageSlack("channel:C123", "Outside", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       blocks: blocks as never,
@@ -421,7 +421,7 @@ describe("sendMessageSlack blocks", () => {
     const blocks = interleavedNativeDataBlocks();
 
     await sendMessageSlack("channel:C123", "Outside", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       blocks: blocks as never,
@@ -474,7 +474,7 @@ describe("sendMessageSlack blocks", () => {
     ];
 
     await sendMessageSlack("channel:C123", "", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       blocks,
@@ -504,7 +504,7 @@ describe("sendMessageSlack blocks", () => {
     ] as never;
 
     await sendMessageSlack("channel:C123", "", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       blocks,
@@ -526,7 +526,7 @@ describe("sendMessageSlack blocks", () => {
     }));
 
     await sendMessageSlack("channel:C123", "", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       blocks,
@@ -548,7 +548,7 @@ describe("sendMessageSlack blocks", () => {
     }));
 
     await sendMessageSlack("channel:C123", "", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       blocks,
@@ -595,7 +595,7 @@ describe("sendMessageSlack blocks", () => {
     ].join("\n");
 
     await sendMessageSlack("channel:C123", "Overview", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       blocks,
@@ -677,7 +677,7 @@ describe("sendMessageSlack blocks", () => {
     ] as never;
 
     const result = await sendMessageSlack("channel:C123", "Overview", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       blocks,
@@ -775,7 +775,7 @@ describe("sendMessageSlack blocks", () => {
 
     await expect(
       sendMessageSlack("channel:C123", "Pipeline", {
-        token: `ltfx.n.87894fe048938b686cfb.v1`,
+        token: "xoxb-test",
         cfg: SLACK_TEST_CFG,
         client,
         blocks,
@@ -807,7 +807,7 @@ describe("sendMessageSlack blocks", () => {
     const onPlatformSendDispatch = vi.fn(async () => undefined);
 
     const result = await sendMessageSlack("channel:C123", "", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       blocks: [{ type: "data_table" }] as never,
@@ -842,7 +842,7 @@ describe("sendMessageSlack blocks", () => {
     ] as never;
 
     await sendMessageSlack("channel:C123", "", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       blocks,
@@ -878,7 +878,7 @@ describe("sendMessageSlack blocks", () => {
     ] as never;
 
     await sendMessageSlack("channel:C123", "", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       blocks,
@@ -928,7 +928,7 @@ describe("sendMessageSlack blocks", () => {
     ] as never;
 
     await sendMessageSlack("channel:C123", "", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       blocks,
@@ -967,7 +967,7 @@ describe("sendMessageSlack blocks", () => {
 
     await expect(
       sendMessageSlack("channel:C123", "Overview", {
-        token: `ltfx.n.87894fe048938b686cfb.v1`,
+        token: "xoxb-test",
         cfg: SLACK_TEST_CFG,
         client,
         blocks: [
@@ -992,7 +992,7 @@ describe("sendMessageSlack blocks", () => {
 
     await expect(
       sendMessageSlack("channel:C123", "Overview", {
-        token: `ltfx.n.87894fe048938b686cfb.v1`,
+        token: "xoxb-test",
         cfg: SLACK_TEST_CFG,
         client,
         blocks: [{ type: "divider" }],
@@ -1020,7 +1020,7 @@ describe("sendMessageSlack blocks", () => {
     ];
 
     await sendMessageSlack("channel:C123", "Overview", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       blocks,
@@ -1052,7 +1052,7 @@ describe("sendMessageSlack blocks", () => {
     ];
 
     await sendMessageSlack("channel:C123", "Overview", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       blocks,
@@ -1089,7 +1089,7 @@ describe("sendMessageSlack blocks", () => {
     });
 
     const result = await sendMessageSlack("channel:C123", "", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       threadTs: "1781932168.648159",
@@ -1110,7 +1110,7 @@ describe("sendMessageSlack blocks", () => {
     client.chat.postMessage.mockResolvedValueOnce({ ts: "171234.567", channel: "D123" });
 
     const result = await sendMessageSlack("user:U123", "", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       blocks: [{ type: "divider" }],
@@ -1132,7 +1132,7 @@ describe("sendMessageSlack blocks", () => {
       .mockResolvedValueOnce({ ts: "171234.999" });
 
     const result = await sendMessageSlack("channel:C123", "hello", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
     });
@@ -1151,7 +1151,7 @@ describe("sendMessageSlack blocks", () => {
       .mockResolvedValueOnce({ channel: { id: "D123" } });
 
     const result = await sendMessageSlack("user:U123", "hello", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       threadTs: "171234.100",
@@ -1169,7 +1169,7 @@ describe("sendMessageSlack blocks", () => {
     const client = createSlackSendTestClient();
 
     await sendMessageSlack("channel:C123", "a".repeat(8500), {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       threadTs: "171234.100",
@@ -1186,7 +1186,7 @@ describe("sendMessageSlack blocks", () => {
     const client = createSlackSendTestClient();
 
     await sendMessageSlack("channel:C123", "hello", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       replyBroadcast: true,
@@ -1207,7 +1207,7 @@ describe("sendMessageSlack blocks", () => {
 
     await expect(
       sendMessageSlack("channel:C123", "hello", {
-        token: `ltfx.n.87894fe048938b686cfb.v1`,
+        token: "xoxb-test",
         cfg: SLACK_TEST_CFG,
         client,
       }),
@@ -1219,7 +1219,7 @@ describe("sendMessageSlack blocks", () => {
   it("derives fallback text from image blocks", async () => {
     const client = createSlackSendTestClient();
     await sendMessageSlack("channel:C123", "", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       blocks: [{ type: "image", image_url: "https://example.com/a.png", alt_text: "Build chart" }],
@@ -1231,7 +1231,7 @@ describe("sendMessageSlack blocks", () => {
   it("derives fallback text from video blocks", async () => {
     const client = createSlackSendTestClient();
     await sendMessageSlack("channel:C123", "", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       blocks: [
@@ -1251,7 +1251,7 @@ describe("sendMessageSlack blocks", () => {
   it("derives fallback text from file blocks", async () => {
     const client = createSlackSendTestClient();
     await sendMessageSlack("channel:C123", "", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       blocks: [{ type: "file", source: "remote", external_id: "F123" }],
@@ -1275,7 +1275,7 @@ describe("sendMessageSlack blocks", () => {
     ];
 
     await sendMessageSlack("channel:C123", "", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       blocks,
@@ -1291,7 +1291,7 @@ describe("sendMessageSlack blocks", () => {
     const client = createSlackSendTestClient();
     await expect(
       sendMessageSlack("channel:C123", "hi", {
-        token: `ltfx.n.87894fe048938b686cfb.v1`,
+        token: "xoxb-test",
         cfg: SLACK_TEST_CFG,
         client,
         mediaUrl: "https://example.com/image.png",
@@ -1305,7 +1305,7 @@ describe("sendMessageSlack blocks", () => {
     const client = createSlackSendTestClient();
     await expect(
       sendMessageSlack("channel:C123", "hi", {
-        token: `ltfx.n.87894fe048938b686cfb.v1`,
+        token: "xoxb-test",
         cfg: SLACK_TEST_CFG,
         client,
         mediaUrl: "https://example.com/image.png",
@@ -1320,7 +1320,7 @@ describe("sendMessageSlack blocks", () => {
     const client = createSlackSendTestClient();
     await expect(
       sendMessageSlack("channel:C123", "hi", {
-        token: `ltfx.n.87894fe048938b686cfb.v1`,
+        token: "xoxb-test",
         cfg: SLACK_TEST_CFG,
         client,
         blocks: [],
@@ -1334,7 +1334,7 @@ describe("sendMessageSlack blocks", () => {
     const blocks = Array.from({ length: 51 }, () => ({ type: "divider" }));
     await expect(
       sendMessageSlack("channel:C123", "hi", {
-        token: `ltfx.n.87894fe048938b686cfb.v1`,
+        token: "xoxb-test",
         cfg: SLACK_TEST_CFG,
         client,
         blocks,
@@ -1347,7 +1347,7 @@ describe("sendMessageSlack blocks", () => {
     const client = createSlackSendTestClient();
     await expect(
       sendMessageSlack("channel:C123", "hi", {
-        token: `ltfx.n.87894fe048938b686cfb.v1`,
+        token: "xoxb-test",
         cfg: SLACK_TEST_CFG,
         client,
         blocks: [{} as { type: string }],

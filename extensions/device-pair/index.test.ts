@@ -13,7 +13,7 @@ import type { OpenClawPluginApi } from "./api.js";
 const pluginApiMocks = vi.hoisted(() => ({
   clearDeviceBootstrapTokens: vi.fn(async () => ({ removed: 2 })),
   issueDeviceBootstrapToken: vi.fn(async () => ({
-    token: `ltfx.n.0df975c6f14f00530435.v1`,
+    token: "boot-token",
     expiresAtMs: Date.now() + 10 * 60_000,
   })),
   revokeDeviceBootstrapToken: vi.fn(async () => ({ removed: true })),
@@ -38,10 +38,10 @@ vi.mock("./api.js", () => {
     approveDevicePairing: vi.fn(),
     clearDeviceBootstrapTokens: pluginApiMocks.clearDeviceBootstrapTokens,
     definePluginEntry: vi.fn((entry) => entry),
-    issueDeviceBootstrapToken: (pluginApiMocks.issueDeviceBootstrapToken,)
+    issueDeviceBootstrapToken: pluginApiMocks.issueDeviceBootstrapToken,
     listDevicePairing: vi.fn(async () => ({ pending: [] })),
     renderQrPngDataUrl: pluginApiMocks.renderQrPngDataUrl,
-    revokeDeviceBootstrapToken: (pluginApiMocks.revokeDeviceBootstrapToken,)
+    revokeDeviceBootstrapToken: pluginApiMocks.revokeDeviceBootstrapToken,
     resolvePreferredOpenClawTmpDir: pluginApiMocks.resolvePreferredOpenClawTmpDir,
     resolveAdvertisedLanHost: vi.fn(async () => null),
     resolveGatewayBindUrl: vi.fn(),
@@ -111,7 +111,7 @@ function createApi(params?: {
       gateway: {
         auth: {
           mode: "token",
-          token: `ltfx.n.f15ae5b5899f8327f527.v1`,
+          token: "gateway-token",
         },
       },
     },
@@ -277,7 +277,7 @@ describe("device-pair /pair qr", () => {
   beforeEach(async () => {
     vi.clearAllMocks();
     pluginApiMocks.issueDeviceBootstrapToken.mockResolvedValue({
-      token: `ltfx.n.0df975c6f14f00530435.v1`,
+      token: "boot-token",
       expiresAtMs: Date.now() + 10 * 60_000,
     });
     await fs.mkdir(pluginApiMocks.resolvePreferredOpenClawTmpDir(), { recursive: true });
@@ -385,11 +385,11 @@ describe("device-pair /pair qr", () => {
   it("reissues the bootstrap token if webchat QR rendering fails before falling back", async () => {
     pluginApiMocks.issueDeviceBootstrapToken
       .mockResolvedValueOnce({
-        token: `ltfx.n.55b4b48f529c3d2daa02.v1`,
+        token: "first-token",
         expiresAtMs: Date.now() + 10 * 60_000,
       })
       .mockResolvedValueOnce({
-        token: `ltfx.n.7a35833597e6687c599a.v1`,
+        token: "second-token",
         expiresAtMs: Date.now() + 10 * 60_000,
       });
     pluginApiMocks.renderQrPngDataUrl.mockRejectedValueOnce(new Error("render failed"));
@@ -404,7 +404,7 @@ describe("device-pair /pair qr", () => {
     const text = requireText(result);
 
     expect(pluginApiMocks.revokeDeviceBootstrapToken).toHaveBeenCalledWith({
-      token: `ltfx.n.55b4b48f529c3d2daa02.v1`,
+      token: "first-token",
     });
     expect(pluginApiMocks.issueDeviceBootstrapToken).toHaveBeenCalledTimes(2);
     expect(text).toContain(
@@ -544,7 +544,7 @@ describe("device-pair /pair qr", () => {
         gateway: {
           auth: {
             mode: "token",
-            token: `ltfx.n.f15ae5b5899f8327f527.v1`,
+            token: "gateway-token",
           },
         },
       },
@@ -561,11 +561,11 @@ describe("device-pair /pair qr", () => {
   it("reissues the bootstrap token after QR delivery failure before falling back", async () => {
     pluginApiMocks.issueDeviceBootstrapToken
       .mockResolvedValueOnce({
-        token: `ltfx.n.55b4b48f529c3d2daa02.v1`,
+        token: "first-token",
         expiresAtMs: Date.now() + 10 * 60_000,
       })
       .mockResolvedValueOnce({
-        token: `ltfx.n.7a35833597e6687c599a.v1`,
+        token: "second-token",
         expiresAtMs: Date.now() + 10 * 60_000,
       });
 
@@ -584,7 +584,7 @@ describe("device-pair /pair qr", () => {
     const text = requireText(result);
 
     expect(pluginApiMocks.revokeDeviceBootstrapToken).toHaveBeenCalledWith({
-      token: `ltfx.n.55b4b48f529c3d2daa02.v1`,
+      token: "first-token",
     });
     expect(pluginApiMocks.issueDeviceBootstrapToken).toHaveBeenCalledTimes(2);
     expect(text).toContain("Pairing setup code generated.");
@@ -706,7 +706,7 @@ describe("device-pair /pair default setup code", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     pluginApiMocks.issueDeviceBootstrapToken.mockResolvedValue({
-      token: `ltfx.n.0df975c6f14f00530435.v1`,
+      token: "boot-token",
       expiresAtMs: Date.now() + 10 * 60_000,
     });
   });
@@ -832,7 +832,7 @@ describe("device-pair /pair default setup code", () => {
           tls: { enabled: true },
           auth: {
             mode: "token",
-            token: `ltfx.n.f15ae5b5899f8327f527.v1`,
+            token: "gateway-token",
           },
         },
       },
@@ -1002,7 +1002,7 @@ describe("device-pair /pair default setup code", () => {
           bind: "lan",
           auth: {
             mode: "token",
-            token: `ltfx.n.f15ae5b5899f8327f527.v1`,
+            token: "gateway-token",
           },
         },
       },
@@ -1037,7 +1037,7 @@ describe("device-pair /pair default setup code", () => {
       config: {
         gateway: {
           bind: "lan",
-          auth: { mode: "token", token: `ltfx.n.f15ae5b5899f8327f527.v1` },
+          auth: { mode: "token", token: "gateway-token" },
         },
       },
       pluginConfig: { publicUrl: undefined },
@@ -1058,7 +1058,7 @@ describe("device-pair /pair default setup code", () => {
 
   it("does not advertise a loopback Serve route for a custom bind", async () => {
     vi.mocked(resolveGatewayBindUrl).mockReturnValueOnce({
-      url: `ltfx.n.e5db9e292b6cb24fe27b.v1`,
+      url: "ws://192.168.139.3:18789",
       source: "gateway.bind=custom",
     });
     const command = registerPairCommand({
@@ -1066,7 +1066,7 @@ describe("device-pair /pair default setup code", () => {
         gateway: {
           bind: "custom",
           customBindHost: "192.168.139.3",
-          auth: { mode: "token", token: `ltfx.n.f15ae5b5899f8327f527.v1` },
+          auth: { mode: "token", token: "gateway-token" },
         },
       },
       pluginConfig: { publicUrl: undefined },
@@ -1109,7 +1109,7 @@ describe("device-pair /pair default setup code", () => {
 
   it("rejects tailnet cleartext setup urls before issuing setup codes", async () => {
     vi.mocked(resolveGatewayBindUrl).mockReturnValueOnce({
-      url: `ltfx.n.0d71ceff215f1cb974d5.v1`,
+      url: "ws://100.64.0.9:18789",
       source: "gateway.bind=tailnet",
     });
     const command = registerPairCommand({
@@ -1118,7 +1118,7 @@ describe("device-pair /pair default setup code", () => {
           bind: "tailnet",
           auth: {
             mode: "token",
-            token: `ltfx.n.f15ae5b5899f8327f527.v1`,
+            token: "gateway-token",
           },
         },
       },
@@ -1171,7 +1171,7 @@ describe("device-pair /pair default setup code", () => {
           tailscale: { mode: "serve" },
           auth: {
             mode: "token",
-            token: `ltfx.n.f15ae5b5899f8327f527.v1`,
+            token: "gateway-token",
           },
         },
       },
@@ -1221,7 +1221,7 @@ describe("device-pair /pair default setup code", () => {
           remote: { url: "http://localhost:notaport" },
           auth: {
             mode: "token",
-            token: `ltfx.n.f15ae5b5899f8327f527.v1`,
+            token: "gateway-token",
           },
         },
       },

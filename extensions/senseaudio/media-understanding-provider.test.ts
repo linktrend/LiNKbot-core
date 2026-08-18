@@ -26,7 +26,7 @@ describe("transcribeSenseAudioAudio", () => {
     await transcribeSenseAudioAudio({
       buffer: Buffer.from("audio"),
       fileName: "note.mp3",
-      apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+      apiKey: "test-key",
       timeoutMs: 1000,
       fetchFn,
     });
@@ -40,7 +40,7 @@ describe("transcribeSenseAudioAudio", () => {
     const result = await transcribeSenseAudioAudio({
       buffer: Buffer.from("audio"),
       fileName: "note.mp3",
-      apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+      apiKey: "test-key",
       timeoutMs: 1000,
       headers: { authorization: "Bearer override" },
       fetchFn,
@@ -56,7 +56,7 @@ describe("transcribeSenseAudioAudio", () => {
     const result = await transcribeSenseAudioAudio({
       buffer: Buffer.from("audio-bytes"),
       fileName: "voice.wav",
-      apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+      apiKey: "test-key",
       timeoutMs: 1234,
       baseUrl: "https://api.example.com/v1/",
       model: " ",
@@ -100,7 +100,7 @@ describe("transcribeSenseAudioAudio", () => {
       transcribeSenseAudioAudio({
         buffer: Buffer.from("audio-bytes"),
         fileName: "voice.wav",
-        apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+        apiKey: "test-key",
         timeoutMs: 1234,
         fetchFn,
       }),

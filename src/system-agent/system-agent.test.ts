@@ -28,7 +28,7 @@ const overview: SystemAgentOverview = {
     apiKeys: { openai: true, anthropic: false },
   },
   gateway: {
-    url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+    url: "ws://127.0.0.1:18789",
     source: "local loopback",
     reachable: false,
     error: "offline",
@@ -50,7 +50,7 @@ const verifiedConfig = {
     providers: {
       openai: {
         baseUrl: "https://api.openai.com/v1",
-        apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+        apiKey: "test-key",
         auth: "api-key",
         models: [],
       },

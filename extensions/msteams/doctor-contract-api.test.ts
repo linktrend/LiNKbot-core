@@ -221,7 +221,7 @@ describe("msteams doctor state migration", () => {
     const token: MSTeamsSsoStoredToken = {
       connectionName: "conn::alpha",
       userId: "user::one",
-      token: `ltfx.n.bc6a34869b72942287fb.v1`,
+      token: "test-token-value",
       updatedAt: "2026-04-10T00:00:00.000Z",
     };
     await fs.writeFile(
@@ -264,8 +264,8 @@ describe("msteams doctor state migration", () => {
   it("imports delegated OAuth tokens into plugin state before archiving the file", async () => {
     const filePath = path.join(stateDir, "msteams-delegated.json");
     const token: MSTeamsDelegatedTokens = {
-      accessToken: `ltfx.n.f175b8ed0e8d64ddec95.v1`,
-      refreshToken: `ltfx.n.dad13cfa8ff14dcc802d.v1`,
+      accessToken: "delegated-access",
+      refreshToken: "delegated-refresh",
       expiresAt: 1_800_000_000_000,
       scopes: ["User.Read", "offline_access"],
       userPrincipalName: "user@example.com",

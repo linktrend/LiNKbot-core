@@ -61,9 +61,9 @@ describe("resolveConfigEnvVars", () => {
         },
         {
           name: "inline prefix/suffix",
-          config: { key: `ltfx.n.fd5d8ac3bc86f36e9085.v1` },
+          config: { key: "prefix-${FOO}-suffix" },
           env: { FOO: "bar" },
-          expected: { key: `ltfx.n.65fe70f0d2ba7d03fc52.v1` },
+          expected: { key: "prefix-bar-suffix" },
         },
         {
           name: "same var repeated",
@@ -83,8 +83,8 @@ describe("resolveConfigEnvVars", () => {
         {
           name: "nested object",
           config: { outer: { inner: { key: "${API_KEY}" } } },
-          env: { API_KEY: `ltfx.n.fcf730b6d95236ecd3c9.v1` },
-          expected: { outer: { inner: { key: `ltfx.n.fcf730b6d95236ecd3c9.v1` } } },
+          env: { API_KEY: "secret123" },
+          expected: { outer: { inner: { key: "secret123" } } },
         },
         {
           name: "flat array",
@@ -164,11 +164,11 @@ describe("resolveConfigEnvVars", () => {
           name: "mix of escaped and unescaped vars",
           config: { key: "${REAL}/$${LITERAL}" },
           env: { REAL: "resolved" },
-          expected: { key: `ltfx.n.118bc2d4b60ae944ecbd.v1` },
+          expected: { key: "resolved/${LITERAL}" },
         },
         {
           name: "escaped first, unescaped second",
-          config: { key: `ltfx.n.e6f087df392066f62183.v1` },
+          config: { key: "$${FOO} ${FOO}" },
           env: { FOO: "bar" },
           expected: { key: "${FOO} bar" },
         },
@@ -176,11 +176,11 @@ describe("resolveConfigEnvVars", () => {
           name: "unescaped first, escaped second",
           config: { key: "${FOO} $${FOO}" },
           env: { FOO: "bar" },
-          expected: { key: `ltfx.n.b65fb061fc476e297489.v1` },
+          expected: { key: "bar ${FOO}" },
         },
         {
           name: "multiple escaped placeholders",
-          config: { key: `ltfx.n.3e52fb2dd0215455e926.v1` },
+          config: { key: "$${A}:$${B}" },
           env: {},
           expected: { key: "${A}:${B}" },
         },
@@ -358,13 +358,13 @@ describe("resolveConfigEnvVars", () => {
             },
           },
           env: {
-            VERCEL_GATEWAY_API_KEY: `ltfx.n.df4003ec7d7a4552ab7c.v1`,
+            VERCEL_GATEWAY_API_KEY: "vg_key_123",
             OPENAI_API_KEY: "sk-xxx",
           },
           expected: {
             models: {
               providers: {
-                "vercel-gateway": { apiKey: `ltfx.n.df4003ec7d7a4552ab7c.v1` },
+                "vercel-gateway": { apiKey: "vg_key_123" },
                 openai: { apiKey: "sk-xxx" },
               },
             },
@@ -373,8 +373,8 @@ describe("resolveConfigEnvVars", () => {
         {
           name: "gateway auth token",
           config: { gateway: { auth: { token: "${OPENCLAW_GATEWAY_TOKEN}" } } },
-          env: { OPENCLAW_GATEWAY_TOKEN: `ltfx.n.930bbdc51b6aed5c2a56.v1` },
-          expected: { gateway: { auth: { token: `ltfx.n.930bbdc51b6aed5c2a56.v1` } } },
+          env: { OPENCLAW_GATEWAY_TOKEN: "secret-token" },
+          expected: { gateway: { auth: { token: "secret-token" } } },
         },
         {
           name: "provider base URL composition",

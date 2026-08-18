@@ -40,11 +40,11 @@ describe("qa-channel protocol", () => {
         name: " exec ",
         arguments: {
           command: "cat README.md",
-          apiToken: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
+          apiToken: "secret-token",
           headers: {
             Authorization: "Bearer sk_test_12345678901234567890",
           },
-          notes: "raw key ltfx.n.50595f6d172e4c28b18e.v1",
+          notes: "raw key sk-proj-12345678901234567890",
           commandLine: "curl --password hunter2 -H 'x-api-key: abc123' https://example.test",
           hyphenFlagCommand: "cmd --client-secret abc123 --ok yes",
           envCommand: "NPM_TOKEN=secret GITHUB_TOKEN=secret pnpm test",

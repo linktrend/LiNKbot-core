@@ -558,7 +558,7 @@ describe("startProxy", () => {
       registerManagedProxyGatewayLoopbackBypass("ws://127.0.0.1:18789"),
     );
     expect(proxylineRegisterBypassMock).toHaveBeenCalledWith({
-      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      url: "ws://127.0.0.1:18789",
     });
 
     unregister();
@@ -581,10 +581,10 @@ describe("startProxy", () => {
 
     expect(proxylineRegisterBypassMock).toHaveBeenCalledTimes(2);
     expect(proxylineRegisterBypassMock).toHaveBeenNthCalledWith(1, {
-      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      url: "ws://127.0.0.1:18789",
     });
     expect(proxylineRegisterBypassMock).toHaveBeenNthCalledWith(2, {
-      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      url: "ws://127.0.0.1:18789",
     });
     unregisterFirst();
     expect(proxylineUnregisterBypassMock).toHaveBeenCalledTimes(1);
@@ -603,13 +603,13 @@ describe("startProxy", () => {
     const unregisterIpv6 = expectBypassUnregister(
       registerManagedProxyGatewayLoopbackBypass("ws://[::1]:18789"),
     );
-    expect(proxylineRegisterBypassMock).toHaveBeenCalledWith({ url: `ltfx.n.875bc07d491dd390308b.v1` });
+    expect(proxylineRegisterBypassMock).toHaveBeenCalledWith({ url: "ws://[::1]:18789" });
     unregisterIpv6();
 
     const unregisterLocalhost = expectBypassUnregister(
       registerManagedProxyGatewayLoopbackBypass("ws://localhost.:18789"),
     );
-    expect(proxylineRegisterBypassMock).toHaveBeenCalledWith({ url: `ltfx.n.81330e32d18e4c3a39f3.v1` });
+    expect(proxylineRegisterBypassMock).toHaveBeenCalledWith({ url: "ws://localhost.:18789" });
     unregisterLocalhost();
 
     await stopProxy(handle);
@@ -628,7 +628,7 @@ describe("startProxy", () => {
     const unregister = expectBypassUnregister(
       registerManagedProxyGatewayLoopbackBypass("ws://127.0.0.1:3000"),
     );
-    expect(proxylineRegisterBypassMock).toHaveBeenCalledWith({ url: `ltfx.n.a558771623f298980db4.v1` });
+    expect(proxylineRegisterBypassMock).toHaveBeenCalledWith({ url: "ws://127.0.0.1:3000" });
 
     unregister();
     await stopProxy(handle);

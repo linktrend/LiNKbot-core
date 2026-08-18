@@ -57,7 +57,7 @@ const hoisted = vi.hoisted(() => {
   const resolveHooksGmailModel = vi.fn<() => string | null>(() => null);
   const loadModelCatalog = vi.fn(async () => ({}));
   const getModelRefStatus = vi.fn(() => ({
-    key: `ltfx.n.da5f158f5abee1de3d0e.v1`,
+    key: "openai/gpt-5.4",
     allowed: true,
     inCatalog: true,
   }));
@@ -354,7 +354,7 @@ describe("startGatewayPostAttachRuntime", () => {
     hoisted.loadModelCatalog.mockResolvedValue({});
     hoisted.getModelRefStatus.mockReset();
     hoisted.getModelRefStatus.mockReturnValue({
-      key: `ltfx.n.da5f158f5abee1de3d0e.v1`,
+      key: "openai/gpt-5.4",
       allowed: true,
       inCatalog: true,
     });

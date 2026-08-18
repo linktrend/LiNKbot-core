@@ -389,7 +389,7 @@ describe("runProviderStaticCatalog", () => {
               demo: {
                 baseUrl: "https://configured.example/v1",
                 models: [],
-                apiKey: `ltfx.n.31160254d1297393d2ad.v1`,
+                apiKey: "secret-value",
               },
             },
           },
@@ -397,7 +397,7 @@ describe("runProviderStaticCatalog", () => {
         agentDir: "/tmp/agent",
         workspaceDir: "/tmp/workspace",
         env: {
-          SECRET_TOKEN: `ltfx.n.31160254d1297393d2ad.v1`,
+          SECRET_TOKEN: "secret-value",
         },
       }),
     ).resolves.toEqual({

@@ -23,7 +23,7 @@ afterEach(() => {
 });
 
 function row(patch: Partial<GatewaySessionRow> = {}): GatewaySessionRow {
-  return { key: `ltfx.n.259a62b5df354b4038ae.v1`, kind: "direct", updatedAt: 0, ...patch };
+  return { key: "agent:main:test", kind: "direct", updatedAt: 0, ...patch };
 }
 
 function mount(patch: Partial<ChatPaneHeaderProps> = {}) {

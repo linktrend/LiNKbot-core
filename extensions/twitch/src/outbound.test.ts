@@ -91,7 +91,7 @@ function twitchTestReceipt(messageId: string) {
 describe("outbound", () => {
   const mockAccount = {
     ...BASE_TWITCH_TEST_ACCOUNT,
-    accessToken: `ltfx.n.9719e2e0668fef5c8519.v1`,
+    accessToken: "oauth:test123",
   };
   const resolveTarget = twitchOutbound.resolveTarget!;
 
@@ -106,7 +106,7 @@ describe("outbound", () => {
     vi.mocked(resolveTwitchAccountContext).mockImplementation((_cfg, accountId) => ({
       accountId: accountId?.trim() || "default",
       account,
-      tokenResolution: { source: "config", token: (account?.accessToken ?? "" },)
+      tokenResolution: { source: "config", token: account?.accessToken ?? "" },
       configured: account !== null,
       availableAccountIds: params?.availableAccountIds ?? ["default"],
     }));

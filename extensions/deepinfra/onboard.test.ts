@@ -72,7 +72,7 @@ describe("DeepInfra provider config", () => {
 
     it("resolves DEEPINFRA_API_KEY from env", () => {
       const envSnapshot = captureEnv(["DEEPINFRA_API_KEY"]);
-      process.env.DEEPINFRA_API_KEY = `ltfx.n.6f152281a7641e1f5064.v1`;
+      process.env.DEEPINFRA_API_KEY = "test-deepinfra-key";
 
       try {
         const result = resolveEnvApiKey("deepinfra");
@@ -98,10 +98,10 @@ describe("DeepInfra provider config", () => {
     it("resolves the deepinfra api key via resolveApiKeyForProvider", async () => {
       const agentDir = mkdtempSync(join(tmpdir(), "openclaw-test-"));
       const envSnapshot = captureEnv(["DEEPINFRA_API_KEY"]);
-      process.env.DEEPINFRA_API_KEY = `ltfx.n.148a5d2b11add346c979.v1`;
+      process.env.DEEPINFRA_API_KEY = "deepinfra-provider-test-key";
 
       const spy = vi.spyOn(providerAuth, "resolveApiKeyForProvider").mockResolvedValue({
-        apiKey: `ltfx.n.148a5d2b11add346c979.v1`,
+        apiKey: "deepinfra-provider-test-key",
         source: "env: DEEPINFRA_API_KEY",
         mode: "api-key",
       });
@@ -121,7 +121,7 @@ describe("DeepInfra provider config", () => {
           ],
         ]);
         expect(auth).toEqual({
-          apiKey: `ltfx.n.148a5d2b11add346c979.v1`,
+          apiKey: "deepinfra-provider-test-key",
           source: "env: DEEPINFRA_API_KEY",
           mode: "api-key",
         });

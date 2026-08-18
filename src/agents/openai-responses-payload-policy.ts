@@ -216,7 +216,7 @@ function isOpenAIResponsesApi(api: string | undefined): boolean {
 
 function readCompatPayloadBoolean(
   compat: unknown,
-  key: `ltfx.n.1a8f68034e1020b20088.v1` | "supportsStore",
+  key: "supportsPromptCacheKey" | "supportsStore",
 ): boolean | undefined {
   if (!compat || typeof compat !== "object") {
     return undefined;

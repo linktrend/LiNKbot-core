@@ -226,7 +226,7 @@ Request payload (stdin):
 Response payload (stdout):
 
 ```jsonc
-{ "protocolVersion": 1, "values": { "providers/openai/apiKey": "${ltfx.n.027fbafa9c1dfde8cb03.v1}" } } // pragma: allowlist secret
+{ "protocolVersion": 1, "values": { "providers/openai/apiKey": "<openai-api-key>" } } // pragma: allowlist secret
 ```
 
 Optional per-id errors:

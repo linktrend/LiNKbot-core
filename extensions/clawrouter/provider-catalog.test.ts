@@ -147,7 +147,7 @@ describe("ClawRouter provider catalog", () => {
   it("maps every supported catalog protocol to its OpenClaw transport", async () => {
     const { fetchGuard, fetchGuardMock } = buildFetchGuard();
     const provider = await buildClawRouterProviderConfig({
-      apiKey: `ltfx.n.95a1a163bfa2a788184d.v1`,
+      apiKey: "clawrouter-test-key",
       baseUrl: "https://clawrouter.example/v1",
       fetchGuard,
     });
@@ -186,7 +186,7 @@ describe("ClawRouter provider catalog", () => {
 
   it("rewrites only native protocol model ids at the request boundary", async () => {
     const provider = await buildClawRouterProviderConfig({
-      apiKey: `ltfx.n.95a1a163bfa2a788184d.v1`,
+      apiKey: "clawrouter-test-key",
       baseUrl: "https://clawrouter.example",
       fetchGuard: buildFetchGuard().fetchGuard,
     });
@@ -220,7 +220,7 @@ describe("ClawRouter provider catalog", () => {
   it("caches catalog rows per credential scope", async () => {
     const { fetchGuard, fetchGuardMock } = buildFetchGuard();
     const params = {
-      apiKey: `ltfx.n.95a1a163bfa2a788184d.v1`,
+      apiKey: "clawrouter-test-key",
       baseUrl: "https://clawrouter.example",
       fetchGuard,
     };
@@ -244,7 +244,7 @@ describe("ClawRouter provider catalog", () => {
       "llm.generate",
     ];
     const provider = await buildClawRouterProviderConfig({
-      apiKey: `ltfx.n.95a1a163bfa2a788184d.v1`,
+      apiKey: "clawrouter-test-key",
       fetchGuard: buildFetchGuard(catalog).fetchGuard,
     });
 

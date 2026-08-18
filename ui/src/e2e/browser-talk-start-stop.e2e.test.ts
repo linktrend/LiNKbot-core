@@ -194,7 +194,7 @@ describeControlUiE2e("Control UI browser Talk", () => {
           provider: "google",
           transport: "provider-websocket",
           protocol: "google-live-bidi",
-          clientSecret: `ltfx.n.653d701be6c7747de1be.v1`,
+          clientSecret: "auth_tokens/browser-talk-e2e",
           websocketUrl:
             "wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContentConstrained",
           audio: {
@@ -252,7 +252,7 @@ describeControlUiE2e("Control UI browser Talk", () => {
           (await gateway.getSocketUrls()).filter((url) => url.includes("BidiGenerateContent")),
         )
         .toEqual([
-          "wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContentConstrained?access_token=(auth_tokens%2Fbrowser-talk-e2e",)
+          "wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContentConstrained?access_token=auth_tokens%2Fbrowser-talk-e2e",
         ]);
 
       await expect
@@ -492,7 +492,7 @@ describeControlUiE2e("Control UI browser Talk", () => {
         "talk.client.create": {
           provider: "openai",
           transport: "webrtc",
-          clientSecret: `ltfx.n.8ac950188678f9bb3524.v1`,
+          clientSecret: "test-client-secret",
           offerUrl: "https://api.openai.com/v1/realtime/calls",
         },
       },

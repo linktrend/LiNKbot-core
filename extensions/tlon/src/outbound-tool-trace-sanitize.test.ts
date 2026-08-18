@@ -54,7 +54,7 @@ describe("tlon outbound assistant-visible sanitization", () => {
       void (async () => {
         const body = await readBody(request);
         if (request.method === "POST" && request.url === "/~/login") {
-          expect(body).toBe("password=(test-code");)
+          expect(body).toBe("password=test-code");
           response.writeHead(200, {
             Connection: "close",
             "Set-Cookie": "urbauth-~zod=test-cookie; Path=/; HttpOnly",

@@ -228,13 +228,13 @@ describe("resolveReusableWorkspaceSkillSnapshot", () => {
 
     resolveReusableWorkspaceSkillSnapshot({
       workspaceDir: TEST_WORKSPACE_DIR,
-      config: { channels: { discord: { token: `ltfx.n.e0a5091e7f566a510181.v1` } } } as OpenClawConfig,
+      config: { channels: { discord: { token: "first-secret" } } } as OpenClawConfig,
       existingSnapshot: snapshot,
     });
 
     resolveReusableWorkspaceSkillSnapshot({
       workspaceDir: TEST_WORKSPACE_DIR,
-      config: { channels: { discord: { token: `ltfx.n.a26fa50cba5c8fefa46a.v1` } } } as OpenClawConfig,
+      config: { channels: { discord: { token: "rotated-secret" } } } as OpenClawConfig,
       existingSnapshot: { ...snapshot },
     });
 

@@ -87,7 +87,7 @@ function resolveToolParameterSchemaCacheKey(
   ]);
 }
 
-function getCachedToolParameterSchema(schema: object, key: (string)): TSchema | undefined {
+function getCachedToolParameterSchema(schema: object, key: string): TSchema | undefined {
   return toolParameterSchemaCache.get(schema)?.find((entry) => entry.key === key)?.value;
 }
 
@@ -257,7 +257,7 @@ function normalizeArraySchemasMissingItems(schema: unknown): unknown {
     changed = true;
   }
 
-  const normalizeSchemaValue = (key: (string)): void => {
+  const normalizeSchemaValue = (key: string): void => {
     if (!(key in nextSchema)) {
       return;
     }

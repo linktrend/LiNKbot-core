@@ -143,7 +143,7 @@ describe("runtime plugin health snapshot", () => {
         reason: "unsupported schema",
         failedAtMs: 123,
         processId: await deadProcessId(),
-        processToken: `ltfx.n.94a0e9fbe959830e998b.v1`,
+        processToken: "dead-process-token",
         processStartTime: null,
       });
       seedPersistedToolQuarantineForTest({
@@ -169,7 +169,7 @@ describe("runtime plugin health snapshot", () => {
         toolName: "reused_pid_tool",
         reason: "unsupported schema",
         ...createRuntimeHealthRecordEnvelope(new Date(123)),
-        processToken: `ltfx.n.d5a4bb9fc4a460a5fa89.v1`,
+        processToken: "stale-incarnation-token",
       });
 
       expect(collectRuntimePluginHealthSnapshot().runtimeToolQuarantines).toEqual([]);

@@ -234,7 +234,7 @@ export async function migrateLegacyInstalledPluginIndex(params: {
   return { changes, warnings };
 }
 
-function resolvePluginStateImportTargetKey(scopeKey: string, key: (string)): string {
+function resolvePluginStateImportTargetKey(scopeKey: string, key: string): string {
   return scopeKey ? `${scopeKey}:${key}` : key;
 }
 

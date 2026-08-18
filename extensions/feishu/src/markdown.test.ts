@@ -102,7 +102,7 @@ describe("chunkFeishuPostMarkdown", () => {
       {
         openId: "ou_target",
         name: "界".repeat(1_000),
-        key: `ltfx.n.3eb605b0a653477ad302.v1`,
+        key: "@_user_1",
       },
     ];
     const chunks = chunkFeishuPostMarkdown({

@@ -140,7 +140,7 @@ describe("qwen provider plugin", () => {
             [QWEN_TOKEN_PLAN_LEGACY_PROVIDER_ID]: {
               api: "anthropic-messages",
               baseUrl: "https://token-plan.ap-southeast-1.maas.aliyuncs.com/apps/anthropic",
-              apiKey: `ltfx.n.b83407a4d3ff19cd2442.v1`,
+              apiKey: "legacy-inline-key",
               models: [{ id: "qwen3.7-plus" }],
             },
           },
@@ -148,13 +148,13 @@ describe("qwen provider plugin", () => {
       },
       env: {},
       resolveProviderApiKey: (providerId: string) =>
-        providerId === QWEN_TOKEN_PLAN_PROVIDER_ID ? { apiKey: `ltfx.n.0409a843e69eebb517d9.v1` } : {},
+        providerId === QWEN_TOKEN_PLAN_PROVIDER_ID ? { apiKey: "canonical-key" } : {},
       resolveProviderAuth: () => ({ apiKey: undefined, mode: "none", source: "none" }),
     } as never);
 
     expect(requireCatalogProvider(result)).toMatchObject({
       api: "openai-completions",
-      apiKey: `ltfx.n.0409a843e69eebb517d9.v1`,
+      apiKey: "canonical-key",
       baseUrl: QWEN_TOKEN_PLAN_GLOBAL_BASE_URL,
     });
   });
@@ -182,7 +182,7 @@ describe("qwen provider plugin", () => {
     });
     const provider = requireRegisteredProvider(providers, QWEN_TOKEN_PLAN_PROVIDER_ID);
     const resolveProviderApiKey = vi.fn((providerId: string) =>
-      providerId === QWEN_TOKEN_PLAN_PROVIDER_ID ? { apiKey: `ltfx.n.0409a843e69eebb517d9.v1` } : {},
+      providerId === QWEN_TOKEN_PLAN_PROVIDER_ID ? { apiKey: "canonical-key" } : {},
     );
     const result = await provider.catalog?.run({
       config: { models: { providers: entries } },
@@ -193,7 +193,7 @@ describe("qwen provider plugin", () => {
     const catalogProvider = requireCatalogProvider(result);
     expect(catalogProvider).toMatchObject({
       api: "openai-completions",
-      apiKey: `ltfx.n.0409a843e69eebb517d9.v1`,
+      apiKey: "canonical-key",
       baseUrl: QWEN_TOKEN_PLAN_CN_BASE_URL,
     });
     expect(catalogProvider.models).toHaveLength(14);

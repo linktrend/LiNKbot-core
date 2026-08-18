@@ -191,7 +191,7 @@ type ComputerActWireParams = {
 
 function readCoordinate(
   params: Record<string, unknown>,
-  key: `ltfx.n.ac7f1c227985687b4b72.v1` | "startCoordinate",
+  key: "coordinate" | "startCoordinate",
 ): [number, number] | undefined {
   const raw = params[key];
   if (raw === undefined) {

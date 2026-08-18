@@ -168,8 +168,8 @@ async function writeCodexCliAuthFile(codexHome: string): Promise<void> {
     path.join(codexHome, "auth.json"),
     `${JSON.stringify({
       tokens: {
-        access_token: `ltfx.n.9110082e356beb170621.v1`,
-        refresh_token: `ltfx.n.b6233e3c53f5718487c7.v1`,
+        access_token: "cli-access-token",
+        refresh_token: "cli-refresh-token",
         account_id: "account-cli",
       },
     })}\n`,
@@ -182,7 +182,7 @@ async function writeCodexCliApiKeyAuthFile(codexHome: string): Promise<void> {
     path.join(codexHome, "auth.json"),
     `${JSON.stringify({
       auth_mode: "apikey",
-      OPENAI_API_KEY: `ltfx.n.f4613f44d0574643678d.v1`,
+      OPENAI_API_KEY: "cli-auth-json-api-key",
     })}\n`,
   );
 }
@@ -452,7 +452,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
         credential: {
           type: "token",
           provider: "openai",
-          token: `ltfx.n.3f16bed7089f4653e5ef.v1`,
+          token: "access-token",
         },
       });
 
@@ -482,7 +482,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
       const startOptions = createStartOptions({ clearEnv: ["FOO", "OPENAI_API_KEY"] });
       const preparedAuthHandoff =
         preparedAuth === "api-key"
-          ? ({ kind: "api-key", apiKey: `ltfx.n.34ddaf60896be843d9bb.v1` } as const)
+          ? ({ kind: "api-key", apiKey: "prepared-platform-key" } as const)
           : ({
               kind: "profile",
               profileId: "openai:prepared",
@@ -504,15 +504,15 @@ describe("bridgeCodexAppServerStartOptions", () => {
         expect(
           resolveCodexAppServerSpawnEnv(bridged, {
             FOO: "ambient",
-            CODEX_API_KEY: `ltfx.n.8d114df2c2eec27afa71.v1`,
-            OPENAI_API_KEY: `ltfx.n.0bb1b956aac90785b645.v1`,
-            CODEX_ACCESS_TOKEN: `ltfx.n.b94c37ec038cd24a1364.v1`,
+            CODEX_API_KEY: "ambient-codex-key",
+            OPENAI_API_KEY: "ambient-openai-key",
+            CODEX_ACCESS_TOKEN: "ambient-access-token",
           }),
         ).toMatchObject({ CODEX_HOME: resolveCodexAppServerHomeDir(agentDir) });
         const spawnEnv = resolveCodexAppServerSpawnEnv(bridged, {
-          CODEX_API_KEY: `ltfx.n.8d114df2c2eec27afa71.v1`,
-          OPENAI_API_KEY: `ltfx.n.0bb1b956aac90785b645.v1`,
-          CODEX_ACCESS_TOKEN: `ltfx.n.b94c37ec038cd24a1364.v1`,
+          CODEX_API_KEY: "ambient-codex-key",
+          OPENAI_API_KEY: "ambient-openai-key",
+          CODEX_ACCESS_TOKEN: "ambient-access-token",
         });
         expect(spawnEnv).not.toHaveProperty("CODEX_API_KEY");
         expect(spawnEnv).not.toHaveProperty("OPENAI_API_KEY");
@@ -527,7 +527,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
     await expect(
       resolveCodexAppServerPreparedAuthHandoff({
         authRequirement: "api-key",
-        resolvedApiKey: `ltfx.n.d409cf645436bd71d68d.v1`,
+        resolvedApiKey: "  prepared-platform-key  ",
         authProfileId: "openai:decoy",
         authProfileStore: {
           version: 1,
@@ -535,7 +535,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
             "openai:decoy": {
               type: "token",
               provider: "openai",
-              token: `ltfx.n.9aa37b675c19c7b1ca4e.v1`,
+              token: "decoy-subscription-token",
             },
           },
         },
@@ -544,7 +544,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
       }),
     ).resolves.toEqual({
       nativeAuthProfile: false,
-      preparedAuth: { kind: "api-key", apiKey: `ltfx.n.34ddaf60896be843d9bb.v1` },
+      preparedAuth: { kind: "api-key", apiKey: "prepared-platform-key" },
     });
   });
 
@@ -555,7 +555,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
         "openai:work": {
           type: "token",
           provider: "openai",
-          token: `ltfx.n.a69f2e2340fbd7266673.v1`,
+          token: "prepared-subscription-token",
           email: "prepared@example.test",
         },
       },
@@ -580,7 +580,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
         snapshot: {
           loginParams: {
             type: "chatgptAuthTokens",
-            accessToken: `ltfx.n.a69f2e2340fbd7266673.v1`,
+            accessToken: "prepared-subscription-token",
             chatgptAccountId: "prepared@example.test",
           },
         },
@@ -628,7 +628,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
         "openai:legacy": {
           type: "token",
           provider: "openai",
-          token: `ltfx.n.43db5f512aab0fa4d22a.v1`,
+          token: "legacy-subscription-token",
         },
       },
     };
@@ -656,7 +656,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
         credential: {
           type: "api_key",
           provider: "openai",
-          key: `ltfx.n.50109c7f15ed0bb3fc06.v1`,
+          key: "explicit-api-key",
         },
       });
 
@@ -682,7 +682,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
     const agentDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-codex-app-server-"));
     const startOptions = createStartOptions({
       transport: "websocket",
-      url: `ltfx.n.f0cec8d1092130f8499d.v1`,
+      url: "ws://127.0.0.1:1455",
       clearEnv: ["FOO"],
     });
     try {
@@ -720,7 +720,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
         credential: {
           type: "api_key",
           provider: "openai",
-          key: `ltfx.n.61f842a581e31c9d9f60.v1`,
+          key: "first-secret-key",
         },
       });
       const first = await resolveCodexAppServerAuthAccountCacheKey({
@@ -734,7 +734,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
         credential: {
           type: "api_key",
           provider: "openai",
-          key: `ltfx.n.4a66c71f190a64b6f748.v1`,
+          key: "second-secret-key",
         },
       });
       const second = await resolveCodexAppServerAuthAccountCacheKey({
@@ -875,7 +875,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
 
       expect(request).toHaveBeenCalledWith("account/login/start", {
         type: "chatgptAuthTokens",
-        accessToken: `ltfx.n.3f16bed7089f4653e5ef.v1`,
+        accessToken: "access-token",
         chatgptAccountId: "account-123",
         chatgptPlanType: null,
       });
@@ -923,7 +923,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
 
       expect(request).toHaveBeenCalledWith("account/login/start", {
         type: "chatgptAuthTokens",
-        accessToken: `ltfx.n.98965d5cf7025351f84b.v1`,
+        accessToken: "scoped-access",
         chatgptAccountId: "scoped-account",
         chatgptPlanType: null,
       });
@@ -983,7 +983,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
       expect(oauthMocks.refreshOpenAICodexToken).toHaveBeenCalledWith("scoped-refresh");
       expect(request).toHaveBeenCalledWith("account/login/start", {
         type: "chatgptAuthTokens",
-        accessToken: `ltfx.n.5f52ec58b77402d6627c.v1`,
+        accessToken: "scoped-refreshed-access",
         chatgptAccountId: "scoped-refreshed-account",
         chatgptPlanType: null,
       });
@@ -1039,7 +1039,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
       expect(oauthMocks.refreshOpenAICodexToken).toHaveBeenCalledWith("persisted-refresh");
       expect(request).toHaveBeenCalledWith("account/login/start", {
         type: "chatgptAuthTokens",
-        accessToken: `ltfx.n.de83e7120f29d3588a5b.v1`,
+        accessToken: "persisted-refreshed-access",
         chatgptAccountId: "persisted-account",
         chatgptPlanType: null,
       });
@@ -1210,7 +1210,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
       expect(oauthMocks.refreshOpenAICodexToken).toHaveBeenCalledWith("scoped-refresh");
       expect(request).toHaveBeenCalledWith("account/login/start", {
         type: "chatgptAuthTokens",
-        accessToken: `ltfx.n.5f52ec58b77402d6627c.v1`,
+        accessToken: "scoped-refreshed-access",
         chatgptAccountId: "shared-account",
         chatgptPlanType: null,
       });
@@ -1270,7 +1270,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
       expect(oauthMocks.refreshOpenAICodexToken).toHaveBeenCalledWith("scoped-refresh");
       expect(request).toHaveBeenCalledWith("account/login/start", {
         type: "chatgptAuthTokens",
-        accessToken: `ltfx.n.5f52ec58b77402d6627c.v1`,
+        accessToken: "scoped-refreshed-access",
         chatgptAccountId: "openai:work",
         chatgptPlanType: null,
       });
@@ -1327,7 +1327,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
       expect(oauthMocks.refreshOpenAICodexToken).not.toHaveBeenCalled();
       expect(request).toHaveBeenCalledWith("account/login/start", {
         type: "chatgptAuthTokens",
-        accessToken: `ltfx.n.c7665614b389111c03f5.v1`,
+        accessToken: "current-access",
         chatgptAccountId: "persisted-account",
         chatgptPlanType: null,
       });
@@ -1384,7 +1384,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
       expect(oauthMocks.refreshOpenAICodexToken).toHaveBeenCalledWith("account-a-refresh");
       expect(request).toHaveBeenCalledWith("account/login/start", {
         type: "chatgptAuthTokens",
-        accessToken: `ltfx.n.3ee358325b19a1965f42.v1`,
+        accessToken: "account-a-refreshed-access",
         chatgptAccountId: "account-a",
         chatgptPlanType: null,
       });
@@ -1452,13 +1452,13 @@ describe("bridgeCodexAppServerStartOptions", () => {
       expect(request).toHaveBeenCalledTimes(2);
       expect(request).toHaveBeenNthCalledWith(1, "account/login/start", {
         type: "chatgptAuthTokens",
-        accessToken: `ltfx.n.5f52ec58b77402d6627c.v1`,
+        accessToken: "scoped-refreshed-access",
         chatgptAccountId: "scoped-refreshed-account",
         chatgptPlanType: null,
       });
       expect(request).toHaveBeenNthCalledWith(2, "account/login/start", {
         type: "chatgptAuthTokens",
-        accessToken: `ltfx.n.5f52ec58b77402d6627c.v1`,
+        accessToken: "scoped-refreshed-access",
         chatgptAccountId: "scoped-refreshed-account",
         chatgptPlanType: null,
       });
@@ -1513,13 +1513,13 @@ describe("bridgeCodexAppServerStartOptions", () => {
       agentDir: "/tmp/openclaw-agent",
       authProfileId: null,
       authProfileStore,
-      preparedAuth: { kind: "api-key", apiKey: `ltfx.n.34ddaf60896be843d9bb.v1` },
+      preparedAuth: { kind: "api-key", apiKey: "prepared-platform-key" },
     });
 
     expect(request).toHaveBeenCalledOnce();
     expect(request).toHaveBeenCalledWith("account/login/start", {
       type: "apiKey",
-      apiKey: `ltfx.n.34ddaf60896be843d9bb.v1`,
+      apiKey: "prepared-platform-key",
     });
     const cacheKey = resolveCodexAppServerPreparedApiKeyCacheKey("prepared-platform-key");
     expect(cacheKey).toMatch(/^api_key:sha256:[a-f0-9]{64}$/u);
@@ -1548,7 +1548,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
 
     try {
       expect(snapshot).toEqual({
-        loginParams: { type: "apiKey", apiKey: `ltfx.n.dde98bbd247f2175d504.v1` },
+        loginParams: { type: "apiKey", apiKey: "first-prepared-key" },
         secretFreeCacheKey: `openai:work:${resolveCodexAppServerPreparedApiKeyCacheKey("first-prepared-key")}`,
       });
       await applyCodexAppServerAuthProfile({
@@ -1565,7 +1565,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
       });
       expect(request).toHaveBeenCalledWith("account/login/start", {
         type: "apiKey",
-        apiKey: `ltfx.n.dde98bbd247f2175d504.v1`,
+        apiKey: "first-prepared-key",
       });
     } finally {
       vi.unstubAllEnvs();
@@ -1582,7 +1582,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
         credential: {
           type: "api_key",
           provider: "openai",
-          key: `ltfx.n.ea2065cc5dcff68750f7.v1`,
+          key: "sk-openai-backup",
         },
       });
 
@@ -1594,7 +1594,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
 
       expect(request).toHaveBeenCalledWith("account/login/start", {
         type: "apiKey",
-        apiKey: `ltfx.n.ea2065cc5dcff68750f7.v1`,
+        apiKey: "sk-openai-backup",
       });
     } finally {
       await fs.rm(agentDir, { recursive: true, force: true });
@@ -1626,7 +1626,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
 
       expect(request).toHaveBeenCalledWith("account/login/start", {
         type: "chatgptAuthTokens",
-        accessToken: `ltfx.n.fb71fcfeb3cd2fad6b04.v1`,
+        accessToken: "default-access-token",
         chatgptAccountId: "account-default",
         chatgptPlanType: null,
       });
@@ -1637,14 +1637,14 @@ describe("bridgeCodexAppServerStartOptions", () => {
 
   it("selects ordered Codex OAuth before an OpenAI API-key backup", async () => {
     const request = vi.fn(async () => ({ type: "chatgptAuthTokens" }));
-    const accessToken = `ltfx.n.597480d4b62ca612193f.v1`;
+    const accessToken = "test-access-token";
     const authProfileStore: AuthProfileStore = {
       version: 1,
       profiles: {
         "openai:media-api": {
           type: "api_key",
           provider: "openai",
-          key: `ltfx.n.4c806362b613f7496abf.v1`,
+          key: "test-api-key",
         },
         "openai:qa-oauth": {
           type: "oauth",
@@ -1716,7 +1716,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
       });
 
       await expect(refreshCodexAppServerAuthTokens({ agentDir })).resolves.toEqual({
-        accessToken: `ltfx.n.6904576fd5b5856ee9a9.v1`,
+        accessToken: "refreshed-ref-backed-access-token",
         chatgptAccountId: "account-ref-backed-refreshed",
         chatgptPlanType: null,
       });
@@ -1743,7 +1743,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
 
       expect(request).toHaveBeenCalledWith("account/login/start", {
         type: "chatgptAuthTokens",
-        accessToken: `ltfx.n.9110082e356beb170621.v1`,
+        accessToken: "cli-access-token",
         chatgptAccountId: "account-cli",
         chatgptPlanType: null,
       });
@@ -1774,7 +1774,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
 
       expect(request).toHaveBeenCalledWith("account/login/start", {
         type: "chatgptAuthTokens",
-        accessToken: `ltfx.n.9110082e356beb170621.v1`,
+        accessToken: "cli-access-token",
         chatgptAccountId: "account-cli",
         chatgptPlanType: null,
       });
@@ -1800,7 +1800,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
       await writeCodexCliAuthFile(codexHome);
 
       await expect(refreshCodexAppServerAuthTokens({ agentDir })).resolves.toEqual({
-        accessToken: `ltfx.n.892ae689280e172628a6.v1`,
+        accessToken: "fresh-cli-access-token",
         chatgptAccountId: "account-cli-refreshed",
         chatgptPlanType: null,
       });
@@ -1892,7 +1892,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
 
       expect(request).toHaveBeenCalledWith("account/login/start", {
         type: "chatgptAuthTokens",
-        accessToken: `ltfx.n.af92e72825bc6899041e.v1`,
+        accessToken: "work-access-token",
         chatgptAccountId: "account-work",
         chatgptPlanType: null,
       });
@@ -1934,7 +1934,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
       expect(oauthMocks.refreshOpenAICodexToken).toHaveBeenCalledWith("refresh-token");
       expect(request).toHaveBeenCalledWith("account/login/start", {
         type: "chatgptAuthTokens",
-        accessToken: `ltfx.n.5f0865c175057c86933c.v1`,
+        accessToken: "fresh-access-token",
         chatgptAccountId: "account-456",
         chatgptPlanType: null,
       });
@@ -1966,7 +1966,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
 
       expect(request).toHaveBeenCalledWith("account/login/start", {
         type: "apiKey",
-        apiKey: `ltfx.n.1a81b92352cdaa697fd9.v1`,
+        apiKey: "ref-backed-api-key",
       });
     } finally {
       await fs.rm(agentDir, { recursive: true, force: true });
@@ -1983,7 +1983,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
         credential: {
           type: "api_key",
           provider: "anthropic",
-          key: `ltfx.n.2454431d5b9908a4cc26.v1`,
+          key: "anthropic-api-key",
         },
       });
 
@@ -2019,7 +2019,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
         },
         authRequirement: "subscription",
         startOptions: createStartOptions({
-          env: { CODEX_API_KEY: `ltfx.n.4097889236a2af26c293.v1` },
+          env: { CODEX_API_KEY: "placeholder" },
         }),
       });
     } catch (error) {
@@ -2125,14 +2125,14 @@ describe("bridgeCodexAppServerStartOptions", () => {
         agentDir,
         authRequirement: "api-key",
         startOptions: createStartOptions({
-          env: { CODEX_API_KEY: `ltfx.n.41dd96f1dccf65c2c9c7.v1` },
+          env: { CODEX_API_KEY: "test-token-placeholder" },
         }),
       });
 
       expect(request).toHaveBeenNthCalledWith(1, "account/read", { refreshToken: false });
       expect(request).toHaveBeenNthCalledWith(2, "account/login/start", {
         type: "apiKey",
-        apiKey: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
+        apiKey: "test-token-placeholder",
       });
     } finally {
       await fs.rm(agentDir, { recursive: true, force: true });
@@ -2160,7 +2160,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
       expect(request).toHaveBeenNthCalledWith(1, "account/read", { refreshToken: false });
       expect(request).toHaveBeenNthCalledWith(2, "account/login/start", {
         type: "apiKey",
-        apiKey: `ltfx.n.c25fa3f95ac3a0185893.v1`,
+        apiKey: "openai-env-api-key",
       });
     } finally {
       await fs.rm(agentDir, { recursive: true, force: true });
@@ -2214,7 +2214,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
       expect(request).toHaveBeenNthCalledWith(1, "account/read", { refreshToken: false });
       expect(request).toHaveBeenNthCalledWith(2, "account/login/start", {
         type: "apiKey",
-        apiKey: `ltfx.n.4db4d00c002b875103a8.v1`,
+        apiKey: "codex-env-api-key",
       });
     } finally {
       await fs.rm(agentDir, { recursive: true, force: true });
@@ -2249,7 +2249,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
       expect(request).toHaveBeenNthCalledWith(1, "account/read", { refreshToken: false });
       expect(request).toHaveBeenNthCalledWith(2, "account/login/start", {
         type: "apiKey",
-        apiKey: `ltfx.n.f4613f44d0574643678d.v1`,
+        apiKey: "cli-auth-json-api-key",
       });
     } finally {
       await fs.rm(root, { recursive: true, force: true });
@@ -2270,7 +2270,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
         path.join(codexHome, "auth.json"),
         `${JSON.stringify({
           auth_mode: "apikey",
-          OPENAI_API_KEY: `ltfx.n.169235701c77e4794e16.v1`,
+          OPENAI_API_KEY: "second-cli-auth-json-api-key",
         })}\n`,
       );
       const second = resolveCodexAppServerFallbackApiKeyCacheKey({
@@ -2298,7 +2298,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
         resolveCodexAppServerFallbackApiKeyCacheKey({
           startOptions: createStartOptions({
             transport: "websocket",
-            url: `ltfx.n.f0cec8d1092130f8499d.v1`,
+            url: "ws://127.0.0.1:1455",
           }),
           baseEnv: { CODEX_HOME: codexHome },
         }),
@@ -2351,7 +2351,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
         authRequirement: "api-key",
         startOptions: createStartOptions({
           transport: "websocket",
-          url: `ltfx.n.f0cec8d1092130f8499d.v1`,
+          url: "ws://127.0.0.1:1455",
         }),
       });
 
@@ -2385,7 +2385,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
 
       expect(request).toHaveBeenCalledWith("account/login/start", {
         type: "chatgptAuthTokens",
-        accessToken: `ltfx.n.fc5a3e35f2097df05e1a.v1`,
+        accessToken: "ref-backed-access-token",
         chatgptAccountId: "codex@example.test",
         chatgptPlanType: null,
       });
@@ -2404,7 +2404,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
         credential: {
           type: "token",
           provider: "openai",
-          token: `ltfx.n.47a4d5135a5791df7897.v1`,
+          token: "sk-openai-chatgpt-api-key-value",
         },
       });
 
@@ -2418,7 +2418,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
 
       expect(request).toHaveBeenCalledWith("account/login/start", {
         type: "chatgptAuthTokens",
-        accessToken: `ltfx.n.47a4d5135a5791df7897.v1`,
+        accessToken: "sk-openai-chatgpt-api-key-value",
         chatgptAccountId: "openai:work",
         chatgptPlanType: null,
       });
@@ -2469,7 +2469,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
         credential: {
           type: "token",
           provider: "codex-cli",
-          token: `ltfx.n.102f13719a8f86228c4c.v1`,
+          token: "legacy-access-token",
           email: "legacy-codex@example.test",
         },
       });
@@ -2482,7 +2482,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
 
       expect(request).toHaveBeenCalledWith("account/login/start", {
         type: "chatgptAuthTokens",
-        accessToken: `ltfx.n.102f13719a8f86228c4c.v1`,
+        accessToken: "legacy-access-token",
         chatgptAccountId: "legacy-codex@example.test",
         chatgptPlanType: null,
       });
@@ -2520,7 +2520,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
           authProfileId: "openai:work",
         }),
       ).resolves.toEqual({
-        accessToken: `ltfx.n.099105438714f78e8f31.v1`,
+        accessToken: "refreshed-access-token",
         chatgptAccountId: "account-789",
         chatgptPlanType: null,
       });
@@ -2569,7 +2569,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
           authProfileId: "openai:work",
         }),
       ).resolves.toEqual({
-        accessToken: `ltfx.n.099105438714f78e8f31.v1`,
+        accessToken: "refreshed-access-token",
         chatgptAccountId: "account-789",
         chatgptPlanType: null,
       });
@@ -2617,7 +2617,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
           authProfileId: "openai:work",
         }),
       ).resolves.toEqual({
-        accessToken: `ltfx.n.ffc0b9fbec5a9518d96c.v1`,
+        accessToken: "main-refreshed-access-token",
         chatgptAccountId: "account-main-refreshed",
         chatgptPlanType: null,
       });
@@ -2686,7 +2686,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
           authProfileId: "openai:work",
         }),
       ).resolves.toEqual({
-        accessToken: `ltfx.n.ffc0b9fbec5a9518d96c.v1`,
+        accessToken: "main-refreshed-access-token",
         chatgptAccountId: "account-main-refreshed",
         chatgptPlanType: null,
       });
@@ -2739,7 +2739,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
           authProfileId: "openai:work",
         }),
       ).resolves.toEqual({
-        accessToken: `ltfx.n.8f717a112785b7c6b731.v1`,
+        accessToken: "refreshed-alias-access-token",
         chatgptAccountId: "account-alias",
         chatgptPlanType: null,
       });
@@ -2776,7 +2776,7 @@ describe("bridgeCodexAppServerStartOptions", () => {
 
       expect(request).toHaveBeenCalledWith("account/login/start", {
         type: "chatgptAuthTokens",
-        accessToken: `ltfx.n.3f16bed7089f4653e5ef.v1`,
+        accessToken: "access-token",
         chatgptAccountId: "account-123",
         chatgptPlanType: "pro",
       });

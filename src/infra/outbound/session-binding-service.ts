@@ -133,7 +133,7 @@ const ADAPTERS_BY_CHANNEL_ACCOUNT = resolveGlobalMap<string, SessionBindingAdapt
   SESSION_BINDING_ADAPTERS_KEY,
 );
 
-function getActiveAdapterForKey(key: (string)): SessionBindingAdapter | null {
+function getActiveAdapterForKey(key: string): SessionBindingAdapter | null {
   const registrations = ADAPTERS_BY_CHANNEL_ACCOUNT.get(key);
   return registrations?.at(-1)?.normalizedAdapter ?? null;
 }

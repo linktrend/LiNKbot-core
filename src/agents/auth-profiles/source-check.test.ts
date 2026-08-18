@@ -73,7 +73,7 @@ describe("hasAuthProfileStoreSourceForProvider", () => {
       "openai:expired": {
         type: "token",
         provider: "openai",
-        token: `ltfx.n.b52b3ef2233858ce1156.v1`,
+        token: "expired-token",
         expires: Date.now() - 1000,
       },
     });
@@ -115,7 +115,7 @@ describe("hasAuthProfileStoreSourceForProvider", () => {
       "openai:token": {
         type: "token",
         provider: "openai",
-        token: `ltfx.n.b52b3ef2233858ce1156.v1`,
+        token: "expired-token",
         expires: Date.now() - 1000,
       },
     });

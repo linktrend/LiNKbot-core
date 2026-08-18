@@ -87,7 +87,7 @@ describe("mattermost directory", () => {
 
   it("uses the first healthy client for peers and filters self and blanks", async () => {
     const client = {
-      token: `ltfx.n.bf7930a1c2a77baa6281.v1`,
+      token: "token-default",
       request: vi
         .fn()
         .mockResolvedValueOnce([{ id: "team-1" }])
@@ -114,7 +114,7 @@ describe("mattermost directory", () => {
     listMattermostAccountIdsMock.mockReturnValue(["default"]);
     resolveMattermostAccountMock.mockReturnValue({
       enabled: true,
-      botToken: `ltfx.n.bf7930a1c2a77baa6281.v1`,
+      botToken: "token-default",
       baseUrl: "https://chat.example.com",
     });
     createMattermostClientMock.mockReturnValue(client);
@@ -136,7 +136,7 @@ describe("mattermost directory", () => {
       user_id: `user-${index + 1}`,
     }));
     const client = {
-      token: `ltfx.n.bf7930a1c2a77baa6281.v1`,
+      token: "token-default",
       request: vi
         .fn()
         .mockResolvedValueOnce([{ id: "team-1" }])
@@ -152,7 +152,7 @@ describe("mattermost directory", () => {
     listMattermostAccountIdsMock.mockReturnValue(["default"]);
     resolveMattermostAccountMock.mockReturnValue({
       enabled: true,
-      botToken: `ltfx.n.bf7930a1c2a77baa6281.v1`,
+      botToken: "token-default",
       baseUrl: "https://chat.example.com",
     });
     createMattermostClientMock.mockReturnValue(client);
@@ -183,7 +183,7 @@ describe("mattermost directory", () => {
 
   it("applies peer limits after resolving users", async () => {
     const client = {
-      token: `ltfx.n.bf7930a1c2a77baa6281.v1`,
+      token: "token-default",
       request: vi
         .fn()
         .mockResolvedValueOnce([{ id: "team-1" }])
@@ -194,7 +194,7 @@ describe("mattermost directory", () => {
     listMattermostAccountIdsMock.mockReturnValue(["default"]);
     resolveMattermostAccountMock.mockReturnValue({
       enabled: true,
-      botToken: `ltfx.n.bf7930a1c2a77baa6281.v1`,
+      botToken: "token-default",
       baseUrl: "https://chat.example.com",
     });
     createMattermostClientMock.mockReturnValue(client);
@@ -217,7 +217,7 @@ describe("mattermost directory", () => {
 
   it("uses user search when a query is present and applies limits", async () => {
     const client = {
-      token: `ltfx.n.bf7930a1c2a77baa6281.v1`,
+      token: "token-default",
       request: vi
         .fn()
         .mockResolvedValueOnce([{ id: "team-1" }])
@@ -230,7 +230,7 @@ describe("mattermost directory", () => {
     listMattermostAccountIdsMock.mockReturnValue(["default"]);
     resolveMattermostAccountMock.mockReturnValue({
       enabled: true,
-      botToken: `ltfx.n.bf7930a1c2a77baa6281.v1`,
+      botToken: "token-default",
       baseUrl: "https://chat.example.com",
     });
     createMattermostClientMock.mockReturnValue(client);

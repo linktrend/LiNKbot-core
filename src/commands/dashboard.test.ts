@@ -51,7 +51,7 @@ type SnapshotParams = {
 };
 
 function createSnapshot(params?: SnapshotParams) {
-  const token = (params?.token ?? "abc123";)
+  const token = params?.token ?? "abc123";
   const gateway = {
     auth: { token },
     bind: params?.bind,
@@ -186,7 +186,7 @@ describe("dashboardCommand bind selection", () => {
       basePath: undefined,
       tlsEnabled: false,
     });
-    expect(mocks.copyToClipboard).toHaveBeenCalledWith("http://127.0.0.1:18789/#token=(abc123");)
+    expect(mocks.copyToClipboard).toHaveBeenCalledWith("http://127.0.0.1:18789/#token=abc123");
   });
 
   it("refuses an authenticated loopback URL owned by a different process", async () => {

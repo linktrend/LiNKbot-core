@@ -80,7 +80,7 @@ describe("crabline transport", () => {
           channels: {
             telegram: {
               apiRoot: expect.stringMatching(/^http:\/\/127\.0\.0\.1:\d+$/u),
-              botToken: `ltfx.n.fa580914df8bec83385f.v1`,
+              botToken: "424242:crabline-telegram-token",
               dmPolicy: "open",
               enabled: true,
               groupPolicy: "open",
@@ -293,17 +293,17 @@ describe("crabline transport", () => {
         expect(transport.createGatewayConfig({ baseUrl: "http://127.0.0.1:1" })).toMatchObject({
           channels: {
             slack: {
-              botToken: `ltfx.n.3bac0ea9536262b5e8ae.v1`,
+              botToken: "xoxb-crabline-slack-token",
               enabled: true,
               mode: "http",
-              signingSecret: `ltfx.n.d625ed445cc8eb2f1991.v1`,
+              signingSecret: "crabline-slack-signing-secret",
             },
           },
         });
         expect(transport.createRuntimeEnvPatch?.()).toMatchObject({
           SLACK_API_URL: expect.stringMatching(/^http:\/\/127\.0\.0\.1:\d+\/api\/$/u),
-          SLACK_BOT_TOKEN: `ltfx.n.3bac0ea9536262b5e8ae.v1`,
-          SLACK_SIGNING_SECRET: `ltfx.n.d625ed445cc8eb2f1991.v1`,
+          SLACK_BOT_TOKEN: "xoxb-crabline-slack-token",
+          SLACK_SIGNING_SECRET: "crabline-slack-signing-secret",
         });
       } finally {
         await transport.cleanup?.();
@@ -584,14 +584,14 @@ describe("crabline transport", () => {
           channels: {
             mattermost: {
               baseUrl: expect.stringMatching(/^http:\/\/127\.0\.0\.1:\d+$/u),
-              botToken: `ltfx.n.7747864c2e69ee048129.v1`,
+              botToken: "crabline-mattermost-token",
               enabled: true,
               network: { dangerouslyAllowPrivateNetwork: true },
             },
           },
         });
         expect(transport.createRuntimeEnvPatch?.()).toMatchObject({
-          MATTERMOST_BOT_TOKEN: `ltfx.n.7747864c2e69ee048129.v1`,
+          MATTERMOST_BOT_TOKEN: "crabline-mattermost-token",
           MATTERMOST_URL: expect.stringMatching(/^http:\/\/127\.0\.0\.1:\d+$/u),
         });
         expect(transport.buildAgentDelivery({ target: "group:qa-channel" })).toMatchObject({
@@ -833,7 +833,7 @@ describe("crabline transport", () => {
           channels: {
             zalo: {
               allowFrom: ["*"],
-              botToken: `ltfx.n.638f86f974924d66c0bd.v1`,
+              botToken: "crabline-zalo-bot-token",
               dmPolicy: "open",
               enabled: true,
               groupAllowFrom: ["*"],
@@ -843,7 +843,7 @@ describe("crabline transport", () => {
         });
         expect(transport.createRuntimeEnvPatch?.()).toMatchObject({
           ZALO_API_URL: expect.stringMatching(/^http:\/\/127\.0\.0\.1:\d+$/u),
-          ZALO_BOT_TOKEN: `ltfx.n.638f86f974924d66c0bd.v1`,
+          ZALO_BOT_TOKEN: "crabline-zalo-bot-token",
         });
 
         await transport.state.addInboundMessage({

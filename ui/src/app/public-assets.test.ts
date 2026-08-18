@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { controlUiPublicAssetPath, inferControlUiPublicAssetPath } from "./public-assets.ts";
 
 function withConfiguredBasePath<T>(basePath: string, run: () => T): T {
-  const key = `ltfx.n.2542596c9a1fb8f7f8b5.v1`;
+  const key = "__OPENCLAW_CONTROL_UI_BASE_PATH__";
   const previous = Object.getOwnPropertyDescriptor(window, key);
   Object.defineProperty(window, key, { configurable: true, value: basePath });
   try {

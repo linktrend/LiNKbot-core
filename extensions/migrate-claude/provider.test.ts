@@ -450,7 +450,7 @@ describe("Claude migration provider", () => {
           filesystem: {
             command: "npx",
             args: ["-y", "@modelcontextprotocol/server-filesystem", "/tmp"],
-            env: { ANTHROPIC_API_KEY: `ltfx.n.9c8d39c2a3b4ae401491.v1` },
+            env: { ANTHROPIC_API_KEY: "short-dev-key" },
           },
         },
       }),

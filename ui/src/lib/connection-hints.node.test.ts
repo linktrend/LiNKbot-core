@@ -59,7 +59,7 @@ describe("resolveGatewayTokenForUrlEdit", () => {
       "openclaw.control.settings.v1",
       JSON.stringify({
         gatewayUrl: "wss://other-gateway.example/openclaw",
-        token: `ltfx.n.f15ae5b5899f8327f527.v1`,
+        token: "gateway-token",
       }),
     );
 

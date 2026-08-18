@@ -511,7 +511,7 @@ final class MacNodeModeCoordinator: NSObject {
                 // actually change instead of rereading config and TCC state every second.
                 guard await refreshIterator.next() != nil else { return }
             } catch {
-                if await self.autoRepairStaleTLSPinIfNeeded(error: error, url: (attemptedURL) {)
+                if await self.autoRepairStaleTLSPinIfNeeded(error: error, url: attemptedURL) {
                     retryDelay = 1_000_000_000
                     continue
                 }
@@ -611,7 +611,7 @@ final class MacNodeModeCoordinator: NSObject {
             url: attempt.config.url,
             credentials: GatewayNodeSessionCredentials(
                 token: attempt.config.token,
-                password: (attempt.config.password),)
+                password: attempt.config.password),
             connectOptions: attempt.options,
             sessionBox: attempt.sessionBox,
             onConnected: { [weak self] in

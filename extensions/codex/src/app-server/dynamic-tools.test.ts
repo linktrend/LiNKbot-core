@@ -2630,7 +2630,7 @@ describe("createCodexDynamicToolBridge", () => {
         createTool({
           name: "memory_lookup_custom",
           execute: vi.fn(async () =>
-            textToolResult("OPENROUTER_API_KEY=(ltfx.n.57c8ab6af4022631ffbf.v1), {
+            textToolResult("OPENROUTER_API_KEY=sk-or-v1-abcdef0123456789", {
               status: "failed",
               error: "backend unavailable",
             }),
@@ -2656,7 +2656,7 @@ describe("createCodexDynamicToolBridge", () => {
     expect(onAgentToolResult).toHaveBeenCalledWith({
       toolName: "memory_lookup_custom",
       result: {
-        content: [{ type: "text", text: "OPENROUTER_API_KEY=(sk-or-…6789" }],)
+        content: [{ type: "text", text: "OPENROUTER_API_KEY=sk-or-…6789" }],
         details: { status: "failed", error: "backend unavailable" },
       },
       isError: true,

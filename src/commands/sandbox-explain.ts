@@ -272,12 +272,12 @@ export async function sandboxExplainCommand(
   // Track each failed gate separately so the human report points at concrete
   // config keys instead of only saying elevated access is disabled.
   if (!elevatedGlobalEnabled) {
-    elevatedFailures.push({ gate: "enabled", key: `ltfx.n.441cf207abf0a521ddc1.v1` });
+    elevatedFailures.push({ gate: "enabled", key: "tools.elevated.enabled" });
   }
   if (!elevatedAgentEnabled) {
     elevatedFailures.push({
       gate: "enabled",
-      key: `ltfx.n.efbb771d10e3aa43f742.v1`,
+      key: "agents.list[].tools.elevated.enabled",
     });
   }
   if (channel && globalAllowTokens.length === 0) {

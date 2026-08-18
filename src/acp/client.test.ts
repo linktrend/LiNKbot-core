@@ -158,9 +158,9 @@ describe("resolveAcpClientSpawnEnv", () => {
     const stripKeys = new Set(["OPENAI_API_KEY", "GITHUB_TOKEN", "HF_TOKEN"]);
     const env = resolveAcpClientSpawnEnv(
       {
-        OPENAI_API_KEY: `ltfx.n.9cbbbfb350d0e60ee0db.v1`, // pragma: allowlist secret
-        GITHUB_TOKEN: `ltfx.n.c70ebadc0890c54b9915.v1`, // pragma: allowlist secret
-        HF_TOKEN: `ltfx.n.9067fdb2017cb0af790e.v1`, // pragma: allowlist secret
+        OPENAI_API_KEY: "openai-secret", // pragma: allowlist secret
+        GITHUB_TOKEN: "gh-secret", // pragma: allowlist secret
+        HF_TOKEN: "hf-secret", // pragma: allowlist secret
         OPENCLAW_API_KEY: "keep-me",
         PATH: "/usr/bin",
       },
@@ -178,8 +178,8 @@ describe("resolveAcpClientSpawnEnv", () => {
   it("strips provider auth env vars case-insensitively", () => {
     const env = resolveAcpClientSpawnEnv(
       {
-        OpenAI_Api_Key: `ltfx.n.9cbbbfb350d0e60ee0db.v1`, // pragma: allowlist secret
-        Github_Token: `ltfx.n.c70ebadc0890c54b9915.v1`, // pragma: allowlist secret
+        OpenAI_Api_Key: "openai-secret", // pragma: allowlist secret
+        Github_Token: "gh-secret", // pragma: allowlist secret
         OPENCLAW_API_KEY: "keep-me",
       },
       { stripKeys: new Set(["OPENAI_API_KEY", "GITHUB_TOKEN"]) },
@@ -193,9 +193,9 @@ describe("resolveAcpClientSpawnEnv", () => {
 
   it("preserves provider auth env vars when no strip keys are provided", () => {
     const env = resolveAcpClientSpawnEnv({
-      OPENAI_API_KEY: `ltfx.n.9cbbbfb350d0e60ee0db.v1`, // pragma: allowlist secret
-      GITHUB_TOKEN: `ltfx.n.c70ebadc0890c54b9915.v1`, // pragma: allowlist secret
-      HF_TOKEN: `ltfx.n.9067fdb2017cb0af790e.v1`, // pragma: allowlist secret
+      OPENAI_API_KEY: "openai-secret", // pragma: allowlist secret
+      GITHUB_TOKEN: "gh-secret", // pragma: allowlist secret
+      HF_TOKEN: "hf-secret", // pragma: allowlist secret
       OPENCLAW_API_KEY: "keep-me",
     });
 

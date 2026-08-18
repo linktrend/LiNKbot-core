@@ -110,11 +110,11 @@ describe("mantis Slack desktop smoke runtime", () => {
     const commands: { args: readonly string[]; command: string; env?: NodeJS.ProcessEnv }[] = [];
     const runtimeEnv = {
       PATH: process.env.PATH,
-      OPENAI_API_KEY: `ltfx.n.f50e2b165932e8d6a647.v1`,
+      OPENAI_API_KEY: "openai-runtime-key",
       OPENCLAW_QA_SLACK_CHANNEL_ID: "C123",
-      OPENCLAW_QA_SLACK_DRIVER_BOT_TOKEN: `ltfx.n.d09452324ca1e7009307.v1`,
-      OPENCLAW_QA_SLACK_SUT_APP_TOKEN: `ltfx.n.7f14c33dfe13ac4af488.v1`,
-      OPENCLAW_QA_SLACK_SUT_BOT_TOKEN: `ltfx.n.50f83cc49e938a081165.v1`,
+      OPENCLAW_QA_SLACK_DRIVER_BOT_TOKEN: "driver-token",
+      OPENCLAW_QA_SLACK_SUT_APP_TOKEN: "app-token",
+      OPENCLAW_QA_SLACK_SUT_BOT_TOKEN: "sut-token",
     };
     const runner = vi.fn(
       async (command: string, args: readonly string[], options: { env?: NodeJS.ProcessEnv }) => {
@@ -629,12 +629,12 @@ describe("mantis Slack desktop smoke runtime", () => {
           JSON.stringify({
             credentialId: "cred-slack",
             heartbeatIntervalMs: 600_000,
-            leaseToken: `ltfx.n.9040cca28355c28522a6.v1`,
+            leaseToken: "lease-slack",
             leaseTtlMs: 900_000,
             payload: {
               channelId: "CLEASED",
-              sutAppToken: `ltfx.n.01ec2c6db711e63de27f.v1`,
-              sutBotToken: `ltfx.n.955f29d4760cb1dab297.v1`,
+              sutAppToken: "xapp-leased",
+              sutBotToken: "xoxb-leased",
             },
             status: "ok",
           }),
@@ -698,7 +698,7 @@ describe("mantis Slack desktop smoke runtime", () => {
       credentialSource: "convex",
       env: {
         CI: "1",
-        OPENAI_API_KEY: `ltfx.n.f50e2b165932e8d6a647.v1`,
+        OPENAI_API_KEY: "openai-runtime-key",
         OPENCLAW_QA_CONVEX_SECRET_CI: "convex-secret",
         OPENCLAW_QA_CONVEX_SITE_URL: "https://example.convex.site",
         PATH: process.env.PATH,
@@ -844,9 +844,9 @@ describe("mantis Slack desktop smoke runtime", () => {
       commandRunner: runner,
       crabboxBin: "/tmp/crabbox",
       env: {
-        OPENAI_API_KEY: `ltfx.n.f50e2b165932e8d6a647.v1`,
-        OPENCLAW_MANTIS_SLACK_APP_TOKEN: `ltfx.n.b6af0d85a957e3ceaaeb.v1`,
-        OPENCLAW_MANTIS_SLACK_BOT_TOKEN: `ltfx.n.4b51a91e9cb4d98f1984.v1`,
+        OPENAI_API_KEY: "openai-runtime-key",
+        OPENCLAW_MANTIS_SLACK_APP_TOKEN: "xapp-direct",
+        OPENCLAW_MANTIS_SLACK_BOT_TOKEN: "xoxb-direct",
         PATH: process.env.PATH,
       },
       gatewaySetup: true,

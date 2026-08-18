@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { fetchCatalogIconBlobUrl, fetchPluginIconBlobUrl } from "./icon-loader.ts";
 
 const auth = {
-  settings: { token: `ltfx.n.4c5dc9b7708905f77f5e.v1` },
+  settings: { token: "test-token" },
 };
 
 function imageResponse(): Response {

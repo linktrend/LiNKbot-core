@@ -39,7 +39,7 @@ describe("parseSpeechDirectiveNumberOverride", () => {
   it("respects exclusive range bounds", () => {
     expect(
       parseSpeechDirectiveNumberOverride({
-        ctx: { key: `ltfx.n.b314ae60cb741e69f1cc.v1`, value: "0", policy },
+        ctx: { key: "temperature", value: "0", policy },
         overrideKey: "temperature",
         range: { min: 0, minExclusive: true, max: 2 },
         warning: (value) => `invalid temperature ${value}`,

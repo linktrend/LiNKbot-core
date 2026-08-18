@@ -218,7 +218,7 @@ describe("runMessageAction core send routing", () => {
       cfg: {
         channels: {
           telegram: {
-            botToken: `ltfx.n.e935fda33ae898bc8c9f.v1`,
+            botToken: "123:test",
           },
         },
       } as OpenClawConfig,

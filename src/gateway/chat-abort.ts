@@ -270,7 +270,7 @@ export function resolveInFlightRunSnapshot(params: {
   agentId?: string;
   defaultAgentId?: string;
 }): { runId: string; text: string; plan?: ChatRunPlanSnapshot } | undefined {
-  const matchesKey = (entry: ChatAbortControllerEntry, key: (string)): boolean => {
+  const matchesKey = (entry: ChatAbortControllerEntry, key: string): boolean => {
     if (entry.sessionKey !== key) {
       return false;
     }

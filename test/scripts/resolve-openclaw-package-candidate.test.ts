@@ -924,8 +924,8 @@ describe("resolve-openclaw-package-candidate", () => {
     const dir = await mkdtemp(path.join(tmpdir(), "openclaw-package-download-"));
     tempDirs.push(dir);
     const target = path.join(dir, "openclaw.tgz");
-    const previousToken = (process.env.OPENCLAW_TRUSTED_PACKAGE_TOKEN;)
-    process.env.OPENCLAW_TRUSTED_PACKAGE_TOKEN = `ltfx.n.034192845dc489deca29.v1`;
+    const previousToken = process.env.OPENCLAW_TRUSTED_PACKAGE_TOKEN;
+    process.env.OPENCLAW_TRUSTED_PACKAGE_TOKEN = "token-123";
     const trustedSource = {
       allowPrivateNetwork: true,
       auth: { type: "bearer" },

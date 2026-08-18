@@ -19,7 +19,7 @@ scenario:
         defaultRoomKey: main
         rooms:
           - encrypted: true
-            key: "${ltfx.n.bfaf300a707507e269a1.v1}"
+            key: e2ee-state-after-missing-encryption
             kind: group
             members:
               - driver

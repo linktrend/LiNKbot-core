@@ -93,7 +93,7 @@ describe("runHeartbeatOnce heartbeat response tool", () => {
         : {}),
       channels: {
         telegram: {
-          token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+          token: "test-token",
           allowFrom: ["*"],
           heartbeat: { showOk: params.showOk ?? false },
         },

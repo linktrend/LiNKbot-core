@@ -610,7 +610,7 @@ describe("runMemoryFlushIfNeeded", () => {
       compactionCount: 1,
     };
     const visibleErrorPayloads: Array<{ text?: string; isError?: boolean }> = [];
-    const token = `ltfx.n.cfd467d34b70cd6bf224.v1`;
+    const token = "sk-abcdefghijklmnopqrstuv";
     runWithModelFallbackMock.mockRejectedValueOnce(
       new Error(`provider failed with Authorization: Bearer ${token} ${"🚀".repeat(400)}`),
     );
@@ -1704,7 +1704,7 @@ describe("runMemoryFlushIfNeeded", () => {
     expect(followupRun.run.sessionFile).toBe(successorFile);
     expect(replyOperation.updateSessionId).toHaveBeenCalledWith("session-rotated");
     expect(refreshQueuedFollowupSessionMock).toHaveBeenCalledWith({
-      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+      key: "agent:main:main",
       previousSessionId: "session",
       nextSessionId: "session-rotated",
       nextSessionFile: successorFile,

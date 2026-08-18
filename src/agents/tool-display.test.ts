@@ -803,7 +803,7 @@ describe("compactRawCommand middle truncation", () => {
     // Without redaction-before-truncation, middle truncation could cut out
     // the --token flag context but preserve the raw secret at the tail.
     const longCommand =
-      "/opt/custom/bin/deploy --region us-east-1 --token ltfx.n.267d6aeb48f478ea591d.v1 --output /data/results/deploy-output.json";
+      "/opt/custom/bin/deploy --region us-east-1 --token sk-proj-ABCDEFGHIJKLMNOP1234567890abcdefghij --output /data/results/deploy-output.json";
     const result = resolveExecDetail({ command: longCommand });
     // The sk- prefixed token must be redacted (masked) before truncation
     expect(result).not.toContain("ABCDEFGHIJKLMNOP1234567890abcdefghij");
@@ -877,7 +877,7 @@ describe("coerceDisplayValue middle truncation", () => {
     // redaction-before-truncation, middle truncation could preserve
     // the raw token at the tail after its prefix context is cut.
     const longValue =
-      "Deploying service to production cluster with auth ltfx.n.86376f4e7802fb7dd5bb.v1 and " +
+      "Deploying service to production cluster with auth ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnop and " +
       "x".repeat(200) +
       " final-step";
     const detail = formatToolDetail(

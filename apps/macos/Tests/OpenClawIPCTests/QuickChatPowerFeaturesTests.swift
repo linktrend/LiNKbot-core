@@ -396,7 +396,7 @@ struct QuickChatPowerFeaturesTests {
       },
       "sessions": [
         {
-          "key": "${ltfx.n.6d9217fe77c7f11d9cc9.v1}",
+          "key": "agent:main:main",
           "modelProvider": "openai",
           "model": "gpt-5.6-sol",
           "thinkingLevel": "medium"

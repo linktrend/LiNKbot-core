@@ -132,7 +132,7 @@ describe("lmstudio plugin", () => {
         provider: "lmstudio",
         config: {},
         providerConfig: createRemoteProviderConfig(),
-        resolvedApiKey: `ltfx.n.9174deb3c269ec12947c.v1`,
+        resolvedApiKey: "lmstudio-real-key",
       }),
     ).toBe(false);
   });

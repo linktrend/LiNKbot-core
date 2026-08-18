@@ -16,7 +16,7 @@ scenario:
         defaultRoomKey: main
         rooms:
           - encrypted: true
-            key: "${ltfx.n.a97cfc2f02f913fefeff.v1}"
+            key: e2ee-cli-self-verification
             kind: group
             members:
               - driver

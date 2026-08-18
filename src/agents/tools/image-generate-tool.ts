@@ -389,7 +389,7 @@ function normalizeFalCreativity(raw: string | undefined): FalCreativity | undefi
   throw new ToolInputError("fal.creativity must be one of raw, low, medium, or high");
 }
 
-function readRecordParam(params: Record<string, unknown>, key: (string)): Record<string, unknown> {
+function readRecordParam(params: Record<string, unknown>, key: string): Record<string, unknown> {
   const raw = params[key];
   return raw && typeof raw === "object" && !Array.isArray(raw)
     ? (raw as Record<string, unknown>)

@@ -107,7 +107,7 @@ type SessionCatalogGroupsParams = {
   onNavigate?: (routeId: NavigationRouteId, options?: ApplicationNavigationOptions) => void;
   catalogOpenTarget: "viewer" | "terminal";
   terminalAvailable: boolean;
-  onOpenTerminal: (key: (CatalogSessionKey) => void;)
+  onOpenTerminal: (key: CatalogSessionKey) => void;
   onOpenMenu: (
     request: CatalogSessionMenuRequest,
     x: number,

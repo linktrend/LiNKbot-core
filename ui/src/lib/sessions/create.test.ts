@@ -16,37 +16,37 @@ describe("requestSessionCreate", () => {
   it("returns the started initial-run outcome", async () => {
     const client = {
       request: vi.fn(async () => ({
-        key: `ltfx.n.b125493b796c6968bc95.v1`,
+        key: " agent:main:dashboard:new ",
         runStarted: true,
       })),
     };
 
     await expect(requestSessionCreate(client as never, { message: "hello" })).resolves.toEqual({
-      key: `ltfx.n.46e3f28896e8d72a442e.v1`,
+      key: "agent:main:dashboard:new",
       initialRun: { status: "started" },
     });
   });
 
   it("keeps an idle session distinct from a rejected initial run", async () => {
     const idleClient = {
-      request: vi.fn(async () => ({ key: `ltfx.n.ab08b0ffcc7a981c815c.v1`, runStarted: false })),
+      request: vi.fn(async () => ({ key: "agent:main:dashboard:idle", runStarted: false })),
     };
     const rejectedClient = {
       request: vi.fn(async () => ({
-        key: `ltfx.n.7c64d1775c8310c2f628.v1`,
+        key: "agent:main:dashboard:rejected",
         runStarted: false,
         runError: { code: "INVALID_REQUEST", message: "send blocked by session policy" },
       })),
     };
 
     await expect(requestSessionCreate(idleClient as never)).resolves.toEqual({
-      key: `ltfx.n.ab08b0ffcc7a981c815c.v1`,
+      key: "agent:main:dashboard:idle",
       initialRun: { status: "idle" },
     });
     await expect(
       requestSessionCreate(rejectedClient as never, { message: "hello" }),
     ).resolves.toEqual({
-      key: `ltfx.n.7c64d1775c8310c2f628.v1`,
+      key: "agent:main:dashboard:rejected",
       initialRun: { status: "rejected", error: "send blocked by session policy" },
     });
   });
@@ -54,13 +54,13 @@ describe("requestSessionCreate", () => {
   it("uses an actionable fallback for a malformed run error", async () => {
     const client = {
       request: vi.fn(async () => ({
-        key: `ltfx.n.7c64d1775c8310c2f628.v1`,
+        key: "agent:main:dashboard:rejected",
         runError: {},
       })),
     };
 
     await expect(requestSessionCreate(client as never, { message: "hello" })).resolves.toEqual({
-      key: `ltfx.n.7c64d1775c8310c2f628.v1`,
+      key: "agent:main:dashboard:rejected",
       initialRun: {
         status: "rejected",
         error: "The thread was created, but its first message could not be sent.",

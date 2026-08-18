@@ -39,7 +39,7 @@ describe("searchVisibleSessionTranscripts", () => {
       { length: 200 },
       (_, index) => ({ key: `agent:main:session-${index + 200}` }) as GatewaySessionRow,
     );
-    const lastSession = { key: `ltfx.n.1f315f78b264792eff61.v1` } as GatewaySessionRow;
+    const lastSession = { key: "agent:main:session-400" } as GatewaySessionRow;
     const listSessions = vi
       .fn()
       .mockResolvedValueOnce({

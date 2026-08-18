@@ -21,7 +21,7 @@ describe("Telegram directory contract", () => {
     const cfg = {
       channels: {
         telegram: {
-          botToken: `ltfx.n.669740ff15a2f3056773.v1`,
+          botToken: "telegram-test",
           allowFrom: ["123", "alice", "tg:@bob"],
           dms: { "456": {} },
           groups: { "-1001": {}, "*": {} },
@@ -47,7 +47,7 @@ describe("Telegram directory contract", () => {
             groups: { "-1001": {} },
             accounts: {
               work: {
-                botToken: `ltfx.n.8acd672e15296404be8c.v1`,
+                botToken: "tok-work",
                 allowFrom: ["bob"],
                 groups: { "-2002": {} },
               },
@@ -85,7 +85,7 @@ describe("Telegram directory contract", () => {
     const cfg = {
       channels: {
         telegram: {
-          botToken: `ltfx.n.669740ff15a2f3056773.v1`,
+          botToken: "telegram-test",
           groups: { "-1001": {}, "-1002": {}, "-2001": {} },
         },
       },

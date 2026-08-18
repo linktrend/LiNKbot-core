@@ -497,7 +497,7 @@ describe("applyPluginAutoEnable core", () => {
             firecrawl: {
               config: {
                 webFetch: {
-                  apiKey: `ltfx.n.7e2df43f2f552e00bb5d.v1`,
+                  apiKey: "firecrawl-key",
                 },
               },
             },
@@ -1206,7 +1206,7 @@ describe("applyPluginAutoEnable core", () => {
       { id: "cache-channel-plugin", channels: ["cache-channel"] },
     ]);
     const configuredEnv = makeIsolatedEnv({
-      CACHE_CHANNEL_TOKEN: `ltfx.n.20158224750041d653cd.v1`,
+      CACHE_CHANNEL_TOKEN: "configured",
     });
 
     const first = applyPluginAutoEnable({

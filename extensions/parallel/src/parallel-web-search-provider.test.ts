@@ -143,7 +143,7 @@ describe("parallel web search provider", () => {
   });
 
   it("prefers scoped configured api keys over environment fallbacks", () => {
-    expect(testing.resolveParallelApiKey({ apiKey: `ltfx.n.b7fe0467291cf6b263be.v1` })).toBe("par-secret");
+    expect(testing.resolveParallelApiKey({ apiKey: "par-secret" })).toBe("par-secret");
   });
 
   it("resolves Parallel search base URL overrides", () => {
@@ -374,7 +374,7 @@ describe("parallel web search provider", () => {
     const provider = createParallelWebSearchProvider();
     const tool = provider.createTool({
       config: {},
-      searchConfig: { parallel: { apiKey: `ltfx.n.b7fe0467291cf6b263be.v1` } },
+      searchConfig: { parallel: { apiKey: "par-secret" } },
     });
     if (!tool) {
       throw new Error("Expected tool definition");
@@ -392,7 +392,7 @@ describe("parallel web search provider", () => {
     const provider = createParallelWebSearchProvider();
     const tool = provider.createTool({
       config: {},
-      searchConfig: { parallel: { apiKey: `ltfx.n.b7fe0467291cf6b263be.v1` } },
+      searchConfig: { parallel: { apiKey: "par-secret" } },
     });
     if (!tool) {
       throw new Error("Expected tool definition");
@@ -423,7 +423,7 @@ describe("parallel web search provider", () => {
     const provider = createParallelWebSearchProvider();
     const tool = provider.createTool({
       config: {},
-      searchConfig: { parallel: { apiKey: `ltfx.n.b7fe0467291cf6b263be.v1` } },
+      searchConfig: { parallel: { apiKey: "par-secret" } },
     });
     if (!tool) {
       throw new Error("Expected tool definition");
@@ -444,7 +444,7 @@ describe("parallel web search provider", () => {
     const provider = createParallelWebSearchProvider();
     const tool = provider.createTool({
       config: {},
-      searchConfig: { parallel: { apiKey: `ltfx.n.b7fe0467291cf6b263be.v1` } },
+      searchConfig: { parallel: { apiKey: "par-secret" } },
     });
     if (!tool) {
       throw new Error("Expected tool definition");
@@ -472,7 +472,7 @@ describe("parallel web search provider", () => {
     const provider = createParallelWebSearchProvider();
     const tool = provider.createTool({
       config: {},
-      searchConfig: { parallel: { apiKey: `ltfx.n.b7fe0467291cf6b263be.v1` } },
+      searchConfig: { parallel: { apiKey: "par-secret" } },
     });
     if (!tool) {
       throw new Error("Expected tool definition");
@@ -504,7 +504,7 @@ describe("parallel web search provider", () => {
     const tool = provider.createTool({
       config: {},
       searchConfig: {
-        parallel: { apiKey: `ltfx.n.b7fe0467291cf6b263be.v1` },
+        parallel: { apiKey: "par-secret" },
         maxResults: 3,
         timeoutSeconds: 5,
       },
@@ -550,7 +550,7 @@ describe("parallel web search provider", () => {
     const provider = createParallelWebSearchProvider();
     const tool = provider.createTool({
       config: {},
-      searchConfig: { parallel: { apiKey: `ltfx.n.b7fe0467291cf6b263be.v1` } },
+      searchConfig: { parallel: { apiKey: "par-secret" } },
     });
     if (!tool) {
       throw new Error("Expected tool definition");
@@ -581,7 +581,7 @@ describe("parallel web search provider", () => {
     const provider = createParallelWebSearchProvider();
     const tool = provider.createTool({
       config: {},
-      searchConfig: { parallel: { apiKey: `ltfx.n.b7fe0467291cf6b263be.v1` } },
+      searchConfig: { parallel: { apiKey: "par-secret" } },
     });
     if (!tool) {
       throw new Error("Expected tool definition");
@@ -609,7 +609,7 @@ describe("parallel web search provider", () => {
     const provider = createParallelWebSearchProvider();
     const tool = provider.createTool({
       config: {},
-      searchConfig: { parallel: { apiKey: `ltfx.n.b7fe0467291cf6b263be.v1` } },
+      searchConfig: { parallel: { apiKey: "par-secret" } },
     });
     if (!tool) {
       throw new Error("Expected tool definition");
@@ -645,7 +645,7 @@ describe("parallel web search provider", () => {
     const provider = createParallelWebSearchProvider();
     const tool = provider.createTool({
       config: {},
-      searchConfig: { parallel: { apiKey: `ltfx.n.b7fe0467291cf6b263be.v1` } },
+      searchConfig: { parallel: { apiKey: "par-secret" } },
     });
     if (!tool) {
       throw new Error("Expected tool definition");
@@ -683,7 +683,7 @@ describe("parallel web search provider", () => {
     const provider = createParallelWebSearchProvider();
     const tool = provider.createTool({
       config: {},
-      searchConfig: { parallel: { apiKey: `ltfx.n.b7fe0467291cf6b263be.v1` } },
+      searchConfig: { parallel: { apiKey: "par-secret" } },
     });
     if (!tool) {
       throw new Error("Expected tool definition");
@@ -712,7 +712,7 @@ describe("parallel web search provider", () => {
     const provider = createParallelWebSearchProvider();
     const tool = provider.createTool({
       config: {},
-      searchConfig: { parallel: { apiKey: `ltfx.n.b7fe0467291cf6b263be.v1` } },
+      searchConfig: { parallel: { apiKey: "par-secret" } },
     });
     if (!tool) {
       throw new Error("Expected tool definition");
@@ -751,7 +751,7 @@ describe("parallel web search provider", () => {
     const provider = createParallelWebSearchProvider();
     const tool = provider.createTool({
       config: {},
-      searchConfig: { parallel: { apiKey: `ltfx.n.b7fe0467291cf6b263be.v1` } },
+      searchConfig: { parallel: { apiKey: "par-secret" } },
     });
     if (!tool) {
       throw new Error("Expected tool definition");

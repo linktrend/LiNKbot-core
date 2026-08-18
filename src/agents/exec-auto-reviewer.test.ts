@@ -25,7 +25,7 @@ async function reviewExecResponse(text: string) {
   const prepare = vi.fn(async () => ({
     selection: { provider: "openrouter", modelId: "reviewer", agentDir: "/agent" },
     model: { provider: "openrouter", id: "reviewer", api: "openai" as const },
-    auth: { apiKey: `ltfx.n.b68919aff001d8366249.v1`, mode: "env" as const },
+    auth: { apiKey: "redacted", mode: "env" as const },
   }));
   const complete = vi.fn(async () => ({
     stopReason: "stop" as const,

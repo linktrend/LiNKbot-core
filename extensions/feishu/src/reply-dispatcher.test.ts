@@ -162,7 +162,7 @@ describe("createFeishuReplyDispatcher streaming behavior", () => {
     resolveFeishuAccountMock.mockReturnValue({
       accountId: "main",
       appId: "app_id",
-      appSecret: `ltfx.n.5a0a9233e4503def486e.v1`,
+      appSecret: "app_secret",
       domain: "feishu",
       config: {
         renderMode: "auto",
@@ -195,7 +195,7 @@ describe("createFeishuReplyDispatcher streaming behavior", () => {
     resolveFeishuAccountMock.mockReturnValue({
       accountId: "main",
       appId: "app_id",
-      appSecret: `ltfx.n.5a0a9233e4503def486e.v1`,
+      appSecret: "app_secret",
       domain: "feishu",
       config: {
         renderMode: "auto",
@@ -208,7 +208,7 @@ describe("createFeishuReplyDispatcher streaming behavior", () => {
     resolveFeishuAccountMock.mockReturnValue({
       accountId: "main",
       appId: "app_id",
-      appSecret: `ltfx.n.5a0a9233e4503def486e.v1`,
+      appSecret: "app_secret",
       domain: "feishu",
       config: {
         renderMode: "auto",
@@ -350,7 +350,7 @@ describe("createFeishuReplyDispatcher streaming behavior", () => {
     resolveFeishuAccountMock.mockReturnValue({
       accountId: "main",
       appId: "app_id",
-      appSecret: `ltfx.n.5a0a9233e4503def486e.v1`,
+      appSecret: "app_secret",
       domain: "feishu",
       config: {
         renderMode: "auto",
@@ -625,7 +625,7 @@ describe("createFeishuReplyDispatcher streaming behavior", () => {
 
     const { options } = createDispatcherHarness({
       replyToMessageId: "om_msg",
-      mentionTargets: [{ openId: "ou_target", name: "Target User", key: `ltfx.n.3eb605b0a653477ad302.v1` }],
+      mentionTargets: [{ openId: "ou_target", name: "Target User", key: "@_user_1" }],
     });
     await options.deliver(
       { text: 'plain text <at user_id="ou_body">Body User</at>' },
@@ -635,7 +635,7 @@ describe("createFeishuReplyDispatcher streaming behavior", () => {
     expect(sendMessageFeishuMock).toHaveBeenCalledTimes(1);
     expectMockArgFields(sendMessageFeishuMock, "message send params", {
       text: 'plain text <at user_id="ou_body">Body User</at>',
-      mentions: [{ openId: "ou_target", name: "Target User", key: `ltfx.n.3eb605b0a653477ad302.v1` }],
+      mentions: [{ openId: "ou_target", name: "Target User", key: "@_user_1" }],
     });
   });
 
@@ -680,7 +680,7 @@ describe("createFeishuReplyDispatcher streaming behavior", () => {
     resolveFeishuAccountMock.mockReturnValue({
       accountId: "main",
       appId: "app_id",
-      appSecret: `ltfx.n.5a0a9233e4503def486e.v1`,
+      appSecret: "app_secret",
       domain: "feishu",
       config: {
         renderMode: "card",
@@ -725,7 +725,7 @@ describe("createFeishuReplyDispatcher streaming behavior", () => {
     resolveFeishuAccountMock.mockReturnValue({
       accountId: "main",
       appId: "app_id",
-      appSecret: `ltfx.n.5a0a9233e4503def486e.v1`,
+      appSecret: "app_secret",
       domain: "feishu",
       config: {
         renderMode: "auto",
@@ -752,7 +752,7 @@ describe("createFeishuReplyDispatcher streaming behavior", () => {
     runtime.channel.text.chunkMarkdownTextWithMode.mockImplementation((text: string) =>
       text === "First paragraph." ? ["First ", "paragraph."] : [text],
     );
-    const mentions = [{ openId: "ou_target", name: "Target User", key: `ltfx.n.3eb605b0a653477ad302.v1` }];
+    const mentions = [{ openId: "ou_target", name: "Target User", key: "@_user_1" }];
     const { options } = createDispatcherHarness({
       chatId: "oc_p2p_chat",
       sendTarget: "user:ou_sender",
@@ -800,7 +800,7 @@ describe("createFeishuReplyDispatcher streaming behavior", () => {
   it("does not prepend automatic mentions to streaming card closes", async () => {
     const overrides = {
       runtime: createRuntimeLogger(),
-      mentionTargets: [{ openId: "ou-target", name: "Target User", key: `ltfx.n.3eb605b0a653477ad302.v1` }],
+      mentionTargets: [{ openId: "ou-target", name: "Target User", key: "@_user_1" }],
     } as Partial<ReplyDispatcherArgs>;
     const { options } = createDispatcherHarness(overrides);
     await options.deliver({ text: "```md\nanswer\n```" }, { kind: "final" });
@@ -816,7 +816,7 @@ describe("createFeishuReplyDispatcher streaming behavior", () => {
     resolveFeishuAccountMock.mockReturnValue({
       accountId: "main",
       appId: "app_id",
-      appSecret: `ltfx.n.5a0a9233e4503def486e.v1`,
+      appSecret: "app_secret",
       domain: "feishu",
       config: {
         renderMode: "auto",
@@ -876,7 +876,7 @@ describe("createFeishuReplyDispatcher streaming behavior", () => {
     resolveFeishuAccountMock.mockReturnValue({
       accountId: "main",
       appId: "app_id",
-      appSecret: `ltfx.n.5a0a9233e4503def486e.v1`,
+      appSecret: "app_secret",
       domain: "feishu",
       config: {
         renderMode: "card",
@@ -1020,7 +1020,7 @@ describe("createFeishuReplyDispatcher streaming behavior", () => {
     resolveFeishuAccountMock.mockReturnValue({
       accountId: "main",
       appId: "app_id",
-      appSecret: `ltfx.n.5a0a9233e4503def486e.v1`,
+      appSecret: "app_secret",
       domain: "feishu",
       config: {
         renderMode: "card",
@@ -1103,7 +1103,7 @@ describe("createFeishuReplyDispatcher streaming behavior", () => {
     resolveFeishuAccountMock.mockReturnValue({
       accountId: "main",
       appId: "app_id",
-      appSecret: `ltfx.n.5a0a9233e4503def486e.v1`,
+      appSecret: "app_secret",
       domain: "feishu",
       config: {
         renderMode: "card",
@@ -1205,7 +1205,7 @@ describe("createFeishuReplyDispatcher streaming behavior", () => {
     resolveFeishuAccountMock.mockReturnValue({
       accountId: "main",
       appId: "app_id",
-      appSecret: `ltfx.n.5a0a9233e4503def486e.v1`,
+      appSecret: "app_secret",
       domain: "feishu",
       config: {
         renderMode: "card",
@@ -1232,7 +1232,7 @@ describe("createFeishuReplyDispatcher streaming behavior", () => {
     resolveFeishuAccountMock.mockReturnValue({
       accountId: "main",
       appId: "app_id",
-      appSecret: `ltfx.n.5a0a9233e4503def486e.v1`,
+      appSecret: "app_secret",
       domain: "feishu",
       config: {
         renderMode: "card",
@@ -1259,7 +1259,7 @@ describe("createFeishuReplyDispatcher streaming behavior", () => {
     resolveFeishuAccountMock.mockReturnValue({
       accountId: "main",
       appId: "app_id",
-      appSecret: `ltfx.n.5a0a9233e4503def486e.v1`,
+      appSecret: "app_secret",
       domain: "feishu",
       config: {
         renderMode: "card",
@@ -1291,7 +1291,7 @@ describe("createFeishuReplyDispatcher streaming behavior", () => {
     resolveFeishuAccountMock.mockReturnValue({
       accountId: "main",
       appId: "app_id",
-      appSecret: `ltfx.n.5a0a9233e4503def486e.v1`,
+      appSecret: "app_secret",
       domain: "feishu",
       config: {
         renderMode: "card",
@@ -1662,7 +1662,7 @@ describe("createFeishuReplyDispatcher streaming behavior", () => {
     resolveFeishuAccountMock.mockReturnValue({
       accountId: "main",
       appId: "app_id",
-      appSecret: `ltfx.n.5a0a9233e4503def486e.v1`,
+      appSecret: "app_secret",
       domain: "feishu",
       config: {
         renderMode: "card",
@@ -1744,7 +1744,7 @@ describe("createFeishuReplyDispatcher streaming behavior", () => {
     resolveFeishuAccountMock.mockReturnValue({
       accountId: "main",
       appId: "app_id",
-      appSecret: `ltfx.n.5a0a9233e4503def486e.v1`,
+      appSecret: "app_secret",
       domain: "feishu",
       config: {
         renderMode: "auto",
@@ -1860,7 +1860,7 @@ describe("createFeishuReplyDispatcher streaming behavior", () => {
     resolveFeishuAccountMock.mockReturnValue({
       accountId: "main",
       appId: "app_id",
-      appSecret: `ltfx.n.5a0a9233e4503def486e.v1`,
+      appSecret: "app_secret",
       domain: "feishu",
       config: {
         renderMode: "card",
@@ -1882,7 +1882,7 @@ describe("createFeishuReplyDispatcher streaming behavior", () => {
     resolveFeishuAccountMock.mockReturnValue({
       accountId: "main",
       appId: "app_id",
-      appSecret: `ltfx.n.5a0a9233e4503def486e.v1`,
+      appSecret: "app_secret",
       domain: "feishu",
       config: {
         renderMode: "card",
@@ -1905,7 +1905,7 @@ describe("createFeishuReplyDispatcher streaming behavior", () => {
     resolveFeishuAccountMock.mockReturnValue({
       accountId: "main",
       appId: "app_id",
-      appSecret: `ltfx.n.5a0a9233e4503def486e.v1`,
+      appSecret: "app_secret",
       domain: "feishu",
       config: {
         renderMode: "card",
@@ -1932,7 +1932,7 @@ describe("createFeishuReplyDispatcher streaming behavior", () => {
     resolveFeishuAccountMock.mockReturnValue({
       accountId: "main",
       appId: "app_id",
-      appSecret: `ltfx.n.5a0a9233e4503def486e.v1`,
+      appSecret: "app_secret",
       domain: "feishu",
       config: {
         renderMode: "card",
@@ -1960,7 +1960,7 @@ describe("createFeishuReplyDispatcher streaming behavior", () => {
     resolveFeishuAccountMock.mockReturnValue({
       accountId: "main",
       appId: "app_id",
-      appSecret: `ltfx.n.5a0a9233e4503def486e.v1`,
+      appSecret: "app_secret",
       domain: "feishu",
       config: {
         renderMode: "card",
@@ -1984,7 +1984,7 @@ describe("createFeishuReplyDispatcher streaming behavior", () => {
     resolveFeishuAccountMock.mockReturnValue({
       accountId: "main",
       appId: "app_id",
-      appSecret: `ltfx.n.5a0a9233e4503def486e.v1`,
+      appSecret: "app_secret",
       domain: "feishu",
       config: {
         renderMode: "card",
@@ -2025,7 +2025,7 @@ describe("createFeishuReplyDispatcher streaming behavior", () => {
     resolveFeishuAccountMock.mockReturnValue({
       accountId: "main",
       appId: "app_id",
-      appSecret: `ltfx.n.5a0a9233e4503def486e.v1`,
+      appSecret: "app_secret",
       domain: "feishu",
       config: {
         renderMode: "card",
@@ -2220,7 +2220,7 @@ describe("createFeishuReplyDispatcher streaming behavior", () => {
     resolveFeishuAccountMock.mockReturnValue({
       accountId: "main",
       appId: "app_id",
-      appSecret: `ltfx.n.5a0a9233e4503def486e.v1`,
+      appSecret: "app_secret",
       domain: "feishu",
       config: {
         renderMode: "card",

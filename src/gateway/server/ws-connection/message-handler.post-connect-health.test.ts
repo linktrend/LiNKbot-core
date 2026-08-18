@@ -684,7 +684,7 @@ describe("attachGatewayWsMessageHandler post-connect health refresh", () => {
       remoteAddr: "203.0.113.50",
       resolvedAuth: {
         mode: "token",
-        token: `ltfx.n.f15ae5b5899f8327f527.v1`,
+        token: "gateway-token",
         allowTailscale: false,
       },
     });
@@ -700,7 +700,7 @@ describe("attachGatewayWsMessageHandler post-connect health refresh", () => {
       },
       role: "operator",
       caps: [],
-      auth: { token: `ltfx.n.f15ae5b5899f8327f527.v1` },
+      auth: { token: "gateway-token" },
     });
 
     await waitForFast(() => {
@@ -733,7 +733,7 @@ describe("attachGatewayWsMessageHandler post-connect health refresh", () => {
       remoteAddr: "203.0.113.50",
       resolvedAuth: {
         mode: "token",
-        token: `ltfx.n.f15ae5b5899f8327f527.v1`,
+        token: "gateway-token",
         allowTailscale: false,
       },
       close,
@@ -753,7 +753,7 @@ describe("attachGatewayWsMessageHandler post-connect health refresh", () => {
         role: "operator",
         scopes: ["operator.admin"],
         caps: [],
-        auth: { token: `ltfx.n.5645a758e6a8f12b6a27.v1` },
+        auth: { token: "wrong-token" },
       });
 
       await waitForFast(() => {
@@ -814,7 +814,7 @@ describe("attachGatewayWsMessageHandler post-connect health refresh", () => {
       remoteAddr: "203.0.113.51",
       resolvedAuth: {
         mode: "token",
-        token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+        token: "test-token",
         allowTailscale: false,
       },
       rateLimiter,
@@ -833,7 +833,7 @@ describe("attachGatewayWsMessageHandler post-connect health refresh", () => {
       role: "operator",
       scopes: [],
       caps: [],
-      auth: { token: `ltfx.n.4c5dc9b7708905f77f5e.v1` },
+      auth: { token: "test-token" },
     });
 
     await waitForFast(() => {
@@ -861,7 +861,7 @@ describe("attachGatewayWsMessageHandler post-connect health refresh", () => {
       connectNonce: "nonce-phases",
       resolvedAuth: {
         mode: "token",
-        token: `ltfx.n.f15ae5b5899f8327f527.v1`,
+        token: "gateway-token",
         allowTailscale: false,
       },
     });
@@ -879,7 +879,7 @@ describe("attachGatewayWsMessageHandler post-connect health refresh", () => {
       scopes: [],
       caps: [],
       auth: {
-        token: `ltfx.n.f15ae5b5899f8327f527.v1`,
+        token: "gateway-token",
       },
     });
 
@@ -978,7 +978,7 @@ describe("attachGatewayWsMessageHandler post-connect health refresh", () => {
       remoteAddr: "203.0.113.50",
       resolvedAuth: {
         mode: "token",
-        token: `ltfx.n.f15ae5b5899f8327f527.v1`,
+        token: "gateway-token",
         allowTailscale: false,
       },
       refreshHealthSnapshot,
@@ -997,7 +997,7 @@ describe("attachGatewayWsMessageHandler post-connect health refresh", () => {
       scopes: ["operator.approvals"],
       caps: [],
       auth: {
-        token: `ltfx.n.f15ae5b5899f8327f527.v1`,
+        token: "gateway-token",
         approvalRuntimeToken: getOperatorApprovalRuntimeToken(),
       },
     });
@@ -1067,7 +1067,7 @@ describe("attachGatewayWsMessageHandler post-connect health refresh", () => {
       remoteAddr: "203.0.113.50",
       resolvedAuth: {
         mode: "token",
-        token: `ltfx.n.f15ae5b5899f8327f527.v1`,
+        token: "gateway-token",
         allowTailscale: false,
       },
       refreshHealthSnapshot,
@@ -1087,7 +1087,7 @@ describe("attachGatewayWsMessageHandler post-connect health refresh", () => {
       scopes: ["operator.write"],
       caps: [],
       auth: {
-        token: `ltfx.n.f15ae5b5899f8327f527.v1`,
+        token: "gateway-token",
         agentRuntimeIdentityToken: await mintAgentRuntimeIdentityToken({
           agentId: "ops",
           sessionKey: "agent:ops:telegram:direct:alice",
@@ -1129,7 +1129,7 @@ describe("attachGatewayWsMessageHandler post-connect health refresh", () => {
       scopes: ["operator.write"],
       caps: [],
       auth: {
-        agentRuntimeIdentityToken: `ltfx.n.3d7e51aafca478643570.v1`,
+        agentRuntimeIdentityToken: "not-a-valid-token",
       },
     });
 

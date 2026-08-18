@@ -12,7 +12,7 @@
  * @param apiKey - Either a traditional API key string or OAuth JSON
  * @returns Headers object with appropriate authentication
  */
-export function parseGeminiAuth(apiKey: (string)): { headers: Record<string, string> } {
+export function parseGeminiAuth(apiKey: string): { headers: Record<string, string> } {
   // Try parsing as OAuth JSON format
   if (apiKey.startsWith("{")) {
     try {

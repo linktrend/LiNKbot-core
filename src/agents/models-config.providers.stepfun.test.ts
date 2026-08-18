@@ -103,7 +103,7 @@ function resolveDefaultBaseUrl(surface: StepFunSurface, region: StepFunRegion): 
 
 describe("StepFun provider catalog", () => {
   it("includes standard and Step Plan providers when STEPFUN_API_KEY is configured", () => {
-    const env = { STEPFUN_API_KEY: `ltfx.n.2bb50b614b87b7b0a5cc.v1` } as NodeJS.ProcessEnv;
+    const env = { STEPFUN_API_KEY: "test-stepfun-key" } as NodeJS.ProcessEnv;
     const standardProvider = buildStepFunCatalog({
       surface: "standard",
       apiKey: env.STEPFUN_API_KEY,
@@ -136,7 +136,7 @@ describe("StepFun provider catalog", () => {
       credential: {
         type: "api_key",
         provider: "stepfun",
-        key: `ltfx.n.4ff93376c1b7f0fa99ef.v1`, // pragma: allowlist secret
+        key: "sk-stepfun-default", // pragma: allowlist secret
       },
       agentDir,
     });
@@ -145,7 +145,7 @@ describe("StepFun provider catalog", () => {
       credential: {
         type: "api_key",
         provider: "stepfun-plan",
-        key: `ltfx.n.4ff93376c1b7f0fa99ef.v1`, // pragma: allowlist secret
+        key: "sk-stepfun-default", // pragma: allowlist secret
       },
       agentDir,
     });
@@ -153,11 +153,11 @@ describe("StepFun provider catalog", () => {
     const providers = {
       stepfun: buildStepFunCatalog({
         surface: "standard",
-        apiKey: `ltfx.n.4ff93376c1b7f0fa99ef.v1`,
+        apiKey: "sk-stepfun-default",
       }),
       "stepfun-plan": buildStepFunCatalog({
         surface: "plan",
-        apiKey: `ltfx.n.4ff93376c1b7f0fa99ef.v1`,
+        apiKey: "sk-stepfun-default",
       }),
     };
 
@@ -174,21 +174,21 @@ describe("StepFun provider catalog", () => {
     const providers = {
       stepfun: buildStepFunCatalog({
         surface: "standard",
-        apiKey: `ltfx.n.2bb50b614b87b7b0a5cc.v1`,
+        apiKey: "test-stepfun-key",
         explicitBaseUrl: undefined,
         env: {} as NodeJS.ProcessEnv,
         profileId: undefined,
       }),
       "stepfun-plan": buildStepFunCatalog({
         surface: "plan",
-        apiKey: `ltfx.n.2bb50b614b87b7b0a5cc.v1`,
+        apiKey: "test-stepfun-key",
         explicitBaseUrl: explicitPlanBaseUrl,
       }),
     };
     const pairedStandard = buildStepFunCatalog({
       // Paired surfaces should converge on the same regional host family.
       surface: "standard",
-      apiKey: `ltfx.n.2bb50b614b87b7b0a5cc.v1`,
+      apiKey: "test-stepfun-key",
       explicitBaseUrl: resolveDefaultBaseUrl(
         "standard",
         inferRegionFromBaseUrl(explicitPlanBaseUrl) ?? "intl",
@@ -207,7 +207,7 @@ describe("StepFun provider catalog", () => {
       credential: {
         type: "api_key",
         provider: "stepfun",
-        key: `ltfx.n.065de9e776a0880d0b0f.v1`, // pragma: allowlist secret
+        key: "sk-stepfun-cn", // pragma: allowlist secret
       },
       agentDir,
     });
@@ -216,7 +216,7 @@ describe("StepFun provider catalog", () => {
       credential: {
         type: "api_key",
         provider: "stepfun-plan",
-        key: `ltfx.n.065de9e776a0880d0b0f.v1`, // pragma: allowlist secret
+        key: "sk-stepfun-cn", // pragma: allowlist secret
       },
       agentDir,
     });
@@ -224,12 +224,12 @@ describe("StepFun provider catalog", () => {
     const providers = {
       stepfun: buildStepFunCatalog({
         surface: "standard",
-        apiKey: `ltfx.n.065de9e776a0880d0b0f.v1`,
+        apiKey: "sk-stepfun-cn",
         profileId: "stepfun:cn",
       }),
       "stepfun-plan": buildStepFunCatalog({
         surface: "plan",
-        apiKey: `ltfx.n.065de9e776a0880d0b0f.v1`,
+        apiKey: "sk-stepfun-cn",
         profileId: "stepfun-plan:cn",
       }),
     };

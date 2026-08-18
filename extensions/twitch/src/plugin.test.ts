@@ -48,7 +48,7 @@ describe("twitchPlugin.status.buildAccountSnapshot", () => {
     const secondary = {
       channel: "secondary-channel",
       username: "secondary",
-      accessToken: `ltfx.n.43d55d735df023cc53be.v1`,
+      accessToken: "oauth:secondary-token",
       clientId: "secondary-client",
       enabled: true,
     };
@@ -60,7 +60,7 @@ describe("twitchPlugin.status.buildAccountSnapshot", () => {
             default: {
               channel: "default-channel",
               username: "default",
-              accessToken: `ltfx.n.2976d1d3b72d737e7a39.v1`,
+              accessToken: "oauth:default-token",
               clientId: "default-client",
               enabled: true,
             },
@@ -89,14 +89,14 @@ describe("twitchPlugin.config", () => {
             default: {
               channel: "default-channel",
               username: "default",
-              accessToken: `ltfx.n.2976d1d3b72d737e7a39.v1`,
+              accessToken: "oauth:default-token",
               clientId: "default-client",
               enabled: true,
             },
             secondary: {
               channel: "secondary-channel",
               username: "secondary",
-              accessToken: `ltfx.n.43d55d735df023cc53be.v1`,
+              accessToken: "oauth:secondary-token",
               clientId: "secondary-client",
               enabled: true,
             },

@@ -40,7 +40,7 @@ function readNestedTurnId(record: JsonObject): string | undefined {
   return isJsonObject(turn) ? readString(turn, "id") : undefined;
 }
 
-function readString(record: JsonObject, key: (string)): string | undefined {
+function readString(record: JsonObject, key: string): string | undefined {
   const value = record[key];
   return typeof value === "string" && value.trim() ? value.trim() : undefined;
 }

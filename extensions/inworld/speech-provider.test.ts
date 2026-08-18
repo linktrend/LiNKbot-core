@@ -46,7 +46,7 @@ describe("buildInworldSpeechProvider", () => {
     const provider = buildInworldSpeechProvider();
     expect(
       provider.isConfigured({
-        providerConfig: { apiKey: `ltfx.n.27c99de52a899b8d6462.v1` },
+        providerConfig: { apiKey: "config-key" },
         timeoutMs: 30_000,
       }),
     ).toBe(true);
@@ -121,12 +121,12 @@ describe("buildInworldSpeechProvider", () => {
     const provider = buildInworldSpeechProvider();
 
     await provider.listVoices?.({
-      providerConfig: { apiKey: `ltfx.n.62af8704764faf8ea82f.v1` },
+      providerConfig: { apiKey: "test-key" },
       timeoutMs: 30_000,
     });
 
     expect(listInworldVoicesMock).toHaveBeenCalledWith(
-      expect.objectContaining({ apiKey: `ltfx.n.62af8704764faf8ea82f.v1`, timeoutMs: 30_000 }),
+      expect.objectContaining({ apiKey: "test-key", timeoutMs: 30_000 }),
     );
   });
 
@@ -138,7 +138,7 @@ describe("buildInworldSpeechProvider", () => {
       rawConfig: {
         providers: {
           inworld: {
-            apiKey: `ltfx.n.6cd223bd940286bdfb20.v1`,
+            apiKey: "basic-key",
             baseUrl: "https://custom.inworld.example.com/",
             voiceId: "Ashley",
             modelId: "inworld-tts-1.5-mini",
@@ -149,7 +149,7 @@ describe("buildInworldSpeechProvider", () => {
     });
 
     expect(resolved).toEqual({
-      apiKey: `ltfx.n.6cd223bd940286bdfb20.v1`,
+      apiKey: "basic-key",
       baseUrl: "https://custom.inworld.example.com",
       voiceId: "Ashley",
       modelId: "inworld-tts-1.5-mini",
@@ -190,7 +190,7 @@ describe("buildInworldSpeechProvider", () => {
       handled: true,
       overrides: { modelId: "inworld-tts-1.5-mini" },
     });
-    expect(parseDirectiveToken({ key: `ltfx.n.b314ae60cb741e69f1cc.v1`, value: "0.7", policy })).toEqual({
+    expect(parseDirectiveToken({ key: "temperature", value: "0.7", policy })).toEqual({
       handled: true,
       overrides: { temperature: 0.7 },
     });
@@ -200,7 +200,7 @@ describe("buildInworldSpeechProvider", () => {
     const provider = buildInworldSpeechProvider();
     expect(
       provider.parseDirectiveToken?.({
-        key: `ltfx.n.b314ae60cb741e69f1cc.v1`,
+        key: "temperature",
         value: "3",
         policy: {
           enabled: true,
@@ -223,7 +223,7 @@ describe("buildInworldSpeechProvider", () => {
     const provider = buildInworldSpeechProvider();
     expect(
       provider.parseDirectiveToken?.({
-        key: `ltfx.n.b314ae60cb741e69f1cc.v1`,
+        key: "temperature",
         value: "0x1",
         policy: {
           enabled: true,

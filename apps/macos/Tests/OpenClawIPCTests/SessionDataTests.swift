@@ -5,11 +5,11 @@ import Testing
 struct SessionDataTests {
     @Test func `session kind from key detects common kinds`() {
         #expect(SessionKind.from(key: "global") == .global)
-        #expect(SessionKind.from(key: "${ltfx.n.9e7cf9f3ff2d6cbab167.v1}") == .cron)
-        #expect(SessionKind.from(key: "${ltfx.n.11a2fdbee3096ea65bf9.v1}") == .cron)
-        #expect(SessionKind.from(key: "${ltfx.n.cb6cf2a7c8f6513508fd.v1}") == .group)
+        #expect(SessionKind.from(key: "cron:daily") == .cron)
+        #expect(SessionKind.from(key: "agent:main:cron:daily") == .cron)
+        #expect(SessionKind.from(key: "discord:group:engineering") == .group)
         #expect(SessionKind.from(key: "unknown") == .unknown)
-        #expect(SessionKind.from(key: "${ltfx.n.b4c9a289323b21a01c3e.v1}") == .direct)
+        #expect(SessionKind.from(key: "user@example.com") == .direct)
     }
 
     @Test func `session token stats format K tokens rounds as expected`() {
@@ -26,7 +26,7 @@ struct SessionDataTests {
     @Test func `session row flag labels include non default flags`() {
         let row = SessionRow(
             id: "x",
-            key: "${ltfx.n.b4c9a289323b21a01c3e.v1}",
+            key: "user@example.com",
             kind: .direct,
             displayName: nil,
             provider: nil,

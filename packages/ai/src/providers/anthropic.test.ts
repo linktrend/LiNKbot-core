@@ -104,7 +104,7 @@ describe("Anthropic provider", () => {
     } satisfies Context;
 
     streamAnthropic(model, context, {
-      apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`,
+      apiKey: "sk-ant-provider",
     });
 
     await vi.waitFor(() => expect(anthropicMockState.configs).toHaveLength(1));
@@ -115,7 +115,7 @@ describe("Anthropic provider", () => {
       fetch?: unknown;
     };
 
-    expect(config.apiKey).toBe("ltfx.n.b952ad73a7d9b69133f3.v1");
+    expect(config.apiKey).toBe("sk-ant-provider");
     expect(config.authToken).toBeNull();
     expect(config.defaultHeaders?.["x-api-key"]).toBeUndefined();
     expect(config.defaultHeaders?.["cf-aig-authorization"]).toBe("Bearer gateway-token");
@@ -128,8 +128,8 @@ describe("Anthropic provider", () => {
       baseUrl: "https://example.services.ai.azure.com/anthropic",
       authHeader: true,
       headers: {
-        "api-key": `ltfx.n.8705995e5bb397e6fd74.v1`,
-        "x-api-key": `ltfx.n.f3b588853eee79e56481.v1`,
+        "api-key": "stale-foundry-key",
+        "x-api-key": "stale-resource-key",
       },
     });
     const context = {
@@ -137,7 +137,7 @@ describe("Anthropic provider", () => {
     } satisfies Context;
 
     streamAnthropic(model, context, {
-      apiKey: `ltfx.n.fc08fbc9840da76b1e3e.v1`,
+      apiKey: "entra-access-token",
     });
 
     await vi.waitFor(() => expect(anthropicMockState.configs).toHaveLength(1));
@@ -187,14 +187,14 @@ describe("Anthropic provider", () => {
     const model = makeAnthropicModel({
       provider: "microsoft-foundry",
       baseUrl: "https://example.services.ai.azure.com/anthropic",
-      headers: { "api-key": `ltfx.n.5ef24d2ecae406f379b5.v1` },
+      headers: { "api-key": "foundry-resource-key" },
     });
     const context = {
       messages: [{ role: "user", content: "hello", timestamp: 1 }],
     } satisfies Context;
 
     streamAnthropic(model, context, {
-      apiKey: `ltfx.n.5ef24d2ecae406f379b5.v1`,
+      apiKey: "foundry-resource-key",
     });
 
     await vi.waitFor(() => expect(anthropicMockState.configs).toHaveLength(1));
@@ -215,7 +215,7 @@ describe("Anthropic provider", () => {
         messages: [{ role: "user", content: "hello", timestamp: 1 }],
       },
       {
-        apiKey: `ltfx.n.3037bae1f29e6ee7a368.v1`,
+        apiKey: "sk-ant-oat01-test-token",
         onPayload: (payload) => {
           capturedPayload = payload;
         },
@@ -305,7 +305,7 @@ describe("Anthropic provider", () => {
     const result = await streamAnthropic(
       makeAnthropicModel({ id: "claude-fable-5", name: "Claude Fable 5" }),
       { messages: [{ role: "user", content: "hello", timestamp: 0 }] },
-      { apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`, client: client as never },
+      { apiKey: "sk-ant-provider", client: client as never },
     ).result();
 
     expect(result.usage).toMatchObject({
@@ -543,7 +543,7 @@ describe("Anthropic provider", () => {
     const result = await streamAnthropic(
       makeAnthropicModel({ id: "claude-fable-5", name: "Claude Fable 5" }),
       { messages: [{ role: "user", content: "hello", timestamp: 0 }] },
-      { apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`, client: client as never },
+      { apiKey: "sk-ant-provider", client: client as never },
     ).result();
 
     expect(result.usage.totalTokens).toBe(927_907);
@@ -590,7 +590,7 @@ describe("Anthropic provider", () => {
     const result = await streamAnthropic(
       makeAnthropicModel({ id: "claude-fable-5", name: "Claude Fable 5" }),
       { messages: [{ role: "user", content: "hello", timestamp: 0 }] },
-      { apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`, client: client as never },
+      { apiKey: "sk-ant-provider", client: client as never },
     ).result();
 
     expect(result.usage.contextUsage).toEqual({
@@ -635,7 +635,7 @@ describe("Anthropic provider", () => {
     const result = await streamAnthropic(
       makeAnthropicModel({ id: "claude-fable-5", name: "Claude Fable 5" }),
       { messages: [{ role: "user", content: "hello", timestamp: 0 }] },
-      { apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`, client: client as never },
+      { apiKey: "sk-ant-provider", client: client as never },
     ).result();
 
     expect(result.usage.contextUsage).toEqual({ state: "unavailable" });
@@ -681,7 +681,7 @@ describe("Anthropic provider", () => {
     const result = await streamAnthropic(
       makeAnthropicModel(),
       { messages: [{ role: "user", content: "hello", timestamp: 0 }] },
-      { apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`, client: client as never },
+      { apiKey: "sk-ant-provider", client: client as never },
     ).result();
 
     expect(result.usage.contextUsage).toEqual({
@@ -730,7 +730,7 @@ describe("Anthropic provider", () => {
     const result = await streamAnthropic(
       makeAnthropicModel(),
       { messages: [{ role: "user", content: "hello", timestamp: 0 }] },
-      { apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`, client: client as never },
+      { apiKey: "sk-ant-provider", client: client as never },
     ).result();
 
     expect(result.usage).toMatchObject({
@@ -818,7 +818,7 @@ describe("Anthropic provider", () => {
         ],
       },
       {
-        apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`,
+        apiKey: "sk-ant-provider",
         client: client as never,
         onPayload: (payload) => {
           capturedPayload = payload;
@@ -904,7 +904,7 @@ describe("Anthropic provider", () => {
           ],
         },
         {
-          apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`,
+          apiKey: "sk-ant-provider",
           thinkingEnabled,
           onPayload: (payload) => {
             capturedPayload = payload;
@@ -968,7 +968,7 @@ describe("Anthropic provider", () => {
         ],
       },
       {
-        apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`,
+        apiKey: "sk-ant-provider",
         thinkingEnabled: false,
         onPayload: (payload) => {
           capturedPayload = payload;
@@ -1028,7 +1028,7 @@ describe("Anthropic provider", () => {
         ],
       },
       {
-        apiKey: `ltfx.n.4c806362b613f7496abf.v1`,
+        apiKey: "test-api-key",
         maxTokens: model.maxTokens,
         reasoning: "off",
         onPayload: (payload) => {
@@ -1083,7 +1083,7 @@ describe("Anthropic provider", () => {
         ],
       },
       {
-        apiKey: `ltfx.n.4c806362b613f7496abf.v1`,
+        apiKey: "test-api-key",
         maxTokens: 5_000,
         reasoning: "off",
         onPayload: (payload) => {
@@ -1145,7 +1145,7 @@ describe("Anthropic provider", () => {
         ],
       },
       {
-        apiKey: `ltfx.n.4c806362b613f7496abf.v1`,
+        apiKey: "test-api-key",
         maxTokens: 32,
         reasoning: "low",
         onPayload: (payload) => {
@@ -1206,7 +1206,7 @@ describe("Anthropic provider", () => {
         ],
       } as unknown as Context,
       {
-        apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`,
+        apiKey: "sk-ant-provider",
         onPayload: (payload) => {
           capturedPayload = payload;
           throw new Error("stop before network");
@@ -1331,7 +1331,7 @@ describe("Anthropic provider", () => {
         ],
       },
       {
-        apiKey: `ltfx.n.be36160a0bfcf3f715db.v1`,
+        apiKey: "copilot-token",
         onPayload: (payload) => {
           capturedPayload = payload;
           throw new Error("stop before network");
@@ -1353,10 +1353,10 @@ describe("Anthropic provider", () => {
   });
 
   it.each([
-    ["claude-fable-5", "Claude Fable 5", "anthropic", "ltfx.n.b952ad73a7d9b69133f3.v1"],
-    ["claude-mythos-5", "Claude Mythos 5", "anthropic", "ltfx.n.b952ad73a7d9b69133f3.v1"],
+    ["claude-fable-5", "Claude Fable 5", "anthropic", "sk-ant-provider"],
+    ["claude-mythos-5", "Claude Mythos 5", "anthropic", "sk-ant-provider"],
     ["claude-mythos-5", "Claude Mythos 5", "anthropic-vertex", "vertex-token"],
-    ["claude-sonnet-5", "Claude Sonnet 5", "anthropic", "ltfx.n.b952ad73a7d9b69133f3.v1"],
+    ["claude-sonnet-5", "Claude Sonnet 5", "anthropic", "sk-ant-provider"],
     ["claude-sonnet-5", "Claude Sonnet 5", "anthropic-vertex", "vertex-token"],
   ])("surfaces structured %s streaming refusals for %s", async (id, name, provider, apiKey) => {
     const client = {
@@ -1439,7 +1439,7 @@ describe("Anthropic provider", () => {
       makeAnthropicModel({ id: "claude-fable-5", name: "Claude Fable 5" }),
       { messages: [{ role: "user", content: "hello", timestamp: 0 }] },
       {
-        apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`,
+        apiKey: "sk-ant-provider",
         onPayload: (payload) => {
           capturedPayload = payload;
           throw new Error("stop before network");
@@ -1459,21 +1459,21 @@ describe("Anthropic provider", () => {
   });
 
   it.each([
-    { label: "OAuth tokens", overrides: {}, apiKey: `ltfx.n.d5cc95a1cf90a874f835.v1` },
+    { label: "OAuth tokens", overrides: {}, apiKey: "sk-ant-oat01-token" },
     {
       label: "custom proxy endpoints",
       overrides: { baseUrl: "https://proxy.example.com/v1" },
-      apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`,
+      apiKey: "sk-ant-provider",
     },
     {
       label: "Anthropic Vertex models",
       overrides: { provider: "anthropic-vertex" },
-      apiKey: `ltfx.n.12be5f8eb77758aa1e59.v1`,
+      apiKey: "vertex-token",
     },
     {
       label: "non-Fable models",
       overrides: { id: "claude-opus-4-8", name: "Claude Opus 4.8" },
-      apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`,
+      apiKey: "sk-ant-provider",
     },
   ])("omits server-side fallback params for $label", async ({ overrides, apiKey }) => {
     let capturedPayload: unknown;
@@ -1576,7 +1576,7 @@ describe("Anthropic provider", () => {
         cost: { input: 10, output: 50, cacheRead: 1, cacheWrite: 12.5 },
       }),
       { messages: [{ role: "user", content: "hello", timestamp: 0 }] },
-      { apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`, client: client as never },
+      { apiKey: "sk-ant-provider", client: client as never },
     );
     const eventTypes: string[] = [];
     for await (const event of stream) {
@@ -1664,7 +1664,7 @@ describe("Anthropic provider", () => {
     const stream = streamAnthropic(
       makeAnthropicModel({ id: "claude-fable-5", name: "Claude Fable 5" }),
       { messages: [{ role: "user", content: "hello", timestamp: 0 }] },
-      { apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`, client: client as never },
+      { apiKey: "sk-ant-provider", client: client as never },
     );
     const result = await stream.result();
 
@@ -1722,7 +1722,7 @@ describe("Anthropic provider", () => {
     const result = await streamAnthropic(
       makeAnthropicModel(),
       { messages: [{ role: "user", content: "hello", timestamp: 0 }] },
-      { apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`, client: client as never },
+      { apiKey: "sk-ant-provider", client: client as never },
     ).result();
 
     expect(result.content).toEqual([
@@ -1756,7 +1756,7 @@ describe("Anthropic provider", () => {
     const stream = streamAnthropic(
       makeAnthropicModel({ id: "claude-fable-5", name: "Claude Fable 5" }),
       { messages: [{ role: "user", content: "hello", timestamp: 0 }] },
-      { apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`, client: client as never },
+      { apiKey: "sk-ant-provider", client: client as never },
     );
     const eventTypes: string[] = [];
     for await (const event of stream) {
@@ -1801,7 +1801,7 @@ describe("Anthropic provider", () => {
         ],
       } as Context,
       {
-        apiKey: `ltfx.n.12be5f8eb77758aa1e59.v1`,
+        apiKey: "vertex-token",
         onPayload: (payload) => {
           capturedPayload = payload;
         },
@@ -1830,7 +1830,7 @@ describe("Anthropic provider", () => {
         messages: [{ role: "user", content: "hello", timestamp: 0 }],
       },
       {
-        apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`,
+        apiKey: "sk-ant-provider",
         reasoning,
         onPayload: (payload) => {
           capturedPayload = payload;
@@ -1870,7 +1870,7 @@ describe("Anthropic provider", () => {
         }),
         { messages: [{ role: "user", content: "hello", timestamp: 0 }] },
         {
-          apiKey: `ltfx.n.be36160a0bfcf3f715db.v1`,
+          apiKey: "copilot-token",
           reasoning,
           onPayload: (payload) => {
             capturedPayload = payload;
@@ -1901,7 +1901,7 @@ describe("Anthropic provider", () => {
         messages: [{ role: "user", content: "hello", timestamp: 0 }],
       },
       {
-        apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`,
+        apiKey: "sk-ant-provider",
         temperature: 0.2,
         onPayload: (payload) => {
           capturedPayload = payload;
@@ -1934,7 +1934,7 @@ describe("Anthropic provider", () => {
         messages: [{ role: "user", content: "hello", timestamp: 0 }],
       },
       {
-        apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`,
+        apiKey: "sk-ant-provider",
         reasoning: "off",
         temperature: 0.2,
         onPayload: (payload) => {
@@ -1973,7 +1973,7 @@ describe("Anthropic provider", () => {
         messages: [{ role: "user", content: "hello", timestamp: 0 }],
       },
       {
-        apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`,
+        apiKey: "sk-ant-provider",
         reasoning: "max",
         onPayload: (payload) => {
           capturedPayload = payload;
@@ -2003,7 +2003,7 @@ describe("Anthropic provider", () => {
         messages: [{ role: "user", content: "hello", timestamp: 0 }],
       },
       {
-        apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`,
+        apiKey: "sk-ant-provider",
         onPayload: (payload) => {
           capturedPayload = payload;
           throw new Error("stop before network");
@@ -2033,7 +2033,7 @@ describe("Anthropic provider", () => {
         messages: [{ role: "user", content: "hello", timestamp: 0 }],
       },
       {
-        apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`,
+        apiKey: "sk-ant-provider",
         reasoning: "max",
         onPayload: (payload) => {
           capturedPayload = payload;
@@ -2064,7 +2064,7 @@ describe("Anthropic provider", () => {
         messages: [{ role: "user", content: "hello", timestamp: 0 }],
       },
       {
-        apiKey: `ltfx.n.be36160a0bfcf3f715db.v1`,
+        apiKey: "copilot-token",
         reasoning: "max",
         onPayload: (payload) => {
           capturedPayload = payload;
@@ -2095,7 +2095,7 @@ describe("Anthropic provider", () => {
       model,
       { messages: [{ role: "user", content: "hello", timestamp: 0 }] },
       {
-        apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`,
+        apiKey: "sk-ant-provider",
         reasoning: "minimal",
         onPayload: (payload) => {
           capturedPayload = payload;
@@ -2119,7 +2119,7 @@ describe("Anthropic provider", () => {
       model,
       { messages: [{ role: "user", content: "hello", timestamp: 0 }] },
       {
-        apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`,
+        apiKey: "sk-ant-provider",
         reasoning: "low",
         onPayload: (payload) => {
           capturedPayload = payload;
@@ -2150,7 +2150,7 @@ describe("Anthropic provider", () => {
           tools: [{ name: "lookup", description: "Lookup", parameters: { type: "object" } }],
         },
         {
-          apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`,
+          apiKey: "sk-ant-provider",
           maxTokens,
           temperature: 0.2,
           thinkingEnabled: true,
@@ -2185,7 +2185,7 @@ describe("Anthropic provider", () => {
         }),
         { messages: [{ role: "user", content: "hello", timestamp: 0 }] },
         {
-          apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`,
+          apiKey: "sk-ant-provider",
           reasoning: "high",
           temperature: 0.2,
           onPayload: (payload) => {
@@ -2223,7 +2223,7 @@ describe("Anthropic provider", () => {
       }),
       { messages: [{ role: "user", content: "hello", timestamp: 0 }] },
       {
-        apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`,
+        apiKey: "sk-ant-provider",
         temperature: 0.2,
         onPayload: (payload) => {
           capturedPayload = payload;
@@ -2249,7 +2249,7 @@ describe("Anthropic provider", () => {
       }),
       { messages: [{ role: "user", content: "hello", timestamp: 0 }] },
       {
-        apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`,
+        apiKey: "sk-ant-provider",
         reasoning: "xhigh",
         temperature: 0.2,
         onPayload: (payload) => {
@@ -2284,7 +2284,7 @@ describe("Anthropic provider", () => {
         }),
         { messages: [{ role: "user", content: "hello", timestamp: 0 }] },
         {
-          apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`,
+          apiKey: "sk-ant-provider",
           temperature: 0.2,
           onPayload: (payload) => {
             capturedPayload = payload;
@@ -2309,7 +2309,7 @@ describe("Anthropic provider", () => {
         messages: [{ role: "user", content: "Use a tool.", timestamp: 0 }],
       },
       {
-        apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`,
+        apiKey: "sk-ant-provider",
         thinkingEnabled: true,
         effort: "high",
         toolChoice: "any",
@@ -2345,7 +2345,7 @@ describe("Anthropic provider", () => {
           messages: [{ role: "user", content: "hello", timestamp: 0 }],
         },
         {
-          apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`,
+          apiKey: "sk-ant-provider",
           reasoning: testCase.reasoning,
           onPayload: (payload: unknown) => {
             capturedPayload = payload;
@@ -2374,7 +2374,7 @@ describe("Anthropic provider", () => {
       }),
       { messages: [{ role: "user", content: "hello", timestamp: 0 }] },
       {
-        apiKey: `ltfx.n.be36160a0bfcf3f715db.v1`,
+        apiKey: "copilot-token",
         reasoning: "xhigh",
         onPayload: (payload) => {
           capturedPayload = payload;
@@ -2402,7 +2402,7 @@ describe("Anthropic provider", () => {
         messages: [{ role: "user", content: "hello", timestamp: 0 }],
       },
       {
-        apiKey: `ltfx.n.12be5f8eb77758aa1e59.v1`,
+        apiKey: "vertex-token",
         reasoning: "high",
         onPayload: (payload) => {
           capturedPayload = payload;
@@ -2426,7 +2426,7 @@ describe("Anthropic provider", () => {
         messages: [{ role: "user", content: "hello", timestamp: 0 }],
       },
       {
-        apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`,
+        apiKey: "sk-ant-provider",
         stop: ["STOP"],
         onPayload: (payload) => {
           capturedPayload = payload;
@@ -2477,7 +2477,7 @@ describe("Anthropic provider", () => {
         ],
       },
       {
-        apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`,
+        apiKey: "sk-ant-provider",
         onPayload: (payload) => {
           capturedPayload = payload;
           throw new Error("stop before network");
@@ -2521,7 +2521,7 @@ describe("Anthropic provider", () => {
         ],
       },
       {
-        apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`,
+        apiKey: "sk-ant-provider",
         toolChoice: { type: "tool", name: "unreadable_plugin_tool" },
         onPayload,
       },
@@ -2545,7 +2545,7 @@ describe("Anthropic provider", () => {
         messages: [{ role: "user", content: "hello", timestamp: 0 }],
       },
       {
-        apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`,
+        apiKey: "sk-ant-provider",
         onPayload: (payload) => {
           capturedPayload = payload;
           throw new Error("stop before network");
@@ -2586,7 +2586,7 @@ describe("Anthropic provider", () => {
         ],
       },
       {
-        apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`,
+        apiKey: "sk-ant-provider",
         onPayload: (payload) => {
           capturedPayload = payload;
           throw new Error("stop before network");
@@ -2638,7 +2638,7 @@ describe("Anthropic provider", () => {
     const stream = streamAnthropic(
       makeAnthropicModel(),
       { messages: [{ role: "user", content: "hi", timestamp: 0 }] },
-      { apiKey: `ltfx.n.5f8b19d5c723c53c826e.v1`, client: client as never },
+      { apiKey: "sk-ant-key", client: client as never },
     );
 
     const eventTypes: string[] = [];
@@ -2683,7 +2683,7 @@ describe("Anthropic provider", () => {
     const stream = streamAnthropic(
       makeAnthropicModel(),
       { messages: [{ role: "user", content: "hi", timestamp: 0 }] },
-      { apiKey: `ltfx.n.5f8b19d5c723c53c826e.v1`, client: client as never },
+      { apiKey: "sk-ant-key", client: client as never },
     );
 
     const eventTypes: string[] = [];
@@ -2705,7 +2705,7 @@ describe("Anthropic provider", () => {
         messages: [{ role: "user", content: "hello", timestamp: 0 }],
       },
       {
-        apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`,
+        apiKey: "sk-ant-provider",
         cacheRetention: "none",
         onPayload: (payload) => {
           capturedPayload = payload;
@@ -2750,7 +2750,7 @@ describe("Anthropic provider", () => {
       }),
       makeSonnet5PrefillContext(),
       {
-        apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`,
+        apiKey: "sk-ant-provider",
         reasoning,
         temperature: 0.2,
         toolChoice: "any",

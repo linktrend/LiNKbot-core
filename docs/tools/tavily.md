@@ -44,7 +44,7 @@ Tavily returns structured results optimized for LLM consumption, with configurab
             enabled: true,
             config: {
               webSearch: {
-                apiKey: "${ltfx.n.0a5c23477acd190d1b3c.v1}", // optional if TAVILY_API_KEY is set
+                apiKey: "tvly-...", // optional if TAVILY_API_KEY is set
                 baseUrl: "https://api.tavily.com",
               },
             },

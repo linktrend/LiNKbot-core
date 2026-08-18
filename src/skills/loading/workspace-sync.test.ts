@@ -317,7 +317,7 @@ describe("buildWorkspaceSkillsPrompt", () => {
       const enabledPrompt = buildPrompt(workspaceDir, {
         managedSkillsDir: path.join(workspaceDir, ".managed"),
         config: {
-          skills: { entries: { "image-lab": { apiKey: `ltfx.n.62af8704764faf8ea82f.v1` } } }, // pragma: allowlist secret
+          skills: { entries: { "image-lab": { apiKey: "test-key" } } }, // pragma: allowlist secret
         },
       });
       expect(enabledPrompt).toContain("image-lab");

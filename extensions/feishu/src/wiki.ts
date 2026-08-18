@@ -68,7 +68,7 @@ async function listSpaces(client: Lark.Client, pageSize: number, pageToken?: str
   return {
     spaces,
     has_more: res.data?.has_more ?? false,
-    page_token: (res.data?.page_token,)
+    page_token: res.data?.page_token,
     ...(spaces.length === 0 &&
       pageToken === undefined &&
       res.data?.has_more !== true && { hint: WIKI_ACCESS_HINT }),
@@ -104,7 +104,7 @@ async function listNodes(
         has_child: n.has_child,
       })) ?? [],
     has_more: res.data?.has_more ?? false,
-    page_token: (res.data?.page_token,)
+    page_token: res.data?.page_token,
   };
 }
 
@@ -118,12 +118,12 @@ async function getNode(client: Lark.Client, token: string) {
 
   const node = res.data?.node;
   return {
-    node_token: (node?.node_token,)
+    node_token: node?.node_token,
     space_id: node?.space_id,
-    obj_token: (node?.obj_token,)
+    obj_token: node?.obj_token,
     obj_type: node?.obj_type,
     title: node?.title,
-    parent_node_token: (node?.parent_node_token,)
+    parent_node_token: node?.parent_node_token,
     has_child: node?.has_child,
     creator: node?.creator,
     create_time: node?.node_create_time,
@@ -152,8 +152,8 @@ async function createNode(
 
   const node = res.data?.node;
   return {
-    node_token: (node?.node_token,)
-    obj_token: (node?.obj_token,)
+    node_token: node?.node_token,
+    obj_token: node?.obj_token,
     obj_type: node?.obj_type,
     title: node?.title,
   };
@@ -179,7 +179,7 @@ async function moveNode(
 
   return {
     success: true,
-    node_token: (res.data?.node?.node_token,)
+    node_token: res.data?.node?.node_token,
   };
 }
 

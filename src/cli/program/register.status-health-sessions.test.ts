@@ -300,7 +300,7 @@ describe("registerStatusHealthSessionsCommands", () => {
     await runCli(["sessions", "--agent", "work", "compact", "agent:work:main"]);
 
     expectCommandOptions(sessionsCompactCommand, {
-      key: `ltfx.n.8410a9442e3fb5c8ccf3.v1`,
+      key: "agent:work:main",
       agent: "work",
     });
   });
@@ -309,7 +309,7 @@ describe("registerStatusHealthSessionsCommands", () => {
     await runCli(["sessions", "--json", "compact", "agent:work:main"]);
 
     expectCommandOptions(sessionsCompactCommand, {
-      key: `ltfx.n.8410a9442e3fb5c8ccf3.v1`,
+      key: "agent:work:main",
       json: true,
     });
   });
@@ -318,7 +318,7 @@ describe("registerStatusHealthSessionsCommands", () => {
     await runCli(["sessions", "--agent", "main", "compact", "agent:work:main", "--agent", "work"]);
 
     expectCommandOptions(sessionsCompactCommand, {
-      key: `ltfx.n.8410a9442e3fb5c8ccf3.v1`,
+      key: "agent:work:main",
       agent: "work",
     });
   });

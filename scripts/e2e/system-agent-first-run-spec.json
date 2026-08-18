@@ -7,7 +7,7 @@
   "agentId": "reef",
   "model": "claude-cli/claude-opus-4-8",
   "telegramEnv": "TELEGRAM_BOT_TOKEN",
-  "telegramToken": "${ltfx.n.a21fe353ca9cb60f3a3d.v1}",
+  "telegramToken": "123456:openclaw-openclaw-telegram-e2e-token",
   "commands": [
     {
       "id": "setup",

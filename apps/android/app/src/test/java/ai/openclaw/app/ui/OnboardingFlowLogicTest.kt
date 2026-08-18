@@ -1220,7 +1220,7 @@ class OnboardingFlowLogicTest {
   @Test
   fun resolvesOnboardingSetupCodeConnectConfigForScannedQr() {
     val setupCode =
-      encodeSetupCode("""{"url":"${ltfx.n.f55dd6cde125091681b7.v1}","bootstrapToken":"${ltfx.n.f48cccbab55193963f6e.v1}"}""")
+      encodeSetupCode("""{"url":"ws://10.0.2.2:18789","bootstrapToken":"bootstrap-1"}""")
     val scanned = resolveScannedSetupCodeResult(setupCode)
 
     val plan =
@@ -1232,8 +1232,8 @@ class OnboardingFlowLogicTest {
         manualHost = "127.0.0.1",
         manualPort = "18789",
         manualTls = false,
-        token = "${ltfx.n.b5cce2ab658056eba8b0.v1}",
-        password = "${ltfx.n.76f2041f79897c6c75a7.v1}",
+        token = "stale-shared-token",
+        password = "stale-shared-password",
       )
 
     assertEquals(GatewaySavedAuthAction.REPLACE_SETUP, plan?.savedAuthAction)
@@ -1257,8 +1257,8 @@ class OnboardingFlowLogicTest {
         manualHost = "127.0.0.1",
         manualPort = "18789",
         manualTls = false,
-        token = "${ltfx.n.fad34a6f30260e5a8db3.v1}",
-        password = "${ltfx.n.39c949687a577d7a63f5.v1}",
+        token = "shared-token",
+        password = "shared-password",
       )
 
     assertEquals(GatewaySavedAuthAction.REPLACE_CREDENTIALS, plan?.savedAuthAction)
@@ -1281,7 +1281,7 @@ class OnboardingFlowLogicTest {
         manualHost = "10.0.2.2",
         manualPort = "18790",
         manualTls = false,
-        token = "${ltfx.n.d4c83ca2e3ecd535cebf.v1}",
+        token = "replacement-token",
         password = "",
       )
 

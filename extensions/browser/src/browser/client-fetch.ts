@@ -61,11 +61,11 @@ type LoopbackBrowserAuthDeps = {
   getBridgeAuthForPort: typeof getBridgeAuthForPort;
 };
 
-function isAbsoluteHttp(url: (string)): boolean {
+function isAbsoluteHttp(url: string): boolean {
   return /^https?:\/\//i.test(url.trim());
 }
 
-function isLoopbackHttpUrl(url: (string)): boolean {
+function isLoopbackHttpUrl(url: string): boolean {
   try {
     return isLoopbackHost(new URL(url).hostname);
   } catch {
@@ -153,7 +153,7 @@ function isRateLimitStatus(status: number): boolean {
 
 type BrowserControlOwnership = "local-managed" | "external-browser" | "unknown";
 
-function resolveDispatcherBrowserControlOwnership(url: (string)): BrowserControlOwnership {
+function resolveDispatcherBrowserControlOwnership(url: string): BrowserControlOwnership {
   if (isAbsoluteHttp(url)) {
     return "unknown";
   }

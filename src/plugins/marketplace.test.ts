@@ -1206,7 +1206,7 @@ describe("marketplace plugins", () => {
     await withTempDir("openclaw-marketplace-test-", async (rootDir) => {
       fetchWithSsrFGuardMock.mockRejectedValueOnce(
         new Error(
-          "blocked\n\u001b[31mAuthorization: Bearer ltfx.n.b4108cde217de62eda8d.v1\u001b[0m",
+          "blocked\n\u001b[31mAuthorization: Bearer sk-1234567890abcdefghijklmnop\u001b[0m",
         ),
       );
       const manifestPath = await writeMarketplaceManifest(rootDir, {

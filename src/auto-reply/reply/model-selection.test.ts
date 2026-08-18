@@ -1570,7 +1570,7 @@ describe("createModelSelectionState auto-failover overrides", () => {
         "openai:default": {
           type: "api_key",
           provider: "openai",
-          key: `ltfx.n.62af8704764faf8ea82f.v1`,
+          key: "test-key",
         },
       },
     };
@@ -1796,7 +1796,7 @@ describe("createModelSelectionState auto-failover overrides", () => {
         "mac-studio:local": {
           type: "api_key",
           provider: defaultProvider,
-          key: `ltfx.n.62af8704764faf8ea82f.v1`,
+          key: "test-key",
         },
       },
     };
@@ -1999,7 +1999,7 @@ describe("createModelSelectionState auth-profile override flapping regression", 
         "anthropic:claude-cli": {
           type: "api_key",
           provider: "anthropic",
-          key: `ltfx.n.2cd4cbea78d9d0ba6a8b.v1`,
+          key: "test-cli-oauth-token",
         },
       },
     };

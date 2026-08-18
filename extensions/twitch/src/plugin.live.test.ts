@@ -12,7 +12,7 @@
  * Skipped by default. Enable with:
  *   TWITCH_LIVE_TEST=1
  *   TWITCH_USERNAME=<bot username>
- *   TWITCH_ACCESS_TOKEN=(<oauth:token without the "oauth:" prefix>)
+ *   TWITCH_ACCESS_TOKEN=<oauth:token without the "oauth:" prefix>
  *   TWITCH_CLIENT_ID=<client id>
  *   TWITCH_CHANNEL=<channel name to join>
  */

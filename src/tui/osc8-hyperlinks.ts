@@ -16,7 +16,7 @@ const URL_PATH_WITH_PARENS = /https?:\/\/[^()\s<>]+(?:\([^()\s<>]*\)[^()\s<>]*)*
  *  Bare URLs in prose can pick up a trailing `)` that belongs to surrounding
  *  punctuation, e.g. `(see https://example.com/path)` — the `)` after `path`
  *  and anything after it are sentence punctuation, not part of the URL. */
-function trimUnbalancedTrailingParens(url: (string)): string {
+function trimUnbalancedTrailingParens(url: string): string {
   let open = 0;
   for (let index = 0; index < url.length; index++) {
     const ch = url[index];
@@ -32,7 +32,7 @@ function trimUnbalancedTrailingParens(url: (string)): string {
   return url;
 }
 
-function hasUrlContent(url: (string)): boolean {
+function hasUrlContent(url: string): boolean {
   const authority = expectDefined(
     url.slice(url.indexOf("://") + 3).split(/[/?#]/, 1)[0],
     'url.slice(url.index of("://") + 3).split(/[/?#]/, 1) entry at 0',

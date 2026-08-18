@@ -872,7 +872,7 @@ export class ExtensionRelayBridge {
         return;
       }
       case "Target.createTarget": {
-        const url = typeof request.params?.url === "string" ? request.params.url : `ltfx.n.4fa72d735a519ee13d41.v1`;
+        const url = typeof request.params?.url === "string" ? request.params.url : "about:blank";
         const created = (await this.callExtension({ type: "createTab", url })) as {
           tabId?: unknown;
         } | null;

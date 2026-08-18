@@ -172,7 +172,7 @@ describe("handshake auth helpers", () => {
 
   it("recommends device-token retry only for shared-token mismatch with device identity", () => {
     const resolved = resolveUnauthorizedHandshakeContext({
-      connectAuth: { token: `ltfx.n.fad34a6f30260e5a8db3.v1` },
+      connectAuth: { token: "shared-token" },
       failedAuth: { ok: false, reason: "token_mismatch" },
       hasDeviceIdentity: true,
     });
@@ -186,7 +186,7 @@ describe("handshake auth helpers", () => {
 
   it("treats explicit device-token mismatch as credential update guidance", () => {
     const resolved = resolveUnauthorizedHandshakeContext({
-      connectAuth: { deviceToken: `ltfx.n.73fff793651a92729a85.v1` },
+      connectAuth: { deviceToken: "device-token" },
       failedAuth: { ok: false, reason: "device_token_mismatch" },
       hasDeviceIdentity: true,
     });
@@ -200,7 +200,7 @@ describe("handshake auth helpers", () => {
 
   it("treats device-token scope mismatch as configuration review guidance", () => {
     const resolved = resolveUnauthorizedHandshakeContext({
-      connectAuth: { deviceToken: `ltfx.n.73fff793651a92729a85.v1` },
+      connectAuth: { deviceToken: "device-token" },
       failedAuth: { ok: false, reason: "scope_mismatch" },
       hasDeviceIdentity: true,
     });

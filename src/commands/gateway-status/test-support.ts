@@ -15,7 +15,7 @@ export function createSecretRefGatewayConfig(params?: { gatewayMode?: "local" | 
         password: { source: "env", provider: "default", id: "OPENCLAW_GATEWAY_PASSWORD" },
       },
       remote: {
-        url: `ltfx.n.e7a188aaecb9f270b021.v1`,
+        url: "wss://remote.example:18789",
         token: { source: "env", provider: "default", id: "REMOTE_GATEWAY_TOKEN" },
         password: { source: "env", provider: "default", id: "REMOTE_GATEWAY_PASSWORD" },
       },

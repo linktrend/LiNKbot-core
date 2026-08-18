@@ -88,14 +88,14 @@ describe("browser remote profile fallback and attachOnly behavior", () => {
           {
             id: "OMNI",
             title: "Omnibox Popup",
-            url: `ltfx.n.f2d79d991b67c6bbfe01.v1`,
+            url: "chrome://omnibox-popup.top-chrome/",
             webSocketDebuggerUrl: "wss://1.1.1.1:9222/devtools/page/OMNI",
             type: "page",
           },
           {
             id: "UNTRUSTED",
             title: "Untrusted",
-            url: `ltfx.n.30a144fecf6dc8ff11c7.v1`,
+            url: "chrome-untrusted://foo/",
             webSocketDebuggerUrl: "wss://1.1.1.1:9222/devtools/page/UNTRUSTED",
             type: "page",
           },
@@ -160,7 +160,7 @@ describe("browser remote profile fallback and attachOnly behavior", () => {
     vi.spyOn(deps.cdpModule, "createTargetViaCdp").mockRejectedValue(
       new Error("Target.createTarget unavailable"),
     );
-    const fetchMock = vi.fn(async (url: (unknown) => {)
+    const fetchMock = vi.fn(async (url: unknown) => {
       const u = String(url);
       if (!u.includes("/json/new")) {
         throw new Error(`unexpected fetch: ${u}`);
@@ -170,7 +170,7 @@ describe("browser remote profile fallback and attachOnly behavior", () => {
         json: async () => ({
           id: "T_BLOCKED",
           title: "Blocked",
-          url: `ltfx.n.4fa72d735a519ee13d41.v1`,
+          url: "about:blank",
           webSocketDebuggerUrl: "ws://169.254.169.254/devtools/page/T_BLOCKED",
           type: "page",
         }),
@@ -195,7 +195,7 @@ describe("browser remote profile fallback and attachOnly behavior", () => {
     {
       id: "INTERNAL",
       title: "Settings",
-      url: `ltfx.n.a4d94e7587ff1e87dfe7.v1`,
+      url: "chrome://settings/",
       type: "page",
     },
   ])("rejects non-selectable $type target $id returned by raw tab creation", async (created) => {
@@ -203,7 +203,7 @@ describe("browser remote profile fallback and attachOnly behavior", () => {
     vi.spyOn(deps.cdpModule, "createTargetViaCdp").mockRejectedValue(
       new Error("Target.createTarget unavailable"),
     );
-    const fetchMock = vi.fn(async (url: (unknown) => {)
+    const fetchMock = vi.fn(async (url: unknown) => {
       const u = String(url);
       if (!u.includes("/json/new")) {
         throw new Error(`unexpected fetch: ${u}`);
@@ -263,7 +263,7 @@ describe("browser remote profile fallback and attachOnly behavior", () => {
       createPageViaPlaywright,
     } as unknown as Awaited<ReturnType<typeof deps.pwAiModule.getPwAiModule>>);
 
-    const fetchMock = vi.fn(async (url: (unknown) => {)
+    const fetchMock = vi.fn(async (url: unknown) => {
       throw new Error(`unexpected fetch: ${String(url)}`);
     });
 
@@ -425,7 +425,7 @@ describe("browser remote profile fallback and attachOnly behavior", () => {
     );
     const [fetchUrl, fetchInit] = call;
     expect(String(fetchUrl)).toBe(
-      "https://1.1.1.1:9222/chrome/json/new?token=(abc&url=(https%3A%2F%2Fexample.com",))
+      "https://1.1.1.1:9222/chrome/json/new?token=abc&url=https%3A%2F%2Fexample.com",
     );
     expect(fetchInit.method).toBe("PUT");
     expect(fetchInit.headers).toEqual({});

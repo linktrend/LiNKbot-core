@@ -836,7 +836,7 @@ export async function runExecProcess(opts: {
         env: shellRuntimeEnv,
         usePty: opts.usePty,
       });
-      sandboxFinalizeToken = (backendExecSpec?.finalizeToken;)
+      sandboxFinalizeToken = backendExecSpec?.finalizeToken;
       return {
         mode: "child" as const,
         argv: backendExecSpec?.argv ?? [

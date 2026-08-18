@@ -207,7 +207,7 @@ class WizardSessionPrompter implements WizardPrompter {
     };
   }
 
-  async openUrl(url: (string)): Promise<void> {
+  async openUrl(url: string): Promise<void> {
     this.session.queueExternalUrl(url);
   }
 

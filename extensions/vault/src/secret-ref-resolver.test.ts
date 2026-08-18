@@ -93,7 +93,7 @@ async function startVaultFixture() {
       JSON.stringify({
         data: {
           data: {
-            apiKey: `ltfx.n.93120980f4befcf01441.v1`,
+            apiKey: "not-a-real-vault-value",
           },
         },
       }),
@@ -278,7 +278,7 @@ async function startVaultJwtFixture() {
         response.end(
           JSON.stringify({
             auth: {
-              client_token: `ltfx.n.613f200ce106f8d0a373.v1`,
+              client_token: "not-a-real-vault-client-token",
             },
           }),
         );
@@ -288,7 +288,7 @@ async function startVaultJwtFixture() {
         JSON.stringify({
           data: {
             data: {
-              apiKey: `ltfx.n.93120980f4befcf01441.v1`,
+              apiKey: "not-a-real-vault-value",
             },
           },
         }),
@@ -419,7 +419,7 @@ describe("vault SecretRef resolver", () => {
       env: {
         VAULT_ADDR: "https://vault.example.test",
         OPENCLAW_VAULT_VALUES_JSON: JSON.stringify({
-          "providers/openai/apiKey": `ltfx.n.802f59d320d17fea0d13.v1`,
+          "providers/openai/apiKey": "not-a-real-value",
         }),
       },
     });
@@ -446,7 +446,7 @@ describe("vault SecretRef resolver", () => {
       },
       env: {
         VAULT_ADDR: fixture.vaultAddr,
-        VAULT_TOKEN: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+        VAULT_TOKEN: "test-token",
         VAULT_NAMESPACE: "team-a",
       },
     });
@@ -455,14 +455,14 @@ describe("vault SecretRef resolver", () => {
     expect(JSON.parse(result.stdout)).toEqual({
       protocolVersion: 1,
       values: {
-        "providers/openai/apiKey": `ltfx.n.93120980f4befcf01441.v1`,
+        "providers/openai/apiKey": "not-a-real-vault-value",
       },
       errors: {},
     });
     expect(fixture.requests).toEqual([
       {
-        url: `ltfx.n.a6746976650aec37715c.v1`,
-        token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+        url: "/v1/secret/data/providers/openai",
+        token: "test-token",
         namespace: "team-a",
       },
     ]);
@@ -478,7 +478,7 @@ describe("vault SecretRef resolver", () => {
       },
       env: {
         VAULT_ADDR: fixture.vaultAddr,
-        VAULT_TOKEN: `ltfx.n.f82f214c7b552d831e8e.v1`,
+        VAULT_TOKEN: "not-a-real-auth-header",
       },
     });
 
@@ -508,7 +508,7 @@ describe("vault SecretRef resolver", () => {
         },
         env: {
           VAULT_ADDR: fixture.vaultAddr,
-          VAULT_TOKEN: `ltfx.n.f82f214c7b552d831e8e.v1`,
+          VAULT_TOKEN: "not-a-real-auth-header",
         },
       });
 
@@ -546,14 +546,14 @@ describe("vault SecretRef resolver", () => {
     expect(JSON.parse(result.stdout)).toEqual({
       protocolVersion: 1,
       values: {
-        "providers/openai/apiKey": `ltfx.n.93120980f4befcf01441.v1`,
+        "providers/openai/apiKey": "not-a-real-vault-value",
       },
       errors: {},
     });
     expect(fixture.requests).toEqual([
       {
-        url: `ltfx.n.a6746976650aec37715c.v1`,
-        token: `ltfx.n.00dba2134c748737d649.v1`,
+        url: "/v1/secret/data/providers/openai",
+        token: "not-a-real-file-token",
         namespace: undefined,
       },
     ]);
@@ -611,13 +611,13 @@ describe("vault SecretRef resolver", () => {
     expect(JSON.parse(result.stdout)).toEqual({
       protocolVersion: 1,
       values: {
-        "providers/openai/apiKey": `ltfx.n.93120980f4befcf01441.v1`,
+        "providers/openai/apiKey": "not-a-real-vault-value",
       },
       errors: {},
     });
     expect(fixture.requests).toEqual([
       {
-        url: `ltfx.n.149b4cc9812e33e05264.v1`,
+        url: "/v1/auth/keycloak/login",
         method: "POST",
         token: undefined,
         namespace: "team-a",
@@ -627,9 +627,9 @@ describe("vault SecretRef resolver", () => {
         },
       },
       {
-        url: `ltfx.n.a6746976650aec37715c.v1`,
+        url: "/v1/secret/data/providers/openai",
         method: "GET",
-        token: `ltfx.n.613f200ce106f8d0a373.v1`,
+        token: "not-a-real-vault-client-token",
         namespace: "team-a",
         body: undefined,
       },
@@ -690,13 +690,13 @@ describe("vault SecretRef resolver", () => {
     expect(JSON.parse(result.stdout)).toEqual({
       protocolVersion: 1,
       values: {
-        "providers/openai/apiKey": `ltfx.n.93120980f4befcf01441.v1`,
+        "providers/openai/apiKey": "not-a-real-vault-value",
       },
       errors: {},
     });
     expect(fixture.requests).toEqual([
       {
-        url: `ltfx.n.6f26036fc65607ce4cf6.v1`,
+        url: "/v1/auth/kubernetes/login",
         method: "POST",
         token: undefined,
         namespace: undefined,
@@ -706,9 +706,9 @@ describe("vault SecretRef resolver", () => {
         },
       },
       {
-        url: `ltfx.n.a6746976650aec37715c.v1`,
+        url: "/v1/secret/data/providers/openai",
         method: "GET",
-        token: `ltfx.n.613f200ce106f8d0a373.v1`,
+        token: "not-a-real-vault-client-token",
         namespace: undefined,
         body: undefined,
       },
@@ -749,7 +749,7 @@ describe("vault SecretRef resolver", () => {
       },
       env: {
         VAULT_ADDR: fixture.vaultAddr,
-        VAULT_TOKEN: `ltfx.n.f82f214c7b552d831e8e.v1`,
+        VAULT_TOKEN: "not-a-real-auth-header",
       },
     });
 
@@ -780,7 +780,7 @@ describe("vault SecretRef resolver", () => {
       },
       env: {
         VAULT_ADDR: fixture.vaultAddr,
-        VAULT_TOKEN: `ltfx.n.f82f214c7b552d831e8e.v1`,
+        VAULT_TOKEN: "not-a-real-auth-header",
       },
     });
 
@@ -808,7 +808,7 @@ describe("vault SecretRef resolver", () => {
       },
       env: {
         VAULT_ADDR: fixture.vaultAddr,
-        VAULT_TOKEN: `ltfx.n.f82f214c7b552d831e8e.v1`,
+        VAULT_TOKEN: "not-a-real-auth-header",
       },
     });
 
@@ -844,7 +844,7 @@ describe("vault SecretRef resolver", () => {
       },
       env: {
         VAULT_ADDR: fixture.vaultAddr,
-        VAULT_TOKEN: `ltfx.n.f82f214c7b552d831e8e.v1`,
+        VAULT_TOKEN: "not-a-real-auth-header",
       },
     });
 
@@ -877,7 +877,7 @@ describe("vault SecretRef resolver", () => {
       },
       env: {
         VAULT_ADDR: fixture.vaultAddr,
-        VAULT_TOKEN: `ltfx.n.f82f214c7b552d831e8e.v1`,
+        VAULT_TOKEN: "not-a-real-auth-header",
       },
     });
 
@@ -906,7 +906,7 @@ describe("vault SecretRef resolver", () => {
         },
         env: {
           VAULT_ADDR: fixture.vaultAddr,
-          VAULT_TOKEN: `ltfx.n.f82f214c7b552d831e8e.v1`,
+          VAULT_TOKEN: "not-a-real-auth-header",
         },
       });
 
@@ -934,7 +934,7 @@ describe("vault SecretRef resolver", () => {
       },
       env: {
         VAULT_ADDR: fixture.vaultAddr,
-        VAULT_TOKEN: `ltfx.n.f82f214c7b552d831e8e.v1`,
+        VAULT_TOKEN: "not-a-real-auth-header",
       },
     });
 
@@ -994,7 +994,7 @@ describe("vault SecretRef resolver", () => {
       },
       env: {
         VAULT_ADDR: fixture.vaultAddr,
-        VAULT_TOKEN: `ltfx.n.f82f214c7b552d831e8e.v1`,
+        VAULT_TOKEN: "not-a-real-auth-header",
       },
       timeoutMs: 6_500,
     });
@@ -1021,7 +1021,7 @@ describe("vault SecretRef resolver", () => {
       },
       env: {
         VAULT_ADDR: fixture.vaultAddr,
-        VAULT_TOKEN: `ltfx.n.f82f214c7b552d831e8e.v1`,
+        VAULT_TOKEN: "not-a-real-auth-header",
       },
       timeoutMs: 6_500,
     });

@@ -34,7 +34,7 @@ function isZeroDuration(val: unknown): boolean {
   }
 }
 
-function hasZeroDuration(raw: unknown, key: `ltfx.n.02d36dd207145bbe7ef9.v1` | "resetArchiveRetention"): boolean {
+function hasZeroDuration(raw: unknown, key: "pruneAfter" | "resetArchiveRetention"): boolean {
   const maintenance = getRecord(raw);
   if (!maintenance || !Object.hasOwn(maintenance, key)) {
     return false;

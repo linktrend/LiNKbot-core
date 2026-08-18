@@ -188,7 +188,7 @@ export const entraIdAuthMethod: ProviderAuthMethod = {
 
     return buildFoundryAuthResult({
       profileId: `${PROVIDER_ID}:entra`,
-      apiKey: `ltfx.n.2175bbcceff7df34b2d8.v1`,
+      apiKey: "__entra_id_dynamic__",
       endpoint,
       modelId,
       modelNameHint,

@@ -44,7 +44,7 @@ describe("runCapability deepgram provider options", () => {
           providers: {
             deepgram: {
               baseUrl: "https://provider.example",
-              apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+              apiKey: "test-key",
               headers: {
                 "X-Provider": "1",
                 "X-Provider-Managed": "secretref-managed",

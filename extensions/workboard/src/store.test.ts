@@ -1464,14 +1464,14 @@ describe("WorkboardStore", () => {
     const tokenClaim = await store.claim(tokenCard.id, { ownerId: "main", ttlSeconds: 60 });
 
     await expect(
-      store.heartbeat(tokenCard.id, { ownerId: "other", token: `ltfx.n.5645a758e6a8f12b6a27.v1` }),
+      store.heartbeat(tokenCard.id, { ownerId: "other", token: "wrong-token" }),
     ).rejects.toThrow(/token does not match/);
     await expect(
       store.heartbeat(tokenCard.id, { ownerId: "other", token: tokenClaim.token }),
     ).resolves.toMatchObject({ metadata: { claim: { ownerId: "main" } } });
 
     await expect(
-      store.releaseClaim(tokenCard.id, { ownerId: "other", token: `ltfx.n.5645a758e6a8f12b6a27.v1` }),
+      store.releaseClaim(tokenCard.id, { ownerId: "other", token: "wrong-token" }),
     ).rejects.toThrow(/token does not match/);
     const tokenReleased = await store.releaseClaim(tokenCard.id, {
       ownerId: "other",
@@ -1596,7 +1596,7 @@ describe("WorkboardStore", () => {
       metadata: {
         claim: {
           ownerId: "stale-worker",
-          token: `ltfx.n.7d19b716b1e5083012f0.v1`,
+          token: "stale-token",
           claimedAt: 1,
           lastHeartbeatAt: 1,
           expiresAt: Number.MAX_VALUE,
@@ -1604,11 +1604,11 @@ describe("WorkboardStore", () => {
       },
     });
 
-    const claimed = await store.claim(card.id, { ownerId: "main", token: `ltfx.n.5e2040ab40dda85da034.v1` });
+    const claimed = await store.claim(card.id, { ownerId: "main", token: "fresh-token" });
 
     expect(claimed.card.metadata?.claim).toMatchObject({
       ownerId: "main",
-      token: `ltfx.n.5e2040ab40dda85da034.v1`,
+      token: "fresh-token",
     });
   });
 
@@ -2355,7 +2355,7 @@ describe("WorkboardStore", () => {
   it("lets operators override claims while enforcing agent-scoped moves", async () => {
     const store = new WorkboardStore(createMemoryStore());
     const card = await store.create({ title: "Scoped move", status: "todo" });
-    await store.claim(card.id, { ownerId: "agent-a", token: `ltfx.n.f35cd067d05752edf483.v1` });
+    await store.claim(card.id, { ownerId: "agent-a", token: "test-auth-token" });
 
     await expect(store.move(card.id, "review", undefined, { ownerId: "agent-b" })).rejects.toThrow(
       "card is claimed by agent-a",
@@ -2370,20 +2370,20 @@ describe("WorkboardStore", () => {
   it("checks matching claim tokens inside queued card writes", async () => {
     const store = new WorkboardStore(createMemoryStore());
     const card = await store.create({ title: "Token-scoped mutation" });
-    await store.claim(card.id, { ownerId: "main", token: `ltfx.n.f35cd067d05752edf483.v1` });
+    await store.claim(card.id, { ownerId: "main", token: "test-auth-token" });
 
     await expect(
       store.addComment(
         card.id,
         { body: "rejected write" },
-        { ownerId: "other", token: `ltfx.n.41dd96f1dccf65c2c9c7.v1` },
+        { ownerId: "other", token: "test-token-placeholder" },
       ),
     ).rejects.toThrow(/claimed by main/);
     await expect(
       store.addComment(
         card.id,
         { body: "accepted write" },
-        { ownerId: "other", token: `ltfx.n.f35cd067d05752edf483.v1` },
+        { ownerId: "other", token: "test-auth-token" },
       ),
     ).resolves.toMatchObject({
       metadata: { comments: [expect.objectContaining({ body: "accepted write" })] },

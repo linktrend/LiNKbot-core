@@ -144,7 +144,7 @@ function makeHandler(
       ...deps?.provider,
     } as unknown as VoiceCallProvider,
     deps?.realtimeProvider ?? makeRealtimeProvider(() => makeBridge()),
-    deps?.providerConfig ?? { apiKey: `ltfx.n.62af8704764faf8ea82f.v1` },
+    deps?.providerConfig ?? { apiKey: "test-key" },
     "/voice/webhook",
     undefined,
     deps?.resolveInstructions,
@@ -261,7 +261,7 @@ async function withBargeInHarness(
       getCallByProviderCallId: vi.fn((): CallRecord => call),
     },
     providerConfig: {
-      apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+      apiKey: "test-key",
       ...(params.interruptResponseOnInputAudio === undefined
         ? {}
         : { interruptResponseOnInputAudio: params.interruptResponseOnInputAudio }),

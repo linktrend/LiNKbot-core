@@ -94,7 +94,7 @@ describe("deepinfra speech provider", () => {
         models: {
           providers: {
             deepinfra: {
-              apiKey: `ltfx.n.f9aacdc86023a5c6b386.v1`,
+              apiKey: "sk-deepinfra",
               baseUrl: "https://api.deepinfra.com/v1/openai/",
             },
           },

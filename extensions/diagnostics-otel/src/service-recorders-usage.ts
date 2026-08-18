@@ -80,10 +80,10 @@ export function createUsageRecorders(runtime: DiagnosticsRecorderRuntime) {
       });
     }
     if (usage.cacheRead) {
-      tokensCounter.add(usage.cacheRead, { ...attrs, "openclaw.token": `ltfx.n.1d862fac8f42324bf71e.v1` });
+      tokensCounter.add(usage.cacheRead, { ...attrs, "openclaw.token": "cache_read" });
     }
     if (usage.cacheWrite) {
-      tokensCounter.add(usage.cacheWrite, { ...attrs, "openclaw.token": `ltfx.n.c1a8eef1fd13f0b0f6af.v1` });
+      tokensCounter.add(usage.cacheWrite, { ...attrs, "openclaw.token": "cache_write" });
     }
     if (usage.promptTokens) {
       tokensCounter.add(usage.promptTokens, { ...attrs, "openclaw.token": "prompt" });

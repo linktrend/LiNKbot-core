@@ -381,7 +381,7 @@ describe("qa-lab server", () => {
       outputPath,
       repoRoot,
       controlUiUrl:
-        "https://gateway.example.test/?token=(qa-token&api_key=(qa-api-key&id_token=(qa-id-token&panel=chat#token=(ltfx.n.3f2ef088fc590aaf1e3c.v1),)))
+        "https://gateway.example.test/?token=qa-token&api_key=qa-api-key&id_token=qa-id-token&panel=chat#token=fragment-token",
       embeddedGateway: "disabled",
     });
     cleanups.push(async () => {
@@ -423,7 +423,7 @@ describe("qa-lab server", () => {
 
     lab.setControlUi({
       controlUiUrl:
-        "/control-ui/?token=(late-token&api_key=(late-api-key&id_token=(late-id-token&panel=chat#token=(ltfx.n.3f2ef088fc590aaf1e3c.v1),)))
+        "/control-ui/?token=late-token&api_key=late-api-key&id_token=late-id-token&panel=chat#token=fragment-token",
     });
     const relativeBootstrap = (await (
       await fetchWithRetry(`${lab.baseUrl}/api/bootstrap`)
@@ -834,7 +834,7 @@ describe("qa-lab server", () => {
       advertiseHost: "127.0.0.1",
       advertisePort: 43124,
       controlUiProxyTarget: `http://127.0.0.1:${address.port}/`,
-      controlUiProxyToken: `ltfx.n.9861dfcc84dd4d5b5ee3.v1`,
+      controlUiProxyToken: "proxy-token",
     });
     cleanups.push(async () => {
       await lab.stop();
@@ -890,7 +890,7 @@ describe("qa-lab server", () => {
     const repoRoot = await createQaLabRepoRootFixture({
       models: [
         {
-          key: `ltfx.n.858c605c05e3d5f1c94d.v1`,
+          key: "anthropic/qa-temp-model",
           name: "QA Temp Model",
         },
       ],
@@ -939,7 +939,7 @@ describe("qa-lab server", () => {
         `fs.writeFileSync(${JSON.stringify(markerPath)}, process.argv.slice(2).join(" "), "utf8");`,
         "process.stdout.write(JSON.stringify({",
         "  models: [{",
-        '    key: `ltfx.n.65a8fc1dec61133fd514.v1`,',
+        '    key: "openai/gpt-5.6-luna",',
         '    name: "GPT-5.6 Luna",',
         '    input: "openai/gpt-5.6-luna",',
         "    available: true,",
@@ -1093,7 +1093,7 @@ describe("qa-lab server", () => {
       ],
     });
     lab.setControlUi({
-      controlUiUrl: "http://127.0.0.1:18789/?password=(late-password#token=(late-token",))
+      controlUiUrl: "http://127.0.0.1:18789/?password=late-password#token=late-token",
     });
 
     const bootstrap = (await (await fetchWithRetry(`${lab.baseUrl}/api/bootstrap`)).json()) as {

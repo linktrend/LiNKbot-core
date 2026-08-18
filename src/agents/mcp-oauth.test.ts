@@ -68,8 +68,8 @@ describe("MCP OAuth provider", () => {
           serverUrl: "https://mcp.example.com/mcp",
         });
         await provider.saveTokens({
-          access_token: `ltfx.n.5095a09224a5ba7211d6.v1`,
-          refresh_token: `ltfx.n.f35cd067d05752edf483.v1`,
+          access_token: "decoy-token",
+          refresh_token: "test-auth-token",
           token_type: "Bearer",
           expires_in: 3600,
         });
@@ -80,7 +80,7 @@ describe("MCP OAuth provider", () => {
             serverUrl: "https://mcp.example.com/mcp",
             authorizationChallenge: true,
             interactiveAuthorizationRequired: true,
-            rejectedAccessToken: `ltfx.n.5095a09224a5ba7211d6.v1`,
+            rejectedAccessToken: "decoy-token",
             scope: "docs.write",
           }),
         ).rejects.toThrow(
@@ -88,8 +88,8 @@ describe("MCP OAuth provider", () => {
         );
         expect(authMock).not.toHaveBeenCalled();
         expect(provider.tokens()).toMatchObject({
-          access_token: `ltfx.n.5095a09224a5ba7211d6.v1`,
-          refresh_token: `ltfx.n.f35cd067d05752edf483.v1`,
+          access_token: "decoy-token",
+          refresh_token: "test-auth-token",
         });
         expect(
           readMcpOAuthStore(resolveMcpOAuthStoreKey("Remote Docs", "https://mcp.example.com/mcp"))
@@ -115,7 +115,7 @@ describe("MCP OAuth provider", () => {
         ).rejects.toThrow("requires additional OAuth authorization");
         expect(authMock).not.toHaveBeenCalled();
         expect(readMcpOAuthStore(storeKey)).toMatchObject({
-          tokens: { access_token: `ltfx.n.5095a09224a5ba7211d6.v1` },
+          tokens: { access_token: "decoy-token" },
           tokenExpiresAt: 0,
           pendingAuthorizationChallenge: {
             requiresAuthorization: true,
@@ -134,7 +134,7 @@ describe("MCP OAuth provider", () => {
             serverUrl: "https://mcp.example.com/mcp",
           }),
         ).resolves.toBe("redirect");
-        expect(provider.tokens()).toMatchObject({ access_token: `ltfx.n.5095a09224a5ba7211d6.v1` });
+        expect(provider.tokens()).toMatchObject({ access_token: "decoy-token" });
 
         authMock.mockImplementationOnce(async (loginProvider) => {
           await loginProvider.invalidateCredentials?.("tokens");
@@ -149,15 +149,15 @@ describe("MCP OAuth provider", () => {
           }),
         ).rejects.toThrow("replacement authorization failed");
         expect(readMcpOAuthStore(storeKey)).toMatchObject({
-          tokens: { access_token: `ltfx.n.5095a09224a5ba7211d6.v1` },
+          tokens: { access_token: "decoy-token" },
           tokenExpiresAt: 0,
           pendingAuthorizationChallenge: { requiresAuthorization: true },
         });
 
         authMock.mockImplementationOnce(async (loginProvider) => {
           await loginProvider.saveTokens({
-            access_token: `ltfx.n.f15ae5b5899f8327f527.v1`,
-            refresh_token: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
+            access_token: "gateway-token",
+            refresh_token: "secret-token",
             token_type: "Bearer",
             expires_in: 3600,
           });
@@ -190,8 +190,8 @@ describe("MCP OAuth provider", () => {
         const serverUrl = "https://mcp.example.com/mcp";
         const provider = createMcpOAuthClientProvider({ serverName, serverUrl });
         await provider.saveTokens({
-          access_token: `ltfx.n.d4c83ca2e3ecd535cebf.v1`,
-          refresh_token: `ltfx.n.5cd380cc84e37f2ec951.v1`,
+          access_token: "replacement-token",
+          refresh_token: "replacement-refresh",
           token_type: "Bearer",
           expires_in: 3600,
         });
@@ -200,7 +200,7 @@ describe("MCP OAuth provider", () => {
           recordMcpOAuthAuthorizationRequired({
             serverName,
             serverUrl,
-            rejectedAccessToken: `ltfx.n.d4c83ca2e3ecd535cebf.v1`,
+            rejectedAccessToken: "replacement-token",
             scope: "docs.read",
           }),
         ).resolves.toBe(true);
@@ -208,11 +208,11 @@ describe("MCP OAuth provider", () => {
           "requires additional OAuth authorization",
         );
         expect(authMock).not.toHaveBeenCalled();
-        expect(provider.tokens()).toMatchObject({ access_token: `ltfx.n.d4c83ca2e3ecd535cebf.v1` });
+        expect(provider.tokens()).toMatchObject({ access_token: "replacement-token" });
 
         await provider.saveTokens({
-          access_token: `ltfx.n.cc196b236d3affba9135.v1`,
-          refresh_token: `ltfx.n.52e8cc51cac1c948666a.v1`,
+          access_token: "newer-token",
+          refresh_token: "newer-refresh",
           token_type: "Bearer",
           expires_in: 3600,
         });
@@ -220,10 +220,10 @@ describe("MCP OAuth provider", () => {
           recordMcpOAuthAuthorizationRequired({
             serverName,
             serverUrl,
-            rejectedAccessToken: `ltfx.n.d4c83ca2e3ecd535cebf.v1`,
+            rejectedAccessToken: "replacement-token",
           }),
         ).resolves.toBe(false);
-        expect(provider.tokens()).toMatchObject({ access_token: `ltfx.n.cc196b236d3affba9135.v1` });
+        expect(provider.tokens()).toMatchObject({ access_token: "newer-token" });
       },
       {
         prefix: "openclaw-mcp-oauth-terminal-rejection-",
@@ -241,8 +241,8 @@ describe("MCP OAuth provider", () => {
           serverUrl: "https://mcp.example.com/mcp",
         });
         await provider.saveTokens({
-          access_token: `ltfx.n.5095a09224a5ba7211d6.v1`,
-          refresh_token: `ltfx.n.f35cd067d05752edf483.v1`,
+          access_token: "decoy-token",
+          refresh_token: "test-auth-token",
           token_type: "Bearer",
           expires_in: 3600,
         });
@@ -260,7 +260,7 @@ describe("MCP OAuth provider", () => {
             serverName: "Remote Docs",
             serverUrl: "https://mcp.example.com/mcp",
             authorizationChallenge: true,
-            rejectedAccessToken: `ltfx.n.5095a09224a5ba7211d6.v1`,
+            rejectedAccessToken: "decoy-token",
             resourceMetadataUrl,
             scope: "docs.write",
           }),
@@ -309,8 +309,8 @@ describe("MCP OAuth provider", () => {
         );
         const provider = createMcpOAuthClientProvider({ serverName, serverUrl });
         await provider.saveTokens({
-          access_token: `ltfx.n.bcb3daa2ef79a5bfa2e8.v1`,
-          refresh_token: `ltfx.n.d817884616ebfe85d77b.v1`,
+          access_token: "legacy-access",
+          refresh_token: "legacy-refresh",
           token_type: "Bearer",
           expires_in: 3600,
         });
@@ -325,8 +325,8 @@ describe("MCP OAuth provider", () => {
         authMock.mockImplementationOnce(async (refreshProvider, options) => {
           expect(options).toMatchObject({ resourceMetadataUrl, scope: "docs.read" });
           await refreshProvider.saveTokens({
-            access_token: `ltfx.n.f15ae5b5899f8327f527.v1`,
-            refresh_token: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
+            access_token: "gateway-token",
+            refresh_token: "secret-token",
             token_type: "Bearer",
             expires_in: 3600,
           });
@@ -355,7 +355,7 @@ describe("MCP OAuth provider", () => {
         });
         await provider.saveTokens({
           access_token: "example",
-          refresh_token: `ltfx.n.f35cd067d05752edf483.v1`,
+          refresh_token: "test-auth-token",
           token_type: "Bearer",
           expires_in: 3600,
         });
@@ -377,8 +377,8 @@ describe("MCP OAuth provider", () => {
 
         authMock.mockImplementationOnce(async (refreshProvider) => {
           await refreshProvider.saveTokens({
-            access_token: `ltfx.n.f15ae5b5899f8327f527.v1`,
-            refresh_token: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
+            access_token: "gateway-token",
+            refresh_token: "secret-token",
             token_type: "Bearer",
             expires_in: 3600,
           });

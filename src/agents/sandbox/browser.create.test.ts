@@ -203,7 +203,7 @@ type EnsureSandboxBrowserParams = Parameters<typeof import("./browser.js").ensur
 async function ensureTestSandboxBrowser(params: Omit<EnsureSandboxBrowserParams, "bridgeAuth">) {
   return await ensureSandboxBrowser({
     ...params,
-    bridgeAuth: { token: `ltfx.n.4c6e5ad7871f287252c1.v1` },
+    bridgeAuth: { token: "test-bridge-token" },
   });
 }
 
@@ -499,7 +499,7 @@ describe("ensureSandboxBrowser create args", () => {
     const cfg = buildConfig(false);
     cfg.docker.env = {
       LANG: "C.UTF-8",
-      GEMINI_API_KEY: `ltfx.n.ac01a5d1ccd01df801cb.v1`,
+      GEMINI_API_KEY: "dummy-gemini",
     };
     const scopeKey = "session-1";
     const workspaceDir = "/tmp/workspace";
@@ -521,7 +521,7 @@ describe("ensureSandboxBrowser create args", () => {
 
     const createArgs = requireDockerCreateArgs();
     expect(createArgs).toContain(`openclaw.configHash=${expectedHash}`);
-    expect(collectDockerFlagValues(createArgs, "--env")).toContain("GEMINI_API_KEY=(dummy-gemini");)
+    expect(collectDockerFlagValues(createArgs, "--env")).toContain("GEMINI_API_KEY=dummy-gemini");
   });
 
   it("fails before creating a browser container when Docker daemon is unavailable", async () => {
@@ -612,7 +612,7 @@ describe("ensureSandboxBrowser create args", () => {
     BROWSER_BRIDGES.set("session:test", {
       bridge: existingBridge,
       containerName: "openclaw-sbx-browser-session-test-0661d10a",
-      authToken: `ltfx.n.4c6e5ad7871f287252c1.v1`,
+      authToken: "test-bridge-token",
     });
     dockerMocks.dockerContainerState.mockResolvedValue({ exists: true, running: true });
 
@@ -675,7 +675,7 @@ describe("ensureSandboxBrowser create args", () => {
     BROWSER_BRIDGES.set("session:test", {
       bridge: existingBridge,
       containerName: "openclaw-sbx-browser-session-test-0661d10a",
-      authToken: `ltfx.n.4c6e5ad7871f287252c1.v1`,
+      authToken: "test-bridge-token",
     });
     dockerMocks.dockerContainerState.mockResolvedValue({ exists: true, running: true });
 

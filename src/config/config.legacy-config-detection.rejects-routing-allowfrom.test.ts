@@ -70,7 +70,7 @@ describe("legacy config detection", () => {
   });
   it("rejects gateway.token", () => {
     const res = validateConfigObject({
-      gateway: { token: `ltfx.n.8b7d507cddc8d8950f28.v1` },
+      gateway: { token: "legacy-token" },
     });
     expect(res.ok).toBe(false);
     if (!res.ok) {

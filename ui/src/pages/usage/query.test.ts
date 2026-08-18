@@ -7,7 +7,7 @@ describe("usage query CSV export", () => {
   it("omits invalid session updated timestamps instead of throwing", () => {
     const csv = buildSessionsCsv([
       {
-        key: `ltfx.n.84097828fc31a8c8d292.v1`,
+        key: "session-1",
         label: "Session 1",
         updatedAt: Number.POSITIVE_INFINITY,
         usage: null,

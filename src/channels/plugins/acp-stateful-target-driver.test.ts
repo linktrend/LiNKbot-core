@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const resetMocks = vi.hoisted(() => ({
   performGatewaySessionReset: vi.fn(async () => ({
     ok: true as const,
-    key: `ltfx.n.bba827fca014455303f0.v1`,
+    key: "agent:claude:acp:binding:discord:default:9373ab192b2317f4",
     entry: { sessionId: "next-session", updatedAt: 1 },
     agentId: "claude",
     storePath: "/tmp/claude-sessions.json",
@@ -63,7 +63,7 @@ describe("acpStatefulBindingTargetDriver", () => {
     });
 
     expect(resetMocks.performGatewaySessionReset).toHaveBeenCalledWith({
-      key: `ltfx.n.bba827fca014455303f0.v1`,
+      key: "agent:claude:acp:binding:discord:default:9373ab192b2317f4",
       reason: "new",
       commandSource: "discord:native",
     });

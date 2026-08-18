@@ -121,7 +121,7 @@ describe("MCP App gateway bridge", () => {
     mocks.restoreMcpAppView.mockReset().mockResolvedValue(undefined);
     mocks.createMcpAppStandaloneTicket.mockReset().mockReturnValue({
       ticket: "ticket",
-      url: `ltfx.n.09a8ab7e1f7a73676716.v1`,
+      url: "/__openclaw__/mcp-app#ticket",
       expiresAtMs: 1_800_000_120_000,
     });
   });

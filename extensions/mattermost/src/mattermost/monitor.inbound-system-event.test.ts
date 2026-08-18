@@ -435,7 +435,7 @@ const testConfig: OpenClawConfig = {
     mattermost: {
       enabled: true,
       baseUrl: "https://mattermost.example.com",
-      botToken: `ltfx.n.df27f9beb68b7766af3a.v1`,
+      botToken: "bot-token",
       chatmode: "onmessage",
       dmPolicy: "open",
       groupPolicy: "open",
@@ -680,7 +680,7 @@ describe("mattermost inbound user posts", () => {
         mattermost: {
           enabled: true,
           baseUrl: "https://mattermost.example.com",
-          botToken: `ltfx.n.df27f9beb68b7766af3a.v1`,
+          botToken: "bot-token",
           chatmode: "onmessage",
           dmPolicy: "open",
           groupPolicy: "open",
@@ -785,7 +785,7 @@ describe("mattermost inbound user posts", () => {
         mattermost: {
           enabled: true,
           baseUrl: "https://mattermost.example.com",
-          botToken: `ltfx.n.df27f9beb68b7766af3a.v1`,
+          botToken: "bot-token",
           chatmode: "onmessage",
           dmPolicy: "open",
           groupPolicy: "open",
@@ -860,7 +860,7 @@ describe("mattermost inbound user posts", () => {
         mattermost: {
           enabled: true,
           baseUrl: "https://mattermost.example.com",
-          botToken: `ltfx.n.df27f9beb68b7766af3a.v1`,
+          botToken: "bot-token",
           chatmode: "onmessage",
           dmPolicy: "allowlist",
           groupPolicy: "open",
@@ -987,7 +987,7 @@ describe("mattermost inbound user posts", () => {
         mattermost: {
           enabled: true,
           baseUrl: "https://mattermost.example.com",
-          botToken: `ltfx.n.df27f9beb68b7766af3a.v1`,
+          botToken: "bot-token",
           chatmode: "onmessage",
           dmPolicy: "allowlist",
           groupPolicy: "open",
@@ -1048,7 +1048,7 @@ describe("mattermost inbound user posts", () => {
         mattermost: {
           enabled: true,
           baseUrl: "https://mattermost.example.com",
-          botToken: `ltfx.n.df27f9beb68b7766af3a.v1`,
+          botToken: "bot-token",
           chatmode: "oncall",
           dmPolicy: "open",
           groupPolicy: "open",
@@ -1138,7 +1138,7 @@ describe("mattermost inbound user posts", () => {
         mattermost: {
           enabled: true,
           baseUrl: "https://mattermost.example.com",
-          botToken: `ltfx.n.df27f9beb68b7766af3a.v1`,
+          botToken: "bot-token",
           chatmode: "onmessage",
           dmPolicy: "allowlist",
           groupPolicy: "open",
@@ -1215,7 +1215,7 @@ describe("mattermost inbound user posts", () => {
         mattermost: {
           enabled: true,
           baseUrl: "https://mattermost.example.com",
-          botToken: `ltfx.n.df27f9beb68b7766af3a.v1`,
+          botToken: "bot-token",
           chatmode: "onmessage",
           dmPolicy: "allowlist",
           groupPolicy: "open",
@@ -1290,7 +1290,7 @@ describe("mattermost inbound user posts", () => {
         mattermost: {
           enabled: true,
           baseUrl: "https://mattermost.example.com",
-          botToken: `ltfx.n.df27f9beb68b7766af3a.v1`,
+          botToken: "bot-token",
           chatmode: "onmessage",
           dmPolicy: "open",
           groupPolicy: "open",
@@ -1336,7 +1336,7 @@ describe("mattermost inbound user posts", () => {
         mattermost: {
           enabled: true,
           baseUrl: "https://mattermost.example.com",
-          botToken: `ltfx.n.df27f9beb68b7766af3a.v1`,
+          botToken: "bot-token",
           chatmode: "onmessage",
           dmPolicy: "open",
           groupPolicy: "open",
@@ -1561,7 +1561,7 @@ describe("mattermost inbound user posts", () => {
         mattermost: {
           enabled: true,
           baseUrl: "https://mattermost.example.com",
-          botToken: `ltfx.n.df27f9beb68b7766af3a.v1`,
+          botToken: "bot-token",
           chatmode: "onmessage",
           dmPolicy: "open",
           groupPolicy: "open",
@@ -1649,7 +1649,7 @@ describe("mattermost inbound user posts", () => {
         mattermost: {
           enabled: true,
           baseUrl: "https://mattermost.example.com",
-          botToken: `ltfx.n.df27f9beb68b7766af3a.v1`,
+          botToken: "bot-token",
           chatmode: "onmessage",
           dmPolicy: "open",
           groupPolicy: "open",

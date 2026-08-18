@@ -49,7 +49,7 @@ function asRecord(value: unknown): Record<string, unknown> | undefined {
     : undefined;
 }
 
-function readString(record: Record<string, unknown> | undefined, key: (string)): string | undefined {
+function readString(record: Record<string, unknown> | undefined, key: string): string | undefined {
   const value = record?.[key];
   return typeof value === "string" && value.trim() ? value.trim() : undefined;
 }

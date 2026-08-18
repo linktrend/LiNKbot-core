@@ -72,7 +72,7 @@ describe("normalizeMentions (via parseFeishuMessageEvent)", () => {
     const ctx = parseFeishuMessageEvent(
       makeEvent("@_bot_1 @_user_alice hello", [
         { key: "@_bot_1", name: "Bot", id: { open_id: "ou_bot" } },
-        { key: `ltfx.n.9ede75baadccf81b8538.v1`, name: "Alice", id: { open_id: "ou_alice" } },
+        { key: "@_user_alice", name: "Alice", id: { open_id: "ou_alice" } },
       ]),
       BOT_OPEN_ID,
     );
@@ -81,7 +81,7 @@ describe("normalizeMentions (via parseFeishuMessageEvent)", () => {
 
   it("falls back to @name when open_id is absent", () => {
     const ctx = parseFeishuMessageEvent(
-      makeEvent("@_user_1 hi", [{ key: `ltfx.n.3eb605b0a653477ad302.v1`, name: "Alice", id: { user_id: "uid_alice" } }]),
+      makeEvent("@_user_1 hi", [{ key: "@_user_1", name: "Alice", id: { user_id: "uid_alice" } }]),
       BOT_OPEN_ID,
     );
     expect(ctx.content).toBe("@Alice hi");
@@ -89,7 +89,7 @@ describe("normalizeMentions (via parseFeishuMessageEvent)", () => {
 
   it("falls back to plain @name when no id is present", () => {
     const ctx = parseFeishuMessageEvent(
-      makeEvent("@_unknown hey", [{ key: `ltfx.n.86b6b7a0c20afa60b997.v1`, name: "Nobody", id: {} }]),
+      makeEvent("@_unknown hey", [{ key: "@_unknown", name: "Nobody", id: {} }]),
       BOT_OPEN_ID,
     );
     expect(ctx.content).toBe("@Nobody hey");
@@ -107,7 +107,7 @@ describe("normalizeMentions (via parseFeishuMessageEvent)", () => {
     const ctx = parseFeishuMessageEvent(
       makeEvent("@_bot_1 hi @_user_2", [
         { key: "@_bot_1", name: "Bot One", id: { open_id: "ou_bot_1" } },
-        { key: `ltfx.n.dc6024d877996f5f8309.v1`, name: "User Two", id: { open_id: "ou_user_2" } },
+        { key: "@_user_2", name: "User Two", id: { open_id: "ou_user_2" } },
       ]),
       BOT_OPEN_ID,
     );
@@ -118,7 +118,7 @@ describe("normalizeMentions (via parseFeishuMessageEvent)", () => {
 
   it("treats $ in display name as literal (no replacement-pattern interpolation)", () => {
     const ctx = parseFeishuMessageEvent(
-      makeEvent("@_user_1 hi", [{ key: `ltfx.n.3eb605b0a653477ad302.v1`, name: "$& the user", id: { open_id: "ou_x" } }]),
+      makeEvent("@_user_1 hi", [{ key: "@_user_1", name: "$& the user", id: { open_id: "ou_x" } }]),
       BOT_OPEN_ID,
     );
     // $ is preserved literally (no $& pattern substitution); & is not escaped in tag body
@@ -127,7 +127,7 @@ describe("normalizeMentions (via parseFeishuMessageEvent)", () => {
 
   it("escapes < and > in mention name to protect tag structure", () => {
     const ctx = parseFeishuMessageEvent(
-      makeEvent("@_user_1 test", [{ key: `ltfx.n.3eb605b0a653477ad302.v1`, name: "<script>", id: { open_id: "ou_x" } }]),
+      makeEvent("@_user_1 test", [{ key: "@_user_1", name: "<script>", id: { open_id: "ou_x" } }]),
       BOT_OPEN_ID,
     );
     expect(ctx.content).toBe('<at user_id="ou_x">&lt;script&gt;</at> test');

@@ -23,7 +23,7 @@ export const AUTH_NONE: ResolvedGatewayAuth = {
 
 export const AUTH_TOKEN: ResolvedGatewayAuth = {
   mode: "token",
-  token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+  token: "test-token",
   password: undefined,
   allowTailscale: false,
 };

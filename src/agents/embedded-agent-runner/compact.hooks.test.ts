@@ -460,7 +460,7 @@ describe("compactEmbeddedAgentSessionDirect hooks", () => {
     getApiKeyForModelMock
       .mockRejectedValueOnce(new Error("missing SecretRef"))
       .mockResolvedValueOnce({
-        apiKey: `ltfx.n.054a82561269425111ef.v1`,
+        apiKey: "backup-key",
         mode: "api-key",
         source: "profile:openai:backup",
         profileId: "openai:backup",
@@ -518,13 +518,13 @@ describe("compactEmbeddedAgentSessionDirect hooks", () => {
         "openai:subscription": {
           type: "token",
           provider: "openai",
-          token: `ltfx.n.8a255480fb08743cb67c.v1`,
+          token: "subscription-token",
           expires: Date.now() + 60_000,
         },
         "openai:platform": {
           type: "api_key",
           provider: "openai",
-          key: `ltfx.n.e75390981221aacccfa9.v1`,
+          key: "platform-key",
         },
       },
       order: { openai: ["openai:subscription", "openai:platform"] },
@@ -535,7 +535,7 @@ describe("compactEmbeddedAgentSessionDirect hooks", () => {
       }
       if (authParams.profileId === "openai:platform") {
         return {
-          apiKey: `ltfx.n.e75390981221aacccfa9.v1`,
+          apiKey: "platform-key",
           mode: "api-key",
           source: "profile:openai:platform",
           profileId: "openai:platform",
@@ -588,7 +588,7 @@ describe("compactEmbeddedAgentSessionDirect hooks", () => {
         "openai:broken": {
           type: "api_key",
           provider: "openai",
-          key: `ltfx.n.467c28adf051e55f3878.v1`,
+          key: "broken-profile-key",
         },
       },
       order: { openai: ["openai:broken"] },
@@ -601,7 +601,7 @@ describe("compactEmbeddedAgentSessionDirect hooks", () => {
       }
       if (authParams.profileId === undefined && authParams.allowAuthProfileFallback === false) {
         return {
-          apiKey: `ltfx.n.b370ecc01e2829bcb48a.v1`,
+          apiKey: "literal-key",
           mode: "api-key",
           source: "models.json",
         };
@@ -617,7 +617,7 @@ describe("compactEmbeddedAgentSessionDirect hooks", () => {
           auth: { order: { openai: ["openai:broken"] } },
           models: {
             providers: {
-              openai: { apiKey: `ltfx.n.b370ecc01e2829bcb48a.v1`, baseUrl: "", models: [] },
+              openai: { apiKey: "literal-key", baseUrl: "", models: [] },
             },
           },
           agents: {
@@ -658,7 +658,7 @@ describe("compactEmbeddedAgentSessionDirect hooks", () => {
         "openai:platform": {
           type: "api_key",
           provider: "openai",
-          key: `ltfx.n.e75390981221aacccfa9.v1`,
+          key: "platform-key",
         },
       },
       order: { openai: ["openai:platform"] },
@@ -1265,7 +1265,7 @@ describe("compactEmbeddedAgentSessionDirect hooks", () => {
       order: { openai: ["openai:default"] },
     });
     getApiKeyForModelMock.mockImplementation(async (params?: { profileId?: string }) => ({
-      apiKey: `ltfx.n.40ab9272a6efc6177a24.v1`,
+      apiKey: "test-oauth",
       mode: "oauth",
       source: `profile:${params?.profileId ?? "openai:default"}`,
       profileId: params?.profileId ?? "openai:default",
@@ -1342,7 +1342,7 @@ describe("compactEmbeddedAgentSessionDirect hooks", () => {
       order: { openai: ["openai:chatgpt"] },
     });
     getApiKeyForModelMock.mockImplementation(async (params?: { profileId?: string }) => ({
-      apiKey: `ltfx.n.f35cd067d05752edf483.v1`,
+      apiKey: "test-auth-token",
       mode: "oauth",
       source: `profile:${params?.profileId ?? "openai:chatgpt"}`,
       profileId: params?.profileId ?? "openai:chatgpt",
@@ -1600,7 +1600,7 @@ describe("compactEmbeddedAgentSessionDirect hooks", () => {
       },
     });
     getApiKeyForModelMock.mockImplementation(async (params?: { profileId?: string }) => ({
-      apiKey: `ltfx.n.40ab9272a6efc6177a24.v1`,
+      apiKey: "test-oauth",
       mode: "oauth",
       source: `profile:${params?.profileId ?? "openai:work"}`,
       profileId: params?.profileId ?? "openai:work",
@@ -2729,7 +2729,7 @@ describe("compactEmbeddedAgentSession hooks (ownsCompaction engine)", () => {
         "openai:p1": {
           type: "api_key",
           provider: "openai",
-          key: `ltfx.n.e75390981221aacccfa9.v1`,
+          key: "platform-key",
         },
       },
     });
@@ -2827,7 +2827,7 @@ describe("compactEmbeddedAgentSession hooks (ownsCompaction engine)", () => {
         "openai:subscription": {
           type: "token",
           provider: "openai",
-          token: `ltfx.n.8a255480fb08743cb67c.v1`,
+          token: "subscription-token",
           expires: Date.now() + 60_000,
         },
       },
@@ -2855,7 +2855,7 @@ describe("compactEmbeddedAgentSession hooks (ownsCompaction engine)", () => {
             providers: {
               openai: {
                 auth: "api-key",
-                apiKey: `ltfx.n.b370ecc01e2829bcb48a.v1`,
+                apiKey: "literal-key",
                 models: [{ id: "gpt-5.5", contextWindow: 350_000 }],
               },
             },
@@ -2894,7 +2894,7 @@ describe("compactEmbeddedAgentSession hooks (ownsCompaction engine)", () => {
         "openai:subscription": {
           type: "token" as const,
           provider: "openai",
-          token: `ltfx.n.8a255480fb08743cb67c.v1`,
+          token: "subscription-token",
           expires: Date.now() + 60_000,
         },
       },
@@ -2908,7 +2908,7 @@ describe("compactEmbeddedAgentSession hooks (ownsCompaction engine)", () => {
         throw new Error("subscription credential resolution failed");
       }
       if (authParams.allowAuthProfileFallback === false) {
-        return { apiKey: `ltfx.n.b370ecc01e2829bcb48a.v1`, mode: "api-key", source: "models.json" };
+        return { apiKey: "literal-key", mode: "api-key", source: "models.json" };
       }
       throw new Error("unexpected auth lookup");
     });
@@ -2949,7 +2949,7 @@ describe("compactEmbeddedAgentSession hooks (ownsCompaction engine)", () => {
             providers: {
               openai: {
                 auth: "api-key",
-                apiKey: `ltfx.n.b370ecc01e2829bcb48a.v1`,
+                apiKey: "literal-key",
                 models: [{ id: "gpt-5.5" }],
               },
             },
@@ -3171,7 +3171,7 @@ describe("compactEmbeddedAgentSession hooks (ownsCompaction engine)", () => {
         "openai:token": {
           type: "token",
           provider: "openai",
-          token: `ltfx.n.8a255480fb08743cb67c.v1`,
+          token: "subscription-token",
         },
       },
       order: { openai: ["openai:token"] },
@@ -3335,7 +3335,7 @@ describe("compactEmbeddedAgentSession hooks (ownsCompaction engine)", () => {
       order: { openai: ["openai:chatgpt"] },
     });
     getApiKeyForModelMock.mockImplementation(async (params?: { profileId?: string }) => ({
-      apiKey: `ltfx.n.f35cd067d05752edf483.v1`,
+      apiKey: "test-auth-token",
       mode: "oauth",
       source: `profile:${params?.profileId ?? "openai:chatgpt"}`,
       profileId: params?.profileId ?? "openai:chatgpt",

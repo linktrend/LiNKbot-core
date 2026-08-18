@@ -23,7 +23,7 @@ describe("buildStatusCommandReportData", () => {
                   baseParams.summary.sessions.recent[0],
                   "baseParams.summary.sessions.recent[0] test invariant",
                 ),
-                key: `ltfx.n.1add55581aaea687f8c5.v1`,
+                key: "session-key",
                 kind: "direct",
                 updatedAt: 1,
                 age: 5_000,

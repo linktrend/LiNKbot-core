@@ -17,9 +17,9 @@ PROMPT_NONCE="OPENWEBUI_DOCKER_E2E_$(date +%s)_$$"
 PROMPT="${OPENCLAW_OPENWEBUI_PROMPT:-Reply with exactly this token and nothing else: ${PROMPT_NONCE}}"
 PORT="$(docker_e2e_read_tcp_port_env OPENCLAW_OPENWEBUI_GATEWAY_PORT 18789)"
 WEBUI_PORT="$(docker_e2e_read_tcp_port_env OPENCLAW_OPENWEBUI_PORT 8080)"
-TOKEN="${ltfx.n.6df4a633c66b9318c08e.v1}"
+TOKEN="openwebui-e2e-$(date +%s)-$$"
 ADMIN_EMAIL="${OPENCLAW_OPENWEBUI_ADMIN_EMAIL:-openwebui-e2e@example.com}"
-ADMIN_PASSWORD="${OPENCLAW_OPENWEBUI_ADMIN_PASSWORD:"${ltfx.n.b09e9c010e28ba39694a.v1}" +%s)-$$}"
+ADMIN_PASSWORD="${OPENCLAW_OPENWEBUI_ADMIN_PASSWORD:-OpenWebUI-E2E-Password-$(date +%s)-$$}"
 NET_NAME="openclaw-openwebui-e2e-$$"
 GW_NAME="openclaw-openwebui-gateway-$$"
 OW_NAME="openclaw-openwebui-$$"
@@ -153,7 +153,7 @@ docker_e2e_docker_cmd run -d \
     source scripts/lib/openclaw-e2e-instance.sh
     entry="$(openclaw_e2e_resolve_entrypoint)"
 
-    openai_api_key="${OPENAI_API_KEY:"${ltfx.n.955d4b08296ca5cbedcc.v1}" required}"
+    openai_api_key="${OPENAI_API_KEY:?OPENAI_API_KEY required}"
     batch_file="$(mktemp /tmp/openclaw-openwebui-config.XXXXXX.json)"
     OPENCLAW_CONFIG_BATCH_PATH="$batch_file" node scripts/e2e/lib/fixture.mjs openwebui-config "$openai_api_key"
     node "$entry" config set --batch-file "$batch_file" >/dev/null
@@ -190,7 +190,7 @@ docker_e2e_docker_cmd run -d \
   -e RAG_EMBEDDING_MODEL_AUTO_UPDATE=False \
   -e RAG_RERANKING_MODEL_AUTO_UPDATE=False \
   -e WEBUI_ADMIN_EMAIL="$ADMIN_EMAIL" \
-  -e WEBUI_ADMIN_PASSWORD="${ltfx.n.64951f1eba2cf5021799.v1}" \
+  -e WEBUI_ADMIN_PASSWORD="$ADMIN_PASSWORD" \
   -e WEBUI_ADMIN_NAME="OpenClaw E2E" \
   -e ENABLE_SIGNUP=False \
   -e DEFAULT_MODELS="openclaw/default" \
@@ -219,7 +219,7 @@ set +e
 docker_e2e_docker_cmd exec \
   -e "OPENWEBUI_BASE_URL=http://$OW_NAME:$WEBUI_PORT" \
   -e "OPENWEBUI_ADMIN_EMAIL=$ADMIN_EMAIL" \
-  -e "OPENWEBUI_ADMIN_PASSWORD="${ltfx.n.fe678ec4c6ea654200b2.v1}" \
+  -e "OPENWEBUI_ADMIN_PASSWORD=$ADMIN_PASSWORD" \
   -e "OPENWEBUI_EXPECTED_NONCE=$PROMPT_NONCE" \
   -e "OPENWEBUI_PROMPT=$PROMPT" \
   -e "OPENWEBUI_SMOKE_MODE=$SMOKE_MODE" \

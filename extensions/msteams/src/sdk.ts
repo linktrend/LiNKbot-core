@@ -374,7 +374,7 @@ function createCertificateApp(
  * for token acquisition.
  */
 export function createMSTeamsTokenProvider(app: MSTeamsApp): MSTeamsTokenProvider {
-  const tokenToString = (token: (unknown): string => {)
+  const tokenToString = (token: unknown): string => {
     if (token == null) {
       return "";
     }

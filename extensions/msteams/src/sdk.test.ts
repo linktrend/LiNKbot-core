@@ -9,13 +9,13 @@ vi.mock("node:fs", async (importOriginal) => {
   return {
     ...actual,
     readFileSync: vi.fn(
-      () => "-----BEGIN RSA LTFX PRIVATE KEY-----\nfake-key\n-----END RSA PRIVATE KEY-----",
+      () => "-----BEGIN RSA PRIVATE KEY-----\nfake-key\n-----END RSA PRIVATE KEY-----",
     ),
   };
 });
 
 const { mockGetToken } = vi.hoisted(() => {
-  const mockGetTokenLocal = vi.fn().mockResolvedValue({ token: `ltfx.n.119fa075ffcfe27ff437.v1` });
+  const mockGetTokenLocal = vi.fn().mockResolvedValue({ token: "mock-managed-token" });
   return { mockGetToken: mockGetTokenLocal };
 });
 vi.mock("@azure/identity", () => {
@@ -44,7 +44,7 @@ describe("createMSTeamsApp", () => {
     const creds: MSTeamsCredentials = {
       type: "secret",
       appId: "test-app-id",
-      appPassword: `ltfx.n.9caf06bb4436cdbfa20a.v1`,
+      appPassword: "test-secret",
       tenantId: "test-tenant",
     };
 
@@ -58,7 +58,7 @@ describe("createMSTeamsApp", () => {
       type: "secret",
 
       appId: "test-app-id",
-      appPassword: `ltfx.n.9caf06bb4436cdbfa20a.v1`,
+      appPassword: "test-secret",
       tenantId: "test-tenant",
     };
 
@@ -137,7 +137,7 @@ describe("createMSTeamsApp", () => {
     const creds: MSTeamsCredentials = {
       type: "secret",
       appId: "test-app-id",
-      appPassword: `ltfx.n.9caf06bb4436cdbfa20a.v1`,
+      appPassword: "test-secret",
       tenantId: "test-tenant",
     };
 
@@ -153,7 +153,7 @@ describe("createMSTeamsApp", () => {
     const creds: MSTeamsCredentials = {
       type: "secret",
       appId: "test-app-id",
-      appPassword: `ltfx.n.9caf06bb4436cdbfa20a.v1`,
+      appPassword: "test-secret",
       tenantId: "test-tenant",
     };
 
@@ -168,7 +168,7 @@ describe("createMSTeamsApp", () => {
     const creds: MSTeamsCredentials = {
       type: "secret",
       appId: "test-app-id",
-      appPassword: `ltfx.n.9caf06bb4436cdbfa20a.v1`,
+      appPassword: "test-secret",
       tenantId: "test-tenant",
     };
 
@@ -182,7 +182,7 @@ describe("createMSTeamsApp", () => {
     const creds: MSTeamsCredentials = {
       type: "secret",
       appId: "test-app-id",
-      appPassword: `ltfx.n.9caf06bb4436cdbfa20a.v1`,
+      appPassword: "test-secret",
       tenantId: "test-tenant",
     };
 
@@ -204,7 +204,7 @@ describe("createMSTeamsApp", () => {
     const creds: MSTeamsCredentials = {
       type: "secret",
       appId: "test-app-id",
-      appPassword: `ltfx.n.9caf06bb4436cdbfa20a.v1`,
+      appPassword: "test-secret",
       tenantId: "test-tenant",
     };
 
@@ -227,7 +227,7 @@ describe("createMSTeamsApp", () => {
     const creds: MSTeamsCredentials = {
       type: "secret",
       appId: "test-app-id",
-      appPassword: `ltfx.n.9caf06bb4436cdbfa20a.v1`,
+      appPassword: "test-secret",
       tenantId: "test-tenant",
     };
     const app = await createMSTeamsApp(creds, { cloud: "China" });
@@ -242,7 +242,7 @@ describe("createMSTeamsApp", () => {
     const creds: MSTeamsCredentials = {
       type: "secret",
       appId: "test-app-id",
-      appPassword: `ltfx.n.9caf06bb4436cdbfa20a.v1`,
+      appPassword: "test-secret",
       tenantId: "test-tenant",
     };
 
@@ -257,7 +257,7 @@ describe("createMSTeamsApp", () => {
     const creds: MSTeamsCredentials = {
       type: "secret",
       appId: "test-app-id",
-      appPassword: `ltfx.n.9caf06bb4436cdbfa20a.v1`,
+      appPassword: "test-secret",
       tenantId: "test-tenant",
     };
     const post = vi.fn(async () => ({ data: { id: "sent-1" } }));

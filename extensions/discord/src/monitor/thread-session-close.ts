@@ -34,7 +34,7 @@ export async function closeDiscordThreadSessions(params: {
   //   agent:<agentId>:discord:channel:<parentId>:thread:<threadId>
   const segmentRe = new RegExp(`:${normalizedThreadId}(?::|$)`, "i");
 
-  function sessionKeyContainsThreadId(key: (string)): boolean {
+  function sessionKeyContainsThreadId(key: string): boolean {
     return segmentRe.test(key);
   }
 

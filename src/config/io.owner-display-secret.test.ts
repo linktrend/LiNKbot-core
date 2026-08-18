@@ -20,14 +20,14 @@ describe("retainGeneratedOwnerDisplaySecret", () => {
     const config = {
       commands: {
         ownerDisplay: "hash",
-        ownerDisplaySecret: `ltfx.n.029aae384381cc964330.v1`,
+        ownerDisplaySecret: "generated-owner-secret",
       },
     } as OpenClawConfig;
 
     const result = retainGeneratedOwnerDisplaySecret({
       config,
       configPath,
-      generatedSecret: `ltfx.n.029aae384381cc964330.v1`,
+      generatedSecret: "generated-owner-secret",
       state,
     });
 
@@ -42,7 +42,7 @@ describe("retainGeneratedOwnerDisplaySecret", () => {
     const config = {
       commands: {
         ownerDisplay: "hash",
-        ownerDisplaySecret: `ltfx.n.06d11b54b82961522733.v1`,
+        ownerDisplaySecret: "existing-secret",
       },
     } as OpenClawConfig;
 

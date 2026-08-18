@@ -16,7 +16,7 @@ scenario:
         defaultRoomKey: main
         rooms:
           - encrypted: false
-            key: "${ltfx.n.606b6d2235c57d233d35.v1}"
+            key: stale-sync
             kind: group
             members:
               - driver

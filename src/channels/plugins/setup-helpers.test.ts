@@ -174,14 +174,14 @@ describe("applySetupAccountConfigPatch", () => {
         channels: {
           "demo-setup": {
             accounts: {
-              personal: { botToken: `ltfx.n.f5e79647e5f68d52ce5c.v1` },
+              personal: { botToken: "personal-token" },
             },
           },
         },
       }),
       channelKey: "demo-setup",
       accountId: "Work Team",
-      patch: { botToken: `ltfx.n.488dc3c9ef1e2576bc04.v1` },
+      patch: { botToken: "work-token" },
     });
 
     const channel = channelRecord(next, "demo-setup");

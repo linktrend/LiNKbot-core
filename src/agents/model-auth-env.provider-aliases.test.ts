@@ -110,7 +110,7 @@ describe("resolveEnvApiKey provider auth aliases", () => {
         workspaceDir: "/workspace",
       }),
     ).toEqual({
-      apiKey: `ltfx.n.5426ef877633382f820b.v1`,
+      apiKey: "setup-secret",
       source: "env",
     });
     expect(setupRegistryMocks.resolvePluginSetupProvider).toHaveBeenCalledWith({

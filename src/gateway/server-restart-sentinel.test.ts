@@ -581,7 +581,7 @@ describe("scheduleRestartSentinelWake", () => {
     expectMockCallFields(mocks.deliverOutboundPayloads, {
       channel: "whatsapp",
       to: "+15550002",
-      session: { key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`, agentId: "agent-from-key" },
+      session: { key: "agent:main:main", agentId: "agent-from-key" },
       deps,
       bestEffort: false,
       skipQueue: true,

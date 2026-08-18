@@ -148,7 +148,7 @@ vi.mock("../talk-transcription-relay.js", async (importOriginal) => {
   };
 });
 
-function createTalkConfig(apiKey: (unknown): OpenClawConfig {)
+function createTalkConfig(apiKey: unknown): OpenClawConfig {
   return {
     talk: {
       provider: "acme",
@@ -233,7 +233,7 @@ describe("talk.catalog handler", () => {
         isConfigured: vi.fn(() => true),
       } as never,
     ]);
-    mocks.getResolvedSpeechProviderConfig.mockReturnValue({ apiKey: `ltfx.n.7724e51ac3e8c14073a0.v1` });
+    mocks.getResolvedSpeechProviderConfig.mockReturnValue({ apiKey: "speech-key" });
     mocks.listRealtimeTranscriptionProviders.mockReturnValue([
       {
         id: "openai",
@@ -286,7 +286,7 @@ describe("talk.catalog handler", () => {
     ]);
     mocks.resolveConfiguredRealtimeVoiceProvider.mockReturnValue({
       provider: { id: "google" },
-      providerConfig: { apiKey: `ltfx.n.13705115bca8e4f88de4.v1`, project: "base", model: "talk-model" },
+      providerConfig: { apiKey: "live-key", project: "base", model: "talk-model" },
     } as never);
 
     const respond = vi.fn();
@@ -304,11 +304,11 @@ describe("talk.catalog handler", () => {
           ({
             talk: {
               provider: "elevenlabs",
-              providers: { elevenlabs: { apiKey: `ltfx.n.7724e51ac3e8c14073a0.v1` } },
+              providers: { elevenlabs: { apiKey: "speech-key" } },
               realtime: {
                 provider: "google",
                 providers: {
-                  google: { apiKey: `ltfx.n.13705115bca8e4f88de4.v1`, project: "base" },
+                  google: { apiKey: "live-key", project: "base" },
                 },
                 model: "talk-model",
               },
@@ -748,7 +748,7 @@ describe("talk.speak handler", () => {
       provider: "acme",
       providers: {
         acme: {
-          apiKey: `ltfx.n.d302d5b1cd2912f020a7.v1`,
+          apiKey: "env-acme-key",
           speakerVoice: "talk-speaker",
           speakerVoiceId: "talk-speaker-id",
           voice: "explicit-talk-voice",
@@ -952,7 +952,7 @@ describe("talk.config handler", () => {
               realtime: {
                 providers: {
                   " OpenAI ": {
-                    apiKey: `ltfx.n.76f8f0110738427e11a5.v1`,
+                    apiKey: "runtime-azure-secret",
                     azureEndpoint: "https://example.openai.azure.com",
                     azureDeployment: "realtime-prod",
                   },
@@ -1038,7 +1038,7 @@ describe("talk.config handler", () => {
           timeoutMs: 54_321,
           providers: {
             acme: {
-              apiKey: `ltfx.n.d302d5b1cd2912f020a7.v1`,
+              apiKey: "env-acme-key",
             },
           },
         },
@@ -1103,7 +1103,7 @@ describe("talk.config handler", () => {
     expectRecordFields(talkConfig, { provider: "acme" });
     const resolved = talkConfig?.resolved as Record<string, unknown> | undefined;
     expectRecordFields(resolved, { provider: "acme" });
-    expectRecordFields(resolved?.config, { apiKey: `ltfx.n.2fb22ad0d0179be2a874.v1` });
+    expectRecordFields(resolved?.config, { apiKey: "__OPENCLAW_REDACTED__" });
   });
 
   it("returns runtime-resolved Talk provider SecretRefs to authorized clients", async () => {
@@ -1147,7 +1147,7 @@ describe("talk.config handler", () => {
     });
     const resolved = talkConfig?.resolved as Record<string, unknown> | undefined;
     expectRecordFields(resolved, { provider: "acme" });
-    expectRecordFields(resolved?.config, { apiKey: `ltfx.n.164296056c8c0dff2958.v1` });
+    expectRecordFields(resolved?.config, { apiKey: "runtime-resolved-talk-key" });
   });
 
   it("materializes only the active Talk provider apiKey for authorized clients", async () => {
@@ -1180,11 +1180,11 @@ describe("talk.config handler", () => {
         provider: "acme",
         providers: {
           acme: {
-            apiKey: `ltfx.n.c8590464486a863a807d.v1`,
+            apiKey: "runtime-active-talk-key",
             voiceId: "active-voice",
           },
           other: {
-            apiKey: `ltfx.n.5a2fc528834173c40d1f.v1`,
+            apiKey: "runtime-inactive-talk-key",
             voiceId: "inactive-voice",
           },
         },
@@ -1192,7 +1192,7 @@ describe("talk.config handler", () => {
           provider: "openai",
           providers: {
             openai: {
-              apiKey: `ltfx.n.763afa9d9bb0c43079d5.v1`,
+              apiKey: "runtime-realtime-key",
               voice: "cedar",
             },
           },
@@ -1243,7 +1243,7 @@ describe("talk.config handler", () => {
     });
     const resolved = talkConfig?.resolved as Record<string, unknown> | undefined;
     expectRecordFields(resolved, { provider: "acme" });
-    expectRecordFields(resolved?.config, { apiKey: `ltfx.n.c8590464486a863a807d.v1` });
+    expectRecordFields(resolved?.config, { apiKey: "runtime-active-talk-key" });
 
     const serialized = JSON.stringify(response);
     expect(serialized).toContain("runtime-active-talk-key");
@@ -1269,8 +1269,8 @@ describe("talk.config handler", () => {
       }) => ({
         ...talkProviderConfig,
         voiceId: "resolver-voice",
-        clientSecret: `ltfx.n.771a7ad59a6af6728e69.v1`,
-        authToken: `ltfx.n.f9ea0653118576d83be4.v1`,
+        clientSecret: "resolver-client-secret",
+        authToken: "resolver-auth-token",
       }),
     });
     mocks.readConfigFileSnapshot.mockResolvedValue({
@@ -1296,10 +1296,10 @@ describe("talk.config handler", () => {
     const response = expectRespondOk(respond) as { config?: { talk?: Record<string, unknown> } };
     const resolved = response.config?.talk?.resolved as Record<string, unknown> | undefined;
     expectRecordFields(resolved?.config, {
-      apiKey: `ltfx.n.164296056c8c0dff2958.v1`,
+      apiKey: "runtime-resolved-talk-key",
       voiceId: "resolver-voice",
-      clientSecret: `ltfx.n.2fb22ad0d0179be2a874.v1`,
-      authToken: `ltfx.n.2fb22ad0d0179be2a874.v1`,
+      clientSecret: "__OPENCLAW_REDACTED__",
+      authToken: "__OPENCLAW_REDACTED__",
     });
     const serialized = JSON.stringify(response);
     expect(serialized).not.toContain("resolver-client-secret");
@@ -1312,12 +1312,12 @@ describe("talk.config handler", () => {
         provider: "acme",
         providers: {
           acme: {
-            apiKey: `ltfx.n.4473b2a202a308e11a3a.v1`,
+            apiKey: "source-active-talk-key",
             voiceId: "active-voice",
-            clientSecret: `ltfx.n.3a8a20904d4846b0bc9c.v1`,
+            clientSecret: "source-client-secret",
           },
           other: {
-            apiKey: `ltfx.n.c2fcdc4cfef37610030e.v1`,
+            apiKey: "source-inactive-talk-key",
             voiceId: "inactive-voice",
           },
         },
@@ -1325,8 +1325,8 @@ describe("talk.config handler", () => {
           provider: "openai",
           providers: {
             openai: {
-              apiKey: `ltfx.n.0ea2ce67718b635bd3b9.v1`,
-              authToken: `ltfx.n.8c310ca419b36f46258e.v1`,
+              apiKey: "source-realtime-key",
+              authToken: "source-realtime-auth-token",
             },
           },
         },
@@ -1337,12 +1337,12 @@ describe("talk.config handler", () => {
         provider: "acme",
         providers: {
           acme: {
-            apiKey: `ltfx.n.c8590464486a863a807d.v1`,
+            apiKey: "runtime-active-talk-key",
             voiceId: "active-voice",
-            clientSecret: `ltfx.n.81cfcb2d9465507df348.v1`,
+            clientSecret: "runtime-client-secret",
           },
           other: {
-            apiKey: `ltfx.n.5a2fc528834173c40d1f.v1`,
+            apiKey: "runtime-inactive-talk-key",
             voiceId: "inactive-voice",
           },
         },
@@ -1350,8 +1350,8 @@ describe("talk.config handler", () => {
           provider: "openai",
           providers: {
             openai: {
-              apiKey: `ltfx.n.763afa9d9bb0c43079d5.v1`,
-              authToken: `ltfx.n.d9ffcd6cc6721054ce11.v1`,
+              apiKey: "runtime-realtime-key",
+              authToken: "runtime-realtime-auth-token",
             },
           },
         },
@@ -1382,8 +1382,8 @@ describe("talk.config handler", () => {
     const response = expectRespondOk(respond) as { config?: { talk?: Record<string, unknown> } };
     const resolved = response.config?.talk?.resolved as Record<string, unknown> | undefined;
     expectRecordFields(resolved?.config, {
-      apiKey: `ltfx.n.c8590464486a863a807d.v1`,
-      clientSecret: `ltfx.n.2fb22ad0d0179be2a874.v1`,
+      apiKey: "runtime-active-talk-key",
+      clientSecret: "__OPENCLAW_REDACTED__",
     });
     const serialized = JSON.stringify(response);
     expect(serialized).toContain("runtime-active-talk-key");
@@ -1449,7 +1449,7 @@ describe("talk.session unified handlers", () => {
       const key = (p as { key?: unknown }).key;
       return {
         ok: true,
-        key: typeof key === "string" ? key : `ltfx.n.9eaa809b4e32d8d7d33c.v1`,
+        key: typeof key === "string" ? key : "session:main",
       };
     });
     mocks.steerTalkRealtimeRelayAgentRun.mockResolvedValue({
@@ -1490,7 +1490,7 @@ describe("talk.session unified handlers", () => {
     mocks.listRealtimeVoiceProviders.mockReturnValue([provider] as never);
     mocks.resolveConfiguredRealtimeVoiceProvider.mockReturnValue({
       provider,
-      providerConfig: { apiKey: `ltfx.n.97aba22fd3c830fb7840.v1` },
+      providerConfig: { apiKey: "openai-key" },
     });
     mocks.createTalkRealtimeRelaySession.mockReturnValue({
       provider: "openai",
@@ -1537,7 +1537,7 @@ describe("talk.session unified handlers", () => {
             talk: {
               realtime: {
                 provider: "openai",
-                providers: { openai: { apiKey: `ltfx.n.97aba22fd3c830fb7840.v1` } },
+                providers: { openai: { apiKey: "openai-key" } },
                 instructions: "Speak warmly.",
                 consultRouting: "force-agent-consult",
               },
@@ -1548,7 +1548,7 @@ describe("talk.session unified handlers", () => {
 
     expectRecordFields(mockCallArg(mocks.resolveConfiguredRealtimeVoiceProvider), {
       configuredProviderId: "openai",
-      providerConfigs: { openai: { apiKey: `ltfx.n.97aba22fd3c830fb7840.v1` } },
+      providerConfigs: { openai: { apiKey: "openai-key" } },
       defaultModel: "gpt-realtime-default",
     });
     expect(mocks.ensureClientVoiceAgentSessionEntry).toHaveBeenCalledWith({
@@ -1561,7 +1561,7 @@ describe("talk.session unified handlers", () => {
     >;
     expectRecordFields(relayCreateInput, { connId: "conn-1", provider, language: "de" });
     expectRecordFields(relayCreateInput.providerConfig, {
-      apiKey: `ltfx.n.97aba22fd3c830fb7840.v1`,
+      apiKey: "openai-key",
       model: "gpt-realtime",
       voice: "alloy",
     });
@@ -1948,7 +1948,7 @@ describe("talk.session unified handlers", () => {
                   config: {
                     streaming: {
                       provider: "openai-realtime",
-                      providers: { openai: { apiKey: `ltfx.n.97aba22fd3c830fb7840.v1` } },
+                      providers: { openai: { apiKey: "openai-key" } },
                     },
                   },
                 },
@@ -1964,7 +1964,7 @@ describe("talk.session unified handlers", () => {
     });
     expect(mockCallArg(mocks.createTalkTranscriptionRelaySession)).toMatchObject({
       provider: openai,
-      providerConfig: { apiKey: `ltfx.n.97aba22fd3c830fb7840.v1` },
+      providerConfig: { apiKey: "openai-key" },
     });
   });
 
@@ -2002,7 +2002,7 @@ describe("talk.session unified handlers", () => {
     expect(mocks.resolveSessionKeyFromResolveParams).toHaveBeenCalledWith({
       cfg: {},
       p: {
-        key: `ltfx.n.9eaa809b4e32d8d7d33c.v1`,
+        key: "session:main",
         includeGlobal: true,
         includeUnknown: true,
       },
@@ -2173,7 +2173,7 @@ describe("talk.session unified handlers", () => {
     expect(mocks.resolveSessionKeyFromResolveParams).toHaveBeenCalledWith({
       cfg: {},
       p: {
-        key: `ltfx.n.a99b961a27d8847c63d7.v1`,
+        key: "agent:worker:subagent:child",
         spawnedBy: "agent:main:parent",
         includeGlobal: true,
         includeUnknown: true,
@@ -2919,7 +2919,7 @@ describe("talk.client.create handler", () => {
     };
     mocks.resolveConfiguredRealtimeVoiceProvider.mockReturnValue({
       provider,
-      providerConfig: { apiKey: `ltfx.n.97aba22fd3c830fb7840.v1`, model: "gpt-realtime" },
+      providerConfig: { apiKey: "openai-key", model: "gpt-realtime" },
     });
 
     const respond = vi.fn();
@@ -2943,10 +2943,10 @@ describe("talk.client.create handler", () => {
           ({
             talk: {
               provider: "elevenlabs",
-              providers: { elevenlabs: { apiKey: `ltfx.n.7724e51ac3e8c14073a0.v1` } },
+              providers: { elevenlabs: { apiKey: "speech-key" } },
               realtime: {
                 provider: "openai",
-                providers: { openai: { apiKey: `ltfx.n.97aba22fd3c830fb7840.v1` } },
+                providers: { openai: { apiKey: "openai-key" } },
                 model: "gpt-realtime",
                 voice: "alloy",
                 instructions: "Speak warmly.",
@@ -2958,7 +2958,7 @@ describe("talk.client.create handler", () => {
 
     expectRecordFields(mockCallArg(mocks.resolveConfiguredRealtimeVoiceProvider), {
       configuredProviderId: "openai",
-      providerConfigs: { openai: { apiKey: `ltfx.n.97aba22fd3c830fb7840.v1` } },
+      providerConfigs: { openai: { apiKey: "openai-key" } },
       defaultModel: "gpt-realtime",
     });
     const createInput = mockCallArg(createBrowserSession) as Record<string, unknown>;
@@ -2998,7 +2998,7 @@ describe("talk.client.create handler", () => {
     const createBrowserSession = vi.fn(async (_input: unknown) => ({
       provider: "openai",
       transport: "webrtc" as const,
-      clientSecret: `ltfx.n.8ac950188678f9bb3524.v1`,
+      clientSecret: "test-client-secret",
     }));
     const provider = {
       id: "openai",
@@ -3010,7 +3010,7 @@ describe("talk.client.create handler", () => {
     };
     mocks.resolveConfiguredRealtimeVoiceProvider.mockReturnValue({
       provider,
-      providerConfig: { apiKey: `ltfx.n.4c806362b613f7496abf.v1` },
+      providerConfig: { apiKey: "test-api-key" },
     });
 
     const respond = vi.fn();
@@ -3119,7 +3119,7 @@ describe("talk.client.create handler", () => {
     mocks.listRealtimeVoiceProviders.mockReturnValue([provider] as never);
     mocks.resolveConfiguredRealtimeVoiceProvider.mockReturnValue({
       provider,
-      providerConfig: { apiKey: `ltfx.n.97aba22fd3c830fb7840.v1`, model: "gpt-realtime-default" },
+      providerConfig: { apiKey: "openai-key", model: "gpt-realtime-default" },
     });
 
     const respond = vi.fn();
@@ -3144,7 +3144,7 @@ describe("talk.client.create handler", () => {
             },
             talk: {
               realtime: {
-                providers: { openai: { apiKey: `ltfx.n.97aba22fd3c830fb7840.v1` } },
+                providers: { openai: { apiKey: "openai-key" } },
                 speakerVoiceId: "voice-123",
               },
             },
@@ -3154,7 +3154,7 @@ describe("talk.client.create handler", () => {
 
     expectRecordFields(mockCallArg(mocks.resolveConfiguredRealtimeVoiceProvider), {
       configuredProviderId: "openai",
-      providerConfigs: { openai: { apiKey: `ltfx.n.97aba22fd3c830fb7840.v1` } },
+      providerConfigs: { openai: { apiKey: "openai-key" } },
       defaultModel: "gpt-realtime-default",
     });
     expectRecordFields(mockCallArg(createBrowserSession), {
@@ -3182,7 +3182,7 @@ describe("talk.client.create handler", () => {
     mocks.listRealtimeVoiceProviders.mockReturnValue([provider] as never);
     mocks.resolveConfiguredRealtimeVoiceProvider.mockReturnValue({
       provider,
-      providerConfig: { apiKey: `ltfx.n.97aba22fd3c830fb7840.v1` },
+      providerConfig: { apiKey: "openai-key" },
     });
 
     const respond = vi.fn();
@@ -3207,7 +3207,7 @@ describe("talk.client.create handler", () => {
             },
             talk: {
               realtime: {
-                providers: { openai: { apiKey: `ltfx.n.97aba22fd3c830fb7840.v1` } },
+                providers: { openai: { apiKey: "openai-key" } },
               },
             },
           }) as OpenClawConfig,
@@ -3216,7 +3216,7 @@ describe("talk.client.create handler", () => {
 
     expectRecordFields(mockCallArg(mocks.resolveConfiguredRealtimeVoiceProvider), {
       configuredProviderId: "openai",
-      providerConfigs: { openai: { apiKey: `ltfx.n.97aba22fd3c830fb7840.v1` } },
+      providerConfigs: { openai: { apiKey: "openai-key" } },
       defaultModel: undefined,
     });
     const createInput = mockCallArg(createBrowserSession) as Record<string, unknown>;
@@ -3252,7 +3252,7 @@ describe("talk.client.create handler", () => {
     mocks.listRealtimeVoiceProviders.mockReturnValue([googleProvider, openaiProvider] as never);
     mocks.resolveConfiguredRealtimeVoiceProvider.mockReturnValue({
       provider: openaiProvider,
-      providerConfig: { apiKey: `ltfx.n.97aba22fd3c830fb7840.v1`, model: "gpt-realtime-2" },
+      providerConfig: { apiKey: "openai-key", model: "gpt-realtime-2" },
     });
 
     const respond = vi.fn();
@@ -3278,7 +3278,7 @@ describe("talk.client.create handler", () => {
             },
             talk: {
               realtime: {
-                providers: { openai: { apiKey: `ltfx.n.97aba22fd3c830fb7840.v1` } },
+                providers: { openai: { apiKey: "openai-key" } },
               },
             },
           }) as OpenClawConfig,
@@ -3313,7 +3313,7 @@ describe("talk.client.create handler", () => {
     mocks.listRealtimeVoiceProviders.mockReturnValue([provider] as never);
     mocks.resolveConfiguredRealtimeVoiceProvider.mockReturnValue({
       provider,
-      providerConfig: { apiKey: `ltfx.n.97aba22fd3c830fb7840.v1` },
+      providerConfig: { apiKey: "openai-key" },
     });
 
     const respond = vi.fn();
@@ -3363,7 +3363,7 @@ describe("talk.client.create handler", () => {
     };
     mocks.resolveConfiguredRealtimeVoiceProvider.mockReturnValue({
       provider,
-      providerConfig: { apiKey: `ltfx.n.97aba22fd3c830fb7840.v1` },
+      providerConfig: { apiKey: "openai-key" },
     });
 
     const respond = vi.fn();
@@ -3392,7 +3392,7 @@ describe("talk.client.create handler", () => {
                   config: {
                     realtime: {
                       provider: "openai",
-                      providers: { openai: { apiKey: `ltfx.n.97aba22fd3c830fb7840.v1` } },
+                      providers: { openai: { apiKey: "openai-key" } },
                     },
                   },
                 },
@@ -3404,7 +3404,7 @@ describe("talk.client.create handler", () => {
 
     expectRecordFields(mockCallArg(mocks.resolveConfiguredRealtimeVoiceProvider), {
       configuredProviderId: "openai",
-      providerConfigs: { openai: { apiKey: `ltfx.n.97aba22fd3c830fb7840.v1` } },
+      providerConfigs: { openai: { apiKey: "openai-key" } },
       defaultModel: undefined,
     });
     expectRespondOk(respond, { provider: "openai", transport: "webrtc" });
@@ -3425,7 +3425,7 @@ describe("talk.client.create handler", () => {
     };
     mocks.resolveConfiguredRealtimeVoiceProvider.mockReturnValue({
       provider,
-      providerConfig: { apiKey: `ltfx.n.1481b6fd3ceddb4ae3c2.v1` },
+      providerConfig: { apiKey: "custom-key" },
     });
 
     const respond = vi.fn();
@@ -3450,7 +3450,7 @@ describe("talk.client.create handler", () => {
             },
             talk: {
               realtime: {
-                providers: { custom: { apiKey: `ltfx.n.1481b6fd3ceddb4ae3c2.v1` } },
+                providers: { custom: { apiKey: "custom-key" } },
               },
             },
           }) as OpenClawConfig,
@@ -3459,7 +3459,7 @@ describe("talk.client.create handler", () => {
 
     expectRecordFields(mockCallArg(mocks.resolveConfiguredRealtimeVoiceProvider), {
       configuredProviderId: "custom",
-      providerConfigs: { custom: { apiKey: `ltfx.n.1481b6fd3ceddb4ae3c2.v1` } },
+      providerConfigs: { custom: { apiKey: "custom-key" } },
       defaultModel: undefined,
     });
     expectRespondOk(respond, { provider: "custom", transport: "webrtc" });

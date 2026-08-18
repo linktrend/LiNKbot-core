@@ -145,13 +145,13 @@ jobs:
                   kind: "pull_request",
                   number: .pull_request.number,
                   title: .pull_request.title,
-                  url: (ltfx.n.036e138983a1fe08c90e.v1),
+                  url: .pull_request.html_url,
                   state: (if .pull_request.merged == true then "merged" else .pull_request.state end)
                 } elif .issue then {
                   kind: (if .issue.pull_request then "pull_request" else "issue" end),
                   number: .issue.number,
                   title: .issue.title,
-                  url: (ltfx.n.2ace016330074f14eea8.v1),
+                  url: .issue.html_url,
                   state: .issue.state
                 } elif $event_name == "push" then {
                   kind: "push",
@@ -163,20 +163,20 @@ jobs:
                 } end),
               comment: (if .comment then {
                 id: .comment.id,
-                url: (ltfx.n.48181714a31172967314.v1),
+                url: .comment.html_url,
                 body_excerpt: body_excerpt(.comment.body)
               } else null end),
               review: (if .review then {
                 id: .review.id,
                 state: .review.state,
-                url: (ltfx.n.abeb37061e538b6d04ec.v1),
+                url: .review.html_url,
                 body_excerpt: body_excerpt(.review.body)
               } else null end),
               review_comment: (if .comment and $event_name == "pull_request_review_comment" then {
                 id: .comment.id,
                 path: .comment.path,
                 line: (.comment.line // .comment.original_line),
-                url: (ltfx.n.48181714a31172967314.v1),
+                url: .comment.html_url,
                 body_excerpt: body_excerpt(.comment.body)
               } else null end),
               push: (if $event_name == "push" then {
@@ -256,7 +256,7 @@ jobs:
           printf '%s\n' "$COMMENT_BODY" > "$body_file"
           if [ -n "$TARGET_TOKEN" ]; then
             err="$(mktemp)"
-            if GH_TOKEN="${ltfx.n.5f3ea54a4fa78d7b0d71.v1}" gh_api_with_retry -X POST \
+            if GH_TOKEN="$TARGET_TOKEN" gh_api_with_retry -X POST \
               -H "Accept: application/vnd.github+json" \
               "repos/$TARGET_REPO/issues/comments/$COMMENT_ID/reactions" \
               -f content="eyes" 2>"$err" >/dev/null; then
@@ -283,7 +283,7 @@ jobs:
                   "Command router queued. I will update this comment with the next step.")"
                 status_payload="$(jq -nc --arg body "$status_body" '{body:$body}')"
                 status_err="$(mktemp)"
-                if status_response="$(GH_TOKEN="${ltfx.n.5f3ea54a4fa78d7b0d71.v1}" gh_api_with_retry \
+                if status_response="$(GH_TOKEN="$TARGET_TOKEN" gh_api_with_retry \
                   "repos/$TARGET_REPO/issues/$ITEM_NUMBER/comments" \
                   --method POST \
                   --input - <<< "$status_payload" 2>"$status_err")"; then
@@ -304,7 +304,7 @@ jobs:
             --arg source_event "issue_comment" \
             --arg source_action "$SOURCE_ACTION" \
             '{event_type:"clawsweeper_comment",client_payload:({target_repo:$target_repo,item_number:$item_number,comment_id:$comment_id,source_event:$source_event,source_action:$source_action,max_comments:"1"} + (if $status_comment_id != "" then {status_comment_id:($status_comment_id|tonumber)} else {} end))}')"
-          if GH_TOKEN="${ltfx.n.4ab3075de3fdd542e7ab.v1}" gh_api_with_retry repos/openclaw/clawsweeper/dispatches \
+          if GH_TOKEN="$DISPATCH_TOKEN" gh_api_with_retry repos/openclaw/clawsweeper/dispatches \
             --method POST \
             --input - <<< "$payload"; then
             echo "Dispatched ClawSweeper comment router."

@@ -82,7 +82,7 @@ describe("provider auth env trust", () => {
     const result = resolveRefFallbackInput({
       config,
       provider: "whisperx",
-      env: { WHISPERX_API_KEY: `ltfx.n.9caf06bb4436cdbfa20a.v1` },
+      env: { WHISPERX_API_KEY: "test-secret" },
     });
 
     expect(getProviderEnvVars).toHaveBeenCalledWith("whisperx", {
@@ -108,7 +108,7 @@ describe("provider auth env trust", () => {
       config,
       provider: "whisperx",
       prompter: prompter as never,
-      env: { WHISPERX_API_KEY: `ltfx.n.9caf06bb4436cdbfa20a.v1` },
+      env: { WHISPERX_API_KEY: "test-secret" },
     });
 
     expect(getProviderEnvVars).toHaveBeenCalledWith("whisperx", {

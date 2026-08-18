@@ -269,7 +269,7 @@ public struct ChatSessionsSheet: View {
                 // first and only switches on success so the composer never
                 // points at a still-archived session.
                 Task {
-                    guard await self.viewModel.restoreSession(key: (session.key) else { return })
+                    guard await self.viewModel.restoreSession(key: session.key) else { return }
                     self.viewModel.switchSession(to: session.key)
                     self.dismiss()
                 }
@@ -344,7 +344,7 @@ public struct ChatSessionsSheet: View {
                     }
                 }
                 Button {
-                    Task { await self.viewModel.forkSession(key: (session.key) })
+                    Task { await self.viewModel.forkSession(key: session.key) }
                 } label: {
                     self.actionLabel(
                         LocalizedStringKey(String(localized: "Fork")),

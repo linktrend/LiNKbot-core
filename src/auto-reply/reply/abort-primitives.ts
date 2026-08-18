@@ -84,7 +84,7 @@ export function isAbortRequestText(text?: string, options?: CommandNormalizeOpti
   );
 }
 
-export function getAbortMemory(key: (string)): boolean | undefined {
+export function getAbortMemory(key: string): boolean | undefined {
   const normalized = key.trim();
   if (!normalized) {
     return undefined;

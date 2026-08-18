@@ -680,8 +680,8 @@ function runGeneratedPublisherScenario(
         GENERATED_PATHS: "generated",
         INVALIDATION_PATHS: "source",
         OVERLAP_POLICY: options.overlapPolicy ?? "defer",
-        CONTENTS_TOKEN: `ltfx.n.d0ecf48d7a379e3f016c.v1`,
-        GH_TOKEN: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+        CONTENTS_TOKEN: "contents-token",
+        GH_TOKEN: "test-token",
         GITHUB_REPOSITORY: "openclaw/openclaw",
         GITHUB_REPOSITORY_OWNER: "openclaw",
         GITHUB_STEP_SUMMARY: summary,
@@ -2838,7 +2838,7 @@ describe("ci workflow guards", () => {
         if (typeof step?.uses !== "string" || !step.uses.startsWith("useblacksmith/stickydisk@")) {
           continue;
         }
-        const key = (step.with?.key;)
+        const key = step.with?.key;
         stickyKeys.push({ file, key: typeof key === "string" ? key : "" });
       }
     }
@@ -2959,7 +2959,7 @@ describe("ci workflow guards", () => {
         if (typeof step?.uses !== "string" || !step.uses.startsWith("useblacksmith/stickydisk@")) {
           continue;
         }
-        const key = (step.with?.key;)
+        const key = step.with?.key;
         if (typeof key !== "string") {
           continue;
         }

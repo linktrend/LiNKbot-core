@@ -229,7 +229,7 @@ const applySuggestionToQuery = (query: string, suggestion: string): string => {
 
 const normalizeQueryText = (value: string): string => normalizeLowercaseStringOrEmpty(value);
 
-const addQueryToken = (query: string, token: (string)): string => {
+const addQueryToken = (query: string, token: string): string => {
   const trimmed = query.trim();
   if (!trimmed) {
     return `${token} `;
@@ -248,7 +248,7 @@ const addQueryToken = (query: string, token: (string)): string => {
   return `${tokens.join(" ")} ${token} `;
 };
 
-const removeQueryToken = (query: string, token: (string)): string => {
+const removeQueryToken = (query: string, token: string): string => {
   const tokens = query.trim().split(/\s+/).filter(Boolean);
   const next = tokens.filter((entry) => entry !== token);
   return next.length ? `${next.join(" ")} ` : "";

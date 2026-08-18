@@ -111,7 +111,7 @@ describe("repairLoadedGatewayServiceForStart", () => {
     } as unknown as GatewayService;
     const existingEnvironment = {
       OPENCLAW_SERVICE_VERSION: "2026.4.24",
-      TELEGRAM_DEFAULT_BOTTOKEN: `ltfx.n.365c90af63b3a8330e4d.v1`,
+      TELEGRAM_DEFAULT_BOTTOKEN: "existing-env-file-token",
     };
     const existingEnvironmentValueSources = {
       OPENCLAW_SERVICE_VERSION: "inline" as const,
@@ -142,7 +142,7 @@ describe("repairLoadedGatewayServiceForStart", () => {
     expect(planArg.existingEnvironmentValueSources).toBe(existingEnvironmentValueSources);
     expect(installMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        environment: { TELEGRAM_DEFAULT_BOTTOKEN: `ltfx.n.365c90af63b3a8330e4d.v1` },
+        environment: { TELEGRAM_DEFAULT_BOTTOKEN: "existing-env-file-token" },
         environmentValueSources: { TELEGRAM_DEFAULT_BOTTOKEN: "file" },
       }),
     );

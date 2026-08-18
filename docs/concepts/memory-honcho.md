@@ -71,7 +71,7 @@ Settings live under `plugins.entries["openclaw-honcho"].config`:
     entries: {
       "openclaw-honcho": {
         config: {
-          apiKey: "${ltfx.n.a2ae6a9ee724b61d83d3.v1}", // omit for self-hosted
+          apiKey: "your-api-key", // omit for self-hosted
           workspaceId: "openclaw", // memory isolation
           baseUrl: "https://api.honcho.dev",
         },

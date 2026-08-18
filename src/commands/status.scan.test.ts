@@ -136,7 +136,7 @@ describe("scanStatus", () => {
     });
     mocks.probeGateway.mockResolvedValue({
       ok: true,
-      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      url: "ws://127.0.0.1:18789",
       connectLatencyMs: 12,
       error: null,
       close: null,
@@ -190,7 +190,7 @@ describe("scanStatus", () => {
     mocks.callGateway.mockResolvedValue(liveChannelStatus);
     mocks.probeGateway.mockResolvedValue({
       ok: true,
-      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      url: "ws://127.0.0.1:18789",
       connectLatencyMs: 12,
       error: null,
       close: null,
@@ -342,7 +342,7 @@ describe("scanStatus", () => {
     expect(loggingStateRef.forceConsoleToStderr).toBe(false);
     expect(mocks.probeGateway).toHaveBeenCalledOnce();
     expect(firstCallArg(mocks.probeGateway, "probeGateway args")).toStrictEqual({
-      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      url: "ws://127.0.0.1:18789",
       auth: {},
       timeoutMs: 2500,
       detailLevel: "presence",

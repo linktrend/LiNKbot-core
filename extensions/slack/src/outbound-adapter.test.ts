@@ -13,8 +13,8 @@ describe("slackOutbound", () => {
   const cfg = {
     channels: {
       slack: {
-        botToken: `ltfx.n.87894fe048938b686cfb.v1`,
-        appToken: `ltfx.n.424766b94c5b9f0f5861.v1`,
+        botToken: "xoxb-test",
+        appToken: "xapp-test",
       },
     },
   };

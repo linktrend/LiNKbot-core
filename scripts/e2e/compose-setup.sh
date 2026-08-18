@@ -10,7 +10,7 @@ IDENTITY_PATH="${OPENCLAW_DOCKER_ARTIFACT_IDENTITY_PATH:-$ROOT_DIR/.artifacts/do
 PROJECT_DIR="$(mktemp -d "${TMPDIR:-/tmp}/openclaw-compose-proof.XXXXXX")"
 PROJECT_NAME="openclaw-compose-proof-$$"
 CLI_NAME="$PROJECT_NAME-cli-proof"
-TOKEN="${ltfx.n.4e77e5b77c64219f2836.v1}"
+TOKEN="compose-proof-$$-$(date +%s)"
 COMPOSE=(docker compose --project-name "$PROJECT_NAME" --project-directory "$PROJECT_DIR" -f "$ROOT_DIR/docker-compose.yml")
 
 cleanup() {

@@ -766,7 +766,7 @@ describe("openrouter provider hooks", () => {
         compat: {},
       } as never,
       { messages: [] } as never,
-      { apiKey: `ltfx.n.925843b8834136d77a7c.v1` } as never,
+      { apiKey: "or-test-key" } as never,
     );
     await stream.result();
 

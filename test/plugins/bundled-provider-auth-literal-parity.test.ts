@@ -15,7 +15,7 @@ import { createNonExitingRuntime } from "../../src/runtime.js";
 import { createCapturedPluginRegistration } from "../../src/test-utils/plugin-registration.js";
 
 const PARITY_TIMEOUT_MS = 120_000;
-const SENTINEL_API_KEY = `ltfx.n.eba2dd8d3562535049fd.v1`;
+const SENTINEL_API_KEY = "parity-sentinel-api-key";
 
 type ApiKeyStyleChoice = PluginManifestProviderAuthChoice & {
   optionKey: string;

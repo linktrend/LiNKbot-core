@@ -169,7 +169,7 @@ WhatsApp runs through the gateway's web channel (Baileys Web). It starts automat
   channels: {
     telegram: {
       enabled: true,
-      botToken: "${ltfx.n.78940fdedded5ef7de9c.v1}",
+      botToken: "your-bot-token",
       dmPolicy: "pairing",
       allowFrom: ["tg:123456789"],
       groups: {
@@ -236,7 +236,7 @@ WhatsApp runs through the gateway's web channel (Baileys Web). It starts automat
   channels: {
     discord: {
       enabled: true,
-      token: "${ltfx.n.78940fdedded5ef7de9c.v1}",
+      token: "your-bot-token",
       mediaMaxMb: 100,
       allowBots: false,
       actions: {
@@ -424,8 +424,8 @@ WhatsApp runs through the gateway's web channel (Baileys Web). It starts automat
   channels: {
     slack: {
       enabled: true,
-      botToken: "${ltfx.n.df964376e43280da1554.v1}",
-      appToken: "${ltfx.n.12cc461183475b24fbb3.v1}",
+      botToken: "xoxb-...",
+      appToken: "xapp-...",
       socketMode: {
         clientPingTimeout: 15000,
         serverPingTimeout: 30000,
@@ -553,7 +553,7 @@ Check [npmjs.com/package/@openclaw/mattermost](https://www.npmjs.com/package/@op
   channels: {
     mattermost: {
       enabled: true,
-      botToken: "${ltfx.n.71e1d2699121cb6f4a12.v1}",
+      botToken: "mm-token",
       baseUrl: "https://chat.example.com",
       dmPolicy: "pairing",
       chatmode: "oncall", // oncall | onmessage | onchar
@@ -693,7 +693,7 @@ Matrix is plugin-backed and configured under `channels.matrix`.
     matrix: {
       enabled: true,
       homeserver: "https://matrix.example.org",
-      accessToken: "${ltfx.n.d4c94316e28a56a69bb2.v1}",
+      accessToken: "syt_bot_xxx",
       proxy: "http://127.0.0.1:7890",
       encryption: true,
       initialSyncLimit: 20,
@@ -702,7 +702,7 @@ Matrix is plugin-backed and configured under `channels.matrix`.
         ops: {
           name: "Ops",
           userId: "@ops:example.org",
-          accessToken: "${ltfx.n.1adddb1b465bde96a939.v1}",
+          accessToken: "syt_ops_xxx",
         },
         alerts: {
           userId: "@alerts:example.org",
@@ -789,11 +789,11 @@ Run multiple accounts per channel (each with its own `accountId`):
       accounts: {
         default: {
           name: "Primary bot",
-          botToken: "${ltfx.n.c8c8ce6708b3c01c43ba.v1}",
+          botToken: "123456:ABC...",
         },
         alerts: {
           name: "Alerts bot",
-          botToken: "${ltfx.n.60895fafdbe4749476ac.v1}",
+          botToken: "987654:XYZ...",
         },
       },
     },

@@ -345,7 +345,7 @@ describe("matchesNoProxy", () => {
     },
     {
       name: "returns false for malformed target URL",
-      url: `ltfx.n.ba63a4e55d666e64b8bf.v1`,
+      url: "not-a-url",
       env: { NO_PROXY: "*" } as NodeJS.ProcessEnv,
       expected: false,
     },
@@ -424,7 +424,7 @@ describe("shouldUseEnvHttpProxyForUrl", () => {
     },
     {
       name: "keeps strict mode for malformed URLs",
-      url: `ltfx.n.ba63a4e55d666e64b8bf.v1`,
+      url: "not-a-url",
       env: { HTTPS_PROXY: "http://proxy.test:8080" } as NodeJS.ProcessEnv,
       expected: false,
     },

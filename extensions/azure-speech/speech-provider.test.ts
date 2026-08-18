@@ -86,7 +86,7 @@ describe("buildAzureSpeechProvider", () => {
       rawConfig: {
         providers: {
           azure: {
-            apiKey: `ltfx.n.bbb90db2a849ffdf9315.v1`,
+            apiKey: "alias-key",
             endpoint: "https://westus.tts.speech.microsoft.com/cognitiveservices/v1",
           },
         },
@@ -105,7 +105,7 @@ describe("buildAzureSpeechProvider", () => {
       timeoutMs: undefined,
     });
     expect(alias).toEqual({
-      apiKey: `ltfx.n.bbb90db2a849ffdf9315.v1`,
+      apiKey: "alias-key",
       region: undefined,
       endpoint: "https://westus.tts.speech.microsoft.com/cognitiveservices/v1",
       baseUrl: "https://westus.tts.speech.microsoft.com",
@@ -130,16 +130,16 @@ describe("buildAzureSpeechProvider", () => {
       allowSeed: true,
     };
 
-    expect(provider.parseDirectiveToken?.({ key: `ltfx.n.60d58666bdd54e44b6cc.v1`, value: "v", policy })).toEqual({
+    expect(provider.parseDirectiveToken?.({ key: "azure_voice", value: "v", policy })).toEqual({
       handled: true,
       overrides: { voice: "v" },
     });
-    expect(provider.parseDirectiveToken?.({ key: `ltfx.n.e4507967de6eb158389d.v1`, value: "en-US", policy })).toEqual({
+    expect(provider.parseDirectiveToken?.({ key: "azure_lang", value: "en-US", policy })).toEqual({
       handled: true,
       overrides: { lang: "en-US" },
     });
     expect(
-      provider.parseDirectiveToken?.({ key: `ltfx.n.c80506889a77d673d09d.v1`, value: "ogg", policy }),
+      provider.parseDirectiveToken?.({ key: "azure_output_format", value: "ogg", policy }),
     ).toEqual({
       handled: true,
       overrides: { outputFormat: "ogg" },

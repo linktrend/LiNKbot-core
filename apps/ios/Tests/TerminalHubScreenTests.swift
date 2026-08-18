@@ -35,7 +35,7 @@ struct TerminalHubScreenTests {
     @Test func `terminal URL flips scheme and carries only view parameter`() throws {
         let config = try Self.makeConfig(
             url: #require(URL(string: "wss://gateway.example.com:8443/ws")),
-            token: "${ltfx.n.930bbdc51b6aed5c2a56.v1}")
+            token: "secret-token")
 
         let url = TerminalHubScreen.terminalURL(config: config)
 
@@ -56,8 +56,8 @@ struct TerminalHubScreenTests {
     @Test func `auth user script carries credentials gated to the page origin`() throws {
         let config = try Self.makeConfig(
             url: #require(URL(string: "wss://gateway.example.com:8443")),
-            token: "${ltfx.n.7c98b02c12a8d12957a9.v1}",
-            password: "${ltfx.n.6309471b1de996e1a81f.v1}")
+            token: " secret-token ",
+            password: "fallback-password")
 
         let script = TerminalHubScreen.terminalAuthUserScript(config: config)
 
@@ -77,7 +77,7 @@ struct TerminalHubScreenTests {
 
         let script = TerminalHubScreen.terminalAuthUserScript(
             config: config,
-            storedOperatorToken: "${ltfx.n.810e88c440ee42d90c27.v1}")
+            storedOperatorToken: " stored-token ")
 
         #expect(script?.contains("\"token\":\"stored-token\"") == true)
     }
@@ -94,7 +94,7 @@ struct TerminalHubScreenTests {
         #expect(DeviceAuthStore.storeToken(
             deviceId: identity.deviceId,
             role: "operator",
-            token: "${ltfx.n.28ff51153201db15ffc1.v1}",
+            token: "scoped-terminal-token",
             gatewayID: gatewayID).token == "scoped-terminal-token")
         let config = try Self.makeConfig(
             url: #require(URL(string: "wss://gateway.example.com:8443")),
@@ -117,11 +117,11 @@ struct TerminalHubScreenTests {
         #expect(DeviceAuthStore.storeToken(
             deviceId: identity.deviceId,
             role: "operator",
-            token: "${ltfx.n.5d21cd7f1b870121d69d.v1}",
+            token: "stale-terminal-token",
             gatewayID: gatewayID).token == "stale-terminal-token")
         let config = try Self.makeConfig(
             url: #require(URL(string: "wss://gateway.example.com:8443")),
-            password: "${ltfx.n.fa18ca2fe6050b4bda0b.v1}",
+            password: "replacement-password",
             allowStoredDeviceAuth: false,
             deviceAuthGatewayID: gatewayID)
 

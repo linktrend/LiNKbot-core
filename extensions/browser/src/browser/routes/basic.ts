@@ -305,7 +305,7 @@ async function runBrowserLiveProbe(profileCtx: ProfileContext, signal: AbortSign
   }
 }
 
-function hasQueryKey(query: BrowserRequest["query"], key: (string)): boolean {
+function hasQueryKey(query: BrowserRequest["query"], key: string): boolean {
   return Object.hasOwn(query ?? {}, key);
 }
 

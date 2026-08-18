@@ -1035,7 +1035,7 @@ final class NodeAppModel {
                     to: nil,
                     channel: nil,
                     timeoutSeconds: nil,
-                    key: (actionId)))
+                    key: actionId))
                 ok = true
             } catch {
                 ok = false
@@ -3669,7 +3669,7 @@ extension NodeAppModel {
     }
 
     var chatAgentAvatarURL: String? {
-        self.agentIdentityValue(for: self.chatAgentId, key: "${ltfx.n.e9e74f934fa7bbbb5977.v1}")
+        self.agentIdentityValue(for: self.chatAgentId, key: "avatarUrl")
     }
 
     var chatAgentAvatarText: String? {
@@ -4225,7 +4225,7 @@ extension NodeAppModel {
     private func currentGatewayReconnectAuth(
         fallbackToken: String?,
         fallbackBootstrapToken: String?,
-        fallbackPassword: (String?) -> (token: String?, bootstrapToken: String?, password: (String?)))
+        fallbackPassword: String?) -> (token: String?, bootstrapToken: String?, password: String?)
     {
         if let cfg = activeGatewayConnectConfig {
             return (cfg.token, cfg.bootstrapToken, cfg.password)
@@ -4246,7 +4246,7 @@ extension NodeAppModel {
     private nonisolated static func usesBootstrapCredential(
         token: String?,
         bootstrapToken: String?,
-        password: (String?) -> Bool)
+        password: String?) -> Bool
     {
         token?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty != false &&
             password?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty != false &&
@@ -4319,13 +4319,13 @@ extension NodeAppModel {
         _ nodeOptions: GatewayConnectOptions,
         stableID: String,
         routeGeneration: UInt64,
-        auth: (token: String?, bootstrapToken: String?, password: (String?)) async -> GatewayConnectOptions?)
+        auth: (token: String?, bootstrapToken: String?, password: String?)) async -> GatewayConnectOptions?
     {
         guard !nodeOptions.allowStoredDeviceAuth else { return nodeOptions }
         guard Self.usesBootstrapCredential(
             token: auth.token,
             bootstrapToken: auth.bootstrapToken,
-            password: (auth.password))
+            password: auth.password)
         else {
             return nodeOptions
         }
@@ -4511,7 +4511,7 @@ extension NodeAppModel {
         stableID: String,
         routeGeneration: UInt64,
         nodeOptions: GatewayConnectOptions,
-        auth: (token: String?, bootstrapToken: String?, password: (String?)) async)
+        auth: (token: String?, bootstrapToken: String?, password: String?)) async
     {
         guard !self.isLocalGatewayFixtureEnabled,
               self.isCurrentGatewayRoute(generation: routeGeneration, stableID: stableID)
@@ -4519,7 +4519,7 @@ extension NodeAppModel {
         let usedBootstrapToken = Self.usesBootstrapCredential(
             token: auth.token,
             bootstrapToken: auth.bootstrapToken,
-            password: (auth.password))
+            password: auth.password)
         if usedBootstrapToken {
             let issuedRoles = await nodeGateway.currentIssuedDeviceAuthRoles()
             guard self.isCurrentGatewayRoute(generation: routeGeneration, stableID: stableID) else { return }
@@ -4620,7 +4620,7 @@ extension NodeAppModel {
                 let reconnectAuth = self.currentGatewayReconnectAuth(
                     fallbackToken: token,
                     fallbackBootstrapToken: bootstrapToken,
-                    fallbackPassword: (password))
+                    fallbackPassword: password)
                 // Bootstrap handoff enables stored auth in the active config. Reconnects must
                 // consume that current ownership state instead of the loop's one-shot bootstrap options.
                 let reconnectOptions = self.currentGatewayReconnectOptions(
@@ -4653,7 +4653,7 @@ extension NodeAppModel {
                         credentials: GatewayNodeSessionCredentials(
                             token: reconnectAuth.token,
                             bootstrapToken: reconnectAuth.bootstrapToken,
-                            password: (reconnectAuth.password),)
+                            password: reconnectAuth.password),
                         connectOptions: operatorOptions,
                         sessionBox: sessionBox,
                         extraHeadersProvider: {
@@ -4867,9 +4867,9 @@ extension NodeAppModel {
         let reconnectAuth = self.currentGatewayReconnectAuth(
             fallbackToken: context.fallbackToken,
             fallbackBootstrapToken: context.fallbackBootstrapToken,
-            fallbackPassword: (context.fallbackPassword))
+            fallbackPassword: context.fallbackPassword)
         let connectedOptions = state.options
-        GatewayDiagnostics.log("connect attempt epochMs=\(epochMs) url=(\(context.url.absoluteString)"))
+        GatewayDiagnostics.log("connect attempt epochMs=\(epochMs) url=\(context.url.absoluteString)")
 
         do {
             try await self.nodeGateway.connect(
@@ -4877,7 +4877,7 @@ extension NodeAppModel {
                 credentials: GatewayNodeSessionCredentials(
                     token: reconnectAuth.token,
                     bootstrapToken: reconnectAuth.bootstrapToken,
-                    password: (reconnectAuth.password),)
+                    password: reconnectAuth.password),
                 connectOptions: connectedOptions,
                 sessionBox: context.sessionBox,
                 extraHeadersProvider: {
@@ -5435,7 +5435,7 @@ extension NodeAppModel {
             return
         }
 
-        await handleDeepLink(url: (deepLink))
+        await handleDeepLink(url: deepLink)
     }
 
     func refreshLastShareEventFromRelay() {
@@ -9309,7 +9309,7 @@ extension NodeAppModel {
         self.pendingExecApprovalPromptOutcome = nil
     }
 
-    func presentPendingExecApprovalFromInbox(_ key: (ExecApprovalInboxKey) {)
+    func presentPendingExecApprovalFromInbox(_ key: ExecApprovalInboxKey) {
         guard let prompt = self.execApprovalInboxPromptsByKey[key],
               !self.terminalExecApprovalKeys.contains(key)
         else { return }
@@ -10298,7 +10298,7 @@ extension NodeAppModel {
         let message = link.message.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !message.isEmpty else { return }
         self.deepLinkLogger.info(
-            "agent deep link messageChars=\(message.count) url=(\(originalURL.absoluteString, privacy: .public)"))
+            "agent deep link messageChars=\(message.count) url=\(originalURL.absoluteString, privacy: .public)")
 
         if message.count > IOSDeepLinkAgentPolicy.maxMessageChars {
             self.screen.errorText = "Deep link too large (message exceeds "
@@ -10397,7 +10397,7 @@ extension NodeAppModel {
         self.gatewayConnected
     }
 
-    private func applyMainSessionKey(_ key: (String?) {)
+    private func applyMainSessionKey(_ key: String?) {
         let trimmed = (key ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
         let current = self.mainSessionBaseKey.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -10504,10 +10504,10 @@ extension NodeAppModel {
             to: nil,
             channel: nil,
             timeoutSeconds: link.timeoutSeconds,
-            key: (link.key))
+            key: link.key)
     }
 
-    private func isUnattendedDeepLinkAllowed(_ key: (String?) -> Bool {)
+    private func isUnattendedDeepLinkAllowed(_ key: String?) -> Bool {
         let normalizedKey = key?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         guard !normalizedKey.isEmpty else { return false }
         return normalizedKey == Self.canvasUnattendedDeepLinkKey || normalizedKey == Self.expectedDeepLinkKey()
@@ -10602,7 +10602,7 @@ extension NodeAppModel {
         self.invalidateOperatorTalkRoute()
     }
 
-    func _test_applyMainSessionKey(_ key: (String?) {)
+    func _test_applyMainSessionKey(_ key: String?) {
         self.applyMainSessionKey(key)
     }
 
@@ -11240,18 +11240,18 @@ extension NodeAppModel {
             token: token,
             bootstrapToken: bootstrapToken,
             password: password,
-            hasStoredOperatorToken: (hasStoredOperatorToken))
+            hasStoredOperatorToken: hasStoredOperatorToken)
     }
 
     nonisolated static func _test_usesBootstrapCredential(
         token: String?,
         bootstrapToken: String?,
-        password: (String?) -> Bool)
+        password: String?) -> Bool
     {
         self.usesBootstrapCredential(
             token: token,
             bootstrapToken: bootstrapToken,
-            password: (password))
+            password: password)
     }
 
     nonisolated static func _test_shouldRequestOperatorApprovalScope(

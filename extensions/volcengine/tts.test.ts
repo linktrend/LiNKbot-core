@@ -23,7 +23,7 @@ function requireFirstGuardedFetchCall(): unknown {
 
 function makeProviderConfig(overrides?: Record<string, unknown>) {
   return {
-    apiKey: `ltfx.n.4c806362b613f7496abf.v1`,
+    apiKey: "test-api-key",
     voice: "en_female_anna_mars_bigtts",
     ...overrides,
   };
@@ -32,7 +32,7 @@ function makeProviderConfig(overrides?: Record<string, unknown>) {
 function makeLegacyProviderConfig(overrides?: Record<string, unknown>) {
   return {
     appId: "test-app-id",
-    token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+    token: "test-token",
     voice: "zh_female_xiaohe_uranus_bigtts",
     cluster: "volcano_tts",
     ...overrides,
@@ -191,9 +191,9 @@ describe("Volcengine speech provider", () => {
         headers: {
           "Content-Type": "application/json",
           Connection: "keep-alive",
-          "X-Api-Key": `ltfx.n.4c806362b613f7496abf.v1`,
+          "X-Api-Key": "test-api-key",
           "X-Api-Resource-Id": "seed-tts-1.0",
-          "X-Api-App-Key": `ltfx.n.7151b979802a771b7e9b.v1`,
+          "X-Api-App-Key": "aGjiRDfUWi",
         },
         body: JSON.stringify({
           user: { uid: "openclaw" },
@@ -266,7 +266,7 @@ describe("volcengineTTS", () => {
 
     const audio = await volcengineTTS({
       text: "hello",
-      apiKey: `ltfx.n.61372661cf51fbc34692.v1`,
+      apiKey: "secret-api-key",
       voice: "zh_female_xiaohe_uranus_bigtts",
       encoding: "mp3",
       timeoutMs: 1000,
@@ -290,7 +290,7 @@ describe("volcengineTTS", () => {
     try {
       await volcengineTTS({
         text: "hello",
-        apiKey: `ltfx.n.61372661cf51fbc34692.v1`,
+        apiKey: "secret-api-key",
         timeoutMs: 1000,
       });
     } catch (err) {
@@ -315,7 +315,7 @@ describe("volcengineTTS", () => {
     await expect(
       volcengineTTS({
         text: "hello",
-        apiKey: `ltfx.n.61372661cf51fbc34692.v1`,
+        apiKey: "secret-api-key",
         timeoutMs: 1000,
       }),
     ).rejects.toThrow("BytePlus Seed Speech TTS response exceeds 16777216 bytes");
@@ -336,7 +336,7 @@ describe("volcengineTTS", () => {
       await volcengineTTS({
         text: "hello",
         appId: "app-id",
-        token: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
+        token: "secret-token",
         timeoutMs: 1000,
       });
     } catch (err) {
@@ -360,7 +360,7 @@ describe("volcengineTTS", () => {
       volcengineTTS({
         text: "hello",
         appId: "app-id",
-        token: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
+        token: "secret-token",
         timeoutMs: 1000,
       }),
     ).rejects.toThrow("Volcengine TTS response exceeds 16777216 bytes");

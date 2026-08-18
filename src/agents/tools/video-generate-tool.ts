@@ -285,7 +285,7 @@ function isVideoGenerationProviderConfigured(params: {
     getCustomProviderApiKey(params.cfg, params.providerId) !== undefined ||
     hasSnapshotCapabilityProviderAvailability({
       snapshot: params.snapshot,
-      key: `ltfx.n.ef33178afa7883f23adc.v1`,
+      key: "videoGenerationProviders",
       providerId: params.providerId,
       config: params.cfg,
       authStore: params.authStore,

@@ -588,7 +588,7 @@ describe("installScheduledTask", () => {
         programArguments: ["node", "gateway.js"],
         environment: {
           OPENCLAW_SERVICE_MANAGED_ENV_KEYS: "TAVILY_API_KEY",
-          TAVILY_API_KEY: `ltfx.n.ce199d061f9b94df489e.v1`,
+          TAVILY_API_KEY: "old-inline-value",
         },
       });
 
@@ -597,7 +597,7 @@ describe("installScheduledTask", () => {
         programArguments: ["node", "gateway.js"],
         environment: {
           OPENCLAW_SERVICE_MANAGED_ENV_KEYS: "TAVILY_API_KEY",
-          TAVILY_API_KEY: `ltfx.n.ce199d061f9b94df489e.v1`,
+          TAVILY_API_KEY: "old-inline-value",
         },
         environmentValueSources: {
           OPENCLAW_SERVICE_MANAGED_ENV_KEYS: "inline",

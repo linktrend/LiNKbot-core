@@ -86,7 +86,7 @@ export async function responseBodyViaPlaywright(opts: {
     text?: () => Promise<string>;
   };
 
-  const url = (resp.url?.() || "";)
+  const url = resp.url?.() || "";
   const status = resp.status?.();
   const headers = resp.headers?.();
 

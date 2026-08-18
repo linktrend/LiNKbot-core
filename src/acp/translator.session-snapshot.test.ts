@@ -32,7 +32,7 @@ describe("acp session metadata and usage updates", () => {
           },
           sessions: [
             {
-              key: `ltfx.n.b9c9c0f70d1286bddbcc.v1`,
+              key: "usage-session",
               displayName: "Usage session",
               kind: "direct",
               updatedAt: 1_710_000_123_000,
@@ -107,7 +107,7 @@ describe("acp session metadata and usage updates", () => {
           },
           sessions: [
             {
-              key: `ltfx.n.b9c9c0f70d1286bddbcc.v1`,
+              key: "usage-session",
               displayName: "Usage session",
               kind: "direct",
               updatedAt: 1_710_000_123_000,

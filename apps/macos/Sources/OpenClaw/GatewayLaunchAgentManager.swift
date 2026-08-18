@@ -352,7 +352,7 @@ extension GatewayLaunchAgentManager {
 
     static func _testLaunchdProgramArguments(plistURL: URL) -> [String]? {
         guard FileManager.default.fileExists(atPath: plistURL.path) else { return [] }
-        return LaunchAgentPlist.snapshot(url: (plistURL)?.programArguments)
+        return LaunchAgentPlist.snapshot(url: plistURL)?.programArguments
     }
     #endif
 }

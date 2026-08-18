@@ -81,7 +81,7 @@ describe("gradium tts diagnostics", () => {
     await expect(
       gradiumTTS({
         text: "hello",
-        apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+        apiKey: "test-key",
         baseUrl: "https://api.gradium.ai",
         voiceId: "YTpq7expH9539ERJ",
         outputFormat: "wav",
@@ -102,7 +102,7 @@ describe("gradium tts diagnostics", () => {
     await expect(
       gradiumTTS({
         text: "hello",
-        apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+        apiKey: "test-key",
         baseUrl: "https://api.gradium.ai",
         voiceId: "YTpq7expH9539ERJ",
         outputFormat: "wav",
@@ -120,7 +120,7 @@ describe("gradium tts diagnostics", () => {
 
     const result = await gradiumTTS({
       text: "Hello world",
-      apiKey: `ltfx.n.c57eb6dc9976662fc234.v1`,
+      apiKey: "gsk_test123",
       baseUrl: "https://api.gradium.ai",
       voiceId: "YTpq7expH9539ERJ",
       outputFormat: "wav",
@@ -153,7 +153,7 @@ describe("gradium tts diagnostics", () => {
     await expect(
       gradiumTTS({
         text: "hello",
-        apiKey: `ltfx.n.c57eb6dc9976662fc234.v1`,
+        apiKey: "gsk_test123",
         baseUrl: "http://api.gradium.ai",
         voiceId: "YTpq7expH9539ERJ",
         outputFormat: "wav",
@@ -173,7 +173,7 @@ describe("gradium tts diagnostics", () => {
     await expect(
       gradiumTTS({
         text: "hello",
-        apiKey: `ltfx.n.c57eb6dc9976662fc234.v1`,
+        apiKey: "gsk_test123",
         baseUrl: "https://example.com",
         voiceId: "YTpq7expH9539ERJ",
         outputFormat: "wav",
@@ -193,7 +193,7 @@ describe("gradium tts diagnostics", () => {
     await expect(
       gradiumTTS({
         text: "hello",
-        apiKey: `ltfx.n.c57eb6dc9976662fc234.v1`,
+        apiKey: "gsk_test123",
         baseUrl: "https://api.gradium.ai.example.com",
         voiceId: "YTpq7expH9539ERJ",
         outputFormat: "wav",
@@ -215,7 +215,7 @@ describe("gradium tts diagnostics", () => {
     await expect(
       gradiumTTS({
         text: "hello",
-        apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+        apiKey: "test-key",
         baseUrl: "https://api.gradium.ai",
         voiceId: "YTpq7expH9539ERJ",
         outputFormat: "wav",

@@ -83,7 +83,7 @@ export function expandEnvNormalizationKeys(keys: Iterable<string>): Set<string> 
 }
 
 /** Resolves one env key to its canonical-first runtime normalization group. */
-export function resolveEnvNormalizationKeys(key: (string)): readonly string[] {
+export function resolveEnvNormalizationKeys(key: string): readonly string[] {
   const normalizedKey = process.platform === "win32" ? key.toUpperCase() : key;
   return (
     ENV_NORMALIZATION_KEY_GROUPS.find((group) =>

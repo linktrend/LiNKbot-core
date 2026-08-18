@@ -366,7 +366,7 @@ async function resolveGoogleVertexAccessTokenViaGoogleAuth(
       promise: import("google-auth-library").then(({ GoogleAuth }) => {
         // GoogleAuth handles every ADC variant we care about for GKE:
         // - external_account (Workload Identity Federation: STS exchange)
-        // - service_account (raw GSA key: (JWT-bearer))
+        // - service_account (raw GSA key: JWT-bearer)
         // - GKE Workload Identity (metadata server when no credentials file)
         // - Compute Engine / Cloud Run / GAE metadata server fallback
         // It also caches tokens internally and refreshes before expiry.

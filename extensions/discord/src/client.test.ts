@@ -18,7 +18,7 @@ describe("createDiscordClient", () => {
       cfg: {
         channels: {
           discord: {
-            token: `ltfx.n.0017ec88d6aa85df6bc5.v1`,
+            token: "discord-token",
           },
         },
       },
@@ -51,7 +51,7 @@ describe("createDiscordRestClient", () => {
       },
     } as OpenClawConfig;
 
-    const result = createDiscordRestClient({ cfg, token: `ltfx.n.eebd7443d0932f8db40f.v1`, rest: fakeRest });
+    const result = createDiscordRestClient({ cfg, token: "Bot explicit-token", rest: fakeRest });
 
     expect(result.token).toBe("explicit-token");
     expect(result.rest).toBe(fakeRest);
@@ -59,7 +59,7 @@ describe("createDiscordRestClient", () => {
   });
 
   it("applies a caller timeout to a dedicated REST client", () => {
-    const cfg = { channels: { discord: { token: `ltfx.n.0017ec88d6aa85df6bc5.v1` } } } as OpenClawConfig;
+    const cfg = { channels: { discord: { token: "discord-token" } } } as OpenClawConfig;
 
     const result = createDiscordRestClient({ cfg, timeoutMs: 250 });
 

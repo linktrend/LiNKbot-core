@@ -24,7 +24,7 @@ export function buildMediaUnderstandingCapabilityRegistry(
   const registry: MediaUnderstandingCapabilityRegistry = new Map();
 
   for (const provider of resolvePluginCapabilityProviders({
-    key: `ltfx.n.dfa17c30597949902c6d.v1`,
+    key: "mediaUnderstandingProviders",
     cfg,
   })) {
     mergeProviderCapabilities(registry, provider);

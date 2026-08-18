@@ -602,7 +602,7 @@ describe("gateway server models + voicewake", () => {
       {
         ANTHROPIC_API_KEY: undefined,
         ANTHROPIC_OAUTH_TOKEN: undefined,
-        OPENAI_API_KEY: `ltfx.n.b10394de41d87ecb7c4a.v1`,
+        OPENAI_API_KEY: "test-openai-key",
       },
       async () => {
         await withModelsConfig({}, async () => {

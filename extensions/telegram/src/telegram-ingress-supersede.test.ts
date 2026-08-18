@@ -114,7 +114,7 @@ function claim(
 } {
   return {
     ...record(id, update),
-    claim: { token: `ltfx.n.f35cd067d05752edf483.v1`, ownerId: "1:1:x", claimedAt: 1 },
+    claim: { token: "test-auth-token", ownerId: "1:1:x", claimedAt: 1 },
   };
 }
 

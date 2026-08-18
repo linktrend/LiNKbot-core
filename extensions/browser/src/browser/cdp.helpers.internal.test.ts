@@ -500,7 +500,7 @@ describe("openCdpWebSocket option handling", () => {
   it("clamps a non-finite handshakeTimeoutMs to the default", () => {
     // Exercises the Number.isFinite false side of the handshake-timeout
     // ternary in openCdpWebSocket.
-    const url = `ltfx.n.889af887da609ba56ec1.v1`;
+    const url = "ws://127.0.0.1:1/devtools/browser/X";
     const ws = openCdpWebSocket(url, {
       handshakeTimeoutMs: Number.NaN,
     });
@@ -513,7 +513,7 @@ describe("openCdpWebSocket option handling", () => {
   it("honours an explicit, finite handshakeTimeoutMs", () => {
     // Exercises the truthy side of the handshake-timeout ternary: both
     // typeof === "number" AND Number.isFinite must be true.
-    const url = `ltfx.n.889af887da609ba56ec1.v1`;
+    const url = "ws://127.0.0.1:1/devtools/browser/X";
     const ws = openCdpWebSocket(url, {
       handshakeTimeoutMs: 500,
     });
@@ -525,7 +525,7 @@ describe("openCdpWebSocket option handling", () => {
   it("registers a managed-proxy bypass for the exact websocket URL during construction", () => {
     const release = vi.fn();
     registerManagedProxyBrowserCdpBypassMock.mockReturnValueOnce(release);
-    const url = `ltfx.n.889af887da609ba56ec1.v1`;
+    const url = "ws://127.0.0.1:1/devtools/browser/X";
     const ws = openCdpWebSocket(url, {
       handshakeTimeoutMs: 500,
     });
@@ -556,7 +556,7 @@ describe("openCdpWebSocket option handling", () => {
   it("omits the direct-loopback agent for non-loopback targets", () => {
     // Exercises the falsy side of `agent ? { agent } : {}` — the loopback
     // agent helper returns undefined for non-loopback hosts.
-    const url = `ltfx.n.51b899c5ef51e91ab38a.v1`;
+    const url = "ws://93.184.216.34:9222/devtools/browser/X";
     const ws = openCdpWebSocket(url);
     expect(ws.url).toBe(url);
     ws.once("error", () => {});
@@ -565,7 +565,7 @@ describe("openCdpWebSocket option handling", () => {
 
   it("injects custom headers when opts.headers is a non-empty object", () => {
     // Exercises the truthy side of `Object.keys(headers).length ? ... : {}`.
-    const url = `ltfx.n.889af887da609ba56ec1.v1`;
+    const url = "ws://127.0.0.1:1/devtools/browser/X";
     const ws = openCdpWebSocket(url, {
       headers: { "X-Custom": "abc" },
     });

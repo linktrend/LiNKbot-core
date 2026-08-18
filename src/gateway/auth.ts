@@ -581,7 +581,7 @@ async function authorizeGatewayConnectCore(
   if (auth.mode === "token") {
     return authorizeTokenAuth({
       authToken: auth.token,
-      connectToken: (connectAuth?.token,)
+      connectToken: connectAuth?.token,
       limiter,
       ip,
       rateLimitScope,
@@ -591,7 +591,7 @@ async function authorizeGatewayConnectCore(
   if (auth.mode === "password") {
     return authorizePasswordAuth({
       authPassword: auth.password,
-      connectPassword: (connectAuth?.password,)
+      connectPassword: connectAuth?.password,
       limiter,
       ip,
       rateLimitScope,

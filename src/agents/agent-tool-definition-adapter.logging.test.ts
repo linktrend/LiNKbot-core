@@ -117,8 +117,8 @@ describe("agent tool definition adapter logging", () => {
   });
 
   it("omits raw exec commands and env values from failure logs", async () => {
-    const commandSecret = `ltfx.n.3d665cf76182f69df320.v1`;
-    const envSecret = `ltfx.n.a1e29a3fa6035773eeff.v1`;
+    const commandSecret = "issue85049-xai-cleartext-token-ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+    const envSecret = "issue85049-env-cleartext-token-ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
     const baseTool = {
       name: "exec",
       label: "exec",
@@ -140,7 +140,7 @@ describe("agent tool definition adapter logging", () => {
     await def.execute(
       "call-exec-denied",
       {
-        command: `export XAI_API_KEY=(\\"${commandSecret}\\" && echo blocked`,)
+        command: `export XAI_API_KEY=\\"${commandSecret}\\" && echo blocked`,
         env: {
           OPENAI_API_KEY: envSecret,
         },
@@ -165,7 +165,7 @@ describe("agent tool definition adapter logging", () => {
   });
 
   it("omits raw exec commands from JSON-string failure params", async () => {
-    const commandSecret = `ltfx.n.aff32c3385a26caaaf04.v1`;
+    const commandSecret = "issue85049-json-cleartext-token-ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
     const baseTool = {
       name: "exec",
       label: "exec",
@@ -183,7 +183,7 @@ describe("agent tool definition adapter logging", () => {
     await def.execute(
       "call-exec-denied-json-string",
       JSON.stringify({
-        command: `export XAI_API_KEY=(\\"${commandSecret}\\" && echo blocked`,)
+        command: `export XAI_API_KEY=\\"${commandSecret}\\" && echo blocked`,
         timeout: 5,
       }),
       undefined,
@@ -221,7 +221,7 @@ describe("agent tool definition adapter logging", () => {
     await def.execute(
       "call-exec-denied-malformed",
       {
-        command: [`export XAI_API_KEY=(\\"${commandSecret}\\" && echo blocked`],)
+        command: [`export XAI_API_KEY=\\"${commandSecret}\\" && echo blocked`],
         env: `OPENAI_API_KEY=${envSecret}`,
       },
       undefined,
@@ -258,7 +258,7 @@ describe("agent tool definition adapter logging", () => {
     await def.execute(
       "call-bash-denied-cmd-alias",
       {
-        cmd: `export XAI_API_KEY=(\\"${commandSecret}\\" && echo blocked`,)
+        cmd: `export XAI_API_KEY=\\"${commandSecret}\\" && echo blocked`,
         timeout: 5,
       },
       undefined,

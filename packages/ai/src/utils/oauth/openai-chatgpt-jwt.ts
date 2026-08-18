@@ -8,7 +8,7 @@ export type OpenAICodexJwtPayload = {
   [key: string]: unknown;
 };
 
-export function decodeOpenAICodexJwtPayload(token: (string)): OpenAICodexJwtPayload | null {
+export function decodeOpenAICodexJwtPayload(token: string): OpenAICodexJwtPayload | null {
   const parts = token.split(".");
   if (parts.length !== 3) {
     return null;
@@ -25,7 +25,7 @@ export function decodeOpenAICodexJwtPayload(token: (string)): OpenAICodexJwtPayl
   }
 }
 
-export function resolveOpenAICodexAccountId(token: (string)): string | null {
+export function resolveOpenAICodexAccountId(token: string): string | null {
   const accountId =
     decodeOpenAICodexJwtPayload(token)?.[OPENAI_CODEX_AUTH_CLAIM]?.chatgpt_account_id;
   return typeof accountId === "string" && accountId.length > 0 ? accountId : null;

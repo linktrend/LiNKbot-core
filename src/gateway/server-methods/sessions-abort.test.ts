@@ -58,7 +58,7 @@ async function configureFixedSessionStore(label = "default"): Promise<string> {
 }
 
 test("sessions.abort rejects an unknown agent without provisioning its store", async () => {
-  const result = await directSessionReq("sessions.abort", { key: `ltfx.n.e4f2c30c7d89ecf54577.v1` });
+  const result = await directSessionReq("sessions.abort", { key: "agent:ghost:zzz" });
 
   expect(result).toMatchObject({
     ok: false,
@@ -130,7 +130,7 @@ test("sessions.abort aborts an exact active run for an unconfigured agent withou
 test("sessions.abort rejects an unknown agent when only the fixed store file exists", async () => {
   const storePath = await configureFixedSessionStore();
 
-  const result = await directSessionReq("sessions.abort", { key: `ltfx.n.160ae042b12e37c92736.v1` });
+  const result = await directSessionReq("sessions.abort", { key: "agent:ghost:missing" });
 
   expect(result).toMatchObject({
     ok: false,

@@ -65,7 +65,7 @@ const sampleCard: WorkboardCard = {
 };
 
 const sampleSession: GatewaySessionRow = {
-  key: `ltfx.n.4c04fdfd20feeccbd765.v1`,
+  key: "agent:main:dashboard:1",
   kind: "direct",
   updatedAt: Date.now(),
   displayName: "Dashboard session",
@@ -3281,8 +3281,8 @@ describe("workboard controller", () => {
     const host = {};
     const state = getWorkboardState(host);
     state.loaded = true;
-    const firstSession = { ...sampleSession, key: `ltfx.n.5c7652b51dc043666800.v1` };
-    const secondSession = { ...sampleSession, key: `ltfx.n.4154460a826074cdd175.v1` };
+    const firstSession = { ...sampleSession, key: "agent:main:dashboard:first" };
+    const secondSession = { ...sampleSession, key: "agent:main:dashboard:second" };
     const firstCard = { ...sampleCard, id: "card-first", sessionKey: firstSession.key };
     const secondCard = { ...sampleCard, id: "card-second", sessionKey: secondSession.key };
     const firstCreate = createDeferred<unknown>();
@@ -3450,7 +3450,7 @@ describe("workboard controller", () => {
     } satisfies WorkboardCard;
     const capturedSession = {
       ...sampleSession,
-      key: `ltfx.n.4179109448ca6ec664d4.v1`,
+      key: "agent:main:dashboard:capture",
     };
     const capturedCard = {
       ...sampleCard,
@@ -3810,7 +3810,7 @@ describe("workboard controller", () => {
       if (method === "workboard.cards.update") {
         throw new Error("Parent cards must be done before starting this card.");
       }
-      return { key: `ltfx.n.4c04fdfd20feeccbd765.v1` };
+      return { key: "agent:main:dashboard:1" };
     });
 
     const sessionKey = await startWorkboardCard({
@@ -3975,7 +3975,7 @@ describe("workboard controller", () => {
       },
     } satisfies WorkboardCard;
     const manualClient = createClient({
-      "sessions.create": { key: `ltfx.n.775a47b3debbd10b6777.v1` },
+      "sessions.create": { key: "agent:main:dashboard:manual" },
       "workboard.cards.update": { card: manualLinked },
     });
     const manualSessionKey = await startWorkboardCard({
@@ -4006,7 +4006,7 @@ describe("workboard controller", () => {
       metadata: { automation: { scheduledAt: Date.now() + 60_000 } },
     } satisfies WorkboardCard;
     const readyManualClient = createClient({
-      "sessions.create": { key: `ltfx.n.6dcec2bd5af8f70bbf9e.v1` },
+      "sessions.create": { key: "agent:main:dashboard:ready-manual" },
       "workboard.cards.update": {
         card: { ...readyWithSchedule, sessionKey: "agent:main:dashboard:ready-manual" },
       },
@@ -4240,7 +4240,7 @@ describe("workboard controller", () => {
       },
     };
     const client = createClient({
-      "sessions.create": { key: `ltfx.n.4c04fdfd20feeccbd765.v1`, runStarted: false },
+      "sessions.create": { key: "agent:main:dashboard:1", runStarted: false },
       "workboard.cards.update": { card: running },
     });
 
@@ -4316,7 +4316,7 @@ describe("workboard controller", () => {
       },
     } satisfies WorkboardCard;
     const client = createClient({
-      "sessions.create": { key: `ltfx.n.46e3f28896e8d72a442e.v1`, runStarted: false },
+      "sessions.create": { key: "agent:main:dashboard:new", runStarted: false },
       "workboard.cards.update": { card: reopened },
     });
     getWorkboardState(host).tasksByCardId.set("card-1", sampleTask);
@@ -4837,7 +4837,7 @@ describe("workboard controller", () => {
         return { deleted: true };
       }
       if (method === "sessions.create") {
-        return { key: `ltfx.n.cd3246c18cbc743c3b98.v1`, runId: "run-child" };
+        return { key: "agent:main:dashboard:child", runId: "run-child" };
       }
       return { card: { ...child, status: "running", metadata: undefined } };
     });
@@ -5003,7 +5003,7 @@ describe("workboard controller", () => {
       client: client as never,
       sessions: [
         sampleSession,
-        { ...sampleSession, key: `ltfx.n.5b17578180a1b1566a0c.v1`, status: "failed", hasActiveRun: false },
+        { ...sampleSession, key: "session-review", status: "failed", hasActiveRun: false },
       ],
     });
 
@@ -5184,8 +5184,8 @@ describe("workboard controller", () => {
       return {};
     });
     const sessions = [
-      { ...sampleSession, key: `ltfx.n.84097828fc31a8c8d292.v1` },
-      { ...sampleSession, key: `ltfx.n.5d9061408048c12d0539.v1` },
+      { ...sampleSession, key: "session-1" },
+      { ...sampleSession, key: "session-2" },
     ];
 
     const syncing = syncWorkboardLifecycle({ host, client: client as never, sessions });

@@ -18,7 +18,7 @@ describeLive("browser (live): remote CDP tab persistence", () => {
     const { pwAi: pw } = await import("./pw-ai.js");
     await pw.closePlaywrightBrowserConnection().catch(() => {});
 
-    const created = await pw.createPageViaPlaywright({ cdpUrl: CDP_URL, url: `ltfx.n.4fa72d735a519ee13d41.v1` });
+    const created = await pw.createPageViaPlaywright({ cdpUrl: CDP_URL, url: "about:blank" });
     expect(created.targetId).toBeTypeOf("string");
     expect(created.targetId).not.toBe("");
     try {

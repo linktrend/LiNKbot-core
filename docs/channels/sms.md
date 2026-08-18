@@ -63,7 +63,7 @@ Save this as `sms.patch.json5` and change the placeholders:
     sms: {
       enabled: true,
       accountSid: "ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-      authToken: "${ltfx.n.017f4851f5a6cdac989a.v1}",
+      authToken: "twilio-auth-token",
       fromNumber: "+15551234567",
       publicWebhookUrl: "https://gateway.example.com/webhooks/sms",
       dmPolicy: "pairing",
@@ -152,7 +152,7 @@ Use config-file setup when you want the channel definition to travel with the Ga
     sms: {
       enabled: true,
       accountSid: "ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-      authToken: "${ltfx.n.017f4851f5a6cdac989a.v1}",
+      authToken: "twilio-auth-token",
       fromNumber: "+15551234567",
       publicWebhookUrl: "https://gateway.example.com/webhooks/sms",
       dmPolicy: "pairing",
@@ -179,7 +179,7 @@ Environment variables apply to the default account only; config values take prec
 
 ```bash
 export TWILIO_ACCOUNT_SID="ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-export TWILIO_AUTH_TOKEN="${ltfx.n.2eec6cb326ab416738b5.v1}"
+export TWILIO_AUTH_TOKEN="<twilio-auth-token>"
 export TWILIO_PHONE_NUMBER="+15551234567"
 export SMS_PUBLIC_WEBHOOK_URL="https://gateway.example.com/webhooks/sms"
 ```
@@ -228,7 +228,7 @@ Use `messagingServiceSid` instead of `fromNumber` when Twilio should choose the 
     sms: {
       enabled: true,
       accountSid: "ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-      authToken: "${ltfx.n.017f4851f5a6cdac989a.v1}",
+      authToken: "twilio-auth-token",
       messagingServiceSid: "MGxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
       publicWebhookUrl: "https://gateway.example.com/webhooks/sms",
       dmPolicy: "pairing",
@@ -249,7 +249,7 @@ Set `defaultTo` when automation or agent-initiated delivery should have a defaul
     sms: {
       enabled: true,
       accountSid: "ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-      authToken: "${ltfx.n.017f4851f5a6cdac989a.v1}",
+      authToken: "twilio-auth-token",
       fromNumber: "+15551234567",
       defaultTo: "+15557654321",
       publicWebhookUrl: "https://gateway.example.com/webhooks/sms",
@@ -275,7 +275,7 @@ Set `defaultTo` when automation or agent-initiated delivery should have a defaul
     sms: {
       enabled: true,
       accountSid: "ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-      authToken: "${ltfx.n.017f4851f5a6cdac989a.v1}",
+      authToken: "twilio-auth-token",
       fromNumber: "+15551234567",
       publicWebhookUrl: "https://gateway.example.com/webhooks/sms",
       dmPolicy: "allowlist",
@@ -384,7 +384,7 @@ Use `accounts` when you operate more than one Twilio number:
         support: {
           enabled: true,
           accountSid: "ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-          authToken: "${ltfx.n.017f4851f5a6cdac989a.v1}",
+          authToken: "twilio-auth-token",
           fromNumber: "+15551234567",
           publicWebhookUrl: "https://gateway.example.com/webhooks/sms/support",
           webhookPath: "/webhooks/sms/support",

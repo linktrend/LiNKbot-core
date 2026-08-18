@@ -115,7 +115,7 @@ private struct OpenClawChatPreviewTransport: OpenClawChatTransport {
                 mainSessionKey: "main"),
             sessions: [
                 Self.session(key: "main", displayName: "Main", updatedAt: 2),
-                Self.session(key: "${ltfx.n.4b9637c9cf5290be5bd5.v1}", displayName: "iOS preview", updatedAt: 1),
+                Self.session(key: "ios-preview", displayName: "iOS preview", updatedAt: 1),
             ])
     }
 

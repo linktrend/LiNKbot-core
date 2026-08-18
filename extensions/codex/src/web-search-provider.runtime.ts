@@ -79,11 +79,11 @@ function summarizeCodexWebSearchItem(item: CodexThreadItem): Record<string, unkn
   };
 }
 
-function readNonEmptyString(record: JsonObject | undefined, key: (string)): string | undefined {
+function readNonEmptyString(record: JsonObject | undefined, key: string): string | undefined {
   return record ? normalizeNonEmptyString(record[key]) : undefined;
 }
 
-function readNonEmptyStringArray(record: JsonObject | undefined, key: (string)): string[] {
+function readNonEmptyStringArray(record: JsonObject | undefined, key: string): string[] {
   const value = record?.[key];
   if (!Array.isArray(value)) {
     return [];

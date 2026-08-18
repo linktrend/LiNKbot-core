@@ -145,9 +145,9 @@ describe("channelsCapabilitiesCommand", () => {
       id: "slack",
       account: {
         accountId: "default",
-        botToken: `ltfx.n.c8b505c2b4aca8778b0a.v1`,
-        userToken: `ltfx.n.7c40c10cd6816e744256.v1`,
-        config: { userToken: `ltfx.n.7c40c10cd6816e744256.v1` },
+        botToken: "xoxb-bot",
+        userToken: "xoxp-user",
+        config: { userToken: "xoxp-user" },
       },
       probe: { ok: true, bot: { name: "openclaw" }, team: { name: "team" } },
     });
@@ -202,7 +202,7 @@ describe("channelsCapabilitiesCommand", () => {
       id: "slack",
       account: {
         accountId: "default",
-        botToken: `ltfx.n.c8b505c2b4aca8778b0a.v1`,
+        botToken: "xoxb-bot",
       },
       probe: { ok: true },
     });
@@ -231,7 +231,7 @@ describe("channelsCapabilitiesCommand", () => {
       id: "slack",
       account: {
         accountId: "default",
-        botToken: `ltfx.n.c8b505c2b4aca8778b0a.v1`,
+        botToken: "xoxb-bot",
       },
     });
     plugin.status = { probeAccount, buildCapabilitiesDiagnostics };
@@ -263,7 +263,7 @@ describe("channelsCapabilitiesCommand", () => {
       id: "slack",
       account: {
         accountId: "default",
-        botToken: `ltfx.n.c8b505c2b4aca8778b0a.v1`,
+        botToken: "xoxb-bot",
       },
     });
     plugin.status = { probeAccount };
@@ -299,7 +299,7 @@ describe("channelsCapabilitiesCommand", () => {
       id: "telegram",
       account: {
         accountId: "default",
-        botToken: `ltfx.n.df27f9beb68b7766af3a.v1`,
+        botToken: "bot-token",
       },
     });
     plugin.status = { probeAccount, formatCapabilitiesProbe: () => [] };
@@ -328,7 +328,7 @@ describe("channelsCapabilitiesCommand", () => {
       id: "slack",
       account: {
         accountId: "default",
-        botToken: `ltfx.n.c8b505c2b4aca8778b0a.v1`,
+        botToken: "xoxb-bot",
       },
       probe: { ok: true },
     });

@@ -81,8 +81,8 @@ describe("MCP OAuth provider", () => {
           serverUrl: "https://mcp.example.com/mcp",
         });
         await provider.saveTokens({
-          access_token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
-          refresh_token: `ltfx.n.f35cd067d05752edf483.v1`,
+          access_token: "test-token-placeholder",
+          refresh_token: "test-auth-token",
           token_type: "Bearer",
           expires_in: 3600,
         });
@@ -113,8 +113,8 @@ describe("MCP OAuth provider", () => {
         const serverUrl = "https://mcp.example.com/mcp";
         const provider = createMcpOAuthClientProvider({ serverName, serverUrl });
         await provider.saveTokens({
-          access_token: `ltfx.n.5095a09224a5ba7211d6.v1`,
-          refresh_token: `ltfx.n.f35cd067d05752edf483.v1`,
+          access_token: "decoy-token",
+          refresh_token: "test-auth-token",
           token_type: "Bearer",
           expires_in: -1,
         });
@@ -157,8 +157,8 @@ describe("MCP OAuth provider", () => {
         await expect(refresh).rejects.toMatchObject({ code: "OPENCLAW_STATE_LEASE_ABORTED" });
         expect(refreshSignal).toMatchObject({ aborted: true });
         expect(provider.tokens()).toMatchObject({
-          access_token: `ltfx.n.5095a09224a5ba7211d6.v1`,
-          refresh_token: `ltfx.n.f35cd067d05752edf483.v1`,
+          access_token: "decoy-token",
+          refresh_token: "test-auth-token",
         });
         const leaseCount = openOpenClawStateDatabase()
           .db.prepare("SELECT COUNT(*) AS count FROM state_leases WHERE scope = ?")
@@ -181,15 +181,15 @@ describe("MCP OAuth provider", () => {
           serverUrl: "https://mcp.example.com/mcp",
         });
         await provider.saveTokens({
-          access_token: `ltfx.n.5095a09224a5ba7211d6.v1`,
-          refresh_token: `ltfx.n.f35cd067d05752edf483.v1`,
+          access_token: "decoy-token",
+          refresh_token: "test-auth-token",
           token_type: "Bearer",
           expires_in: -1,
         });
         authMock.mockImplementationOnce(async (refreshProvider) => {
           await refreshProvider.saveTokens({
-            access_token: `ltfx.n.f15ae5b5899f8327f527.v1`,
-            refresh_token: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
+            access_token: "gateway-token",
+            refresh_token: "secret-token",
             token_type: "Bearer",
             expires_in: 3600,
           });
@@ -228,8 +228,8 @@ describe("MCP OAuth provider", () => {
           serverUrl: "https://mcp.example.com/mcp",
         });
         await provider.saveTokens({
-          access_token: `ltfx.n.5095a09224a5ba7211d6.v1`,
-          refresh_token: `ltfx.n.f35cd067d05752edf483.v1`,
+          access_token: "decoy-token",
+          refresh_token: "test-auth-token",
           token_type: "Bearer",
           expires_in: -1,
         });
@@ -246,8 +246,8 @@ describe("MCP OAuth provider", () => {
           signalRefreshStarted?.();
           await refreshGate;
           await refreshProvider.saveTokens({
-            access_token: `ltfx.n.f15ae5b5899f8327f527.v1`,
-            refresh_token: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
+            access_token: "gateway-token",
+            refresh_token: "secret-token",
             token_type: "Bearer",
             expires_in: 3600,
           });
@@ -290,8 +290,8 @@ describe("MCP OAuth provider", () => {
           serverUrl: "https://mcp.example.com/mcp",
         });
         await provider.saveTokens({
-          access_token: `ltfx.n.5095a09224a5ba7211d6.v1`,
-          refresh_token: `ltfx.n.f35cd067d05752edf483.v1`,
+          access_token: "decoy-token",
+          refresh_token: "test-auth-token",
           token_type: "Bearer",
           expires_in: 3600,
         });
@@ -306,8 +306,8 @@ describe("MCP OAuth provider", () => {
         });
         authMock.mockImplementationOnce(async (refreshProvider) => {
           await refreshProvider.saveTokens({
-            access_token: `ltfx.n.f15ae5b5899f8327f527.v1`,
-            refresh_token: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
+            access_token: "gateway-token",
+            refresh_token: "secret-token",
             token_type: "Bearer",
             expires_in: 3600,
           });
@@ -320,7 +320,7 @@ describe("MCP OAuth provider", () => {
           serverName: "Remote Docs",
           serverUrl: "https://mcp.example.com/mcp",
           authorizationChallenge: true,
-          rejectedAccessToken: `ltfx.n.5095a09224a5ba7211d6.v1`,
+          rejectedAccessToken: "decoy-token",
           scope: "docs.read",
         });
         await refreshStarted;
@@ -328,7 +328,7 @@ describe("MCP OAuth provider", () => {
           serverName: "Remote Docs",
           serverUrl: "https://mcp.example.com/mcp",
           authorizationChallenge: true,
-          rejectedAccessToken: `ltfx.n.5095a09224a5ba7211d6.v1`,
+          rejectedAccessToken: "decoy-token",
           scope: "stale.scope",
         });
         releaseRefresh?.();
@@ -359,8 +359,8 @@ describe("MCP OAuth provider", () => {
           serverUrl: "https://mcp.example.com/mcp",
         });
         await provider.saveTokens({
-          access_token: `ltfx.n.5095a09224a5ba7211d6.v1`,
-          refresh_token: `ltfx.n.f35cd067d05752edf483.v1`,
+          access_token: "decoy-token",
+          refresh_token: "test-auth-token",
           token_type: "Bearer",
           expires_in: -1,
         });
@@ -376,8 +376,8 @@ describe("MCP OAuth provider", () => {
           signalStarted?.();
           await gate;
           await refreshProvider.saveTokens({
-            access_token: `ltfx.n.f15ae5b5899f8327f527.v1`,
-            refresh_token: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
+            access_token: "gateway-token",
+            refresh_token: "secret-token",
             token_type: "Bearer",
             expires_in: 3600,
           });
@@ -415,15 +415,15 @@ describe("MCP OAuth provider", () => {
           serverUrl: "https://mcp.example.com/mcp",
         });
         await provider.saveTokens({
-          access_token: `ltfx.n.5095a09224a5ba7211d6.v1`,
-          refresh_token: `ltfx.n.f35cd067d05752edf483.v1`,
+          access_token: "decoy-token",
+          refresh_token: "test-auth-token",
           token_type: "Bearer",
           expires_in: 3600,
         });
         authMock.mockImplementationOnce(async (refreshProvider) => {
           await refreshProvider.saveTokens({
-            access_token: `ltfx.n.f15ae5b5899f8327f527.v1`,
-            refresh_token: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
+            access_token: "gateway-token",
+            refresh_token: "secret-token",
             token_type: "Bearer",
             expires_in: 3600,
           });
@@ -435,7 +435,7 @@ describe("MCP OAuth provider", () => {
             serverName: "Remote Docs",
             serverUrl: "https://mcp.example.com/mcp",
             authorizationChallenge: true,
-            rejectedAccessToken: `ltfx.n.5095a09224a5ba7211d6.v1`,
+            rejectedAccessToken: "decoy-token",
             resourceMetadataUrl: new URL(
               "https://mcp.example.com/.well-known/oauth-protected-resource",
             ),

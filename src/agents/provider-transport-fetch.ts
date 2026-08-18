@@ -733,7 +733,7 @@ function headersContainSecretSentinel(headers: HeadersInit | undefined): boolean
   return false;
 }
 
-function swapSecretSentinelsInUrl(url: (string)): { text: string; unknown: string[] } {
+function swapSecretSentinelsInUrl(url: string): { text: string; unknown: string[] } {
   if (!containsSecretSentinel(url)) {
     return { text: url, unknown: [] };
   }

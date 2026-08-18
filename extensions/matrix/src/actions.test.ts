@@ -174,11 +174,11 @@ describe("matrixMessageActions", () => {
             accounts: {
               assistant: {
                 homeserver: "https://matrix.example.org",
-                accessToken: `ltfx.n.e60fa515dc0d2452c0e1.v1`,
+                accessToken: "assistant-token",
               },
               ops: {
                 homeserver: "https://matrix.example.org",
-                accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
+                accessToken: "ops-token",
               },
             },
           },
@@ -203,7 +203,7 @@ describe("matrixMessageActions", () => {
             assistant: {
               homeserver: "https://matrix.example.org",
               userId: "@assistant:example.org",
-              accessToken: `ltfx.n.e60fa515dc0d2452c0e1.v1`,
+              accessToken: "assistant-token",
               actions: {
                 messages: true,
                 reactions: false,
@@ -212,7 +212,7 @@ describe("matrixMessageActions", () => {
             ops: {
               homeserver: "https://matrix.example.org",
               userId: "@ops:example.org",
-              accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
+              accessToken: "ops-token",
               actions: {
                 messages: true,
                 reactions: true,

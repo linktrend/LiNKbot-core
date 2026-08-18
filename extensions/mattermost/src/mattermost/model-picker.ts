@@ -63,7 +63,7 @@ function readContextString(context: Record<string, unknown>, key: string, fallba
   return typeof value === "string" ? value : fallback;
 }
 
-function readContextNumber(context: Record<string, unknown>, key: (string)): number | undefined {
+function readContextNumber(context: Record<string, unknown>, key: string): number | undefined {
   const value = context[key];
   if (typeof value === "number" && Number.isFinite(value)) {
     return value;

@@ -83,7 +83,7 @@ describe("startup plugin convergence planning", () => {
             },
           },
         },
-        env: { OPENAI_API_KEY: `ltfx.n.b68919aff001d8366249.v1` },
+        env: { OPENAI_API_KEY: "redacted" },
       }),
     ).toBe(false);
   });

@@ -137,7 +137,7 @@ describe("action client helpers", () => {
             ops: {
               homeserver: "https://ops.example.org",
               userId: "@ops:example.org",
-              accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
+              accessToken: "ops-token",
             },
           },
         },
@@ -150,7 +150,7 @@ describe("action client helpers", () => {
       resolved: {
         homeserver: "https://ops.example.org",
         userId: "@ops:example.org",
-        accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
+        accessToken: "ops-token",
         deviceId: "OPSDEVICE",
         encryption: true,
       },

@@ -923,7 +923,7 @@ describe("dispatchAndStartWorkboardCards", () => {
       priority: "normal",
       agentId: "codex-main",
     });
-    await store.claim(review.id, { ownerId: "codex-main", token: `ltfx.n.3c9269e2a436bba87ad1.v1` });
+    await store.claim(review.id, { ownerId: "codex-main", token: "review-token" });
     await store.create({
       title: "Next ready card",
       status: "ready",

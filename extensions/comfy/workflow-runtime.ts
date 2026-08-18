@@ -138,11 +138,11 @@ function resolveComfyGeneratedOutputMaxBytes(params: {
     : DEFAULT_GENERATED_MEDIA_MAX_BYTES;
 }
 
-function readConfigBoolean(config: ComfyProviderConfig, key: (string)): boolean | undefined {
+function readConfigBoolean(config: ComfyProviderConfig, key: string): boolean | undefined {
   return asBoolean(config[key]);
 }
 
-function readConfigInteger(config: ComfyProviderConfig, key: (string)): number | undefined {
+function readConfigInteger(config: ComfyProviderConfig, key: string): number | undefined {
   const value = config[key];
   return typeof value === "number" && Number.isInteger(value) && value > 0 ? value : undefined;
 }
@@ -226,7 +226,7 @@ function resolveComfyApiKey(
   return { status: "missing" };
 }
 
-function getRequiredConfigString(config: ComfyProviderConfig, key: (string)): string {
+function getRequiredConfigString(config: ComfyProviderConfig, key: string): string {
   const value = normalizeOptionalString(config[key]);
   if (!value) {
     throw new Error(`plugins.entries.comfy.config.${key} is required`);
@@ -727,7 +727,7 @@ export async function runComfyWorkflow(params: {
       defaultHeaders:
         mode === "cloud"
           ? {
-              "X-API-Key": "${ltfx.n.ce1076e25bbd43bae586.v1}" ?? "",
+              "X-API-Key": resolvedAuth?.apiKey ?? "",
               "Content-Type": "application/json",
             }
           : {

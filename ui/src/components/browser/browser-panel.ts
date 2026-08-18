@@ -593,7 +593,7 @@ class OpenClawBrowserPanel extends OpenClawLitElement {
   /** Real page reload: re-navigate to the current URL, then re-capture. A bare
    * screenshot refresh would leave the remote document untouched. */
   private reloadPage(): void {
-    const url = (this.view?.metrics?.url || this.view?.url || this.urlDraft;)
+    const url = this.view?.metrics?.url || this.view?.url || this.urlDraft;
     const normalized = normalizeBrowserUrlDraft(url);
     if (!this.activeTargetId) {
       return;
@@ -882,7 +882,7 @@ class OpenClawBrowserPanel extends OpenClawLitElement {
     if (this.strokes.length === 0 && !params.element) {
       return;
     }
-    const url = (view.metrics?.url || view.url || tab?.url || "";)
+    const url = view.metrics?.url || view.url || tab?.url || "";
     const title = view.metrics?.title || tab?.title || "";
     const text = buildAnnotationPrompt({
       url,

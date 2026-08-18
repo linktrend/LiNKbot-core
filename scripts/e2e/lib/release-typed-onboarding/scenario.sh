@@ -14,7 +14,7 @@ export PATH="$NPM_CONFIG_PREFIX/bin:$PATH"
 export npm_config_loglevel=error
 export npm_config_fund=false
 export npm_config_audit=false
-export OPENAI_API_KEY="${ltfx.n.91c4e456b198c4048b6b.v1}"
+export OPENAI_API_KEY="sk-openclaw-release-typed-onboarding"
 
 PORT="18789"
 MOCK_PORT="44190"

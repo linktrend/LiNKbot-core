@@ -800,7 +800,7 @@ export class ModelRegistry {
       return authStatus;
     }
 
-    const providerApiKey = (providerRequestConfig?.apiKey;)
+    const providerApiKey = providerRequestConfig?.apiKey;
     if (!providerApiKey) {
       return authStatus;
     }

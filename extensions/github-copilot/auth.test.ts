@@ -63,11 +63,11 @@ describe("resolveFirstGithubToken", () => {
 
   it("prefers env tokens when available", async () => {
     const result = await resolveFirstGithubToken({
-      env: { GH_TOKEN: `ltfx.n.25d37ba7752ae1d95b57.v1` } as NodeJS.ProcessEnv,
+      env: { GH_TOKEN: "env-token" } as NodeJS.ProcessEnv,
     });
 
     expect(result).toEqual({
-      githubToken: `ltfx.n.25d37ba7752ae1d95b57.v1`,
+      githubToken: "env-token",
       hasProfile: true,
     });
     expect(resolveRequiredConfiguredSecretRefInputStringMock).not.toHaveBeenCalled();
@@ -78,7 +78,7 @@ describe("resolveFirstGithubToken", () => {
       profiles: {
         "github-copilot:github": {
           type: "token",
-          token: `ltfx.n.f6ccb990acf9bce993b1.v1`,
+          token: "profile-token",
         },
       },
     });
@@ -89,7 +89,7 @@ describe("resolveFirstGithubToken", () => {
     });
 
     expect(result).toEqual({
-      githubToken: `ltfx.n.f6ccb990acf9bce993b1.v1`,
+      githubToken: "profile-token",
       hasProfile: true,
     });
   });
@@ -98,11 +98,11 @@ describe("resolveFirstGithubToken", () => {
     const config = {
       models: {
         providers: {
-          "github-copilot": { apiKey: `ltfx.n.41dd96f1dccf65c2c9c7.v1` },
+          "github-copilot": { apiKey: "test-token-placeholder" },
         },
       },
     } as never;
-    const env = { GH_TOKEN: `ltfx.n.f35cd067d05752edf483.v1` } as NodeJS.ProcessEnv;
+    const env = { GH_TOKEN: "test-auth-token" } as NodeJS.ProcessEnv;
 
     const result = await resolveFirstGithubToken({
       config,
@@ -111,7 +111,7 @@ describe("resolveFirstGithubToken", () => {
     });
 
     expect(result).toEqual({
-      githubToken: `ltfx.n.f35cd067d05752edf483.v1`,
+      githubToken: "test-auth-token",
       hasProfile: false,
     });
     expect(resolveConfiguredSecretInputWithFallbackMock).not.toHaveBeenCalled();
@@ -124,12 +124,12 @@ describe("resolveFirstGithubToken", () => {
         providers: {
           "github-copilot": {
             auth: "api-key",
-            apiKey: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
+            apiKey: "test-token-placeholder",
           },
         },
       },
     } as never;
-    const env = { GH_TOKEN: `ltfx.n.f35cd067d05752edf483.v1` } as NodeJS.ProcessEnv;
+    const env = { GH_TOKEN: "test-auth-token" } as NodeJS.ProcessEnv;
 
     const result = await resolveFirstGithubToken({
       config,
@@ -138,7 +138,7 @@ describe("resolveFirstGithubToken", () => {
     });
 
     expect(result).toEqual({
-      githubToken: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
+      githubToken: "test-token-placeholder",
       hasProfile: false,
     });
     expect(resolveConfiguredSecretInputWithFallbackMock).toHaveBeenCalledWith({
@@ -155,13 +155,13 @@ describe("resolveFirstGithubToken", () => {
     const result = await resolveFirstGithubToken({
       env: {
         COPILOT_GITHUB_TOKEN: "",
-        GH_TOKEN: `ltfx.n.f35cd067d05752edf483.v1`,
+        GH_TOKEN: "test-auth-token",
       } as NodeJS.ProcessEnv,
       authProfileMode: "api_key",
     });
 
     expect(result).toEqual({
-      githubToken: `ltfx.n.f35cd067d05752edf483.v1`,
+      githubToken: "test-auth-token",
       hasProfile: false,
     });
   });
@@ -172,7 +172,7 @@ describe("resolveFirstGithubToken", () => {
     const config = {
       models: {
         providers: {
-          "github-copilot": { apiKey: `ltfx.n.41dd96f1dccf65c2c9c7.v1` },
+          "github-copilot": { apiKey: "test-token-placeholder" },
         },
       },
     } as never;
@@ -183,7 +183,7 @@ describe("resolveFirstGithubToken", () => {
     });
 
     expect(result).toEqual({
-      githubToken: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
+      githubToken: "test-token-placeholder",
       hasProfile: false,
     });
     expect(resolveConfiguredSecretInputWithFallbackMock).toHaveBeenCalledOnce();
@@ -216,7 +216,7 @@ describe("resolveFirstGithubToken", () => {
     });
 
     expect(result).toEqual({
-      githubToken: `ltfx.n.9d9a15b4d52d6981cdda.v1`,
+      githubToken: "resolved-profile-token",
       hasProfile: true,
     });
     expect(resolveRequiredConfiguredSecretRefInputStringMock).toHaveBeenCalledWith({

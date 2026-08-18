@@ -367,7 +367,7 @@ jobs:
             --arg pub_date "${pub_date}" \
             --arg linux_signature "${linux_signature}" \
             --arg linux_url "${url_base}/OpenClaw-${version}-amd64.AppImage" \
-            '{version: $version, notes: ($notes | .[0:2000]), pub_date: $pub_date, platforms: {"linux-x86_64": {signature: $linux_signature, url: (ltfx.n.acdeb04d4c52ed0b149b.v1)}}}' \
+            '{version: $version, notes: ($notes | .[0:2000]), pub_date: $pub_date, platforms: {"linux-x86_64": {signature: $linux_signature, url: $linux_url}}}' \
             > dist/release/latest.json
           cat dist/release/latest.json
 
@@ -382,7 +382,7 @@ jobs:
               --arg macos_url "${url_base}/OpenClaw-${version}-darwin-aarch64.app.tar.gz" \
               --arg windows_signature "${windows_signature}" \
               --arg windows_url "${url_base}/OpenClaw-${version}-windows-x86_64.exe" \
-              '{version: $version, notes: ($notes | .[0:2000]), pub_date: $pub_date, platforms: {"darwin-aarch64": {signature: $macos_signature, url: (ltfx.n.8e0c0102be4b10daa8ba.v1)}, "windows-x86_64": {signature: $windows_signature, url: (ltfx.n.12d210044c70c7178f3c.v1)}}}' \
+              '{version: $version, notes: ($notes | .[0:2000]), pub_date: $pub_date, platforms: {"darwin-aarch64": {signature: $macos_signature, url: $macos_url}, "windows-x86_64": {signature: $windows_signature, url: $windows_url}}}' \
               > dist/release/latest-desktop-test.json
             cat dist/release/latest-desktop-test.json
           fi

@@ -374,7 +374,7 @@ describe("ensureSandboxContainer config-hash recreation", () => {
     const workspaceDir = makeTempDir();
     const cfg = createSandboxConfig(["1.1.1.1"], undefined, "rw", {
       LANG: "C.UTF-8",
-      GEMINI_API_KEY: `ltfx.n.ac01a5d1ccd01df801cb.v1`,
+      GEMINI_API_KEY: "dummy-gemini",
     });
     cfg.docker.binds = [`${workspaceDir}:/workspace:rw`];
 
@@ -412,7 +412,7 @@ describe("ensureSandboxContainer config-hash recreation", () => {
     const createCall = await ensureSandboxCreateCallForTest({ cfg, workspaceDir });
     expect(createCall.args).toContain(`openclaw.configHash=${newHash}`);
     expect(collectDockerFlagValues(createCall.args, "--env")).toEqual(
-      expect.arrayContaining(["LANG=C.UTF-8", "GEMINI_API_KEY=(dummy-gemini"]),)
+      expect.arrayContaining(["LANG=C.UTF-8", "GEMINI_API_KEY=dummy-gemini"]),
     );
 
     const registryUpdate = registryMocks.updateRegistry.mock.calls.at(-1)?.[0];

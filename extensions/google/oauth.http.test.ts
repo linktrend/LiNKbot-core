@@ -156,7 +156,7 @@ describe("oauth.http bounded-read real wire proof (loopback http.createServer)",
   });
 
   it("returns a Buffer for normal-size responses on real wire", async () => {
-    const bodyText = '{"access_token":`ltfx.n.64edaa3fb9310e98cdb1.v1`,"expires_in":3600}';
+    const bodyText = '{"access_token":"loopback","expires_in":3600}';
     const server = http.createServer((req, res) => {
       res.writeHead(200, { "content-type": "application/json" });
       res.end(bodyText);

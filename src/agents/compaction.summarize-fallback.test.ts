@@ -60,7 +60,7 @@ describe("summarizeWithFallback", () => {
     const result = await summarizeWithFallback({
       messages,
       model: testModel,
-      apiKey: `ltfx.n.62af8704764faf8ea82f.v1`, // pragma: allowlist secret
+      apiKey: "test-key", // pragma: allowlist secret
       signal: new AbortController().signal,
       reserveTokens: 1000,
       maxChunkTokens: 50_000,
@@ -95,7 +95,7 @@ describe("summarizeWithFallback", () => {
         } satisfies UserMessage,
       ],
       model: testModel,
-      apiKey: `ltfx.n.62af8704764faf8ea82f.v1`, // pragma: allowlist secret
+      apiKey: "test-key", // pragma: allowlist secret
       signal: new AbortController().signal, // not aborted
       reserveTokens: 1000,
       maxChunkTokens: 50_000,
@@ -126,7 +126,7 @@ describe("summarizeWithFallback", () => {
           } satisfies UserMessage,
         ],
         model: testModel,
-        apiKey: `ltfx.n.62af8704764faf8ea82f.v1`, // pragma: allowlist secret
+        apiKey: "test-key", // pragma: allowlist secret
         signal: controller.signal, // already aborted
         reserveTokens: 1000,
         maxChunkTokens: 50_000,
@@ -165,7 +165,7 @@ describe("summarizeWithFallback", () => {
     const result = await summarizeWithFallback({
       messages,
       model: testModel,
-      apiKey: `ltfx.n.62af8704764faf8ea82f.v1`, // pragma: allowlist secret
+      apiKey: "test-key", // pragma: allowlist secret
       signal: new AbortController().signal,
       reserveTokens: 1000,
       maxChunkTokens: 50_000,

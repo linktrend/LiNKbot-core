@@ -140,7 +140,7 @@ struct GatewayChannelDeviceTokenRetryTests {
                 return binding
             }
 
-            let firstToken = "${ltfx.n.c83ece2b233ce9364fa3.v1}"
+            let firstToken = "first-device-token"
             _ = DeviceAuthStore.storeToken(
                 deviceId: identity.deviceId,
                 role: "operator",
@@ -148,7 +148,7 @@ struct GatewayChannelDeviceTokenRetryTests {
                 gatewayID: gatewayID)
             let first = try await connectBinding()
 
-            let replacementToken = "${ltfx.n.e0143cc1f8f4b76c4e37.v1}"
+            let replacementToken = "replacement-device-token"
             _ = DeviceAuthStore.storeToken(
                 deviceId: identity.deviceId,
                 role: "operator",
@@ -177,7 +177,7 @@ struct GatewayChannelDeviceTokenRetryTests {
             _ = DeviceAuthStore.storeToken(
                 deviceId: identity.deviceId,
                 role: "operator",
-                token: "${ltfx.n.c3f79732393a0ff6e042.v1}")
+                token: "stored-device-token")
 
             let recorder = ConnectAuthRecorder()
             let session = TrustedDeviceRetryGatewaySession(
@@ -195,7 +195,7 @@ struct GatewayChannelDeviceTokenRetryTests {
                 includeDeviceIdentity: true)
             let channel = try GatewayChannelActor(
                 url: #require(URL(string: "wss://gateway.example.com")),
-                token: "${ltfx.n.b5cce2ab658056eba8b0.v1}",
+                token: "stale-shared-token",
                 session: WebSocketSessionBox(session: session),
                 connectOptions: options)
 

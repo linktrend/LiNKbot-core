@@ -183,7 +183,7 @@ describe("applyNonInteractiveAuthChoice", () => {
     const runtime = createRuntime();
     const nextConfig = { agents: { defaults: {} } } as OpenClawConfig;
     resolveNonInteractiveApiKey.mockResolvedValueOnce({
-      key: `ltfx.n.09a114ed843aa73818d9.v1`,
+      key: "custom-env-key",
       source: "env",
       envVarName: "CUSTOM_API_KEY",
     });

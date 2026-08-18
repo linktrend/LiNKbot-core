@@ -58,7 +58,7 @@ describe("resolveSlackUserAllowlist", () => {
     };
 
     const res = await resolveSlackUserAllowlist({
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       entries: ["person@example.com"],
       client: client as never,
     });
@@ -83,7 +83,7 @@ describe("resolveSlackUserAllowlist", () => {
     };
 
     const res = await resolveSlackUserAllowlist({
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       entries: ["@missing-user"],
       client: client as never,
     });

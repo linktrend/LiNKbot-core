@@ -9,7 +9,7 @@ import { deriveSidebarNarrationLine } from "./sidebar-narration-line.ts";
 const SIDEBAR_NARRATION_THROTTLE_MS = 2_000;
 import type { SidebarRecentSession } from "./app-sidebar-session-types.ts";
 
-function runningRow(key: (string)): SidebarRecentSession {
+function runningRow(key: string): SidebarRecentSession {
   return {
     key,
     label: "Run",
@@ -70,7 +70,7 @@ describe("SidebarSessionNarrationController", () => {
 
   it("publishes assistant commentary and throttles a newer tool signal", async () => {
     const subscribeMessages = vi.fn(() =>
-      Promise.resolve({ key: `ltfx.n.9978fc883def6ca9b153.v1`, agentId: null }),
+      Promise.resolve({ key: "agent:main:run", agentId: null }),
     );
     const unsubscribeMessages = vi.fn(() => Promise.resolve());
     const source = { subscribeMessages, unsubscribeMessages } as unknown as SessionCapability;
@@ -113,7 +113,7 @@ describe("SidebarSessionNarrationController", () => {
 
     controller.disconnect();
     expect(unsubscribeMessages).toHaveBeenCalledWith({
-      key: `ltfx.n.9978fc883def6ca9b153.v1`,
+      key: "agent:main:run",
       agentId: null,
     });
     expect(updates.at(-1)?.size).toBe(0);
@@ -122,7 +122,7 @@ describe("SidebarSessionNarrationController", () => {
 
   it("seeds a mid-run chat subscription from the cumulative message snapshot", () => {
     const source = {
-      subscribeMessages: vi.fn(() => Promise.resolve({ key: `ltfx.n.9978fc883def6ca9b153.v1`, agentId: null })),
+      subscribeMessages: vi.fn(() => Promise.resolve({ key: "agent:main:run", agentId: null })),
       unsubscribeMessages: vi.fn(() => Promise.resolve()),
     } as unknown as SessionCapability;
     const updates: Array<ReadonlyMap<string, string>> = [];
@@ -155,7 +155,7 @@ describe("SidebarSessionNarrationController", () => {
 
   it("normalizes raw assistant events before publishing narration", () => {
     const source = {
-      subscribeMessages: vi.fn(() => Promise.resolve({ key: `ltfx.n.9978fc883def6ca9b153.v1`, agentId: null })),
+      subscribeMessages: vi.fn(() => Promise.resolve({ key: "agent:main:run", agentId: null })),
       unsubscribeMessages: vi.fn(() => Promise.resolve()),
     } as unknown as SessionCapability;
     const updates: Array<ReadonlyMap<string, string>> = [];
@@ -193,7 +193,7 @@ describe("SidebarSessionNarrationController", () => {
 
   it("removes a trailing heartbeat token from a mixed visible response", () => {
     const source = {
-      subscribeMessages: vi.fn(() => Promise.resolve({ key: `ltfx.n.9978fc883def6ca9b153.v1`, agentId: null })),
+      subscribeMessages: vi.fn(() => Promise.resolve({ key: "agent:main:run", agentId: null })),
       unsubscribeMessages: vi.fn(() => Promise.resolve()),
     } as unknown as SessionCapability;
     const updates: Array<ReadonlyMap<string, string>> = [];
@@ -226,7 +226,7 @@ describe("SidebarSessionNarrationController", () => {
 
   it("keeps a truncated internal block hidden until its closing delimiter arrives", async () => {
     const source = {
-      subscribeMessages: vi.fn(() => Promise.resolve({ key: `ltfx.n.9978fc883def6ca9b153.v1`, agentId: null })),
+      subscribeMessages: vi.fn(() => Promise.resolve({ key: "agent:main:run", agentId: null })),
       unsubscribeMessages: vi.fn(() => Promise.resolve()),
     } as unknown as SessionCapability;
     const updates: Array<ReadonlyMap<string, string>> = [];
@@ -268,7 +268,7 @@ describe("SidebarSessionNarrationController", () => {
 
   it("holds a partial internal delimiter until its next fragment proves the boundary", () => {
     const source = {
-      subscribeMessages: vi.fn(() => Promise.resolve({ key: `ltfx.n.9978fc883def6ca9b153.v1`, agentId: null })),
+      subscribeMessages: vi.fn(() => Promise.resolve({ key: "agent:main:run", agentId: null })),
       unsubscribeMessages: vi.fn(() => Promise.resolve()),
     } as unknown as SessionCapability;
     const updates: Array<ReadonlyMap<string, string>> = [];
@@ -306,7 +306,7 @@ describe("SidebarSessionNarrationController", () => {
 
   it("resets internal streaming state when a chat replacement is followed by deltas", async () => {
     const source = {
-      subscribeMessages: vi.fn(() => Promise.resolve({ key: `ltfx.n.9978fc883def6ca9b153.v1`, agentId: null })),
+      subscribeMessages: vi.fn(() => Promise.resolve({ key: "agent:main:run", agentId: null })),
       unsubscribeMessages: vi.fn(() => Promise.resolve()),
     } as unknown as SessionCapability;
     const updates: Array<ReadonlyMap<string, string>> = [];
@@ -353,7 +353,7 @@ describe("SidebarSessionNarrationController", () => {
 
   it("keeps an outer internal block hidden after its opening delimiter leaves the raw buffer", async () => {
     const source = {
-      subscribeMessages: vi.fn(() => Promise.resolve({ key: `ltfx.n.9978fc883def6ca9b153.v1`, agentId: null })),
+      subscribeMessages: vi.fn(() => Promise.resolve({ key: "agent:main:run", agentId: null })),
       unsubscribeMessages: vi.fn(() => Promise.resolve()),
     } as unknown as SessionCapability;
     const updates: Array<ReadonlyMap<string, string>> = [];
@@ -413,7 +413,7 @@ describe("SidebarSessionNarrationController", () => {
 
   it("replaces stale assistant narration when an agent event requests replacement", async () => {
     const source = {
-      subscribeMessages: vi.fn(() => Promise.resolve({ key: `ltfx.n.9978fc883def6ca9b153.v1`, agentId: null })),
+      subscribeMessages: vi.fn(() => Promise.resolve({ key: "agent:main:run", agentId: null })),
       unsubscribeMessages: vi.fn(() => Promise.resolve()),
     } as unknown as SessionCapability;
     const updates: Array<ReadonlyMap<string, string>> = [];
@@ -451,7 +451,7 @@ describe("SidebarSessionNarrationController", () => {
 
   it("stays silent on a mid-run join until a cumulative snapshot aligns the stream", async () => {
     const source = {
-      subscribeMessages: vi.fn(() => Promise.resolve({ key: `ltfx.n.9978fc883def6ca9b153.v1`, agentId: null })),
+      subscribeMessages: vi.fn(() => Promise.resolve({ key: "agent:main:run", agentId: null })),
       unsubscribeMessages: vi.fn(() => Promise.resolve()),
     } as unknown as SessionCapability;
     const updates: Array<ReadonlyMap<string, string>> = [];
@@ -492,7 +492,7 @@ describe("SidebarSessionNarrationController", () => {
 
   it("retracts the shown line when a chat replacement is empty", async () => {
     const source = {
-      subscribeMessages: vi.fn(() => Promise.resolve({ key: `ltfx.n.9978fc883def6ca9b153.v1`, agentId: null })),
+      subscribeMessages: vi.fn(() => Promise.resolve({ key: "agent:main:run", agentId: null })),
       unsubscribeMessages: vi.fn(() => Promise.resolve()),
     } as unknown as SessionCapability;
     const updates: Array<ReadonlyMap<string, string>> = [];
@@ -532,7 +532,7 @@ describe("SidebarSessionNarrationController", () => {
 
   it("retracts the shown line when a replacement reduces to suppressed content", async () => {
     const source = {
-      subscribeMessages: vi.fn(() => Promise.resolve({ key: `ltfx.n.9978fc883def6ca9b153.v1`, agentId: null })),
+      subscribeMessages: vi.fn(() => Promise.resolve({ key: "agent:main:run", agentId: null })),
       unsubscribeMessages: vi.fn(() => Promise.resolve()),
     } as unknown as SessionCapability;
     const updates: Array<ReadonlyMap<string, string>> = [];
@@ -608,9 +608,9 @@ describe("SidebarSessionNarrationController", () => {
     controller.sync({ ...base, rows: [runningRow("agent:main:run")] });
     expect(subscribeMessages).toHaveBeenCalledTimes(2);
 
-    completions[1]?.resolve({ key: `ltfx.n.9978fc883def6ca9b153.v1`, agentId: null });
+    completions[1]?.resolve({ key: "agent:main:run", agentId: null });
     await Promise.resolve();
-    completions[0]?.resolve({ key: `ltfx.n.9978fc883def6ca9b153.v1`, agentId: null });
+    completions[0]?.resolve({ key: "agent:main:run", agentId: null });
     await Promise.resolve();
 
     expect(unsubscribeMessages).not.toHaveBeenCalled();
@@ -658,7 +658,7 @@ describe("SidebarSessionNarrationController", () => {
 
   it("resets accumulated deltas when a new run starts for the same session", () => {
     const source = {
-      subscribeMessages: vi.fn(() => Promise.resolve({ key: `ltfx.n.9978fc883def6ca9b153.v1`, agentId: null })),
+      subscribeMessages: vi.fn(() => Promise.resolve({ key: "agent:main:run", agentId: null })),
       unsubscribeMessages: vi.fn(() => Promise.resolve()),
     } as unknown as SessionCapability;
     const updates: Array<ReadonlyMap<string, string>> = [];
@@ -731,11 +731,11 @@ describe("SidebarSessionNarrationController", () => {
       openSessionKey: "",
       agentId: "main",
     });
-    resolveFirst({ key: `ltfx.n.9978fc883def6ca9b153.v1`, agentId: null });
+    resolveFirst({ key: "agent:main:run", agentId: null });
     await Promise.resolve();
 
     expect(firstSource.unsubscribeMessages).toHaveBeenCalledWith({
-      key: `ltfx.n.9978fc883def6ca9b153.v1`,
+      key: "agent:main:run",
       agentId: null,
     });
   });
@@ -764,7 +764,7 @@ describe("SidebarSessionNarrationController", () => {
 
   it("keeps the newest sentence after a response exceeds the retained tail", async () => {
     const source = {
-      subscribeMessages: vi.fn(() => Promise.resolve({ key: `ltfx.n.9978fc883def6ca9b153.v1`, agentId: null })),
+      subscribeMessages: vi.fn(() => Promise.resolve({ key: "agent:main:run", agentId: null })),
       unsubscribeMessages: vi.fn(() => Promise.resolve()),
     } as unknown as SessionCapability;
     const updates: Array<ReadonlyMap<string, string>> = [];

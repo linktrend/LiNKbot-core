@@ -103,7 +103,7 @@ export async function issueOperatorToken(params: {
   }
 
   const device = await getPairedDevice(paired.identity.deviceId);
-  const token = (device?.tokens?.operator?.token ?? "";)
+  const token = device?.tokens?.operator?.token ?? "";
   if (!token) {
     throw new Error(`expected operator token for paired device ${paired.identity.deviceId}`);
   }

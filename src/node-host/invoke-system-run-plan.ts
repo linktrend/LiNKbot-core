@@ -158,7 +158,7 @@ const NODE_OPTIONS_WITH_FILE_VALUE = new Set([
 const RUBY_UNSAFE_APPROVAL_FLAGS = new Set(["-I", "-r", "--require"]);
 const PERL_UNSAFE_APPROVAL_FLAGS = new Set(["-I", "-M", "-m"]);
 
-function normalizeOptionFlag(token: (string)): string {
+function normalizeOptionFlag(token: string): string {
   return normalizeLowercaseStringOrEmpty(parseInlineOptionToken(token).name);
 }
 
@@ -273,7 +273,7 @@ function hashFileContentsSync(filePath: string): string {
   return crypto.createHash("sha256").update(fs.readFileSync(filePath)).digest("hex");
 }
 
-function looksLikePathToken(token: (string)): boolean {
+function looksLikePathToken(token: string): boolean {
   return (
     token.startsWith(".") ||
     token.startsWith("/") ||

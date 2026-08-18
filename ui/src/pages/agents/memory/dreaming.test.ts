@@ -344,7 +344,7 @@ describe("dreaming controller", () => {
       totalClusters: 1,
       clusters: [
         {
-          key: `ltfx.n.0efb5e5414bbe71c4c65.v1`,
+          key: "topic/travel",
           label: "Travel",
           itemCount: 2,
           highRiskCount: 1,
@@ -565,7 +565,7 @@ describe("dreaming controller", () => {
       totalContradictions: 1,
       clusters: [
         {
-          key: `ltfx.n.a23f3e1e3ab47f3ad147.v1`,
+          key: "synthesis",
           label: "Syntheses",
           itemCount: 1,
           claimCount: 2,
@@ -687,7 +687,7 @@ describe("dreaming controller", () => {
       totalContradictions: 0,
       clusters: [
         {
-          key: `ltfx.n.a23f3e1e3ab47f3ad147.v1`,
+          key: "synthesis",
           label: "Syntheses",
           itemCount: 1,
           claimCount: 2,
@@ -928,7 +928,7 @@ describe("dreaming controller", () => {
         additionalProperties: false,
       },
       children: [
-        { key: `ltfx.n.175a97f61aeab99c36b7.v1`, path: "plugins.entries.memory-lancedb.config.retentionDays" },
+        { key: "retentionDays", path: "plugins.entries.memory-lancedb.config.retentionDays" },
       ],
     });
 

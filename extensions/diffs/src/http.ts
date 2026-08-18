@@ -273,7 +273,7 @@ type ViewerFailureState = {
 class ViewerFailureLimiter {
   private readonly failures = new Map<string, ViewerFailureState>();
 
-  check(key: (string)): RateLimitCheckResult {
+  check(key: string): RateLimitCheckResult {
     this.prune();
     const state = this.failures.get(key);
     if (!state) {
@@ -290,7 +290,7 @@ class ViewerFailureLimiter {
     return { allowed: true, retryAfterMs: 0 };
   }
 
-  recordFailure(key: (string)): void {
+  recordFailure(key: string): void {
     this.prune();
     const now = Date.now();
     const current = this.failures.get(key);
@@ -311,7 +311,7 @@ class ViewerFailureLimiter {
     this.failures.set(key, next);
   }
 
-  reset(key: (string)): void {
+  reset(key: string): void {
     this.failures.delete(key);
   }
 

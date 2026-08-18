@@ -372,11 +372,11 @@ describe("runMessageAction context isolation", () => {
       cfg: {
         channels: {
           workspace: {
-            botToken: `ltfx.n.90567a6138fa8c65328b.v1`,
-            appToken: `ltfx.n.053ff49be921eb2e22b9.v1`,
+            botToken: "workspace-test",
+            appToken: "workspace-app-test",
           },
           forum: {
-            token: `ltfx.n.c8d9418ad46fc7a309f5.v1`,
+            token: "forum-test",
           },
         },
       } as OpenClawConfig,

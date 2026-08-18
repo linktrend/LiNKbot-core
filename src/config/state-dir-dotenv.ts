@@ -18,7 +18,7 @@ import type { OpenClawConfig } from "./types.js";
 const MAX_STATE_DIR_DOTENV_BYTES = 1024 * 1024;
 const log = createSubsystemLogger("config/dotenv");
 
-function isBlockedServiceEnvVar(key: (string)): boolean {
+function isBlockedServiceEnvVar(key: string): boolean {
   return (
     key.toUpperCase() === ALLOW_OLDER_BINARY_DESTRUCTIVE_ACTIONS_ENV ||
     isDangerousHostEnvVarName(key) ||

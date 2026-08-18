@@ -82,7 +82,7 @@ Share document with email:
 ```json
 {
   "action": "add",
-  "token": "${ltfx.n.1757027e7214ab6fe7e6.v1}",
+  "token": "doxcnXXX",
   "type": "docx",
   "member_type": "email",
   "member_id": "alice@company.com",
@@ -95,7 +95,7 @@ Share folder with group:
 ```json
 {
   "action": "add",
-  "token": "${ltfx.n.d84001ca2751503d7e0b.v1}",
+  "token": "fldcnXXX",
   "type": "folder",
   "member_type": "openchat",
   "member_id": "oc_xxx",

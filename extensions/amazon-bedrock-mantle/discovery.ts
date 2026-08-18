@@ -218,7 +218,7 @@ export async function resolveMantleRuntimeBearerToken(params: {
   const expiresAt =
     refreshed?.expiresAt ?? resolveExpiresAtMsFromDurationMs(IAM_TOKEN_TTL_MS, { nowMs: now });
   return {
-    apiKey: (refreshed?.token ?? token,)
+    apiKey: refreshed?.token ?? token,
     ...(expiresAt === undefined ? {} : { expiresAt }),
   };
 }

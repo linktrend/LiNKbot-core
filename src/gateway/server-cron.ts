@@ -813,7 +813,7 @@ export function buildGatewayCronService(params: {
         deps: params.deps,
         logger: cronLogger,
         resolveCronAgent,
-        webhookToken: (params.cfg.cron?.webhookToken,)
+        webhookToken: params.cfg.cron?.webhookToken,
         job,
         text,
         channel,
@@ -889,7 +889,7 @@ export function buildGatewayCronService(params: {
           deps: params.deps,
           logger: cronLogger,
           resolveCronAgent,
-          webhookToken: (params.cfg.cron?.webhookToken,)
+          webhookToken: params.cfg.cron?.webhookToken,
           globalFailureDestination: params.cfg.cron?.failureDestination,
         });
       }

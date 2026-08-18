@@ -271,16 +271,16 @@ describe("browser chrome helpers", () => {
       const credentialedUrl = `http://browser-user:browser-password@127.0.0.1:${addr.port}`;
       await expect(isChromeReachable(credentialedUrl, 1000)).resolves.toBe(true);
       expect(requests).toEqual([
-        { authorization, url: `ltfx.n.2627488d0519c06b70f9.v1` },
-        { authorization, url: `ltfx.n.c7ca0f4088925f159769.v1` },
+        { authorization, url: "/json/version" },
+        { authorization, url: "/json/version/" },
       ]);
       requests.length = 0;
       await expect(getChromeWebSocketUrl(credentialedUrl, 1000)).resolves.toBe(
         `ws://browser-user:browser-password@127.0.0.1:${addr.port}/devtools/browser/authenticated`,
       );
       expect(requests).toEqual([
-        { authorization, url: `ltfx.n.2627488d0519c06b70f9.v1` },
-        { authorization, url: `ltfx.n.c7ca0f4088925f159769.v1` },
+        { authorization, url: "/json/version" },
+        { authorization, url: "/json/version/" },
       ]);
     } finally {
       await new Promise<void>((resolve) => {
@@ -355,8 +355,8 @@ describe("browser chrome helpers", () => {
     const formatted = formatChromeCdpDiagnostic({
       ok: false,
       code: "websocket_handshake_failed",
-      cdpUrl: "https://user:pass@browserless.example.com?token=(supersecret123",)
-      wsUrl: "wss://user:pass@browserless.example.com/devtools/browser/1?token=(supersecret123",)
+      cdpUrl: "https://user:pass@browserless.example.com?token=supersecret123",
+      wsUrl: "wss://user:pass@browserless.example.com/devtools/browser/1?token=supersecret123",
       message: "connect ECONNREFUSED browserless.example.com",
       elapsedMs: 12,
     });

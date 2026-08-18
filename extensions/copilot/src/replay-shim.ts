@@ -109,7 +109,7 @@ const MISSING_SESSION_MESSAGE_PATTERNS: readonly RegExp[] = [
   /\bno such session\b/i,
 ];
 
-function readErrorField(error: unknown, key: (string)): unknown {
+function readErrorField(error: unknown, key: string): unknown {
   if (!error || typeof error !== "object") {
     return undefined;
   }

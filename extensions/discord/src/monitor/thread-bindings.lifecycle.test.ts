@@ -31,7 +31,7 @@ const hoisted = vi.hoisted(() => {
   }));
   const restPost = vi.fn(async (..._args: unknown[]) => ({
     id: "wh-created",
-    token: `ltfx.n.b164d55ca125f811b815.v1`,
+    token: "tok-created",
   }));
   const createDiscordRestClient = vi.fn((..._args: unknown[]) => ({
     rest: {
@@ -150,7 +150,7 @@ describe("thread binding lifecycle", () => {
     });
     hoisted.restPost.mockReset().mockResolvedValue({
       id: "wh-created",
-      token: `ltfx.n.b164d55ca125f811b815.v1`,
+      token: "tok-created",
     });
     hoisted.createDiscordRestClient.mockReset().mockImplementation((..._args: unknown[]) => ({
       rest: {
@@ -862,7 +862,7 @@ describe("thread binding lifecycle", () => {
     });
     expectFields(second, "second binding", {
       webhookId: "wh-created",
-      webhookToken: `ltfx.n.b164d55ca125f811b815.v1`,
+      webhookToken: "tok-created",
     });
     expect(hoisted.restPost).toHaveBeenCalledTimes(1);
   });
@@ -966,7 +966,7 @@ describe("thread binding lifecycle", () => {
     } as OpenClawConfig;
     createTestThreadBindingManager({
       accountId: "runtime",
-      token: `ltfx.n.f8e1f3c257c8d1a3d07a.v1`,
+      token: "runtime-token",
       cfg,
       persist: false,
       enableSweeper: false,
@@ -1005,7 +1005,7 @@ describe("thread binding lifecycle", () => {
     ) as { accountId?: string; token?: string } | undefined;
     expectFields(firstClientArgs, "first client args", {
       accountId: "runtime",
-      token: `ltfx.n.f8e1f3c257c8d1a3d07a.v1`,
+      token: "runtime-token",
     });
     const usedCfg = hoisted.createDiscordRestClient.mock.calls.some((call) => {
       if (call?.[1] === cfg) {
@@ -1021,14 +1021,14 @@ describe("thread binding lifecycle", () => {
 
   it("uses the active runtime snapshot cfg for manager operations", async () => {
     const startupCfg = {
-      channels: { discord: { token: `ltfx.n.fdba39e7cdda6afde11d.v1` } },
+      channels: { discord: { token: "startup-token" } },
     } as OpenClawConfig;
     const refreshedCfg = {
-      channels: { discord: { token: `ltfx.n.d34e33e7b3e0269fa932.v1` } },
+      channels: { discord: { token: "refreshed-token" } },
     } as OpenClawConfig;
     const manager = createTestThreadBindingManager({
       accountId: "runtime",
-      token: `ltfx.n.f8e1f3c257c8d1a3d07a.v1`,
+      token: "runtime-token",
       cfg: startupCfg,
       persist: false,
       enableSweeper: false,
@@ -1082,7 +1082,7 @@ describe("thread binding lifecycle", () => {
   it("refreshes manager token when an existing manager is reused", async () => {
     createTestThreadBindingManager({
       accountId: "runtime",
-      token: `ltfx.n.11a3b6751c594dfe0fb6.v1`,
+      token: "token-old",
       persist: false,
       enableSweeper: false,
       idleTimeoutMs: 24 * 60 * 60 * 1000,
@@ -1090,7 +1090,7 @@ describe("thread binding lifecycle", () => {
     });
     const manager = createTestThreadBindingManager({
       accountId: "runtime",
-      token: `ltfx.n.d2b1077db628d910344d.v1`,
+      token: "token-new",
       persist: false,
       enableSweeper: false,
       idleTimeoutMs: 24 * 60 * 60 * 1000,
@@ -1124,7 +1124,7 @@ describe("thread binding lifecycle", () => {
       "thread context",
       {
         accountId: "runtime",
-        token: `ltfx.n.d2b1077db628d910344d.v1`,
+        token: "token-new",
       },
     );
     const usedTokenNew = hoisted.createDiscordRestClient.mock.calls.some(

@@ -101,7 +101,7 @@ describe("embedded gateway stub", () => {
   it("resolves sessions through the gateway session resolver", async () => {
     runtime.resolveSessionKeyFromResolveParams.mockResolvedValueOnce({
       ok: true,
-      key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+      key: "agent:main:main",
     });
 
     const callGateway = createEmbeddedCallGateway();
@@ -110,7 +110,7 @@ describe("embedded gateway stub", () => {
       params: { sessionId: "sess-main", includeGlobal: true },
     });
 
-    expect(result).toEqual({ ok: true, key: `ltfx.n.6d9217fe77c7f11d9cc9.v1` });
+    expect(result).toEqual({ ok: true, key: "agent:main:main" });
     expect(runtime.resolveSessionKeyFromResolveParams).toHaveBeenCalledWith({
       cfg: { agents: { list: [{ id: "main", default: true }] } },
       p: { sessionId: "sess-main", includeGlobal: true },

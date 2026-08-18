@@ -116,7 +116,7 @@ export function createActionGate<T extends Record<string, boolean | undefined>>(
   };
 }
 
-function readParamRaw(params: Record<string, unknown>, key: (string)): unknown {
+function readParamRaw(params: Record<string, unknown>, key: string): unknown {
   return readSnakeCaseParamRaw(params, key);
 }
 

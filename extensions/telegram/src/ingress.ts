@@ -10,7 +10,7 @@ import { normalizeAllowFrom, type NormalizedAllowFrom } from "./bot-access.js";
 const TELEGRAM_CHANNEL_ID = "telegram";
 
 const telegramIngressIdentity = defineStableChannelIngressIdentity({
-  key: `ltfx.n.a2a3eaa9ab3f947e0c14.v1`,
+  key: "telegram-user-id",
   normalize: (value) => {
     const normalized = normalizeAllowFrom([value]);
     return normalized.entries[0] ?? (normalized.hasWildcard ? "*" : null);

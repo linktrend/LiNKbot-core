@@ -124,8 +124,8 @@ describe("findOcPaths — slash-deep JSONC paths", () => {
     JSON.stringify({
       mcp: {
         servers: {
-          github: { env: { GITHUB_TOKEN: `ltfx.n.5dd6823fdffafb04af60.v1` } },
-          gitlab: { env: { GITHUB_TOKEN: `ltfx.n.a27a54354ce96436b242.v1` } },
+          github: { env: { GITHUB_TOKEN: "gh-token" } },
+          gitlab: { env: { GITHUB_TOKEN: "gl-token" } },
         },
       },
       agents: [

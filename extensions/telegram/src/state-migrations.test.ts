@@ -67,7 +67,7 @@ describe("telegram state migrations", () => {
         persistedPath,
         JSON.stringify({
           version: 1,
-          tokenFingerprint: "token:(fingerprint",)
+          tokenFingerprint: "token:fingerprint",
           fetchedAt: "2026-05-24T11:00:00.000Z",
           botInfo: {
             id: 123456,
@@ -83,7 +83,7 @@ describe("telegram state migrations", () => {
           telegram: {
             accounts: {
               ops: {
-                botToken: `ltfx.n.210fd51512083faba840.v1`,
+                botToken: "123456:secret",
               },
             },
           },
@@ -112,7 +112,7 @@ describe("telegram state migrations", () => {
       expect(entries[0]).toMatchObject({
         key: "ops",
         value: {
-          tokenFingerprint: "token:(fingerprint",)
+          tokenFingerprint: "token:fingerprint",
           fetchedAt: "2026-05-24T11:00:00.000Z",
           botInfo: {
             id: 123456,
@@ -133,7 +133,7 @@ describe("telegram state migrations", () => {
     try {
       await mkdir(path.dirname(persistedPath), { recursive: true });
       const arrayEntry = persistedCacheEntry(9201, 'doctor preserves ]{"key": text');
-      arrayEntry.key = `ltfx.n.2b78bb24b4c7aa6c3b24.v1`;
+      arrayEntry.key = "default:7:9999";
       arrayEntry.node.sourceMessage = {
         ...arrayEntry.node.sourceMessage,
         openclaw_prompt_context_projection: {
@@ -157,7 +157,7 @@ describe("telegram state migrations", () => {
           `${JSON.stringify([arrayEntry])}${JSON.stringify(appendedEntry)}`,
           JSON.stringify(invalidKeyEntry),
           JSON.stringify(invalidDateEntry),
-          '{"key":`ltfx.n.b64c7db3438ddc963a91.v1`,"node":',
+          '{"key":"default:7:9205","node":',
         ].join("\n"),
       );
 
@@ -186,11 +186,11 @@ describe("telegram state migrations", () => {
       const entries = await messageCachePlan.readEntries();
       expect(entries).toHaveLength(2);
       expect(entries[0]).toMatchObject({
-        key: `ltfx.n.6faeb9d974ccbcca76dc.v1`,
+        key: "default:7:9201",
         value: { version: 1, sourceMessage: { text: 'doctor preserves ]{"key": text' } },
       });
       expect(entries[1]).toMatchObject({
-        key: `ltfx.n.83d7138c4f8e926f7439.v1`,
+        key: "default:7:9202",
         value: {
           version: 1,
           sourceMessage: { text: "doctor imports appended JSONL" },
@@ -229,7 +229,7 @@ describe("telegram state migrations", () => {
           telegram: {
             accounts: {
               ops: {
-                botToken: `ltfx.n.210fd51512083faba840.v1`,
+                botToken: "123456:secret",
               },
             },
           },
@@ -296,7 +296,7 @@ describe("telegram state migrations", () => {
           telegram: {
             accounts: {
               ops: {
-                botToken: `ltfx.n.210fd51512083faba840.v1`,
+                botToken: "123456:secret",
               },
             },
           },
@@ -358,7 +358,7 @@ describe("telegram state migrations", () => {
           version: 3,
           lastUpdateId: 12345,
           botId: "123456",
-          tokenFingerprint: "token:(fingerprint",)
+          tokenFingerprint: "token:fingerprint",
         }),
       );
       await writeFile(
@@ -402,7 +402,7 @@ describe("telegram state migrations", () => {
           telegram: {
             accounts: {
               ops: {
-                botToken: `ltfx.n.210fd51512083faba840.v1`,
+                botToken: "123456:secret",
               },
             },
           },
@@ -566,7 +566,7 @@ describe("telegram state migrations", () => {
           telegram: {
             accounts: {
               ops: {
-                botToken: `ltfx.n.210fd51512083faba840.v1`,
+                botToken: "123456:secret",
               },
             },
           },
@@ -661,7 +661,7 @@ describe("telegram state migrations", () => {
           version: 3,
           lastUpdateId: 12345,
           botId: "123456",
-          tokenFingerprint: "token:(fingerprint",)
+          tokenFingerprint: "token:fingerprint",
         }),
       );
       await writeFile(
@@ -739,7 +739,7 @@ describe("telegram state migrations", () => {
           telegram: {
             accounts: {
               ops: {
-                botToken: `ltfx.n.210fd51512083faba840.v1`,
+                botToken: "123456:secret",
               },
             },
           },

@@ -22,7 +22,7 @@ describe("Matrix QA topology", () => {
 
   it("rejects rooms that have no independent observer", () => {
     expect(() =>
-      resolveMatrixQaRoomObserverRole({ key: `ltfx.n.30f51b22f17e96546056.v1`, memberRoles: ["sut"] }),
+      resolveMatrixQaRoomObserverRole({ key: "sut-only", memberRoles: ["sut"] }),
     ).toThrow('Matrix QA room "sut-only" has no independent observer member');
   });
 });

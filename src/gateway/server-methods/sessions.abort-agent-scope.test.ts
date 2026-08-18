@@ -226,7 +226,7 @@ describe("sessions.abort agent scope", () => {
       extra: { loadGatewayModelCatalog: vi.fn().mockResolvedValue([]) },
     });
     listSessionsFromStoreAsyncMock.mockResolvedValue({
-      sessions: [{ key: `ltfx.n.c8dfe7aa2f503cd7734b.v1`, sessionId: "sess-weixin" }],
+      sessions: [{ key: "agent:main:openclaw-weixin:direct:user", sessionId: "sess-weixin" }],
     });
     isEmbeddedAgentRunActiveMock.mockImplementation(
       (sessionId: string) => sessionId === "sess-weixin",
@@ -244,7 +244,7 @@ describe("sessions.abort agent scope", () => {
       expect.objectContaining({
         sessions: [
           expect.objectContaining({
-            key: `ltfx.n.c8dfe7aa2f503cd7734b.v1`,
+            key: "agent:main:openclaw-weixin:direct:user",
             sessionId: "sess-weixin",
             hasActiveRun: true,
           }),
@@ -370,7 +370,7 @@ describe("sessions.abort agent scope", () => {
 
     await callSessions(
       "sessions.abort",
-      { key: `ltfx.n.8410a9442e3fb5c8ccf3.v1` },
+      { key: "agent:work:main" },
       { context, reqId: "req-global-key-alias" },
     );
 
@@ -448,7 +448,7 @@ describe("sessions.abort agent scope", () => {
     });
     const respond = await callSessions(
       "sessions.messages.subscribe",
-      { key: `ltfx.n.8410a9442e3fb5c8ccf3.v1` },
+      { key: "agent:work:main" },
       {
         context,
         reqId: "req-sub-global-alias",
@@ -484,7 +484,7 @@ describe("sessions.abort agent scope", () => {
     });
     const respond = await callSessions(
       "sessions.abort",
-      { key: `ltfx.n.e1e65c877f4650face24.v1`, agentId: "main" },
+      { key: "agent:beta:main", agentId: "main" },
       { context, reqId: "req-4" },
     );
 
@@ -496,9 +496,9 @@ describe("sessions.abort agent scope", () => {
     const context = createContext({ globalScope: true });
 
     for (const [method, params] of [
-      ["sessions.patch", { key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`, agentId: "work", label: "Work" }],
-      ["sessions.delete", { key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`, agentId: "work" }],
-      ["sessions.compact", { key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`, agentId: "work" }],
+      ["sessions.patch", { key: "agent:main:main", agentId: "work", label: "Work" }],
+      ["sessions.delete", { key: "agent:main:main", agentId: "work" }],
+      ["sessions.compact", { key: "agent:main:main", agentId: "work" }],
     ] as const) {
       const respond = await callSessions(method, params, { context, reqId: `req-${method}` });
 
@@ -521,9 +521,9 @@ describe("sessions.abort agent scope", () => {
     const context = createContext({ globalScope: true });
 
     for (const [method, params] of [
-      ["sessions.patch", { key: `ltfx.n.bdf4b1ed0c203decd7b3.v1`, label: "Typo" }],
-      ["sessions.delete", { key: `ltfx.n.bdf4b1ed0c203decd7b3.v1` }],
-      ["sessions.compact", { key: `ltfx.n.bdf4b1ed0c203decd7b3.v1` }],
+      ["sessions.patch", { key: "agent:typo:main", label: "Typo" }],
+      ["sessions.delete", { key: "agent:typo:main" }],
+      ["sessions.compact", { key: "agent:typo:main" }],
     ] as const) {
       const respond = await callSessions(method, params, {
         context,

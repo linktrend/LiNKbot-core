@@ -212,7 +212,7 @@ function expectMainPatchBroadcast(
   result: Awaited<ReturnType<typeof invokeSessionsPatch>>,
   expected: Record<string, unknown>,
 ): Record<string, unknown> {
-  expectFields(result.responsePayload, { ok: true, key: `ltfx.n.6d9217fe77c7f11d9cc9.v1` });
+  expectFields(result.responsePayload, { ok: true, key: "agent:main:main" });
   return expectChangedBroadcast(result.broadcastToConnIds, {
     sessionKey: "agent:main:main",
     reason: "patch",
@@ -263,7 +263,7 @@ test("sessions.pluginPatch over WebSocket keeps pinned startup extensions after 
   expect(patched.ok).toBe(true);
   expect(patched.payload).toEqual({
     ok: true,
-    key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+    key: "agent:main:main",
     value: { state: "after-active-registry-churn" },
   });
 
@@ -279,7 +279,7 @@ test("sessions.pluginPatch over WebSocket keeps pinned startup extensions after 
   const row = buildGatewaySessionRow({
     cfg: { session: { store: storePath } },
     entry,
-    key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+    key: "agent:main:main",
     store: { "agent:main:main": entry },
     storePath,
   });
@@ -871,7 +871,7 @@ test("sessions.changed mutation events include session management metadata", asy
   });
 
   const archived = await invokeSessionsPatch({
-    key: `ltfx.n.10a7e699690a095ea9cd.v1`,
+    key: "discord:group:dev",
     archived: true,
   });
   expectChangedBroadcast(archived.broadcastToConnIds, {
@@ -887,7 +887,7 @@ test("sessions.changed mutation events include session management metadata", asy
   });
 
   const restored = await invokeSessionsPatch({
-    key: `ltfx.n.10a7e699690a095ea9cd.v1`,
+    key: "discord:group:dev",
     archived: false,
   });
   expectChangedBroadcast(restored.broadcastToConnIds, {
@@ -898,7 +898,7 @@ test("sessions.changed mutation events include session management metadata", asy
   });
 
   const pinned = await invokeSessionsPatch({
-    key: `ltfx.n.10a7e699690a095ea9cd.v1`,
+    key: "discord:group:dev",
     pinned: true,
   });
   expectChangedBroadcast(pinned.broadcastToConnIds, {
@@ -909,7 +909,7 @@ test("sessions.changed mutation events include session management metadata", asy
   });
 
   const unpinned = await invokeSessionsPatch({
-    key: `ltfx.n.10a7e699690a095ea9cd.v1`,
+    key: "discord:group:dev",
     pinned: false,
   });
   expectChangedBroadcast(unpinned.broadcastToConnIds, {
@@ -920,7 +920,7 @@ test("sessions.changed mutation events include session management metadata", asy
   });
 
   const icon = await invokeSessionsPatch({
-    key: `ltfx.n.10a7e699690a095ea9cd.v1`,
+    key: "discord:group:dev",
     icon: "name:spark",
   });
   expectChangedBroadcast(icon.broadcastToConnIds, {
@@ -930,7 +930,7 @@ test("sessions.changed mutation events include session management metadata", asy
   });
 
   const iconCleared = await invokeSessionsPatch({
-    key: `ltfx.n.10a7e699690a095ea9cd.v1`,
+    key: "discord:group:dev",
     icon: null,
   });
   expectChangedBroadcast(iconCleared.broadcastToConnIds, {
@@ -940,7 +940,7 @@ test("sessions.changed mutation events include session management metadata", asy
   });
 
   const unread = await invokeSessionsPatch({
-    key: `ltfx.n.10a7e699690a095ea9cd.v1`,
+    key: "discord:group:dev",
     unread: true,
   });
   expectChangedBroadcast(unread.broadcastToConnIds, {
@@ -952,7 +952,7 @@ test("sessions.changed mutation events include session management metadata", asy
   });
 
   const read = await invokeSessionsPatch({
-    key: `ltfx.n.10a7e699690a095ea9cd.v1`,
+    key: "discord:group:dev",
     unread: false,
   });
   expectChangedBroadcast(read.broadcastToConnIds, {
@@ -1169,14 +1169,14 @@ test("sessions.compact mounts a dashboard managed worktree as its workspace", as
 
   const { responsePayload } = await invokeSessionsCompact({
     getRuntimeConfig,
-    params: { key: `ltfx.n.b70b061a938f4ec249fe.v1` },
+    params: { key: "agent:main:dashboard:suggested" },
     subscribedConnIds: new Set(),
   });
 
   expect(embeddedRunMock.compactEmbeddedAgentSession).toHaveBeenCalledTimes(1);
   expectFields(responsePayload, {
     ok: true,
-    key: `ltfx.n.b70b061a938f4ec249fe.v1`,
+    key: "agent:main:dashboard:suggested",
     compacted: true,
   });
   expect(embeddedRunMock.compactEmbeddedAgentSession.mock.calls[0]?.[0]).toMatchObject({
@@ -1202,11 +1202,11 @@ test("sessions.changed mutation events include subagent ownership metadata", asy
   });
 
   const { broadcastToConnIds, responsePayload } = await invokeSessionsPatch({
-    key: `ltfx.n.a3bcc519207dfc8a538f.v1`,
+    key: "subagent:child",
     label: "Child",
   });
 
-  expectFields(responsePayload, { ok: true, key: `ltfx.n.3c3dbd6de91d4e00f4c7.v1` });
+  expectFields(responsePayload, { ok: true, key: "agent:main:subagent:child" });
   expectChangedBroadcast(broadcastToConnIds, {
     sessionKey: "agent:main:subagent:child",
     reason: "patch",

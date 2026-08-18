@@ -190,7 +190,7 @@ describe("qqbot config", () => {
       channels: {
         qqbot: {
           appId: "123456",
-          clientSecret: `ltfx.n.31160254d1297393d2ad.v1`,
+          clientSecret: "secret-value",
           audioFormatPolicy: {
             sttDirectFormats: [".wav"],
             uploadDirectFormats: [".mp3"],
@@ -224,7 +224,7 @@ describe("qqbot config", () => {
           accounts: {
             bot2: {
               appId: "654321",
-              clientSecret: `ltfx.n.31160254d1297393d2ad.v1`,
+              clientSecret: "secret-value",
               name: "Bot Two",
             },
           },
@@ -244,7 +244,7 @@ describe("qqbot config", () => {
     const cfg = makeQqbotSecretRefConfig();
     const previous = process.env.QQBOT_CLIENT_SECRET;
 
-    process.env.QQBOT_CLIENT_SECRET = `ltfx.n.718eb06c3dfb841853f6.v1`;
+    process.env.QQBOT_CLIENT_SECRET = "resolved-secret";
     try {
       const resolved = resolveQQBotAccount(cfg, DEFAULT_ACCOUNT_ID);
 
@@ -283,7 +283,7 @@ describe("qqbot config", () => {
       channels: {
         qqbot: {
           appId: "123456",
-          clientSecret: `ltfx.n.c46726d2313aa361ab32.v1`,
+          clientSecret: "secretref:/QQBOT_CLIENT_SECRET",
         },
       },
     } as OpenClawConfig;
@@ -324,7 +324,7 @@ describe("qqbot config", () => {
       cfg: {} as OpenClawConfig,
       accountId: inputAccountId,
       input: {
-        token: `ltfx.n.e498a3f986d2d9890ba5.v1`,
+        token: "102905186:Oi2Mg1Mh2Ni3:Pl7TpBXuHe1OmAYwKi7W",
       },
     }) as Record<string, unknown>;
 
@@ -339,7 +339,7 @@ describe("qqbot config", () => {
       enabled: true,
       allowFrom: ["*"],
       appId: "102905186",
-      clientSecret: `ltfx.n.905d0e4cf0b689c4dcbf.v1`,
+      clientSecret: "Oi2Mg1Mh2Ni3:Pl7TpBXuHe1OmAYwKi7W",
       clientSecretFile: undefined,
     });
   });

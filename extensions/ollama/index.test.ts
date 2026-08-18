@@ -526,8 +526,8 @@ describe("ollama plugin", () => {
           },
         },
       },
-      env: { OLLAMA_API_KEY: `ltfx.n.57678307ea899781fbcd.v1` },
-      resolveProviderApiKey: () => ({ apiKey: `ltfx.n.57678307ea899781fbcd.v1`, discoveryApiKey: `ltfx.n.57678307ea899781fbcd.v1` }),
+      env: { OLLAMA_API_KEY: "ollama-live" },
+      resolveProviderApiKey: () => ({ apiKey: "ollama-live", discoveryApiKey: "ollama-live" }),
     } as never);
 
     expect(buildOllamaProviderMock).toHaveBeenCalledOnce();
@@ -536,7 +536,7 @@ describe("ollama plugin", () => {
         baseUrl: "http://127.0.0.1:11434",
         api: "ollama",
         models: [{ id: "llama3.2", name: "Llama 3.2" }],
-        apiKey: `ltfx.n.18ab0c9c00ad3478e4db.v1`,
+        apiKey: "ollama-local",
       },
     });
   });
@@ -653,7 +653,7 @@ describe("ollama plugin", () => {
     const result = await provider.catalog.run({
       config: {},
       env: { NODE_ENV: "development" },
-      resolveProviderApiKey: () => ({ apiKey: `ltfx.n.18ab0c9c00ad3478e4db.v1` }),
+      resolveProviderApiKey: () => ({ apiKey: "ollama-local" }),
     } as never);
 
     const resultProvider = requireRecord(result?.provider, "catalog provider");
@@ -669,7 +669,7 @@ describe("ollama plugin", () => {
   it("resolves dynamic local models from Ollama without generating static models.json", async () => {
     const provider = registerProvider();
     const previous = process.env.OLLAMA_API_KEY;
-    process.env.OLLAMA_API_KEY = `ltfx.n.18ab0c9c00ad3478e4db.v1`;
+    process.env.OLLAMA_API_KEY = "ollama-local";
     buildOllamaProviderMock.mockResolvedValueOnce({
       baseUrl: "http://127.0.0.1:11434",
       api: "ollama",
@@ -717,7 +717,7 @@ describe("ollama plugin", () => {
   it("preserves explicit api for configured dynamic Ollama models", async () => {
     const provider = registerProvider();
     const previous = process.env.OLLAMA_API_KEY;
-    process.env.OLLAMA_API_KEY = `ltfx.n.57678307ea899781fbcd.v1`;
+    process.env.OLLAMA_API_KEY = "ollama-live";
     buildOllamaProviderMock.mockResolvedValueOnce({
       baseUrl: "https://ollama.example.com",
       api: "ollama",
@@ -779,7 +779,7 @@ describe("ollama plugin", () => {
   it("resolves requested Ollama cloud models that are omitted from tags but confirmed by show", async () => {
     const provider = registerProvider();
     const previous = process.env.OLLAMA_API_KEY;
-    process.env.OLLAMA_API_KEY = `ltfx.n.18ab0c9c00ad3478e4db.v1`;
+    process.env.OLLAMA_API_KEY = "ollama-local";
     buildOllamaProviderMock.mockResolvedValueOnce({
       baseUrl: "http://127.0.0.1:11434",
       api: "ollama",
@@ -967,13 +967,13 @@ describe("ollama plugin", () => {
       },
       env: {},
       entries: [],
-      resolveProviderApiKey: vi.fn(() => ({ apiKey: `ltfx.n.6c91623c4fe9db7c8167.v1` })),
+      resolveProviderApiKey: vi.fn(() => ({ apiKey: "cloud-key" })),
     } as never);
 
     expect(queryOllamaModelShowInfoMock).toHaveBeenCalledWith(
       "https://ollama.com",
       "cloud-new:cloud",
-      { apiKey: `ltfx.n.6c91623c4fe9db7c8167.v1` },
+      { apiKey: "cloud-key" },
     );
     expect(rows).toEqual([
       expect.objectContaining({
@@ -1006,7 +1006,7 @@ describe("ollama plugin", () => {
             ollama: {
               baseUrl: "https://ollama.example.test",
               api: "ollama",
-              apiKey: `ltfx.n.892546358dbe762583a7.v1`,
+              apiKey: "remote-key",
             },
           },
         },
@@ -1019,7 +1019,7 @@ describe("ollama plugin", () => {
     expect(queryOllamaModelShowInfoMock).toHaveBeenCalledWith(
       "https://ollama.example.test",
       "remote-new",
-      { apiKey: `ltfx.n.892546358dbe762583a7.v1` },
+      { apiKey: "remote-key" },
     );
     expect(rows).toEqual([
       expect.objectContaining({
@@ -1059,18 +1059,18 @@ describe("ollama plugin", () => {
             },
           },
         },
-        env: { OLLAMA_API_KEY: `ltfx.n.6c91623c4fe9db7c8167.v1` },
+        env: { OLLAMA_API_KEY: "cloud-key" },
         entries: [],
         resolveProviderApiKey: vi.fn(() => ({
           apiKey: "OLLAMA_API_KEY",
-          discoveryApiKey: `ltfx.n.6c91623c4fe9db7c8167.v1`,
+          discoveryApiKey: "cloud-key",
         })),
       } as never);
 
       expect(queryOllamaModelShowInfoMock).toHaveBeenCalledWith(
         "https://ollama.com",
         "cloud-new:cloud",
-        { apiKey: `ltfx.n.6c91623c4fe9db7c8167.v1` },
+        { apiKey: "cloud-key" },
       );
       queryOllamaModelShowInfoMock.mockClear();
     },
@@ -1103,20 +1103,20 @@ describe("ollama plugin", () => {
         },
       },
       env: {
-        LOCAL_OLLAMA_API_KEY: `ltfx.n.dba73d3fcb67907054ce.v1`,
-        OLLAMA_API_KEY: `ltfx.n.91c9718c81ef9dfa3ac9.v1`,
+        LOCAL_OLLAMA_API_KEY: "local-key",
+        OLLAMA_API_KEY: "ambient-cloud-key",
       },
       entries: [],
       resolveProviderApiKey: vi.fn(() => ({
         apiKey: "LOCAL_OLLAMA_API_KEY",
-        discoveryApiKey: `ltfx.n.dba73d3fcb67907054ce.v1`,
+        discoveryApiKey: "local-key",
       })),
     } as never);
 
     expect(queryOllamaModelShowInfoMock).toHaveBeenCalledWith(
       "http://127.0.0.1:11434",
       "local-secured",
-      { apiKey: `ltfx.n.dba73d3fcb67907054ce.v1` },
+      { apiKey: "local-key" },
     );
   });
 
@@ -1138,12 +1138,12 @@ describe("ollama plugin", () => {
         },
       },
       env: {
-        OLLAMA_API_KEY: `ltfx.n.91c9718c81ef9dfa3ac9.v1`,
+        OLLAMA_API_KEY: "ambient-cloud-key",
       },
       entries: [],
       resolveProviderApiKey: vi.fn(() => ({
         apiKey: "OLLAMA_API_KEY",
-        discoveryApiKey: `ltfx.n.91c9718c81ef9dfa3ac9.v1`,
+        discoveryApiKey: "ambient-cloud-key",
       })),
     } as never);
 
@@ -1172,13 +1172,13 @@ describe("ollama plugin", () => {
       },
       env: {},
       entries: [],
-      resolveProviderApiKey: vi.fn(() => ({ apiKey: `ltfx.n.6c91623c4fe9db7c8167.v1` })),
+      resolveProviderApiKey: vi.fn(() => ({ apiKey: "cloud-key" })),
     } as never);
 
     expect(queryOllamaModelShowInfoMock).toHaveBeenCalledWith(
       "https://ollama.com",
       "cloud-new:cloud",
-      { apiKey: `ltfx.n.6c91623c4fe9db7c8167.v1` },
+      { apiKey: "cloud-key" },
     );
     expect(rows).toEqual([
       expect.objectContaining({
@@ -1211,20 +1211,20 @@ describe("ollama plugin", () => {
             "ollama-cloud": {
               baseUrl: "https://ollama.com",
               api: "ollama",
-              apiKey: `ltfx.n.d19474a211fc17e0fb0f.v1`,
+              apiKey: "cloud-config-key",
             },
           },
         },
       },
-      env: { OLLAMA_API_KEY: `ltfx.n.18ab0c9c00ad3478e4db.v1` },
+      env: { OLLAMA_API_KEY: "ollama-local" },
       entries: [],
-      resolveProviderApiKey: vi.fn(() => ({ apiKey: `ltfx.n.18ab0c9c00ad3478e4db.v1` })),
+      resolveProviderApiKey: vi.fn(() => ({ apiKey: "ollama-local" })),
     } as never);
 
     expect(queryOllamaModelShowInfoMock).toHaveBeenCalledWith(
       "https://ollama.com",
       "cloud-new:cloud",
-      { apiKey: `ltfx.n.d19474a211fc17e0fb0f.v1` },
+      { apiKey: "cloud-config-key" },
     );
   });
 
@@ -1248,15 +1248,15 @@ describe("ollama plugin", () => {
       env: {},
       entries: [],
       resolveProviderApiKey: vi.fn(() => ({
-        apiKey: `ltfx.n.2d051e748fa1575537e2.v1`, // pragma: allowlist secret
-        discoveryApiKey: `ltfx.n.6c91623c4fe9db7c8167.v1`,
+        apiKey: "secretref-managed", // pragma: allowlist secret
+        discoveryApiKey: "cloud-key",
       })),
     } as never);
 
     expect(queryOllamaModelShowInfoMock).toHaveBeenCalledWith(
       "https://ollama.com",
       "cloud-new:cloud",
-      { apiKey: `ltfx.n.6c91623c4fe9db7c8167.v1` },
+      { apiKey: "cloud-key" },
     );
   });
 
@@ -1273,10 +1273,10 @@ describe("ollama plugin", () => {
           },
         },
       },
-      env: { OLLAMA_API_KEY: `ltfx.n.2d051e748fa1575537e2.v1` }, // pragma: allowlist secret
+      env: { OLLAMA_API_KEY: "secretref-managed" }, // pragma: allowlist secret
       entries: [],
       resolveProviderApiKey: vi.fn(() => ({
-        apiKey: `ltfx.n.2d051e748fa1575537e2.v1`, // pragma: allowlist secret
+        apiKey: "secretref-managed", // pragma: allowlist secret
       })),
     } as never);
 
@@ -1442,7 +1442,7 @@ describe("ollama plugin", () => {
   it("keeps unknown requested Ollama models unresolved when show has no metadata", async () => {
     const provider = registerProvider();
     const previous = process.env.OLLAMA_API_KEY;
-    process.env.OLLAMA_API_KEY = `ltfx.n.18ab0c9c00ad3478e4db.v1`;
+    process.env.OLLAMA_API_KEY = "ollama-local";
     buildOllamaProviderMock.mockResolvedValueOnce({
       baseUrl: "http://127.0.0.1:11434",
       api: "ollama",
@@ -1490,8 +1490,8 @@ describe("ollama plugin", () => {
           },
         },
       },
-      env: { NODE_ENV: "development", OLLAMA_API_KEY: `ltfx.n.57678307ea899781fbcd.v1` },
-      resolveProviderApiKey: () => ({ apiKey: `ltfx.n.57678307ea899781fbcd.v1` }),
+      env: { NODE_ENV: "development", OLLAMA_API_KEY: "ollama-live" },
+      resolveProviderApiKey: () => ({ apiKey: "ollama-live" }),
     } as never);
 
     expect(result).toBeNull();
@@ -1515,8 +1515,8 @@ describe("ollama plugin", () => {
             },
           },
         },
-        env: { NODE_ENV: "development", OLLAMA_API_KEY: `ltfx.n.57678307ea899781fbcd.v1` },
-        resolveProviderApiKey: () => ({ apiKey: `ltfx.n.57678307ea899781fbcd.v1` }),
+        env: { NODE_ENV: "development", OLLAMA_API_KEY: "ollama-live" },
+        resolveProviderApiKey: () => ({ apiKey: "ollama-live" }),
       } as never);
 
       expect(result).toBeNull();
@@ -1544,8 +1544,8 @@ describe("ollama plugin", () => {
           },
         },
       },
-      env: { NODE_ENV: "development", OLLAMA_API_KEY: `ltfx.n.57678307ea899781fbcd.v1` },
-      resolveProviderApiKey: () => ({ apiKey: `ltfx.n.57678307ea899781fbcd.v1` }),
+      env: { NODE_ENV: "development", OLLAMA_API_KEY: "ollama-live" },
+      resolveProviderApiKey: () => ({ apiKey: "ollama-live" }),
     } as never);
 
     const resultProvider = requireRecord(result?.provider, "catalog provider");
@@ -1582,7 +1582,7 @@ describe("ollama plugin", () => {
     });
 
     expect(auth).toEqual({
-      apiKey: `ltfx.n.18ab0c9c00ad3478e4db.v1`,
+      apiKey: "ollama-local",
       source: "models.providers.ollama (synthetic local key)",
       mode: "api-key",
     });
@@ -1600,7 +1600,7 @@ describe("ollama plugin", () => {
     });
 
     expect(auth).toEqual({
-      apiKey: `ltfx.n.18ab0c9c00ad3478e4db.v1`,
+      apiKey: "ollama-local",
       source: "models.providers.ollama (synthetic local key)",
       mode: "api-key",
     });
@@ -1664,12 +1664,12 @@ describe("ollama plugin", () => {
       env: {},
       resolveProviderApiKey: () => ({
         apiKey: "OLLAMA_API_KEY",
-        discoveryApiKey: `ltfx.n.6c91623c4fe9db7c8167.v1`,
+        discoveryApiKey: "cloud-key",
       }),
     } as never);
 
     expect(buildOllamaProviderMock).toHaveBeenCalledWith("https://ollama.com", {
-      apiKey: `ltfx.n.6c91623c4fe9db7c8167.v1`,
+      apiKey: "cloud-key",
       quiet: true,
     });
     expect(result?.provider.apiKey).toBe("OLLAMA_API_KEY");
@@ -1697,19 +1697,19 @@ describe("ollama plugin", () => {
       },
       env: {},
       resolveProviderApiKey: () => ({
-        apiKey: `ltfx.n.2d051e748fa1575537e2.v1`,
-        discoveryApiKey: `ltfx.n.6c91623c4fe9db7c8167.v1`,
+        apiKey: "secretref-managed",
+        discoveryApiKey: "cloud-key",
       }),
     } as never);
 
     expect(buildOllamaProviderMock).toHaveBeenCalledWith("https://ollama.com", {
-      apiKey: `ltfx.n.6c91623c4fe9db7c8167.v1`,
+      apiKey: "cloud-key",
       quiet: true,
     });
     expect(queryOllamaModelShowInfoMock).toHaveBeenCalledWith(
       "https://ollama.com",
       "glm-5.2:cloud",
-      { apiKey: `ltfx.n.6c91623c4fe9db7c8167.v1` },
+      { apiKey: "cloud-key" },
     );
     expect(result?.provider.models).toEqual(
       expect.arrayContaining([

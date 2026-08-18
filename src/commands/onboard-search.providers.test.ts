@@ -123,7 +123,7 @@ describe("onboard-search provider resolution", () => {
           "custom-plugin": {
             config: {
               webSearch: {
-                apiKey: `ltfx.n.1481b6fd3ceddb4ae3c2.v1`,
+                apiKey: "custom-key",
               },
             },
           },
@@ -211,7 +211,7 @@ describe("onboard-search provider resolution", () => {
           firecrawl: {
             config: {
               webSearch: {
-                apiKey: `ltfx.n.6397704e2ac27831a33c.v1`,
+                apiKey: "fc-disabled-key",
               },
             },
           },

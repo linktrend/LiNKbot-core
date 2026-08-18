@@ -776,7 +776,7 @@ function Resolve-PortableGitDownload {
     return @{
         Tag = $release.tag_name
         Name = $asset.name
-        Url = "${ltfx.n.714e6e5cb63ff6cd59ed.v1}"
+        Url = $asset.browser_download_url
     }
 }
 

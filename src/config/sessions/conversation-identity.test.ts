@@ -272,7 +272,7 @@ describe("conversation identity", () => {
         ThreadParentId: "unpersisted-parent-id",
       },
       groupResolution: {
-        key: `ltfx.n.59a86b820b25fcec1e62.v1`,
+        key: "discord:channel:ops-room",
         channel: "discord",
         id: "ops-room",
         chatType: "channel",

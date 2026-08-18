@@ -325,7 +325,7 @@ describe("slack web client config", () => {
   });
 
   it("builds stable non-secret token cache keys", () => {
-    const token = `ltfx.n.63aa9997a7c80d473a18.v1`;
+    const token = "xoxb-sensitive-token";
     const first = createSlackTokenCacheKey(token);
     const second = createSlackTokenCacheKey(token);
 

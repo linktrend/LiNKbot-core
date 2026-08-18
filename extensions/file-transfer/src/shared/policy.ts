@@ -339,7 +339,7 @@ export function evaluateFilePolicy(input: {
  * fully control; refuse to persist policy under a key that could corrupt
  * the plugin policy container's prototype.
  */
-function assertSafeConfigKey(key: (string)): string {
+function assertSafeConfigKey(key: string): string {
   if (key === "__proto__" || key === "prototype" || key === "constructor") {
     throw new Error(`refusing to persist file-transfer policy under unsafe key: ${key}`);
   }

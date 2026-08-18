@@ -176,7 +176,7 @@ describe("runSystemAgentTurn", () => {
       throw new Error("missing test route");
     }
     const resolvedAuth = {
-      apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+      apiKey: "test-key",
       profileId: "openai:p2",
       source: "profile:openai:p2",
       mode: "api-key" as const,
@@ -185,7 +185,7 @@ describe("runSystemAgentTurn", () => {
       ensureAuthProfileStore: vi.fn(() => ({
         version: 1,
         profiles: {
-          "openai:p2": { type: "api_key", provider: "openai", key: `ltfx.n.62af8704764faf8ea82f.v1` },
+          "openai:p2": { type: "api_key", provider: "openai", key: "test-key" },
         },
       })) as never,
       resolveApiKeyForProvider: vi.fn(async () => resolvedAuth),

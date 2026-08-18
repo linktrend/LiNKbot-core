@@ -114,7 +114,7 @@ async function main() {
         },
       },
     } satisfies OpenClawConfig,
-    "ltfx.n.6039621aacb82d1c26bf.v1",
+    "sk-docker-cron-mcp-cleanup-test",
   );
 
   await fs.writeFile(configPath, `${JSON.stringify(seededConfig, null, 2)}\n`, "utf-8");

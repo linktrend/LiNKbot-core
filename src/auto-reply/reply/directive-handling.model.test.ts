@@ -219,10 +219,10 @@ vi.mock("../../agents/model-auth.js", () => {
         return null;
       }
       if (env.WORKSPACE_MODEL_CREDENTIALS) {
-        return { apiKey: `ltfx.n.0a1f5bfc4a5bc9892740.v1`, source: "workspace model credentials" };
+        return { apiKey: "sk-workspace", source: "workspace model credentials" };
       }
       if (env.WORKSPACE_MODEL_LIST_CREDENTIALS) {
-        return { apiKey: `ltfx.n.0a1f5bfc4a5bc9892740.v1`, source: "workspace model list credentials" };
+        return { apiKey: "sk-workspace", source: "workspace model list credentials" };
       }
       return null;
     },
@@ -1017,7 +1017,7 @@ describe("/model chat UX", () => {
       "openai:api-key": {
         type: "api_key",
         provider: "openai",
-        key: `ltfx.n.358f610247aa54189846.v1`,
+        key: "sk-openai-direct",
       },
       "openai:patrick@example.test": {
         type: "oauth",

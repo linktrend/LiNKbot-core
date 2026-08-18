@@ -8,13 +8,13 @@ describe("resolveOwnerDisplaySetting", () => {
     const cfg = {
       commands: {
         ownerDisplay: "hash",
-        ownerDisplaySecret: `ltfx.n.257eef139ecf05861ea3.v1`,
+        ownerDisplaySecret: "  owner-secret  ",
       },
     } as OpenClawConfig;
 
     expect(resolveOwnerDisplaySetting(cfg)).toEqual({
       ownerDisplay: "hash",
-      ownerDisplaySecret: `ltfx.n.03f99ad2bb8f470ab4a6.v1`, // pragma: allowlist secret
+      ownerDisplaySecret: "owner-secret", // pragma: allowlist secret
     });
   });
 
@@ -25,8 +25,8 @@ describe("resolveOwnerDisplaySetting", () => {
         ownerDisplay: "hash",
       },
       gateway: {
-        auth: { token: `ltfx.n.34eef96813a9bd91c0e3.v1` },
-        remote: { token: `ltfx.n.b3015438b0a4b71001b5.v1` },
+        auth: { token: "gateway-auth-token" },
+        remote: { token: "gateway-remote-token" },
       },
     } as OpenClawConfig;
 
@@ -40,7 +40,7 @@ describe("resolveOwnerDisplaySetting", () => {
     const cfg = {
       commands: {
         ownerDisplay: "raw",
-        ownerDisplaySecret: `ltfx.n.03f99ad2bb8f470ab4a6.v1`, // pragma: allowlist secret
+        ownerDisplaySecret: "owner-secret", // pragma: allowlist secret
       },
     } as OpenClawConfig;
 
@@ -69,7 +69,7 @@ describe("ensureOwnerDisplaySecret", () => {
     const cfg = {
       commands: {
         ownerDisplay: "hash",
-        ownerDisplaySecret: `ltfx.n.6a30e94b6228f4751145.v1`, // pragma: allowlist secret
+        ownerDisplaySecret: "existing-owner-secret", // pragma: allowlist secret
       },
     } as OpenClawConfig;
 

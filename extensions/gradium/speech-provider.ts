@@ -40,7 +40,7 @@ function readGradiumProviderConfig(config: SpeechProviderConfig): GradiumProvide
   };
 }
 
-function resolveGradiumApiKey(configApiKey: (unknown): string | undefined {)
+function resolveGradiumApiKey(configApiKey: unknown): string | undefined {
   return resolveSpeechProviderApiKey(trimToUndefined(configApiKey), process.env.GRADIUM_API_KEY);
 }
 

@@ -209,7 +209,7 @@ async function promptProviderSecretRefForSetup(params: {
   const idRaw = await params.prompter.text({
     message: idPrompt,
     initialValue: idDefault,
-    placeholder: providerEntry.source === "file" ? "/providers/openai/apiKey" : `ltfx.n.4f3f7d5b2ddc15bd971a.v1`,
+    placeholder: providerEntry.source === "file" ? "/providers/openai/apiKey" : "openai/api-key",
     validate: (value) => {
       const candidate = value.trim();
       if (!candidate) {

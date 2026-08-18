@@ -287,7 +287,7 @@ async function resolveCodexAppServerClientStartContext(
   const requestedStartOptions =
     options?.startOptions ?? resolveCodexAppServerRuntimeOptions().start;
   const preparedAuth = options?.preparedAuth;
-  const preparedApiKey = (preparedAuth?.kind === "api-key" ? preparedAuth.apiKey.trim() : undefined;)
+  const preparedApiKey = preparedAuth?.kind === "api-key" ? preparedAuth.apiKey.trim() : undefined;
   if (preparedAuth && options?.authProfileId !== undefined) {
     throw new Error("Prepared Codex auth cannot also select a legacy auth profile.");
   }

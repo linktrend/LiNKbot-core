@@ -62,7 +62,7 @@ describe("Gemini embedding provider", () => {
       const { provider } = await createGeminiEmbeddingProvider({
         config: {} as never,
         provider: "gemini",
-        remote: { apiKey: `ltfx.n.4097889236a2af26c293.v1` },
+        remote: { apiKey: "placeholder" },
         model: `${prefix}gemini-embedding-2-preview`,
         fallback: "none",
       });
@@ -80,7 +80,7 @@ describe("Gemini embedding provider", () => {
       createGeminiEmbeddingProvider({
         config: {} as never,
         provider: "gemini",
-        remote: { apiKey: `ltfx.n.4097889236a2af26c293.v1` },
+        remote: { apiKey: "placeholder" },
         model: "gemini-embedding-2-preview",
         outputDimensionality: 1024,
         fallback: "none",
@@ -103,7 +103,7 @@ describe("Gemini embedding provider", () => {
     const { provider } = await createGeminiEmbeddingProvider({
       config: {} as never,
       provider: "gemini",
-      remote: { apiKey: `ltfx.n.62af8704764faf8ea82f.v1` },
+      remote: { apiKey: "test-key" },
       model: "gemini-embedding-2-preview",
       outputDimensionality: 768,
       taskType: "SEMANTIC_SIMILARITY",
@@ -177,7 +177,7 @@ describe("Gemini embedding provider", () => {
     const { provider } = await createGeminiEmbeddingProvider({
       config: {} as never,
       provider: "gemini",
-      remote: { apiKey: `ltfx.n.62af8704764faf8ea82f.v1` },
+      remote: { apiKey: "test-key" },
       model: "gemini-embedding-001",
       fallback: "none",
     });
@@ -193,7 +193,7 @@ describe("Gemini embedding provider", () => {
     const { provider } = await createGeminiEmbeddingProvider({
       config: {} as never,
       provider: "gemini",
-      remote: { apiKey: `ltfx.n.62af8704764faf8ea82f.v1` },
+      remote: { apiKey: "test-key" },
       model: "gemini-embedding-001",
       fallback: "none",
     });
@@ -209,7 +209,7 @@ describe("Gemini embedding provider", () => {
     const { provider } = await createGeminiEmbeddingProvider({
       config: {} as never,
       provider: "gemini",
-      remote: { apiKey: `ltfx.n.62af8704764faf8ea82f.v1` },
+      remote: { apiKey: "test-key" },
       model: "gemini-embedding-001",
       fallback: "none",
     });

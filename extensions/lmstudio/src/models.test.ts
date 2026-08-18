@@ -88,7 +88,7 @@ describe("lmstudio-models", () => {
     maxContextLength?: number;
   }) =>
     vi.fn(async (url: string | URL, _init?: RequestInit) => {
-      const key = (params?.key ?? "qwen3-8b-instruct";)
+      const key = params?.key ?? "qwen3-8b-instruct";
       if (String(url).endsWith("/api/v1/models")) {
         return jsonResponse({
           models: [
@@ -214,7 +214,7 @@ describe("lmstudio-models", () => {
   it("drops malformed discovered context metadata", () => {
     const model = mapLmstudioWireEntry({
       type: "llm",
-      key: `ltfx.n.523024dcd726aab9d9a2.v1`,
+      key: "bad-context",
       max_context_length: 32768.5,
       loaded_instances: [{ id: "loaded", config: { context_length: Number.POSITIVE_INFINITY } }],
     });
@@ -309,7 +309,7 @@ describe("lmstudio-models", () => {
         models: [
           {
             type: "llm",
-            key: `ltfx.n.0a77eaa77306086266b0.v1`,
+            key: "qwen3-8b-instruct",
             display_name: "Qwen3 8B",
             max_context_length: 262144,
             format: "mlx",
@@ -325,11 +325,11 @@ describe("lmstudio-models", () => {
           },
           {
             type: "llm",
-            key: `ltfx.n.28616143fb25a8ed6d0c.v1`,
+            key: "deepseek-r1",
           },
           {
             type: "embedding",
-            key: `ltfx.n.8856df03b0aaaff65661.v1`,
+            key: "text-embedding-nomic-embed-text-v1.5",
           },
           {
             type: "llm",
@@ -341,7 +341,7 @@ describe("lmstudio-models", () => {
 
     const models = await discoverLmstudioModels({
       baseUrl: "http://localhost:1234/v1",
-      apiKey: `ltfx.n.2e2d5332d19a75637d75.v1`,
+      apiKey: "lm-token",
       quiet: false,
       fetchImpl: asFetch(fetchMock),
     });
@@ -599,7 +599,7 @@ describe("lmstudio-models", () => {
     const fetchMock = vi.fn(async (url: string | URL) => {
       if (String(url).endsWith("/api/v1/models")) {
         return jsonResponse({
-          models: [{ type: "llm", key: `ltfx.n.0a77eaa77306086266b0.v1`, loaded_instances: [] }],
+          models: [{ type: "llm", key: "qwen3-8b-instruct", loaded_instances: [] }],
         });
       }
       if (String(url).endsWith("/api/v1/models/load")) {
@@ -639,7 +639,7 @@ describe("lmstudio-models", () => {
     const fetchMock = vi.fn(async (url: string | URL) => {
       if (String(url).endsWith("/api/v1/models")) {
         return jsonResponse({
-          models: [{ type: "llm", key: `ltfx.n.0a77eaa77306086266b0.v1`, loaded_instances: [] }],
+          models: [{ type: "llm", key: "qwen3-8b-instruct", loaded_instances: [] }],
         });
       }
       if (String(url).endsWith("/api/v1/models/load")) {
@@ -670,7 +670,7 @@ describe("lmstudio-models", () => {
     const fetchMock = vi.fn(async (url: string | URL) => {
       if (String(url).endsWith("/api/v1/models")) {
         return jsonResponse({
-          models: [{ type: "llm", key: `ltfx.n.0a77eaa77306086266b0.v1`, loaded_instances: [] }],
+          models: [{ type: "llm", key: "qwen3-8b-instruct", loaded_instances: [] }],
         });
       }
       if (String(url).endsWith("/api/v1/models/load")) {
@@ -718,7 +718,7 @@ describe("lmstudio-models", () => {
     await expect(
       ensureLmstudioModelLoaded({
         baseUrl: "http://localhost:1234/v1",
-        apiKey: `ltfx.n.2e2d5332d19a75637d75.v1`,
+        apiKey: "lm-token",
         headers: {
           "X-Proxy-Auth": "required",
           Authorization: "Bearer override",

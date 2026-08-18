@@ -208,7 +208,7 @@ describe("handleFeishuCommentEvent", () => {
       commentId: "comment_1",
       replyId: "reply_1",
       noticeType: "add_comment",
-      fileToken: `ltfx.n.f09b225e527089fa5a3e.v1`,
+      fileToken: "doc_token_1",
       fileType: "docx",
       isWholeComment: false,
       senderId: "ou_sender",
@@ -456,7 +456,7 @@ describe("handleFeishuCommentEvent", () => {
     );
     expect(pairingClient).toBe(createFeishuClientMock.mock.results[0]?.value);
     expect(pairingReply).toEqual({
-      file_token: `ltfx.n.f09b225e527089fa5a3e.v1`,
+      file_token: "doc_token_1",
       file_type: "docx",
       comment_id: "comment_1",
       content: [
@@ -485,7 +485,7 @@ describe("handleFeishuCommentEvent", () => {
       commentId: "comment_whole",
       replyId: "reply_whole",
       noticeType: "add_reply",
-      fileToken: `ltfx.n.f09b225e527089fa5a3e.v1`,
+      fileToken: "doc_token_1",
       fileType: "docx",
       isWholeComment: true,
       senderId: "ou_sender",

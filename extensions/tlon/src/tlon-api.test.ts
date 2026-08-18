@@ -113,7 +113,7 @@ describe("uploadFile memex upload hardening", () => {
         return { "storage-update": {} };
       }
       if (params.path === "/genuine/secret.json") {
-        return { secret: `ltfx.n.eb99eec34bc3d6a7c4af.v1` };
+        return { secret: "genuine-secret" };
       }
       throw new Error(`Unexpected scry path: ${params.path}`);
     });

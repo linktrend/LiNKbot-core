@@ -11,8 +11,8 @@ Choose a provider and replace its placeholder with a real API key.
 POSIX shell commands (the Ollama command also works in PowerShell):
 
 ```sh
-ANTHROPIC_API_KEY="${ltfx.n.1abc87b2bf579b25b321.v1}" node index.mjs "Say hello"
-OPENAI_API_KEY="${ltfx.n.fc494ecc44bca9036888.v1}" node index.mjs --provider openai "Say hello"
+ANTHROPIC_API_KEY=example-anthropic-key-not-real node index.mjs "Say hello"
+OPENAI_API_KEY=example-openai-key-not-real node index.mjs --provider openai "Say hello"
 # keyless, against a local Ollama server (OLLAMA_MODEL overrides the model id)
 node index.mjs --provider ollama "Say hello"
 ```
@@ -20,10 +20,10 @@ node index.mjs --provider ollama "Say hello"
 PowerShell (assignments remain in this session until removed or the shell closes):
 
 ```powershell
-$env:ANTHROPIC_API_KEY = "${ltfx.n.1abc87b2bf579b25b321.v1}"
+$env:ANTHROPIC_API_KEY = "example-anthropic-key-not-real"
 node index.mjs "Say hello"
 
-$env:OPENAI_API_KEY = "${ltfx.n.fc494ecc44bca9036888.v1}"
+$env:OPENAI_API_KEY = "example-openai-key-not-real"
 node index.mjs --provider openai "Say hello"
 
 # Clear the session-scoped keys.

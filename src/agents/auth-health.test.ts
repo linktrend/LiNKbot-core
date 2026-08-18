@@ -103,7 +103,7 @@ describe("buildAuthHealthSummary", () => {
         "anthropic:api": {
           type: "api_key" as const,
           provider: "anthropic",
-          key: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+          key: "sk-ant-api",
         },
       },
     };
@@ -358,7 +358,7 @@ describe("buildAuthHealthSummary", () => {
           {
             type: "token",
             provider: "claude-cli",
-            token: `ltfx.n.5e5f85880357acfe9876.v1`,
+            token: "fresh-cli-access",
             expires: now + DEFAULT_OAUTH_WARN_MS + 60_000,
           },
         ],
@@ -473,7 +473,7 @@ describe("buildAuthHealthSummary", () => {
         "github-copilot:invalid-expires": {
           type: "token" as const,
           provider: "github-copilot",
-          token: `ltfx.n.5dd6823fdffafb04af60.v1`,
+          token: "gh-token",
           expires: 0,
         },
       },
@@ -527,7 +527,7 @@ describe("buildAuthHealthSummary", () => {
         "claude-cli:token": {
           type: "token" as const,
           provider: "claude-cli",
-          token: `ltfx.n.e1466187c844c921b622.v1`,
+          token: "fake-token",
         },
       },
     };

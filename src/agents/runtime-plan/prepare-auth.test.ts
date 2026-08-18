@@ -36,7 +36,7 @@ function allCooldownOpenAIStore(): AuthProfileStore {
       "openai:cooldown": {
         type: "api_key",
         provider: "openai",
-        key: `ltfx.n.79d4638e1da43d31cc84.v1`,
+        key: "cooldown-key",
       },
     },
     { openai: ["openai:cooldown"] },
@@ -73,7 +73,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
       config: {
         models: {
           providers: {
-            xai: { apiKey: `ltfx.n.e45446d28e41a9e6ad5e.v1`, baseUrl: "", models: [] },
+            xai: { apiKey: "xai:bound", baseUrl: "", models: [] },
           },
         },
       } as OpenClawConfig,
@@ -83,12 +83,12 @@ describe("prepareAgentRuntimeAuthPlan", () => {
           "xai:bound": {
             type: "api_key",
             provider: "xai",
-            key: `ltfx.n.83de6f51d140f68150bc.v1`,
+            key: "bound-key",
           },
           "xai:backup": {
             type: "api_key",
             provider: "xai",
-            key: `ltfx.n.054a82561269425111ef.v1`,
+            key: "backup-key",
           },
         },
         { xai: ["xai:backup", "xai:bound"] },
@@ -113,12 +113,12 @@ describe("prepareAgentRuntimeAuthPlan", () => {
         "xai:bound": {
           type: "api_key",
           provider: "xai",
-          key: `ltfx.n.83de6f51d140f68150bc.v1`,
+          key: "bound-key",
         },
         "xai:backup": {
           type: "api_key",
           provider: "xai",
-          key: `ltfx.n.054a82561269425111ef.v1`,
+          key: "backup-key",
         },
       },
       { xai: ["xai:backup", "xai:bound"] },
@@ -134,7 +134,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
         config: {
           models: {
             providers: {
-              xai: { apiKey: `ltfx.n.e45446d28e41a9e6ad5e.v1`, baseUrl: "", models: [] },
+              xai: { apiKey: "xai:bound", baseUrl: "", models: [] },
             },
           },
         } as OpenClawConfig,
@@ -155,7 +155,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
           providers: {
             xai: {
               auth: "aws-sdk",
-              apiKey: `ltfx.n.e45446d28e41a9e6ad5e.v1`,
+              apiKey: "xai:bound",
               baseUrl: "",
               models: [],
             },
@@ -167,12 +167,12 @@ describe("prepareAgentRuntimeAuthPlan", () => {
         "xai:bound": {
           type: "api_key",
           provider: "xai",
-          key: `ltfx.n.83de6f51d140f68150bc.v1`,
+          key: "bound-key",
         },
         "xai:backup": {
           type: "api_key",
           provider: "xai",
-          key: `ltfx.n.054a82561269425111ef.v1`,
+          key: "backup-key",
         },
       }),
       sessionAuthProfileId: "xai:backup",
@@ -343,7 +343,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
           "xai:backup": {
             type: "api_key",
             provider: "xai",
-            key: `ltfx.n.054a82561269425111ef.v1`,
+            key: "backup-key",
           },
         }),
       }),
@@ -363,7 +363,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
           "xai:backup": {
             type: "api_key",
             provider: "xai",
-            key: `ltfx.n.054a82561269425111ef.v1`,
+            key: "backup-key",
           },
         }),
       }),
@@ -450,7 +450,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
           "openai:backup": {
             type: "api_key",
             provider: "openai",
-            key: `ltfx.n.054a82561269425111ef.v1`,
+            key: "backup-key",
           },
         },
         { openai: ["openai:backup"] },
@@ -489,12 +489,12 @@ describe("prepareAgentRuntimeAuthPlan", () => {
         "openai:cooldown": {
           type: "api_key",
           provider: "openai",
-          key: `ltfx.n.79d4638e1da43d31cc84.v1`,
+          key: "cooldown-key",
         },
         "openai:backup": {
           type: "api_key",
           provider: "openai",
-          key: `ltfx.n.054a82561269425111ef.v1`,
+          key: "backup-key",
         },
       },
       { openai: ["openai:cooldown", "openai:backup"] },
@@ -575,7 +575,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
         "openai:platform": {
           type: "api_key",
           provider: "openai",
-          key: `ltfx.n.e75390981221aacccfa9.v1`,
+          key: "platform-key",
         },
       },
       { openai: ["openai:chatgpt", "openai:platform"] },
@@ -591,7 +591,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
         config: {
           models: {
             providers: {
-              openai: { apiKey: `ltfx.n.48fcb6b834314dfba1bc.v1`, baseUrl: "", models: [] },
+              openai: { apiKey: "configured-platform-key", baseUrl: "", models: [] },
             },
           },
         } as OpenClawConfig,
@@ -613,7 +613,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
             providers: {
               openai: {
                 api: "openai-responses",
-                apiKey: `ltfx.n.845a58569eb617ef6456.v1`,
+                apiKey: "relay:key",
                 baseUrl: "https://relay.example/v1",
                 models: [],
               },
@@ -632,7 +632,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
           "relay:key": {
             type: "api_key",
             provider: "relay",
-            key: `ltfx.n.e2ee0f71b8609552218a.v1`,
+            key: "relay-secret",
           },
         }),
       }),
@@ -648,7 +648,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
           models: {
             providers: {
               codex: {
-                apiKey: `ltfx.n.845a58569eb617ef6456.v1`,
+                apiKey: "relay:key",
                 baseUrl: "https://relay.example/v1",
                 models: [],
               },
@@ -666,7 +666,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
           "relay:key": {
             type: "api_key",
             provider: "relay",
-            key: `ltfx.n.e2ee0f71b8609552218a.v1`,
+            key: "relay-secret",
           },
         }),
       }),
@@ -687,13 +687,13 @@ describe("prepareAgentRuntimeAuthPlan", () => {
           "openai:chatgpt": {
             type: "token",
             provider: "openai",
-            token: `ltfx.n.8a255480fb08743cb67c.v1`,
+            token: "subscription-token",
             expires: Date.now() + 60_000,
           },
           "openai:platform": {
             type: "api_key",
             provider: "openai",
-            key: `ltfx.n.e75390981221aacccfa9.v1`,
+            key: "platform-key",
           },
         },
         { openai: ["openai:chatgpt", "openai:platform"] },
@@ -753,7 +753,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
           "openai:backup": {
             type: "api_key",
             provider: "openai",
-            key: `ltfx.n.054a82561269425111ef.v1`,
+            key: "backup-key",
           },
         },
         { openai: ["openai:missing", "openai:backup"] },
@@ -795,12 +795,12 @@ describe("prepareAgentRuntimeAuthPlan", () => {
           "openai:platform": {
             type: "api_key",
             provider: "openai",
-            key: `ltfx.n.e75390981221aacccfa9.v1`,
+            key: "platform-key",
           },
           "openai:subscription-backup": {
             type: "token",
             provider: "openai",
-            token: `ltfx.n.8a255480fb08743cb67c.v1`,
+            token: "subscription-token",
           },
         },
         {
@@ -936,7 +936,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
           "openai:platform": {
             type: "api_key",
             provider: "openai",
-            key: `ltfx.n.e75390981221aacccfa9.v1`,
+            key: "platform-key",
           },
         }),
       }),
@@ -951,7 +951,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
             api: "openai-responses",
             baseUrl: "https://api.openai.com/v1",
             auth: "api-key",
-            apiKey: `ltfx.n.48fcb6b834314dfba1bc.v1`,
+            apiKey: "configured-platform-key",
             models: [],
           },
         },
@@ -995,14 +995,14 @@ describe("prepareAgentRuntimeAuthPlan", () => {
             providers: {
               openai: {
                 auth: "api-key",
-                apiKey: `ltfx.n.48fcb6b834314dfba1bc.v1`,
+                apiKey: "configured-platform-key",
                 baseUrl: "https://api.openai.com/v1",
                 models: [],
               },
             },
           },
         } as OpenClawConfig,
-        env: { OPENAI_API_KEY: `ltfx.n.4fe68f2c6000c6671d73.v1` },
+        env: { OPENAI_API_KEY: "ambient-platform-key" },
         authProfileStore: authStore(
           {
             "openai:chatgpt": {
@@ -1037,7 +1037,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
           "openai:work": {
             type: "api_key",
             provider: "openai",
-            key: `ltfx.n.e75390981221aacccfa9.v1`,
+            key: "platform-key",
           },
         }),
         sessionAuthProfileId: "openai:work",
@@ -1062,7 +1062,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
       } as OpenClawConfig,
       env: {},
       authProfileStore: authStore({
-        "xai:auto": { type: "api_key", provider: "xai", key: `ltfx.n.78e9a0b0da3e1c943f21.v1` },
+        "xai:auto": { type: "api_key", provider: "xai", key: "profile-key" },
       }),
       sessionAuthProfileId: "xai:auto",
       sessionAuthProfileSource: "auto",
@@ -1086,7 +1086,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
           providers: {
             openai: {
               auth: "api-key",
-              apiKey: `ltfx.n.82c92c3b3311bc4d1f6b.v1`,
+              apiKey: "openai:bound",
               baseUrl: "",
               models: [],
             },
@@ -1099,13 +1099,13 @@ describe("prepareAgentRuntimeAuthPlan", () => {
           "openai:bound": {
             type: "token",
             provider: "openai",
-            token: `ltfx.n.8a255480fb08743cb67c.v1`,
+            token: "subscription-token",
             expires: Date.now() + 60_000,
           },
           "openai:platform": {
             type: "api_key",
             provider: "openai",
-            key: `ltfx.n.e75390981221aacccfa9.v1`,
+            key: "platform-key",
           },
         },
         { openai: ["openai:platform", "openai:bound"] },
@@ -1136,7 +1136,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
           auth: { profiles: { "openai:bound": { provider, mode } } },
           models: {
             providers: {
-              openai: { apiKey: `ltfx.n.82c92c3b3311bc4d1f6b.v1`, baseUrl: "", models: [] },
+              openai: { apiKey: "openai:bound", baseUrl: "", models: [] },
             },
           },
         } as OpenClawConfig,
@@ -1145,7 +1145,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
           "openai:bound": {
             type: "api_key",
             provider: "openai",
-            key: `ltfx.n.63e87ada46e51a1ba721.v1`,
+            key: "bound-platform-key",
           },
         }),
       }),
@@ -1163,7 +1163,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
           models: {
             providers: {
               openai: {
-                apiKey: `ltfx.n.a255b242cdeeec783bac.v1`,
+                apiKey: "openai:oauth",
                 baseUrl: "",
                 models: [],
               },
@@ -1183,7 +1183,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
             "openai:platform": {
               type: "api_key",
               provider: "openai",
-              key: `ltfx.n.e75390981221aacccfa9.v1`,
+              key: "platform-key",
             },
           },
           { openai: ["openai:platform"] },
@@ -1197,7 +1197,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
       "openai:bound": {
         type: "token",
         provider: "openai",
-        token: `ltfx.n.8a255480fb08743cb67c.v1`,
+        token: "subscription-token",
         expires: Date.now() + 60_000,
       },
     });
@@ -1214,7 +1214,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
         config: {
           models: {
             providers: {
-              openai: { apiKey: `ltfx.n.82c92c3b3311bc4d1f6b.v1`, baseUrl: "", models: [] },
+              openai: { apiKey: "openai:bound", baseUrl: "", models: [] },
             },
           },
         } as OpenClawConfig,
@@ -1235,7 +1235,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
           providers: {
             openai: {
               auth: "aws-sdk",
-              apiKey: `ltfx.n.82c92c3b3311bc4d1f6b.v1`,
+              apiKey: "openai:bound",
               baseUrl: "",
               models: [],
             },
@@ -1247,7 +1247,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
         "openai:bound": {
           type: "token",
           provider: "openai",
-          token: `ltfx.n.8a255480fb08743cb67c.v1`,
+          token: "subscription-token",
           expires: Date.now() + 60_000,
         },
       }),
@@ -1290,7 +1290,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
           "openai:platform": {
             type: "api_key",
             provider: "openai",
-            key: `ltfx.n.e75390981221aacccfa9.v1`,
+            key: "platform-key",
           },
         },
         { openai: ["openai:platform"] },
@@ -1346,7 +1346,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
           "openai:platform": {
             type: "api_key",
             provider: "openai",
-            key: `ltfx.n.e75390981221aacccfa9.v1`,
+            key: "platform-key",
           },
         },
         { openai: ["openai:chatgpt", "openai:platform"] },
@@ -1368,7 +1368,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
       models: {
         providers: {
           openai: {
-            apiKey: `ltfx.n.48fcb6b834314dfba1bc.v1`,
+            apiKey: "configured-platform-key",
             baseUrl: "",
             models: [],
           },
@@ -1380,7 +1380,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
         "openai:platform-backup": {
           type: "api_key",
           provider: "openai",
-          key: `ltfx.n.08f6ee4b1346ce90f203.v1`,
+          key: "profile-platform-key",
         },
       },
       { openai: ["openai:platform-backup"] },
@@ -1458,7 +1458,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
     });
 
     expect(profileResolved).toMatchObject({
-      apiKey: `ltfx.n.08f6ee4b1346ce90f203.v1`,
+      apiKey: "profile-platform-key",
       profileId: "openai:platform-backup",
       source: "profile:openai:platform-backup",
       mode: "api-key",
@@ -1471,7 +1471,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
         "openai:platform": {
           type: "api_key",
           provider: "openai",
-          key: `ltfx.n.08f6ee4b1346ce90f203.v1`,
+          key: "profile-platform-key",
         },
       },
       { openai: ["openai:platform"] },
@@ -1482,7 +1482,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
       config: {
         models: {
           providers: {
-            openai: { apiKey: `ltfx.n.48fcb6b834314dfba1bc.v1`, baseUrl: "", models: [] },
+            openai: { apiKey: "configured-platform-key", baseUrl: "", models: [] },
           },
         },
       } as OpenClawConfig,
@@ -1522,7 +1522,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
   it.each([
     {
       label: "OAuth profile then ambient Platform key",
-      env: { OPENAI_API_KEY: `ltfx.n.4fe68f2c6000c6671d73.v1` },
+      env: { OPENAI_API_KEY: "ambient-platform-key" },
       profileId: "openai:chatgpt",
       profile: {
         type: "oauth" as const,
@@ -1538,12 +1538,12 @@ describe("prepareAgentRuntimeAuthPlan", () => {
       config: {
         models: { providers: { openai: { auth: "oauth", baseUrl: "", models: [] } } },
       } as OpenClawConfig,
-      env: { OPENAI_API_KEY: `ltfx.n.ece16dc05ad856daf233.v1` },
+      env: { OPENAI_API_KEY: "ambient-oauth-token" },
       profileId: "openai:platform",
       profile: {
         type: "api_key" as const,
         provider: "openai",
-        key: `ltfx.n.08f6ee4b1346ce90f203.v1`,
+        key: "profile-platform-key",
       },
       requirements: ["api-key", "subscription"],
     },
@@ -1635,7 +1635,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
       });
 
       expect(resolved).toMatchObject({
-        apiKey: `ltfx.n.2b394c4a32f069629dff.v1`,
+        apiKey: "secret-ref-platform-key",
         source: "env: OPENAI_PLATFORM_KEY (models.json secretref)",
         mode: "api-key",
       });
@@ -1680,7 +1680,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
           "openai:platform": {
             type: "api_key",
             provider: "openai",
-            key: `ltfx.n.e75390981221aacccfa9.v1`,
+            key: "platform-key",
           },
         },
         { openai: ["openai:chatgpt", "openai:platform"] },
@@ -1716,7 +1716,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
           providers: {
             openai: {
               auth: "oauth",
-              apiKey: `ltfx.n.0c75f4d1fbd0106d0477.v1`,
+              apiKey: "configured-oauth-token",
               baseUrl: "",
               models: [],
             },
@@ -1752,7 +1752,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
           providers: {
             openai: {
               auth: "oauth",
-              apiKey: `ltfx.n.0c75f4d1fbd0106d0477.v1`,
+              apiKey: "configured-oauth-token",
               baseUrl: "",
               models: [],
             },
@@ -1764,7 +1764,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
         "openai:platform": {
           type: "api_key",
           provider: "openai",
-          key: `ltfx.n.08f6ee4b1346ce90f203.v1`,
+          key: "profile-platform-key",
         },
       }),
     });
@@ -1795,7 +1795,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
           providers: {
             openai: {
               auth: "token",
-              apiKey: `ltfx.n.46c698a6570312bacc8b.v1`,
+              apiKey: "configured-subscription-token",
               baseUrl: "",
               models: [],
             },
@@ -1818,7 +1818,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
   it.each([
     {
       auth: "oauth" as const,
-      profile: { type: "api_key" as const, provider: "openai", key: `ltfx.n.e75390981221aacccfa9.v1` },
+      profile: { type: "api_key" as const, provider: "openai", key: "platform-key" },
       requirement: "subscription",
     },
     {
@@ -1895,7 +1895,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
       modelApi: "openai-responses",
       modelBaseUrl: "https://api.openai.com/v1",
       env: {
-        OPENAI_API_KEY: `ltfx.n.e75390981221aacccfa9.v1`,
+        OPENAI_API_KEY: "platform-key",
         OPENAI_BASE_URL: "https://relay.example.test/v1",
       },
       authProfileStore: authStore({}),
@@ -1951,7 +1951,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
           "openai:p1": {
             type: "token",
             provider: "openai",
-            token: `ltfx.n.bb911a7b75f6da45d3b5.v1`,
+            token: "p1-token",
           },
           "openai:p2": {
             type: "api_key",
@@ -1988,7 +1988,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
           "anthropic:work": {
             type: "api_key",
             provider: "anthropic",
-            key: `ltfx.n.6e2c8215fd888dc9fcb3.v1`,
+            key: "anthropic-key",
           },
         }),
         sessionAuthProfileId: "anthropic:work",
@@ -2025,7 +2025,7 @@ describe("prepareAgentRuntimeAuthPlan", () => {
     const plan = prepareAgentRuntimeAuthPlan({
       provider: "openai",
       modelId: "gpt-5.5",
-      env: { OPENAI_API_KEY: `ltfx.n.e75390981221aacccfa9.v1` },
+      env: { OPENAI_API_KEY: "platform-key" },
       authProfileStore: authStore({}),
     });
 

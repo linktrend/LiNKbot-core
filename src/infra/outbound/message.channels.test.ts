@@ -375,7 +375,7 @@ describe("gateway url override hardening", () => {
       name: "drops gateway url overrides in backend mode (SSRF hardening)",
       params: {
         gateway: {
-          url: `ltfx.n.9316d05f1e66877a6b5c.v1`,
+          url: "ws://169.254.169.254:80/latest/meta-data/",
           token: "t",
           timeoutMs: 5000,
           clientName: GATEWAY_CLIENT_NAMES.GATEWAY_CLIENT,

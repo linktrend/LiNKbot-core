@@ -9,7 +9,7 @@ import { createQaScriptEvidenceWriter } from "../runtime/script-evidence.js";
 
 const SCENARIO_ID = "cli-channel-picker";
 const SOURCE_PATH = "test/e2e/qa-lab/config/cli-channel-picker.ts";
-const TEST_BOT_TOKEN = `ltfx.n.37261f8cc9f1a52b50c2.v1`;
+const TEST_BOT_TOKEN = "123456:QA_CHANNEL_PICKER_TEST_TOKEN_ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const DEFAULT_TIMEOUT_MS = 120_000;
 
 type ProducerOptions = {

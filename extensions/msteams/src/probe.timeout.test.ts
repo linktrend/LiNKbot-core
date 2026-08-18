@@ -40,7 +40,7 @@ import { MSTEAMS_REQUEST_TIMEOUT_MS } from "./request-timeout.js";
 const cfg = {
   enabled: true,
   appId: "app-id",
-  appPassword: `ltfx.n.f9f74ac80df6fa2d33fc.v1`,
+  appPassword: "test-app-password",
   tenantId: "tenant-id",
 } as unknown as MSTeamsConfig;
 

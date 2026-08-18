@@ -353,7 +353,7 @@ describe("resolveSearchItems", () => {
     // resolveSiteName uses new URL() internally and catches errors.
     const result = firecrawlClient.resolveSearchItems({
       data: [
-        { url: `ltfx.n.66df542c298792e15848.v1`, title: "Invalid" },
+        { url: "not-a-valid-url", title: "Invalid" },
         { url: "", title: "Empty URL" }, // will be skipped
       ],
     });

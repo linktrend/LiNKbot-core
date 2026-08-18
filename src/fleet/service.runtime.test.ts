@@ -38,7 +38,7 @@ function runningInspection(
     labels: fleetLabels(),
     environment: {
       HOME: "/home/node",
-      OPENCLAW_GATEWAY_TOKEN: `ltfx.n.9bdf10a691a1cfda89d9.v1`,
+      OPENCLAW_GATEWAY_TOKEN: "old-token",
       FEATURE: "enabled",
       NODE_VERSION: "old-image-default",
     },
@@ -197,7 +197,7 @@ describe("fleet service", () => {
       image: "ghcr.io/openclaw/openclaw:latest",
       runtime: "docker",
       started: true,
-      token: `ltfx.n.46ce721ddea7bcd13a0d.v1`,
+      token: "gw-token",
       tokenNote: "Shown once. Store this Gateway token securely.",
       url: "http://127.0.0.1:19100",
       nextStep:
@@ -225,7 +225,7 @@ describe("fleet service", () => {
       containers.start.mock.invocationCallOrder[0] ?? Number.POSITIVE_INFINITY,
     );
     expect(profile?.environment).toMatchObject({
-      OPENCLAW_GATEWAY_TOKEN: `ltfx.n.46ce721ddea7bcd13a0d.v1`,
+      OPENCLAW_GATEWAY_TOKEN: "gw-token",
       FEATURE: "a=b",
     });
 
@@ -370,8 +370,8 @@ describe("fleet service", () => {
     const service = createFleetService({ env, containers: containers.runtime, probePort });
 
     const [alpha, beta] = await Promise.all([
-      service.create({ tenant: "alpha", gatewayToken: `ltfx.n.a336d9b1d8b864787523.v1` }),
-      service.create({ tenant: "beta", gatewayToken: `ltfx.n.863d63c0bd3a94bfca84.v1` }),
+      service.create({ tenant: "alpha", gatewayToken: "alpha-token" }),
+      service.create({ tenant: "beta", gatewayToken: "beta-token" }),
     ]);
 
     expect(new Set([alpha.port, beta.port])).toEqual(new Set([19_100, 19_101]));
@@ -605,7 +605,7 @@ describe("fleet service", () => {
       now: () => 1000,
       generateAttemptId: () => NEXT_ATTEMPT_ID,
     });
-    await service.create({ tenant: "acme", gatewayToken: `ltfx.n.9bdf10a691a1cfda89d9.v1` });
+    await service.create({ tenant: "acme", gatewayToken: "old-token" });
     containers.run.mockClear();
     // The disk limit replays from the fleet label because Podman inspect has no
     // HostConfig.StorageOpt; the label is the cross-runtime carrier.
@@ -638,7 +638,7 @@ describe("fleet service", () => {
       networkName: "openclaw-cell-acme-net",
       environment: {
         HOME: "/home/node",
-        OPENCLAW_GATEWAY_TOKEN: `ltfx.n.9bdf10a691a1cfda89d9.v1`,
+        OPENCLAW_GATEWAY_TOKEN: "old-token",
         FEATURE: "enabled",
       },
     });
@@ -655,7 +655,7 @@ describe("fleet service", () => {
       generateAttemptId: () => NEXT_ATTEMPT_ID,
     });
 
-    await service.create({ tenant: "acme", image: digest, gatewayToken: `ltfx.n.9bdf10a691a1cfda89d9.v1` });
+    await service.create({ tenant: "acme", image: digest, gatewayToken: "old-token" });
     expect(containers.run.mock.calls[0]?.[0].image).toBe(digest);
 
     containers.run.mockClear();
@@ -671,7 +671,7 @@ describe("fleet service", () => {
   it("restores the immutable old image when replacement fails", async () => {
     const containers = createContainerMock();
     const service = createFleetService({ env, containers: containers.runtime, now: () => 1000 });
-    await service.create({ tenant: "acme", gatewayToken: `ltfx.n.9bdf10a691a1cfda89d9.v1` });
+    await service.create({ tenant: "acme", gatewayToken: "old-token" });
     containers.run.mockClear();
     containers.inspect
       .mockResolvedValueOnce(runningInspection())
@@ -688,7 +688,7 @@ describe("fleet service", () => {
   it("restarts the old cell when removal fails after stop", async () => {
     const containers = createContainerMock();
     const service = createFleetService({ env, containers: containers.runtime, now: () => 1000 });
-    await service.create({ tenant: "acme", gatewayToken: `ltfx.n.9bdf10a691a1cfda89d9.v1` });
+    await service.create({ tenant: "acme", gatewayToken: "old-token" });
     containers.run.mockClear();
     containers.start.mockClear();
     containers.inspect
@@ -715,7 +715,7 @@ describe("fleet service", () => {
         throw new Error("state database is full");
       },
     });
-    await service.create({ tenant: "acme", gatewayToken: `ltfx.n.9bdf10a691a1cfda89d9.v1` });
+    await service.create({ tenant: "acme", gatewayToken: "old-token" });
     containers.run.mockClear();
     containers.remove.mockClear();
     containers.inspect
@@ -740,7 +740,7 @@ describe("fleet service", () => {
       now: () => 1000,
       generateAttemptId: () => NEXT_ATTEMPT_ID,
     });
-    await service.create({ tenant: "acme", gatewayToken: `ltfx.n.9bdf10a691a1cfda89d9.v1` });
+    await service.create({ tenant: "acme", gatewayToken: "old-token" });
     containers.run.mockClear();
     const crashLooping = runningInspection({
       labels: fleetLabels("acme", NEXT_ATTEMPT_ID),
@@ -773,7 +773,7 @@ describe("fleet service", () => {
       now: () => 1000,
       generateAttemptId: () => NEXT_ATTEMPT_ID,
     });
-    await service.create({ tenant: "acme", gatewayToken: `ltfx.n.9bdf10a691a1cfda89d9.v1` });
+    await service.create({ tenant: "acme", gatewayToken: "old-token" });
     containers.run.mockClear();
     const crashed = runningInspection({
       labels: fleetLabels("acme", NEXT_ATTEMPT_ID),
@@ -808,7 +808,7 @@ describe("fleet service", () => {
       now: () => (clock += 50_000),
       generateAttemptId: () => NEXT_ATTEMPT_ID,
     });
-    await service.create({ tenant: "acme", gatewayToken: `ltfx.n.9bdf10a691a1cfda89d9.v1` });
+    await service.create({ tenant: "acme", gatewayToken: "old-token" });
     containers.run.mockClear();
     const hung = runningInspection({ labels: fleetLabels("acme", NEXT_ATTEMPT_ID) });
     containers.inspect
@@ -827,7 +827,7 @@ describe("fleet service", () => {
   it("refuses upgrade before pull or removal when the inspected token is missing", async () => {
     const containers = createContainerMock();
     const service = createFleetService({ env, containers: containers.runtime, now: () => 1000 });
-    await service.create({ tenant: "acme", gatewayToken: `ltfx.n.9bdf10a691a1cfda89d9.v1` });
+    await service.create({ tenant: "acme", gatewayToken: "old-token" });
     containers.inspect.mockResolvedValue(
       runningInspection({ environment: { HOME: "/home/node" } }),
     );
@@ -841,7 +841,7 @@ describe("fleet service", () => {
   it("refuses upgrade when an unexpected container is attached to the cell network", async () => {
     const containers = createContainerMock();
     const service = createFleetService({ env, containers: containers.runtime, now: () => 1000 });
-    await service.create({ tenant: "acme", gatewayToken: `ltfx.n.9bdf10a691a1cfda89d9.v1` });
+    await service.create({ tenant: "acme", gatewayToken: "old-token" });
     containers.inspect.mockResolvedValue(runningInspection());
     containers.inspectNetwork.mockResolvedValue({
       kind: "ok",
@@ -966,7 +966,7 @@ describe("fleet service", () => {
 
     const creating = first.create({ tenant: "acme", gatewayToken: "token" });
     await vi.waitFor(() => expect(containers.createNetwork).toHaveBeenCalledOnce());
-    await expect(second.create({ tenant: "acme", gatewayToken: `ltfx.n.6c67163bbed989f232b3.v1` })).rejects.toThrow(
+    await expect(second.create({ tenant: "acme", gatewayToken: "other-token" })).rejects.toThrow(
       /fleet create.*already running/iu,
     );
 
@@ -983,7 +983,7 @@ describe("fleet service", () => {
       /daemon busy/iu,
     );
     await expect(
-      service.create({ tenant: "acme", gatewayToken: `ltfx.n.2e4a72e6212a382961b0.v1` }),
+      service.create({ tenant: "acme", gatewayToken: "retry-token" }),
     ).resolves.toMatchObject({ tenant: "acme" });
   });
 

@@ -207,7 +207,7 @@ describe("applyNonInteractivePluginProviderChoice", () => {
     const result = await applyNonInteractivePluginProviderChoice({
       nextConfig: { agents: { defaults: {} } } as OpenClawConfig,
       authChoice: "groq-api-key",
-      opts: { groqApiKey: `ltfx.n.ed4dcf88da9b2ba45741.v1` } as never,
+      opts: { groqApiKey: "groq-key" } as never,
       runtime: runtime as never,
       baseConfig: { agents: { defaults: {} } } as OpenClawConfig,
       resolveApiKey: vi.fn(),

@@ -64,7 +64,7 @@ export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 export NPM_CONFIG_CACHE="${NPM_CONFIG_CACHE:-$XDG_CACHE_HOME/npm}"
 export npm_config_cache="$NPM_CONFIG_CACHE"
 export PATH="$NPM_CONFIG_PREFIX/bin:$PATH"
-export OPENAI_API_KEY="${ltfx.n.b73089a8d3eb1a4660ba.v1}"
+export OPENAI_API_KEY="sk-openclaw-codex-on-demand-e2e"
 
 dump_debug_logs() {
   local status="$1"

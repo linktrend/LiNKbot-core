@@ -2858,17 +2858,17 @@ export const en: TranslationMap = {
       title: "Gateway Access",
       subtitle: "Where the dashboard connects and how it authenticates.",
       wsUrl: "WebSocket URL",
-      token: `ltfx.n.45941f516017d194e448.v1`,
-      password: `ltfx.n.a693085108fe8ddea3ac.v1`,
+      token: "Gateway Token",
+      password: "Password (not stored)",
       passwordPlaceholder: "system or shared password",
       sessionKey: "Default Session Key",
       connectHint: "Click Connect to apply connection changes.",
       trustedProxy: "Authenticated via trusted proxy.",
-      showToken: `ltfx.n.2faef0ba40dc420f67de.v1`,
-      hideToken: `ltfx.n.ae132305cb4bfbfe5508.v1`,
+      showToken: "Show token",
+      hideToken: "Hide token",
       toggleTokenVisibility: "Toggle token visibility",
-      showPassword: `ltfx.n.6aeaa6a53d09dcad071f.v1`,
-      hidePassword: `ltfx.n.a60a56c584b3b05b1a95.v1`,
+      showPassword: "Show password",
+      hidePassword: "Hide password",
       togglePasswordVisibility: "Toggle password visibility",
     },
     snapshot: {
@@ -3322,7 +3322,7 @@ export const en: TranslationMap = {
     },
     query: {
       placeholder:
-        "Filter sessions (e.g. key:(agent:main:cron* model:gpt-4o has:errors minTokens:2000)",)
+        "Filter sessions (e.g. key:agent:main:cron* model:gpt-4o has:errors minTokens:2000)",
       apply: "Filter (client-side)",
       matching: "{shown} of {total} sessions match",
       inRange: "{total} sessions in range",
@@ -3516,11 +3516,11 @@ export const en: TranslationMap = {
   login: {
     subtitle: "Gateway Dashboard",
     passwordPlaceholder: "optional",
-    showToken: `ltfx.n.2faef0ba40dc420f67de.v1`,
-    hideToken: `ltfx.n.ae132305cb4bfbfe5508.v1`,
+    showToken: "Show token",
+    hideToken: "Hide token",
     toggleTokenVisibility: "Toggle token visibility",
-    showPassword: `ltfx.n.6aeaa6a53d09dcad071f.v1`,
-    hidePassword: `ltfx.n.a60a56c584b3b05b1a95.v1`,
+    showPassword: "Show password",
+    hidePassword: "Hide password",
     togglePasswordVisibility: "Toggle password visibility",
     failure: {
       rawError: "Raw error",

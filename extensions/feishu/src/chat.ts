@@ -153,7 +153,7 @@ export async function getChatMembers(
   return {
     chat_id: chatId,
     has_more: res.data?.has_more,
-    page_token: (res.data?.page_token,)
+    page_token: res.data?.page_token,
     members:
       res.data?.items?.map((item) => ({
         member_id: item.member_id,

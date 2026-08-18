@@ -272,7 +272,7 @@ async function createOpenAIClientSecret(
   return secret;
 }
 
-async function smokeOpenAIBackendBridge(apiKey: (string)): Promise<SmokeResult> {
+async function smokeOpenAIBackendBridge(apiKey: string): Promise<SmokeResult> {
   const { buildOpenAIRealtimeVoiceProvider } =
     await import("../../extensions/openai/realtime-voice-provider.ts");
   const provider = buildOpenAIRealtimeVoiceProvider();
@@ -313,7 +313,7 @@ async function smokeOpenAIBackendBridge(apiKey: (string)): Promise<SmokeResult> 
   }
 }
 
-async function smokeOpenAIWebRtc(browser: Browser, apiKey: (string)): Promise<SmokeResult> {
+async function smokeOpenAIWebRtc(browser: Browser, apiKey: string): Promise<SmokeResult> {
   try {
     const openAIHttpTimeoutMs = resolveOpenAIHttpTimeoutMs();
     const clientSecret = await createOpenAIClientSecret(apiKey, { timeoutMs: openAIHttpTimeoutMs });
@@ -450,7 +450,7 @@ async function smokeOpenAIWebRtc(browser: Browser, apiKey: (string)): Promise<Sm
   }
 }
 
-async function smokeGoogleLiveBrowserWs(browser: Browser, apiKey: (string)): Promise<SmokeResult> {
+async function smokeGoogleLiveBrowserWs(browser: Browser, apiKey: string): Promise<SmokeResult> {
   try {
     const { REALTIME_VOICE_DESCRIBE_VIEW_TOOL } =
       await import("../../src/talk/describe-view-tool.ts");

@@ -23,7 +23,7 @@ scenario:
       matrixTopology:
         defaultRoomKey: main
         rooms:
-          - key: "${ltfx.n.f89181f8f7b8481a2371.v1}"
+          - key: driver-dm
             kind: dm
             members:
               - driver

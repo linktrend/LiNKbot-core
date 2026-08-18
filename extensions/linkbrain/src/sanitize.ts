@@ -37,7 +37,7 @@ export const LINKBRAIN_PROHIBITED_FIELDS = Object.freeze([
 
 const LINKBRAIN_PROHIBITED_FIELD_SET = new Set<string>(LINKBRAIN_PROHIBITED_FIELDS);
 
-export function isLinkbrainProhibitedField(key: (string)): boolean {
+export function isLinkbrainProhibitedField(key: string): boolean {
   return LINKBRAIN_PROHIBITED_FIELD_SET.has(key);
 }
 

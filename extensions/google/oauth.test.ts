@@ -155,7 +155,7 @@ describe("resolveOAuthClientConfig", () => {
     value.replace(/\\/g, "/").replace(/\/+$/, "").toLowerCase();
   const rootDir = parse(process.cwd()).root || "/";
   const FAKE_CLIENT_ID = "123456789-abcdef.apps.googleusercontent.com";
-  const FAKE_CLIENT_SECRET = `ltfx.n.b168b8ac1a9fc9fbc231.v1`;
+  const FAKE_CLIENT_SECRET = "GOCSPX-FakeSecretValue123";
   const FAKE_OAUTH2_CONTENT = `
     const clientId = "${FAKE_CLIENT_ID}";
     const clientSecret = "${FAKE_CLIENT_SECRET}";
@@ -731,8 +731,8 @@ describe("loginGeminiCliOAuth", () => {
 
   function tokenResponse(): Response {
     return responseJson({
-      access_token: `ltfx.n.3f16bed7089f4653e5ef.v1`,
-      refresh_token: `ltfx.n.0eb17643d4e926116378.v1`,
+      access_token: "access-token",
+      refresh_token: "refresh-token",
       expires_in: 3600,
     });
   }
@@ -880,7 +880,7 @@ describe("loginGeminiCliOAuth", () => {
   beforeEach(() => {
     envSnapshot = Object.fromEntries(ENV_KEYS.map((key) => [key, process.env[key]]));
     process.env.OPENCLAW_GEMINI_OAUTH_CLIENT_ID = "test-client-id.apps.googleusercontent.com";
-    process.env.OPENCLAW_GEMINI_OAUTH_CLIENT_SECRET = `ltfx.n.8fdd56434af527c88afb.v1`; // pragma: allowlist secret
+    process.env.OPENCLAW_GEMINI_OAUTH_CLIENT_SECRET = "GOCSPX-test-client-secret"; // pragma: allowlist secret
     delete process.env.GEMINI_CLI_OAUTH_CLIENT_ID;
     delete process.env.GEMINI_CLI_OAUTH_CLIENT_SECRET;
     delete process.env.GOOGLE_CLOUD_PROJECT;
@@ -1113,7 +1113,7 @@ describe("loginGeminiCliOAuth", () => {
     installGeminiOAuthFetchMock(() => undefined, {
       tokenResponse: () =>
         responseJson({
-          access_token: `ltfx.n.3f16bed7089f4653e5ef.v1`,
+          access_token: "access-token",
           expires_in: Number.NaN,
         }),
     });
@@ -1142,7 +1142,7 @@ describe("loginGeminiCliOAuth", () => {
     installGeminiOAuthFetchMock(() => undefined, {
       tokenResponse: () =>
         responseJson({
-          access_token: `ltfx.n.3f16bed7089f4653e5ef.v1`,
+          access_token: "access-token",
           expires_in: 3600,
         }),
     });
@@ -1176,7 +1176,7 @@ describe("loginGeminiCliOAuth", () => {
     installGeminiOAuthFetchMock(() => undefined, {
       tokenResponse: () =>
         responseJson({
-          access_token: `ltfx.n.3f16bed7089f4653e5ef.v1`,
+          access_token: "access-token",
           expires_in: Number.MAX_SAFE_INTEGER,
         }),
     });

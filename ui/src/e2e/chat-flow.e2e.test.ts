@@ -215,13 +215,13 @@ function chatSessionListResponse(
     }
   > = [
     {
-      key: `ltfx.n.2df0faec675ae257ce24.v1`,
+      key: "agent:main:session-a",
       kind: "direct",
       label: "Session A",
       updatedAt: 2,
     },
     {
-      key: `ltfx.n.e466aaa4413a7dfcad6c.v1`,
+      key: "agent:main:session-b",
       kind: "direct",
       label: "Session B",
       updatedAt: 1,
@@ -734,7 +734,7 @@ describeControlUiE2e("Control UI mocked Gateway E2E", () => {
         "sessions.list": chatSessionListResponse([
           {
             hasActiveRun: true,
-            key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+            key: "agent:main:main",
             kind: "direct",
             label: "Main",
             updatedAt: Date.now(),
@@ -1929,7 +1929,7 @@ describeControlUiE2e("Control UI mocked Gateway E2E", () => {
         "taskSuggestions.list": { suggestions: [suggestion] },
         "taskSuggestions.accept": {
           taskId: "task_123",
-          key: `ltfx.n.b70b061a938f4ec249fe.v1`,
+          key: "agent:main:dashboard:suggested",
         },
       },
     });
@@ -1998,7 +1998,7 @@ describeControlUiE2e("Control UI mocked Gateway E2E", () => {
       await gateway.deferNext("taskSuggestions.list");
       await page
         .locator(
-          '.sidebar-recent-session[data-session-key=`ltfx.n.e466aaa4413a7dfcad6c.v1`] a.sidebar-recent-session__link',
+          '.sidebar-recent-session[data-session-key="agent:main:session-b"] a.sidebar-recent-session__link',
         )
         .click();
       await waitForRequests(gateway, "taskSuggestions.list", 2);
@@ -2439,7 +2439,7 @@ describeControlUiE2e("Control UI mocked Gateway E2E", () => {
         "sessions.list": chatSessionListResponse([
           {
             effectiveQueueMode: "interrupt",
-            key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+            key: "agent:main:main",
             kind: "direct",
             label: "Main",
             queueMode: "interrupt",
@@ -2450,7 +2450,7 @@ describeControlUiE2e("Control UI mocked Gateway E2E", () => {
       sessionInfo: {
         effectiveQueueMode: "interrupt",
         hasActiveRun: false,
-        key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+        key: "agent:main:main",
         queueMode: "interrupt",
         status: "done",
       },
@@ -2713,7 +2713,7 @@ describeControlUiE2e("Control UI mocked Gateway E2E", () => {
 
       await page
         .locator(
-          '.sidebar-recent-session[data-session-key=`ltfx.n.e466aaa4413a7dfcad6c.v1`] a.sidebar-recent-session__link',
+          '.sidebar-recent-session[data-session-key="agent:main:session-b"] a.sidebar-recent-session__link',
         )
         .click();
       const historyRequest = await gateway.waitForRequest("chat.history");
@@ -2843,10 +2843,10 @@ describeControlUiE2e("Control UI mocked Gateway E2E", () => {
       await page.getByText(/^short session 2\n/).waitFor({ timeout: 10_000 });
 
       const sessionB = page.locator(
-        '.sidebar-recent-session[data-session-key=`ltfx.n.e466aaa4413a7dfcad6c.v1`] a.sidebar-recent-session__link',
+        '.sidebar-recent-session[data-session-key="agent:main:session-b"] a.sidebar-recent-session__link',
       );
       const sessionA = page.locator(
-        '.sidebar-recent-session[data-session-key=`ltfx.n.2df0faec675ae257ce24.v1`] a.sidebar-recent-session__link',
+        '.sidebar-recent-session[data-session-key="agent:main:session-a"] a.sidebar-recent-session__link',
       );
       await sessionB.click();
       await page.getByText(/^recent retained message 140\n/).waitFor({ timeout: 10_000 });
@@ -3302,7 +3302,7 @@ describeControlUiE2e("Control UI mocked Gateway E2E", () => {
       await selectModel("bedrock/claude-opus-4.5");
       const patchRequest = await gateway.waitForRequest("sessions.patch");
       expect(requireRecord(patchRequest.params)).toMatchObject({
-        key: `ltfx.n.2df0faec675ae257ce24.v1`,
+        key: "agent:main:session-a",
         model: "bedrock/claude-opus-4.5",
       });
       expect(await modelSelect.getAttribute("data-chat-select-value")).toBe(
@@ -3311,7 +3311,7 @@ describeControlUiE2e("Control UI mocked Gateway E2E", () => {
 
       await page
         .locator(
-          '.sidebar-recent-session[data-session-key=`ltfx.n.e466aaa4413a7dfcad6c.v1`] a.sidebar-recent-session__link',
+          '.sidebar-recent-session[data-session-key="agent:main:session-b"] a.sidebar-recent-session__link',
         )
         .click();
       await page.locator(".sidebar-recent-session--active").getByText("Session B").waitFor({
@@ -3322,7 +3322,7 @@ describeControlUiE2e("Control UI mocked Gateway E2E", () => {
 
       await page
         .locator(
-          '.sidebar-recent-session[data-session-key=`ltfx.n.2df0faec675ae257ce24.v1`] a.sidebar-recent-session__link',
+          '.sidebar-recent-session[data-session-key="agent:main:session-a"] a.sidebar-recent-session__link',
         )
         .click();
       await page.locator(".sidebar-recent-session--active").getByText("Session A").waitFor({
@@ -3367,7 +3367,7 @@ describeControlUiE2e("Control UI mocked Gateway E2E", () => {
       path: "",
       sessions: [
         {
-          key: `ltfx.n.30845b55d85a6a1ebb2f.v1`,
+          key: "agent:ops:session-a",
           kind: "direct",
           label: "Operations",
           updatedAt: Date.now(),
@@ -3418,7 +3418,7 @@ describeControlUiE2e("Control UI mocked Gateway E2E", () => {
       await main.locator('[data-chat-model-option="openai/gpt-5.5"]').click();
       const firstPatch = await gateway.waitForRequest("sessions.patch");
       expect(requireRecord(firstPatch.params)).toMatchObject({
-        key: `ltfx.n.30845b55d85a6a1ebb2f.v1`,
+        key: "agent:ops:session-a",
         model: "openai/gpt-5.5",
       });
       expect(await modelSelect.textContent()).toContain("GPT-5.5");
@@ -3435,7 +3435,7 @@ describeControlUiE2e("Control UI mocked Gateway E2E", () => {
       await defaultModel.click();
       const patches = await waitForRequests(gateway, "sessions.patch", 2);
       expect(requireRecord(patches[1]?.params)).toMatchObject({
-        key: `ltfx.n.30845b55d85a6a1ebb2f.v1`,
+        key: "agent:ops:session-a",
         model: null,
       });
       expect(await modelSelect.textContent()).toContain("Claude Opus 4.5");
@@ -3493,7 +3493,7 @@ describeControlUiE2e("Control UI mocked Gateway E2E", () => {
     try {
       await page.goto(`${server.baseUrl}chat`);
       await page
-        .locator('.sidebar-recent-session[data-session-key=`ltfx.n.2df0faec675ae257ce24.v1`]')
+        .locator('.sidebar-recent-session[data-session-key="agent:main:session-a"]')
         .waitFor({
           timeout: 10_000,
         });
@@ -3503,7 +3503,7 @@ describeControlUiE2e("Control UI mocked Gateway E2E", () => {
 
       await page
         .locator(
-          '.sidebar-recent-session[data-session-key=`ltfx.n.e466aaa4413a7dfcad6c.v1`] a.sidebar-recent-session__link',
+          '.sidebar-recent-session[data-session-key="agent:main:session-b"] a.sidebar-recent-session__link',
         )
         .click();
       await page.locator(".sidebar-recent-session--active").getByText("Session B").waitFor({
@@ -3512,11 +3512,11 @@ describeControlUiE2e("Control UI mocked Gateway E2E", () => {
       await expect.poll(() => sidebarSessionOrder(page)).toEqual(createdOrder);
 
       const activeWeight = await page
-        .locator('.sidebar-recent-session[data-session-key=`ltfx.n.e466aaa4413a7dfcad6c.v1`]')
+        .locator('.sidebar-recent-session[data-session-key="agent:main:session-b"]')
         .locator(".sidebar-recent-session__name")
         .evaluate((label) => getComputedStyle(label).fontWeight);
       const inactiveWeight = await page
-        .locator('.sidebar-recent-session[data-session-key=`ltfx.n.2df0faec675ae257ce24.v1`]')
+        .locator('.sidebar-recent-session[data-session-key="agent:main:session-a"]')
         .locator(".sidebar-recent-session__name")
         .evaluate((label) => getComputedStyle(label).fontWeight);
       expect(activeWeight).toBe(inactiveWeight);
@@ -3549,7 +3549,7 @@ describeControlUiE2e("Control UI mocked Gateway E2E", () => {
     });
     const page = await context.newPage();
     const initialKey = "agent:main:session-a";
-    const key = `ltfx.n.e466aaa4413a7dfcad6c.v1`;
+    const key = "agent:main:session-b";
     const readableTitle = "Readable planning title";
     const baseTime = Date.now();
     const sessionsWithDerivedTitle = chatSessionListResponse([
@@ -3667,7 +3667,7 @@ describeControlUiE2e("Control UI mocked Gateway E2E", () => {
     try {
       await page.goto(`${server.baseUrl}chat`);
       const recentRow = page.locator(
-        '.sidebar-recent-session[data-session-key=`ltfx.n.e466aaa4413a7dfcad6c.v1`]',
+        '.sidebar-recent-session[data-session-key="agent:main:session-b"]',
       );
       const recentLabel = recentRow.locator(".sidebar-recent-session__name");
       await recentLabel.waitFor({ state: "visible", timeout: 10_000 });
@@ -3714,7 +3714,7 @@ describeControlUiE2e("Control UI mocked Gateway E2E", () => {
       });
 
       const activeRow = page.locator(
-        '.sidebar-recent-session[data-session-key=`ltfx.n.e466aaa4413a7dfcad6c.v1`]',
+        '.sidebar-recent-session[data-session-key="agent:main:session-b"]',
       );
       expect(
         await activeRow.locator(".sidebar-recent-session__name").evaluate((label) => ({
@@ -3973,7 +3973,7 @@ describeControlUiE2e("Control UI mocked Gateway E2E", () => {
             {
               effectiveFastMode: false,
               fastMode: false,
-              key: `ltfx.n.2df0faec675ae257ce24.v1`,
+              key: "agent:main:session-a",
               kind: "direct",
               label: "Session A",
               model: "gpt-5.5",

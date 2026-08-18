@@ -214,7 +214,7 @@ import { McpLoopbackToolCache } from "./mcp-http.runtime.js";
 
 let server: Awaited<ReturnType<typeof ensureMcpLoopbackServer>> | undefined;
 
-const MAIN_SESSION_HEADER = { "x-session-key": `ltfx.n.6d9217fe77c7f11d9cc9.v1` };
+const MAIN_SESSION_HEADER = { "x-session-key": "agent:main:main" };
 const ANGLE_NUMBER_PROPERTY = { type: "number" };
 const SSE_TEST_READ_TIMEOUT_MS = 100;
 
@@ -540,7 +540,7 @@ async function callMessageToolWithExecute(execute: MockGatewayTool["execute"]) {
   mockScopedTools([makeMessageTool({ execute })]);
   const { runtime } = await startLoopbackServerForTest();
   return callMainSessionTool({
-    token: (runtime?.ownerToken,)
+    token: runtime?.ownerToken,
     name: "message",
     args: { body: "hello" },
   });
@@ -987,7 +987,7 @@ describe("mcp loopback server", () => {
     const response = await sendLoopbackToolsList({
       token: runtime.ownerToken,
       headers: {
-        "x-session-key": `ltfx.n.1d01c261be684b1bb4cb.v1`,
+        "x-session-key": "agent:main:harness:codex:supervision:native-thread",
       },
     });
 
@@ -1002,7 +1002,7 @@ describe("mcp loopback server", () => {
     const { runtime, port } = await startLoopbackServerForTest();
     const headers = {
       "content-type": "application/json",
-      "x-session-key": `ltfx.n.1d01c261be684b1bb4cb.v1`,
+      "x-session-key": "agent:main:harness:codex:supervision:native-thread",
     };
     const notificationResponse = await sendRaw({
       port,
@@ -1078,9 +1078,9 @@ describe("mcp loopback server", () => {
 
     const response = await sendRaw({
       port: serverPort,
-      token: (runtime?.nonOwnerToken,)
+      token: runtime?.nonOwnerToken,
       headers: jsonHeaders({
-        "x-session-key": `ltfx.n.d31a462e286796236cdb.v1`,
+        "x-session-key": "agent:main:telegram:group:chat123",
         "x-openclaw-session-id": "session-123",
         "x-openclaw-account-id": "work",
         "x-openclaw-message-channel": "telegram",
@@ -1131,7 +1131,7 @@ describe("mcp loopback server", () => {
       await sendLoopbackToolsList({
         token: runtime.ownerToken,
         headers: {
-          "x-session-key": `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+          "x-session-key": "agent:main:main",
           "x-openclaw-current-message-id": currentMessageId,
           "x-openclaw-client-caps": clientCaps,
         },
@@ -1158,7 +1158,7 @@ describe("mcp loopback server", () => {
       port: serverPort,
       token: grant.token,
       headers: jsonHeaders({
-        "x-session-key": `ltfx.n.f7eb27337dcaca18f7c3.v1`,
+        "x-session-key": "agent:main:SPOOFED-other-session",
         "x-openclaw-message-channel": "telegram",
         "x-openclaw-client-caps": "inline-widgets",
         "x-openclaw-account-id": "victim-account",
@@ -1249,7 +1249,7 @@ describe("mcp loopback server", () => {
         token: grant.token,
         headers: jsonHeaders({
           ...(captureKey ? { "x-openclaw-cli-capture-key": captureKey } : {}),
-          "x-session-key": `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+          "x-session-key": "agent:main:main",
           "x-openclaw-session-id": "session-spoofed",
           "x-openclaw-message-channel": "telegram",
           "x-openclaw-client-caps": "inline-widgets,admin",
@@ -1420,7 +1420,7 @@ describe("mcp loopback server", () => {
         await sendRaw({
           port: successor.port,
           token: staleGrant.token,
-          headers: jsonHeaders({ "x-openclaw-cli-capture-key": `ltfx.n.dbf933369c091867562d.v1` }),
+          headers: jsonHeaders({ "x-openclaw-cli-capture-key": "capture-stale" }),
           body: mcpToolsListBody(),
         })
       ).status,
@@ -1441,7 +1441,7 @@ describe("mcp loopback server", () => {
         await sendRaw({
           port: successor.port,
           token: revokedGrant.token,
-          headers: jsonHeaders({ "x-openclaw-cli-capture-key": `ltfx.n.ed76546ca24f1f23a8a4.v1` }),
+          headers: jsonHeaders({ "x-openclaw-cli-capture-key": "capture-revoked" }),
           body: mcpToolsListBody(),
         })
       ).status,
@@ -1491,7 +1491,7 @@ describe("mcp loopback server", () => {
         name: "sessions_yield",
         args: { message },
         headers: {
-          "x-session-key": `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+          "x-session-key": "agent:main:main",
           "x-openclaw-session-id": "session-reused",
           "x-openclaw-cli-capture-key": captureKey,
         },
@@ -1517,9 +1517,9 @@ describe("mcp loopback server", () => {
       taskSuggestionDeliveryMode?: string,
     ) =>
       await sendLoopbackToolsList({
-        token: (runtime?.ownerToken,)
+        token: runtime?.ownerToken,
         headers: {
-          "x-session-key": `ltfx.n.d31a462e286796236cdb.v1`,
+          "x-session-key": "agent:main:telegram:group:chat123",
           "x-openclaw-message-channel": "telegram",
           "x-openclaw-inbound-event-kind": inboundEventKind,
           ...(sourceReplyDeliveryMode
@@ -1572,7 +1572,7 @@ describe("mcp loopback server", () => {
         await sendLoopbackToolsList({
           token: runtime.ownerToken,
           headers: {
-            "x-session-key": `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+            "x-session-key": "agent:main:main",
             ...(clientCaps ? { "x-openclaw-client-caps": clientCaps } : {}),
           },
         }),
@@ -1856,9 +1856,9 @@ describe("mcp loopback server", () => {
     const { runtime } = await startLoopbackServerForTest();
 
     const response = await sendLoopbackToolsList({
-      token: (runtime?.nonOwnerToken,)
+      token: runtime?.nonOwnerToken,
       headers: {
-        "x-session-key": `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+        "x-session-key": "agent:main:main",
       },
     });
     const payload = await readMcpPayload(response);
@@ -1877,7 +1877,7 @@ describe("mcp loopback server", () => {
       await sendLoopbackToolsList({
         token,
         headers: {
-          "x-session-key": `ltfx.n.b6c13ff79431892239c9.v1`,
+          "x-session-key": "agent:main:matrix:dm:test",
           "x-openclaw-message-channel": "matrix",
         },
       });
@@ -1898,9 +1898,9 @@ describe("mcp loopback server", () => {
     const { runtime } = await startLoopbackServerForTest();
 
     const response = await sendLoopbackToolsList({
-      token: (runtime?.nonOwnerToken,)
+      token: runtime?.nonOwnerToken,
       headers: {
-        "x-session-key": `ltfx.n.b6c13ff79431892239c9.v1`,
+        "x-session-key": "agent:main:matrix:dm:test",
         "x-openclaw-message-channel": "matrix",
         "x-openclaw-sender-is-owner": "true",
       },
@@ -1951,7 +1951,7 @@ describe("mcp loopback server", () => {
     const { runtime } = await startLoopbackServerForTest();
 
     const payload = await callMainSessionTool({
-      token: (runtime?.ownerToken,)
+      token: runtime?.ownerToken,
       name: "cron",
       args,
     });
@@ -2043,7 +2043,7 @@ describe("mcp loopback server", () => {
     const { runtime } = await startLoopbackServerForTest();
 
     const payload = await callMainSessionTool({
-      token: (runtime?.ownerToken,)
+      token: runtime?.ownerToken,
       name: "content_probe",
     });
 
@@ -2072,7 +2072,7 @@ describe("mcp loopback server", () => {
     const { runtime } = await startLoopbackServerForTest();
 
     const payload = await callMainSessionTool({
-      token: (runtime?.ownerToken,)
+      token: runtime?.ownerToken,
       name: "malformed_content_probe",
     });
 
@@ -2611,7 +2611,7 @@ describe("mcp loopback server", () => {
     const { runtime } = await startLoopbackServerForTest();
 
     const payload = await callMainSessionTool({
-      token: (runtime?.ownerToken,)
+      token: runtime?.ownerToken,
       name: "message",
       args: { body: "hello" },
     });
@@ -2639,7 +2639,7 @@ describe("mcp loopback server", () => {
     const { runtime } = await startLoopbackServerForTest();
 
     const payload = await callMainSessionTool({
-      token: (runtime?.ownerToken,)
+      token: runtime?.ownerToken,
       name: "mockplugin_unreadable_parameters",
     });
 
@@ -2823,7 +2823,7 @@ describe("mcp loopback server", () => {
     const runtime = getActiveMcpLoopbackRuntime();
     const response = await sendRaw({
       port: server.port,
-      token: (runtime?.ownerToken,)
+      token: runtime?.ownerToken,
       headers: { "content-type": "text/plain" },
       body: "{}",
     });
@@ -2835,7 +2835,7 @@ describe("mcp loopback server", () => {
     const runtime = getActiveMcpLoopbackRuntime();
     const response = await sendRaw({
       port: server.port,
-      token: (runtime?.ownerToken,)
+      token: runtime?.ownerToken,
       headers: { "content-type": "application/json" },
       body: "{",
     });
@@ -2860,7 +2860,7 @@ describe("mcp loopback server", () => {
     const runtime = getActiveMcpLoopbackRuntime();
     const response = await sendRaw({
       port: server.port,
-      token: (runtime?.ownerToken,)
+      token: runtime?.ownerToken,
       headers: { "content-type": "application/json" },
       body: mcpToolsListBody(42),
     });
@@ -2912,7 +2912,7 @@ describe("mcp loopback server", () => {
     const runtime = getActiveMcpLoopbackRuntime();
     const response = await sendRaw({
       port: server.port,
-      token: (runtime?.ownerToken,)
+      token: runtime?.ownerToken,
       headers: { "content-type": "application/json" },
       body: `[null,${mcpToolsListBody(7)}]`,
     });
@@ -2942,7 +2942,7 @@ describe("mcp loopback server", () => {
       token: runtime.ownerToken,
       headers: {
         "content-type": "application/json",
-        "x-session-key": `ltfx.n.1d01c261be684b1bb4cb.v1`,
+        "x-session-key": "agent:main:harness:codex:supervision:native-thread",
       },
       body: "[]",
     });
@@ -3031,7 +3031,7 @@ describe("mcp loopback server", () => {
     const runtime = getActiveMcpLoopbackRuntime();
     const response = await sendRaw({
       port: server.port,
-      token: (runtime?.ownerToken,)
+      token: runtime?.ownerToken,
       headers: { "content-type": "application/json" },
       body: "x".repeat(1_048_577),
     });
@@ -3365,7 +3365,7 @@ describe("createMcpLoopbackServerConfig", () => {
           await sendRaw({
             port: successor.port,
             token: successorGrant.token,
-            headers: jsonHeaders({ "x-openclaw-cli-capture-key": `ltfx.n.20a2b287f5ecaca6a368.v1` }),
+            headers: jsonHeaders({ "x-openclaw-cli-capture-key": "capture-successor" }),
             body: mcpToolsListBody(),
           })
         ).status,
@@ -3438,7 +3438,7 @@ describe("createMcpLoopbackServerConfig", () => {
     const res = await sendRaw({
       port: server.port,
       token: getActiveMcpLoopbackRuntime()?.ownerToken,
-      headers: { "content-type": "application/json", "x-session-key": `ltfx.n.6d9217fe77c7f11d9cc9.v1` },
+      headers: { "content-type": "application/json", "x-session-key": "agent:main:main" },
       body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "tools/list" }),
     });
     expect(res.status).toBe(200);

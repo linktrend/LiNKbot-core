@@ -24,8 +24,8 @@ describe("secrets runtime snapshot nextcloud talk file precedence", () => {
         },
       }),
       env: {
-        NEXTCLOUD_BOT_SECRET: `ltfx.n.4cf2f7d0f04e441a4408.v1`,
-        NEXTCLOUD_API_PASSWORD: `ltfx.n.6bd15012f5374572b1bb.v1`,
+        NEXTCLOUD_BOT_SECRET: "resolved-nextcloud-bot-secret",
+        NEXTCLOUD_API_PASSWORD: "resolved-nextcloud-api-password",
       },
       agentDirs: ["/tmp/openclaw-agent-main"],
       loadAuthStore: () => loadAuthStoreWithProfiles({}),
@@ -66,8 +66,8 @@ describe("secrets runtime snapshot nextcloud talk file precedence", () => {
         },
       }),
       env: {
-        NEXTCLOUD_WORK_BOT_SECRET: `ltfx.n.83518d267ebb35f23226.v1`,
-        NEXTCLOUD_WORK_API_PASSWORD: `ltfx.n.03cd09bd8b86bab774d3.v1`,
+        NEXTCLOUD_WORK_BOT_SECRET: "resolved-nextcloud-work-bot-secret",
+        NEXTCLOUD_WORK_API_PASSWORD: "resolved-nextcloud-work-api-password",
       },
       agentDirs: ["/tmp/openclaw-agent-main"],
       loadAuthStore: () => loadAuthStoreWithProfiles({}),

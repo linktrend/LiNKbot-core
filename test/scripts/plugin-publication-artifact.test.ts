@@ -839,7 +839,7 @@ describe("plugin publication artifact", () => {
       maxArchiveBytes: 1024 * 1024,
       retryAttempts: 3,
       retryDelayMs: 1,
-      token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+      token: "test-token",
     });
 
     expect(result.archiveBytes).toEqual(zip);
@@ -934,7 +934,7 @@ describe("plugin publication artifact", () => {
         fetchImpl,
         maxArchiveBytes: 1024 * 1024,
         retryAttempts: 1,
-        token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+        token: "test-token",
       });
     }
 

@@ -1459,7 +1459,7 @@ export class AcpxRuntime implements AcpRuntime {
         if (override.reasoningEffort) {
           await delegate.setConfigOption({
             ...input,
-            key: `ltfx.n.a692e305fae85dbf68de.v1`,
+            key: "reasoning_effort",
             value: override.reasoningEffort,
           });
         }
@@ -1474,7 +1474,7 @@ export class AcpxRuntime implements AcpRuntime {
         }
         await delegate.setConfigOption({
           ...input,
-          key: `ltfx.n.a692e305fae85dbf68de.v1`,
+          key: "reasoning_effort",
           value: reasoningEffort,
         });
         return;

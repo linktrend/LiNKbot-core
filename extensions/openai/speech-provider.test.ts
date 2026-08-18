@@ -221,7 +221,7 @@ describe("buildOpenAISpeechProvider", () => {
 
     expect(
       provider.parseDirectiveToken?.({
-        key: `ltfx.n.c9bbb45e5ceaf6cd2b69.v1`,
+        key: "openai_speed",
         value: "0.75",
         policy: {
           allowVoice: true,

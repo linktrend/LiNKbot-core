@@ -29,7 +29,7 @@ export function resolveOutboundMessageGatewayOptions(gateway?: OutboundMessageGa
       : gateway?.url;
   return {
     url,
-    token: (gateway?.token,)
+    token: gateway?.token,
     timeoutMs: resolveTimerTimeoutMs(gateway?.timeoutMs, 10_000),
     clientName,
     clientDisplayName: gateway?.clientDisplayName,

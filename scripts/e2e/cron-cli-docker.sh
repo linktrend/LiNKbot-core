@@ -7,7 +7,7 @@ source "$ROOT_DIR/scripts/lib/docker-e2e-image.sh"
 
 IMAGE_NAME="$(docker_e2e_resolve_image "openclaw-cron-cli-e2e" OPENCLAW_IMAGE)"
 PORT="18789"
-TOKEN="${ltfx.n.62c6decabb0cf1a070fc.v1}"
+TOKEN="cron-cli-e2e-$(date +%s)-$$"
 CONTAINER_NAME="openclaw-cron-cli-e2e-$$"
 CLIENT_LOG="$(mktemp -t openclaw-cron-cli-log.XXXXXX)"
 
@@ -75,7 +75,7 @@ trap cleanup_inner EXIT
 trap dump_logs_on_error ERR
 
 cron_cli() {
-  node "$entry" cron "$@" --token "${GW_TOKEN:"${ltfx.n.7eca8434db4bc8cd39fe.v1}" GW_TOKEN}"
+  node "$entry" cron "$@" --token "${GW_TOKEN:?missing GW_TOKEN}"
 }
 
 seed_paired_cli_device() {

@@ -223,7 +223,7 @@ vi.mock("../plugins/provider-runtime.js", () => ({
       return undefined;
     }
     return {
-      apiKey: `ltfx.n.68651ed9af5ca916d319.v1`,
+      apiKey: "demo-local",
       source: `models.providers.${params.provider} (synthetic local key)`,
       mode: "api-key" as const,
     };
@@ -370,7 +370,7 @@ function buildDemoLocalStore(keys: string[]) {
   };
 }
 
-function buildDemoLocalProviderCfg(apiKey: (string)): OpenClawConfig {
+function buildDemoLocalProviderCfg(apiKey: string): OpenClawConfig {
   return {
     models: {
       providers: {
@@ -451,7 +451,7 @@ describe("getApiKeyForModel", () => {
         "openai:api-key": {
           type: "api_key" as const,
           provider: "openai",
-          key: `ltfx.n.0ffb38fcabdc6a5ed3c2.v1`,
+          key: "direct-openai-key",
         },
       },
     };
@@ -474,7 +474,7 @@ describe("getApiKeyForModel", () => {
     });
 
     expect(directAuth).toMatchObject({
-      apiKey: `ltfx.n.0ffb38fcabdc6a5ed3c2.v1`,
+      apiKey: "direct-openai-key",
       mode: "api-key",
       profileId: "openai:api-key",
     });
@@ -518,7 +518,7 @@ describe("getApiKeyForModel", () => {
         "openai:api-key": {
           type: "api_key" as const,
           provider: "openai",
-          key: `ltfx.n.0ffb38fcabdc6a5ed3c2.v1`,
+          key: "direct-openai-key",
         },
       },
     };
@@ -555,7 +555,7 @@ describe("getApiKeyForModel", () => {
               "xai:default": {
                 type: "api_key",
                 provider: "xai",
-                key: `ltfx.n.d3a10349924a98646c38.v1`,
+                key: "process-default-key",
               },
             },
           },
@@ -568,7 +568,7 @@ describe("getApiKeyForModel", () => {
               "xai:default": {
                 type: "api_key",
                 provider: "xai",
-                key: `ltfx.n.cb71440955fdd78a1a76.v1`,
+                key: "configured-agent-key",
               },
             },
           },
@@ -746,7 +746,7 @@ describe("getApiKeyForModel", () => {
     await withEnvAsync(
       {
         ZAI_API_KEY: undefined,
-        Z_AI_API_KEY: `ltfx.n.e1066c610271b4384c3b.v1`, // pragma: allowlist secret
+        Z_AI_API_KEY: "zai-test-key", // pragma: allowlist secret
       },
       async () => {
         const resolved = await resolveApiKeyForProvider({
@@ -762,7 +762,7 @@ describe("getApiKeyForModel", () => {
   it("skips malformed stored ZAI command profiles and uses current env auth", async () => {
     await withEnvAsync(
       {
-        ZAI_API_KEY: `ltfx.n.4228077b2a617699988e.v1`, // pragma: allowlist secret
+        ZAI_API_KEY: "zai-current-key", // pragma: allowlist secret
         Z_AI_API_KEY: undefined,
       },
       async () => {
@@ -787,7 +787,7 @@ describe("getApiKeyForModel", () => {
   });
 
   it("keeps stored provider auth ahead of env by default", async () => {
-    await withEnvAsync({ OPENAI_API_KEY: `ltfx.n.aaf1fe7c1e5d78f6d873.v1` }, async () => {
+    await withEnvAsync({ OPENAI_API_KEY: "env-openai-key" }, async () => {
       const resolved = await resolveApiKeyForProvider({
         provider: "openai",
         store: {
@@ -796,7 +796,7 @@ describe("getApiKeyForModel", () => {
             "openai:default": {
               type: "api_key",
               provider: "openai",
-              key: `ltfx.n.dcc106edca87f4de3be2.v1`,
+              key: "stored-openai-key",
             },
           },
         },
@@ -808,7 +808,7 @@ describe("getApiKeyForModel", () => {
   });
 
   it("supports env-first precedence for live auth probes", async () => {
-    await withEnvAsync({ OPENAI_API_KEY: `ltfx.n.aaf1fe7c1e5d78f6d873.v1` }, async () => {
+    await withEnvAsync({ OPENAI_API_KEY: "env-openai-key" }, async () => {
       const resolved = await resolveApiKeyForProvider({
         provider: "openai",
         credentialPrecedence: "env-first",
@@ -818,7 +818,7 @@ describe("getApiKeyForModel", () => {
             "openai:default": {
               type: "api_key",
               provider: "openai",
-              key: `ltfx.n.dcc106edca87f4de3be2.v1`,
+              key: "stored-openai-key",
             },
           },
         },
@@ -850,7 +850,7 @@ describe("getApiKeyForModel", () => {
         });
 
         expect(resolved).toEqual({
-          apiKey: `ltfx.n.1511b97b2133bdf7c34a.v1`,
+          apiKey: "workspace-cloud-local-credentials",
           source: "workspace cloud credentials",
           mode: "api-key",
         });
@@ -967,7 +967,7 @@ describe("getApiKeyForModel", () => {
     await withEnvAsync(
       {
         GEMINI_API_KEY: undefined,
-        GOOGLE_API_KEY: `ltfx.n.af6d3719519b1ad50c7d.v1`, // pragma: allowlist secret
+        GOOGLE_API_KEY: "google-test-key", // pragma: allowlist secret
       },
       async () => {
         await expect(
@@ -1105,7 +1105,7 @@ describe("getApiKeyForModel", () => {
 
   it("prefers explicit provider env auth over a stored synthetic local profile", async () => {
     const resolved = await resolveDemoLocalApiKey({
-      envApiKey: `ltfx.n.7f30ba4d60f927cac52a.v1`,
+      envApiKey: "env-demo-key",
       storedKeys: ["demo-local"],
       configuredApiKey: "DEMO_LOCAL_API_KEY",
     });
@@ -1118,7 +1118,7 @@ describe("getApiKeyForModel", () => {
     const resolved = await resolveDemoLocalApiKey({
       envApiKey: undefined,
       storedKeys: ["demo-local"],
-      configuredApiKey: `ltfx.n.9f93f379630c1eb7c3a4.v1`,
+      configuredApiKey: "config-demo-key",
     });
     expect(resolved.apiKey).toBe("config-demo-key");
     expect(resolved.source).toBe("models.json");
@@ -1138,7 +1138,7 @@ describe("getApiKeyForModel", () => {
 
   it("keeps a real stored profile ahead of env auth", async () => {
     const resolved = await resolveDemoLocalApiKey({
-      envApiKey: `ltfx.n.7f30ba4d60f927cac52a.v1`,
+      envApiKey: "env-demo-key",
       storedKeys: ["stored-demo-key"],
       configuredApiKey: "DEMO_LOCAL_API_KEY",
     });
@@ -1149,7 +1149,7 @@ describe("getApiKeyForModel", () => {
 
   it("defers every stored synthetic local profile until real auth sources are checked", async () => {
     const resolved = await resolveDemoLocalApiKey({
-      envApiKey: `ltfx.n.7f30ba4d60f927cac52a.v1`,
+      envApiKey: "env-demo-key",
       storedKeys: ["demo-local", "demo-local"],
       configuredApiKey: "DEMO_LOCAL_API_KEY",
     });
@@ -1167,7 +1167,7 @@ describe("getApiKeyForModel", () => {
           "demo-local:default": {
             type: "api_key",
             provider: "demo-local",
-            key: `ltfx.n.68651ed9af5ca916d319.v1`,
+            key: "demo-local",
           },
         },
       },
@@ -1177,7 +1177,7 @@ describe("getApiKeyForModel", () => {
             "demo-local": {
               baseUrl: "http://localhost:11434",
               api: "openai-completions",
-              apiKey: `ltfx.n.9f93f379630c1eb7c3a4.v1`,
+              apiKey: "config-demo-key",
               models: [],
             },
           },
@@ -1264,7 +1264,7 @@ describe("getApiKeyForModel", () => {
     await withEnvAsync({ [envVar("ANTHROPIC", "API", "KEY")]: "sk-ant-test-\r\nkey" }, async () => {
       // pragma: allowlist secret
       const resolved = resolveEnvApiKey("anthropic");
-      expect(resolved?.apiKey).toBe("ltfx.n.44194a0b1926bef20d25.v1");
+      expect(resolved?.apiKey).toBe("sk-ant-test-key");
       expect(resolved?.source).toContain("ANTHROPIC_API_KEY");
     });
   });
@@ -1272,7 +1272,7 @@ describe("getApiKeyForModel", () => {
   it("resolveEnvApiKey('huggingface') returns HUGGINGFACE_HUB_TOKEN when set", async () => {
     await withEnvAsync(
       {
-        HUGGINGFACE_HUB_TOKEN: `ltfx.n.39491874572c93a4186b.v1`,
+        HUGGINGFACE_HUB_TOKEN: "hf_hub_xyz",
         HF_TOKEN: undefined,
       },
       async () => {
@@ -1286,8 +1286,8 @@ describe("getApiKeyForModel", () => {
   it("resolveEnvApiKey('huggingface') prefers HUGGINGFACE_HUB_TOKEN over HF_TOKEN when both set", async () => {
     await withEnvAsync(
       {
-        HUGGINGFACE_HUB_TOKEN: `ltfx.n.68193ea34e292ce14ea5.v1`,
-        HF_TOKEN: `ltfx.n.6e217c7a1e39e6153284.v1`,
+        HUGGINGFACE_HUB_TOKEN: "hf_hub_first",
+        HF_TOKEN: "hf_second",
       },
       async () => {
         const resolved = resolveEnvApiKey("huggingface");
@@ -1301,7 +1301,7 @@ describe("getApiKeyForModel", () => {
     await withEnvAsync(
       {
         HUGGINGFACE_HUB_TOKEN: undefined,
-        HF_TOKEN: `ltfx.n.21d42d7d921238da9099.v1`,
+        HF_TOKEN: "hf_abc123",
       },
       async () => {
         const resolved = resolveEnvApiKey("huggingface");
@@ -1315,11 +1315,11 @@ describe("getApiKeyForModel", () => {
     await withEnvAsync(
       {
         OPENCODE_API_KEY: undefined,
-        OPENCODE_ZEN_API_KEY: `ltfx.n.ff48679b34fcde9851bc.v1`, // pragma: allowlist secret
+        OPENCODE_ZEN_API_KEY: "sk-opencode-zen-fallback", // pragma: allowlist secret
       },
       async () => {
         const resolved = resolveEnvApiKey("opencode-go");
-        expect(resolved?.apiKey).toBe("ltfx.n.ff48679b34fcde9851bc.v1");
+        expect(resolved?.apiKey).toBe("sk-opencode-zen-fallback");
         expect(resolved?.source).toContain("OPENCODE_ZEN_API_KEY");
       },
     );
@@ -1328,7 +1328,7 @@ describe("getApiKeyForModel", () => {
   it("resolveEnvApiKey('minimax-portal') accepts MINIMAX_OAUTH_TOKEN", async () => {
     await withEnvAsync(
       {
-        MINIMAX_OAUTH_TOKEN: `ltfx.n.7714a52d3c5f991c8927.v1`,
+        MINIMAX_OAUTH_TOKEN: "minimax-oauth-token",
         MINIMAX_API_KEY: undefined,
       },
       async () => {
@@ -1349,7 +1349,7 @@ describe("getApiKeyForModel", () => {
 
   it("resolveEnvApiKey('google-vertex') uses the provided env snapshot", () => {
     const resolved = resolveEnvApiKey("google-vertex", {
-      GOOGLE_CLOUD_API_KEY: `ltfx.n.e4069a134e00ca50044e.v1`,
+      GOOGLE_CLOUD_API_KEY: "google-cloud-api-key",
     } as NodeJS.ProcessEnv);
 
     expect(resolved?.apiKey).toBe("google-cloud-api-key");
@@ -1611,7 +1611,7 @@ describe("getApiKeyForModel", () => {
 
 describe("resolveApiKeyForProvider — per-entry apiKey as profile ID reference", () => {
   it("resolves actual credential when per-entry apiKey matches a profile ID in the store", async () => {
-    // Scenario from #67423: openrouter-minimax.apiKey = `ltfx.n.909f81085f792feb344c.v1`
+    // Scenario from #67423: openrouter-minimax.apiKey = "openrouter:key-b"
     // should resolve the actual key from that profile, not use the string literally.
     const resolved = await resolveApiKeyForProvider({
       provider: "openrouter-minimax",
@@ -1626,7 +1626,7 @@ describe("resolveApiKeyForProvider — per-entry apiKey as profile ID reference"
             "openrouter-minimax": {
               api: "openai-completions" as const,
               baseUrl: "https://openrouter.ai/api/v1",
-              apiKey: `ltfx.n.909f81085f792feb344c.v1`,
+              apiKey: "openrouter:key-b",
               models: [],
             },
           },
@@ -1638,13 +1638,13 @@ describe("resolveApiKeyForProvider — per-entry apiKey as profile ID reference"
           "openrouter:key-b": {
             type: "api_key",
             provider: "openrouter",
-            key: `ltfx.n.55cc4b85ea39967f49f9.v1`,
+            key: "sk-or-actual-key-b",
           },
         },
       },
     });
 
-    expect(resolved.apiKey).toBe("ltfx.n.55cc4b85ea39967f49f9.v1");
+    expect(resolved.apiKey).toBe("sk-or-actual-key-b");
     expect(resolved.profileId).toBe("openrouter:key-b");
     expect(resolved.source).toBe("profile:openrouter:key-b");
     expect(resolved.mode).toBe("api-key");
@@ -1664,7 +1664,7 @@ describe("resolveApiKeyForProvider — per-entry apiKey as profile ID reference"
             "openrouter-minimax": {
               api: "openai-completions" as const,
               baseUrl: "https://openrouter.ai/api/v1",
-              apiKey: `ltfx.n.88f40be04247fef8330e.v1`,
+              apiKey: "sk-or-literal-key",
               models: [],
             },
           },
@@ -1676,13 +1676,13 @@ describe("resolveApiKeyForProvider — per-entry apiKey as profile ID reference"
       },
     });
 
-    expect(resolved.apiKey).toBe("ltfx.n.88f40be04247fef8330e.v1");
+    expect(resolved.apiKey).toBe("sk-or-literal-key");
     expect(resolved.profileId).toBeUndefined();
     expect(resolved.source).toBe("models.json");
   });
 
   it("does not treat env SecretRef ids as profile references", async () => {
-    await withEnvAsync({ OPENROUTER_PROFILE: `ltfx.n.2646807076616a49bba3.v1` }, async () => {
+    await withEnvAsync({ OPENROUTER_PROFILE: "sk-or-env-secret" }, async () => {
       const resolved = await resolveApiKeyForProvider({
         provider: "openrouter-minimax",
         cfg: {
@@ -1707,19 +1707,19 @@ describe("resolveApiKeyForProvider — per-entry apiKey as profile ID reference"
             OPENROUTER_PROFILE: {
               type: "api_key",
               provider: "openrouter",
-              key: `ltfx.n.95bf4bf9e3f7d49b5b1c.v1`,
+              key: "sk-or-wrong-profile",
             },
           },
         },
       });
 
-      expect(resolved.apiKey).toBe("ltfx.n.2646807076616a49bba3.v1");
+      expect(resolved.apiKey).toBe("sk-or-env-secret");
       expect(resolved.source).toContain("OPENROUTER_PROFILE");
     });
   });
 
   it("keeps env-first precedence ahead of per-entry profile references", async () => {
-    await withEnvAsync({ OPENAI_API_KEY: `ltfx.n.846ae13d7b2ed730b0ba.v1` }, async () => {
+    await withEnvAsync({ OPENAI_API_KEY: "sk-env-first" }, async () => {
       const resolved = await resolveApiKeyForProvider({
         provider: "openai",
         credentialPrecedence: "env-first",
@@ -1729,7 +1729,7 @@ describe("resolveApiKeyForProvider — per-entry apiKey as profile ID reference"
               openai: {
                 api: "openai-completions" as const,
                 baseUrl: "https://api.openai.com/v1",
-                apiKey: `ltfx.n.6b77eea3bdb16b2759cd.v1`,
+                apiKey: "openai:key-b",
                 models: [],
               },
             },
@@ -1741,7 +1741,7 @@ describe("resolveApiKeyForProvider — per-entry apiKey as profile ID reference"
             "openai:key-b": {
               type: "api_key",
               provider: "openai",
-              key: `ltfx.n.cebc707ad6e5dc9721be.v1`,
+              key: "sk-profile-key",
             },
           },
         },
@@ -1754,7 +1754,7 @@ describe("resolveApiKeyForProvider — per-entry apiKey as profile ID reference"
 
   it("does not bleed auth.order canonical provider profiles into a per-entry provider", async () => {
     // auth.order.openrouter should not be selected when resolving openrouter-minimax
-    // that has its own per-entry apiKey = `ltfx.n.909f81085f792feb344c.v1` profile reference.
+    // that has its own per-entry apiKey = "openrouter:key-b" profile reference.
     const resolved = await resolveApiKeyForProvider({
       provider: "openrouter-minimax",
       cfg: {
@@ -1768,7 +1768,7 @@ describe("resolveApiKeyForProvider — per-entry apiKey as profile ID reference"
             "openrouter-minimax": {
               api: "openai-completions" as const,
               baseUrl: "https://openrouter.ai/api/v1",
-              apiKey: `ltfx.n.909f81085f792feb344c.v1`,
+              apiKey: "openrouter:key-b",
               models: [],
             },
           },
@@ -1785,24 +1785,24 @@ describe("resolveApiKeyForProvider — per-entry apiKey as profile ID reference"
           "openrouter:key-a": {
             type: "api_key",
             provider: "openrouter",
-            key: `ltfx.n.b1d5631a0aeb42ae053f.v1`,
+            key: "sk-or-key-a",
           },
           "openrouter:key-b": {
             type: "api_key",
             provider: "openrouter",
-            key: `ltfx.n.55cc4b85ea39967f49f9.v1`,
+            key: "sk-or-actual-key-b",
           },
           "openrouter:key-c": {
             type: "api_key",
             provider: "openrouter",
-            key: `ltfx.n.ba41a21f9eca64fc96a4.v1`,
+            key: "sk-or-key-c",
           },
         },
       },
     });
 
     // Should select key-b (from per-entry apiKey reference), not key-a (first in auth.order)
-    expect(resolved.apiKey).toBe("ltfx.n.55cc4b85ea39967f49f9.v1");
+    expect(resolved.apiKey).toBe("sk-or-actual-key-b");
     expect(resolved.profileId).toBe("openrouter:key-b");
     expect(resolved.source).toBe("profile:openrouter:key-b");
   });
@@ -1824,7 +1824,7 @@ describe("resolveApiKeyForProvider — per-entry apiKey as profile ID reference"
             "openrouter-minimax": {
               api: "openai-completions" as const,
               baseUrl: "https://openrouter.ai/api/v1",
-              apiKey: `ltfx.n.909f81085f792feb344c.v1`,
+              apiKey: "openrouter:key-b",
               auth: "api-key" as const,
               models: [],
             },
@@ -1837,13 +1837,13 @@ describe("resolveApiKeyForProvider — per-entry apiKey as profile ID reference"
           "openrouter:key-b": {
             type: "api_key",
             provider: "openrouter",
-            key: `ltfx.n.55cc4b85ea39967f49f9.v1`,
+            key: "sk-or-actual-key-b",
           },
         },
       },
     });
 
-    expect(resolved.apiKey).toBe("ltfx.n.55cc4b85ea39967f49f9.v1");
+    expect(resolved.apiKey).toBe("sk-or-actual-key-b");
     expect(resolved.profileId).toBe("openrouter:key-b");
     expect(resolved.source).toBe("profile:openrouter:key-b");
   });
@@ -1859,7 +1859,7 @@ describe("resolveApiKeyForProvider — per-entry apiKey as profile ID reference"
               openai: {
                 api: "openai-responses" as const,
                 baseUrl: "https://api.openai.com/v1",
-                apiKey: `ltfx.n.e16dea5c2ac64747624b.v1`,
+                apiKey: "openai:token",
                 models: [],
               },
             },
@@ -1871,7 +1871,7 @@ describe("resolveApiKeyForProvider — per-entry apiKey as profile ID reference"
             "openai:token": {
               type: "token",
               provider: "openai",
-              token: `ltfx.n.3bbc3a9700a71c6a53a3.v1`,
+              token: "oauth-token",
             },
           },
         },
@@ -1889,7 +1889,7 @@ describe("resolveApiKeyForProvider — per-entry apiKey as profile ID reference"
               "openrouter-minimax": {
                 api: "openai-completions" as const,
                 baseUrl: "https://openrouter.ai/api/v1",
-                apiKey: `ltfx.n.badaaa17efaafa12a84b.v1`,
+                apiKey: "google:oauth-a",
                 models: [],
               },
             },
@@ -1928,7 +1928,7 @@ describe("resolveApiKeyForProvider — per-entry apiKey as profile ID reference"
               "custom-proxy": {
                 api: "openai-completions" as const,
                 baseUrl: "https://example.invalid/v1",
-                apiKey: `ltfx.n.909f81085f792feb344c.v1`,
+                apiKey: "openrouter:key-b",
                 models: [],
               },
             },
@@ -1940,7 +1940,7 @@ describe("resolveApiKeyForProvider — per-entry apiKey as profile ID reference"
             "openrouter:key-b": {
               type: "api_key",
               provider: "openrouter",
-              key: `ltfx.n.55cc4b85ea39967f49f9.v1`,
+              key: "sk-or-actual-key-b",
             },
           },
         },
@@ -1967,7 +1967,7 @@ describe("resolveApiKeyForProvider — per-entry apiKey as profile ID reference"
               "openrouter-minimax": {
                 api: "openai-completions" as const,
                 baseUrl: "https://openrouter.ai/api/v1",
-                apiKey: `ltfx.n.909f81085f792feb344c.v1`,
+                apiKey: "openrouter:key-b",
                 models: [],
               },
             },

@@ -20,7 +20,7 @@ function normalizeMatrixEntry(raw?: string | null): string | null {
 }
 
 const matrixIngressIdentity = defineStableChannelIngressIdentity({
-  key: `ltfx.n.9cfd0d7aebb137ed909a.v1`,
+  key: "sender-id",
   normalize: normalizeMatrixEntry,
   matchEntry({ subject, entry }) {
     const senderId = subject.identifiers[0]?.value;

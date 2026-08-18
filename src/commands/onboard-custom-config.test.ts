@@ -52,7 +52,7 @@ function applyCustomModelConfigWithContextWindow(contextWindow?: number) {
 it("uses expanded max_tokens for openai verification probes", () => {
   const request = buildOpenAiVerificationProbeRequest({
     baseUrl: "https://example.com/v1",
-    apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+    apiKey: "test-key",
     modelId: "detected-model",
   });
 
@@ -62,7 +62,7 @@ it("uses expanded max_tokens for openai verification probes", () => {
 it("uses responses probes for custom OpenAI Responses endpoints", () => {
   const request = buildOpenAiVerificationProbeRequest({
     baseUrl: "https://example.com/v1",
-    apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+    apiKey: "test-key",
     modelId: "gpt-5.4",
     responsesApi: true,
   });
@@ -80,7 +80,7 @@ it("uses responses probes for custom OpenAI Responses endpoints", () => {
 it("uses azure responses-specific headers and body for openai verification probes", () => {
   const request = buildOpenAiVerificationProbeRequest({
     baseUrl: "https://my-resource.openai.azure.com",
-    apiKey: `ltfx.n.9c60f6e6d0669df437b8.v1`,
+    apiKey: "azure-test-key",
     modelId: "gpt-4.1",
   });
 
@@ -97,7 +97,7 @@ it("uses azure responses-specific headers and body for openai verification probe
 it("uses Azure Foundry chat-completions probes for services.ai URLs", () => {
   const request = buildOpenAiVerificationProbeRequest({
     baseUrl: "https://my-resource.services.ai.azure.com",
-    apiKey: `ltfx.n.9c60f6e6d0669df437b8.v1`,
+    apiKey: "azure-test-key",
     modelId: "deepseek-v3-0324",
   });
 
@@ -116,7 +116,7 @@ it("uses Azure Foundry chat-completions probes for services.ai URLs", () => {
 it("uses expanded max_tokens for anthropic verification probes", () => {
   const request = buildAnthropicVerificationProbeRequest({
     baseUrl: "https://example.com",
-    apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+    apiKey: "test-key",
     modelId: "detected-model",
   });
 
@@ -192,7 +192,7 @@ describe("applyCustomApiConfig", () => {
       baseUrl: "https://user123-resource.openai.azure.com",
       modelId: "o4-mini",
       compatibility: "openai",
-      apiKey: `ltfx.n.e9cee71ab932fde86333.v1`,
+      apiKey: "abcd1234",
     });
     const providerId = result.providerId!;
     const provider = result.config.models?.providers?.[providerId];
@@ -200,7 +200,7 @@ describe("applyCustomApiConfig", () => {
     expect(provider?.baseUrl).toBe("https://user123-resource.openai.azure.com/openai/v1");
     expect(provider?.api).toBe("azure-openai-responses");
     expect(provider?.authHeader).toBe(false);
-    expect(provider?.headers).toEqual({ "api-key": `ltfx.n.e9cee71ab932fde86333.v1` });
+    expect(provider?.headers).toEqual({ "api-key": "abcd1234" });
 
     const model = provider?.models?.find((m) => m.id === "o4-mini");
     expect(model?.input).toEqual(["text", "image"]);
@@ -217,7 +217,7 @@ describe("applyCustomApiConfig", () => {
       baseUrl: "https://responses.example.com/v1",
       modelId: "gpt-5.4",
       compatibility: "openai-responses",
-      apiKey: `ltfx.n.e9cee71ab932fde86333.v1`,
+      apiKey: "abcd1234",
     });
 
     const provider = result.config.models?.providers?.[result.providerId!];
@@ -485,7 +485,7 @@ describe("parseNonInteractiveCustomApiFlags", () => {
     const result = parseNonInteractiveCustomApiFlags({
       baseUrl: " https://llm.example.com/v1 ",
       modelId: " foo-large ",
-      apiKey: `ltfx.n.a6410616565d3a25fd93.v1`,
+      apiKey: " custom-test-key ",
       providerId: " my-custom ",
     });
 
@@ -493,7 +493,7 @@ describe("parseNonInteractiveCustomApiFlags", () => {
       baseUrl: "https://llm.example.com/v1",
       modelId: "foo-large",
       compatibility: "openai",
-      apiKey: `ltfx.n.0b34af848dc9e9f504e9.v1`, // pragma: allowlist secret
+      apiKey: "custom-test-key", // pragma: allowlist secret
       providerId: "my-custom",
     });
   });

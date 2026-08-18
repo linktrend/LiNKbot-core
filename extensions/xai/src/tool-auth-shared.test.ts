@@ -20,7 +20,7 @@ describe("xai tool auth helpers", () => {
             xai: {
               config: {
                 webSearch: {
-                  apiKey: `ltfx.n.63fd23d8d91d38a2f24e.v1`, // pragma: allowlist secret
+                  apiKey: "plugin-key", // pragma: allowlist secret
                 },
               },
             },
@@ -28,7 +28,7 @@ describe("xai tool auth helpers", () => {
         },
       }),
     ).toEqual({
-      apiKey: `ltfx.n.63fd23d8d91d38a2f24e.v1`,
+      apiKey: "plugin-key",
       source: "plugins.entries.xai.config.webSearch.apiKey",
     });
   });
@@ -65,7 +65,7 @@ describe("xai tool auth helpers", () => {
               xai: {
                 config: {
                   webSearch: {
-                    apiKey: `ltfx.n.cd0ec0671f5569a1679b.v1`, // pragma: allowlist secret
+                    apiKey: "runtime-key", // pragma: allowlist secret
                   },
                 },
               },
@@ -78,7 +78,7 @@ describe("xai tool auth helpers", () => {
               xai: {
                 config: {
                   webSearch: {
-                    apiKey: `ltfx.n.71c1084c0104da6f40be.v1`, // pragma: allowlist secret
+                    apiKey: "source-key", // pragma: allowlist secret
                   },
                 },
               },
@@ -96,7 +96,7 @@ describe("xai tool auth helpers", () => {
               xai: {
                 config: {
                   webSearch: {
-                    apiKey: `ltfx.n.71c1084c0104da6f40be.v1`, // pragma: allowlist secret
+                    apiKey: "source-key", // pragma: allowlist secret
                   },
                 },
               },

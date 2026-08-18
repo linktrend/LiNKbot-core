@@ -934,7 +934,7 @@ describe("createMusicGenerateTool", () => {
       model: "lyria-3-clip-preview",
       attempts: [],
       ignoredOverrides: [
-        { key: `ltfx.n.f245909b3492d6ec59e0.v1`, value: 30 },
+        { key: "durationSeconds", value: 30 },
         { key: "format", value: "wav" },
       ],
       tracks: [
@@ -983,7 +983,7 @@ describe("createMusicGenerateTool", () => {
       "Ignored unsupported overrides for google/lyria-3-clip-preview: durationSeconds=30, format=wav.",
     );
     expect(details.ignoredOverrides).toEqual([
-      { key: `ltfx.n.f245909b3492d6ec59e0.v1`, value: 30 },
+      { key: "durationSeconds", value: 30 },
       { key: "format", value: "wav" },
     ]);
     expect(details).not.toHaveProperty("durationSeconds");

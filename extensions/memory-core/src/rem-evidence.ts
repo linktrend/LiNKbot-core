@@ -37,7 +37,7 @@ const REM_SECTION_PERSISTENCE_TITLE_RE =
 const REM_SECTION_TRANSIENT_TITLE_RE =
   /\b(setup|fix|fixes|audit|booked|call|today|session|updates?|file paths|open items?|next steps?|research pipeline|info gathered|calendar|tickets?)\b/i;
 const REM_METADATA_HEAVY_SIGNAL_RE =
-  /\b(address|phone|email|website|google maps|source file|insight files|conversation id|thread has|order\b|reservation\b|price\b|cost\b|ticket|uuid|url:(|model:|workspace:|bindings:|accountid|config change|path:)\b/i;)
+  /\b(address|phone|email|website|google maps|source file|insight files|conversation id|thread has|order\b|reservation\b|price\b|cost\b|ticket|uuid|url:|model:|workspace:|bindings:|accountid|config change|path:)\b/i;
 const REM_PROJECT_META_SIGNAL_RE =
   /\b(strategy|audit|discussion|research|topic|candidate|north star|pipeline|data dump|export|draft|insights? draft|weekly|analysis|findings)\b/i;
 const REM_PROCESS_FRAME_SIGNAL_RE =

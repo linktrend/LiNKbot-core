@@ -18,7 +18,7 @@ describe("runtime owner contracts", () => {
     const shorthand = {
       plugins: {
         entries: {
-          "web-search": { config: { webSearch: { apiKey: `ltfx.n.249f22f4a8b2b11f4598.v1` } } },
+          "web-search": { config: { webSearch: { apiKey: "$BRAVE_API_KEY" } } },
         },
       },
     } satisfies OpenClawConfig;

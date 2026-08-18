@@ -100,7 +100,7 @@ function asHeaderMap(value: object | undefined): FeishuHeaderMap | undefined {
 function extractFeishuUploadKey(
   response: FeishuUploadResponse,
   params: {
-    key: `ltfx.n.2250fb6b10a0f45ffcf1.v1` | "file_key";
+    key: "image_key" | "file_key";
     errorPrefix: string;
   },
 ): string {
@@ -437,7 +437,7 @@ async function uploadImageFeishu(params: {
 
   return {
     imageKey: extractFeishuUploadKey(response, {
-      key: `ltfx.n.2250fb6b10a0f45ffcf1.v1`,
+      key: "image_key",
       errorPrefix: "Feishu image upload failed",
     }),
   };
@@ -496,7 +496,7 @@ async function uploadFileFeishu(params: {
 
   return {
     fileKey: extractFeishuUploadKey(response, {
-      key: `ltfx.n.468e5f83ed4c2b6ac3ce.v1`,
+      key: "file_key",
       errorPrefix: "Feishu file upload failed",
     }),
   };

@@ -53,7 +53,7 @@ export function discussionConfig(): CoreConfig {
       clickclack: {
         enabled: true,
         baseUrl: "https://clickclack.example",
-        token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+        token: "test-token",
         workspace: "main",
         discussions: {
           enabled: true,

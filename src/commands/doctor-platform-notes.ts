@@ -118,9 +118,9 @@ async function launchctlGetenv(name: string): Promise<string | undefined> {
 }
 
 function hasConfigGatewayCreds(cfg: OpenClawConfig): boolean {
-  const localPassword = (cfg.gateway?.auth?.password;)
-  const remoteToken = (cfg.gateway?.remote?.token;)
-  const remotePassword = (cfg.gateway?.remote?.password;)
+  const localPassword = cfg.gateway?.auth?.password;
+  const remoteToken = cfg.gateway?.remote?.token;
+  const remotePassword = cfg.gateway?.remote?.password;
   return (
     hasConfiguredSecretInput(cfg.gateway?.auth?.token, cfg.secrets?.defaults) ||
     hasConfiguredSecretInput(localPassword, cfg.secrets?.defaults) ||

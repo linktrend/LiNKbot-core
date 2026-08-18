@@ -51,7 +51,7 @@ describe("resolveCodexProviderWebSearchSupport", () => {
     const { clientFactory } = createClientFactory(true);
     const preparedAuth = {
       kind: "api-key" as const,
-      apiKey: `ltfx.n.34ddaf60896be843d9bb.v1`,
+      apiKey: "prepared-platform-key",
     };
 
     await expect(
@@ -90,18 +90,18 @@ describe("resolveCodexProviderWebSearchSupport", () => {
           "openai:work": {
             type: "token" as const,
             provider: "openai",
-            token: `ltfx.n.a366863b71d9cc466c8d.v1`,
+            token: "prepared-token",
           },
         },
       },
       snapshot: {
         loginParams: {
           type: "chatgptAuthTokens" as const,
-          accessToken: `ltfx.n.a366863b71d9cc466c8d.v1`,
+          accessToken: "prepared-token",
           chatgptAccountId: "prepared-account",
           chatgptPlanType: null,
         },
-        secretFreeCacheKey: "prepared-account:token:(sha256:opaque",)
+        secretFreeCacheKey: "prepared-account:token:sha256:opaque",
       },
     };
 

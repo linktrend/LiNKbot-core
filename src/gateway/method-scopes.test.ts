@@ -275,7 +275,7 @@ describe("method scope resolution", () => {
   it("resolves sessions.patch to write scope for chat-organization fields only", () => {
     expect(
       resolveLeastPrivilegeOperatorScopesForMethod("sessions.patch", {
-        key: `ltfx.n.90720c5a474db9aa04df.v1`,
+        key: "agent:main:ios-1",
         label: "Trip planning",
         icon: "name:spark",
         pinned: true,
@@ -284,7 +284,7 @@ describe("method scope resolution", () => {
     ).toEqual(["operator.write"]);
     expect(
       resolveLeastPrivilegeOperatorScopesForMethod("sessions.patch", {
-        key: `ltfx.n.90720c5a474db9aa04df.v1`,
+        key: "agent:main:ios-1",
         agentId: "main",
         category: "Travel",
         unread: true,
@@ -346,12 +346,12 @@ describe("method scope resolution", () => {
   });
 
   it.each([
-    ["model", { key: `ltfx.n.90720c5a474db9aa04df.v1`, model: "anthropic/claude-sonnet-5" }],
-    ["sendPolicy", { key: `ltfx.n.90720c5a474db9aa04df.v1`, sendPolicy: "deny" }],
-    ["inheritedToolAllow", { key: `ltfx.n.90720c5a474db9aa04df.v1`, inheritedToolAllow: ["exec"] }],
-    ["spawnedBy", { key: `ltfx.n.90720c5a474db9aa04df.v1`, spawnedBy: "agent:main:main" }],
-    ["mixed with safe fields", { key: `ltfx.n.90720c5a474db9aa04df.v1`, label: "x", execHost: "node-1" }],
-    ["unknown fields", { key: `ltfx.n.90720c5a474db9aa04df.v1`, futureField: true }],
+    ["model", { key: "agent:main:ios-1", model: "anthropic/claude-sonnet-5" }],
+    ["sendPolicy", { key: "agent:main:ios-1", sendPolicy: "deny" }],
+    ["inheritedToolAllow", { key: "agent:main:ios-1", inheritedToolAllow: ["exec"] }],
+    ["spawnedBy", { key: "agent:main:ios-1", spawnedBy: "agent:main:main" }],
+    ["mixed with safe fields", { key: "agent:main:ios-1", label: "x", execHost: "node-1" }],
+    ["unknown fields", { key: "agent:main:ios-1", futureField: true }],
   ])("keeps sessions.patch admin-only when params include %s", (_name, params) => {
     expect(resolveLeastPrivilegeOperatorScopesForMethod("sessions.patch", params)).toEqual([
       "operator.admin",
@@ -366,7 +366,7 @@ describe("method scope resolution", () => {
   });
 
   it("authorizes write-scoped sessions.patch for chat-organization fields and denies read scope", () => {
-    const params = { key: `ltfx.n.90720c5a474db9aa04df.v1`, label: "Trip planning", pinned: true };
+    const params = { key: "agent:main:ios-1", label: "Trip planning", pinned: true };
     expect(authorizeOperatorScopesForMethod("sessions.patch", ["operator.write"], params)).toEqual({
       allowed: true,
     });
@@ -396,17 +396,17 @@ describe("method scope resolution", () => {
     ]);
     expect(
       resolveLeastPrivilegeOperatorScopesForMethod("sessions.delete", {
-        key: `ltfx.n.85d5db6eb87195d078a5.v1`,
+        key: "agent:main:old",
         deleteTranscript: true,
       }),
     ).toEqual(["operator.admin"]);
     expect(
       resolveLeastPrivilegeOperatorScopesForMethod("sessions.delete", {
-        key: `ltfx.n.85d5db6eb87195d078a5.v1`,
+        key: "agent:main:old",
         archivedOnly: true,
       }),
     ).toEqual(["operator.write"]);
-    const archivedParams = { key: `ltfx.n.85d5db6eb87195d078a5.v1`, archivedOnly: true };
+    const archivedParams = { key: "agent:main:old", archivedOnly: true };
     expect(
       authorizeOperatorScopesForMethod("sessions.delete", ["operator.write"], archivedParams),
     ).toEqual({ allowed: true });
@@ -415,33 +415,33 @@ describe("method scope resolution", () => {
     ).toEqual({ allowed: false, missingScope: "operator.write" });
     expect(
       authorizeOperatorScopesForMethod("sessions.delete", ["operator.write"], {
-        key: `ltfx.n.85d5db6eb87195d078a5.v1`,
+        key: "agent:main:old",
       }),
     ).toEqual({ allowed: false, missingScope: "operator.admin" });
     expect(
       authorizeOperatorScopesForMethod("sessions.delete", ["operator.write"], {
-        key: `ltfx.n.85d5db6eb87195d078a5.v1`,
+        key: "agent:main:old",
         archivedOnly: "yes",
       }),
     ).toEqual({ allowed: false, missingScope: "operator.admin" });
     // Internal-only controls must not ride along on the write-scope path.
     expect(
       authorizeOperatorScopesForMethod("sessions.delete", ["operator.write"], {
-        key: `ltfx.n.85d5db6eb87195d078a5.v1`,
+        key: "agent:main:old",
         archivedOnly: true,
         emitLifecycleHooks: false,
       }),
     ).toEqual({ allowed: false, missingScope: "operator.admin" });
     expect(
       authorizeOperatorScopesForMethod("sessions.delete", ["operator.write"], {
-        key: `ltfx.n.85d5db6eb87195d078a5.v1`,
+        key: "agent:main:old",
         archivedOnly: true,
         expectedSessionId: "sess-1",
       }),
     ).toEqual({ allowed: false, missingScope: "operator.admin" });
     expect(
       resolveLeastPrivilegeOperatorScopesForMethod("sessions.delete", {
-        key: `ltfx.n.85d5db6eb87195d078a5.v1`,
+        key: "agent:main:old",
         archivedOnly: true,
         emitLifecycleHooks: false,
       }),

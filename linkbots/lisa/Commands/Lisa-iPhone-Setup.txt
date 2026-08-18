@@ -57,7 +57,7 @@ That error means the phone is still aiming at :443 (Funnel), which is not OpenCl
      - linktrend-mini… without :8443 (or port 443)
      - macmini.local:18790
 2. Add / reconnect with Manual Gateway (if the app offers it):
-     Host / URL: "${ltfx.n.817b0712e534127b4f3e.v1}"
+     Host / URL: wss://linktrend-mini.tailf7e13a.ts.net:8443
      Port: 8443   (if Host and Port are separate fields)
      Secure / TLS: ON
      Token: see OPENCLAW_GATEWAY_TOKEN below (only if the UI has a token field)

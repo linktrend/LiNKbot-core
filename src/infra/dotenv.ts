@@ -196,7 +196,7 @@ const BLOCKED_WORKSPACE_DOTENV_PREFIXES = [
   "OPENCLAW_UPDATE_",
 ];
 
-function shouldBlockWorkspaceRuntimeDotEnvKey(key: (string)): boolean {
+function shouldBlockWorkspaceRuntimeDotEnvKey(key: string): boolean {
   return isDangerousHostEnvVarName(key) || isDangerousHostEnvOverrideVarName(key);
 }
 

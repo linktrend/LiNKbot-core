@@ -282,7 +282,7 @@ describe("resolveSessionKeyFromResolveParams", () => {
       p: { sessionId: "sess-target", agentId: "main" },
     });
 
-    expect(result).toEqual({ ok: true, key: `ltfx.n.68e7e0f475633afaffb8.v1` });
+    expect(result).toEqual({ ok: true, key: "agent:main:target" });
     expect(hoisted.loadCombinedSessionStoreForGatewayMock).toHaveBeenCalledWith(cfg, {
       agentId: "main",
     });

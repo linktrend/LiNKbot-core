@@ -378,7 +378,7 @@ describe("SessionHistorySseState", () => {
           {
             type: "attachment",
             attachment: {
-              url: `ltfx.n.0d2cab14eac878a2c91f.v1`,
+              url: "/tmp/tts.mp3",
               kind: "audio",
               label: "tts.mp3",
               mimeType: "audio/mpeg",
@@ -399,7 +399,7 @@ describe("SessionHistorySseState", () => {
           {
             type: "attachment",
             attachment: {
-              url: `ltfx.n.0d2cab14eac878a2c91f.v1`,
+              url: "/tmp/tts.mp3",
               kind: "audio",
               label: "tts.mp3",
               mimeType: "audio/mpeg",

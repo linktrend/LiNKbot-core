@@ -44,7 +44,7 @@ function createDraftStreamHarness(
   const stream = createSlackDraftStream({
     target: "channel:C123",
     cfg: TEST_CFG,
-    token: `ltfx.n.87894fe048938b686cfb.v1`,
+    token: "xoxb-test",
     throttleMs: 250,
     maxChars: params.maxChars,
     eventScope: params.eventScope,
@@ -69,7 +69,7 @@ describe("createSlackDraftStream", () => {
     expect(edit).toHaveBeenCalledTimes(1);
     expect(edit).toHaveBeenCalledWith("C123", "111.222", "hello world", {
       cfg: TEST_CFG,
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       accountId: undefined,
     });
   });
@@ -132,7 +132,7 @@ describe("createSlackDraftStream", () => {
     const stream = createSlackDraftStream({
       target: "channel:C123",
       cfg: TEST_CFG,
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       throttleMs: 250,
       identity,
       send,
@@ -216,7 +216,7 @@ describe("createSlackDraftStream", () => {
 
     expect(remove).toHaveBeenCalledTimes(1);
     expect(remove).toHaveBeenCalledWith("C123", "111.222", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       accountId: undefined,
     });
     expect(stream.messageId()).toBeUndefined();

@@ -63,7 +63,7 @@ function sessionsUsage(cacheStatus?: ReturnType<typeof costSummary>["cacheStatus
     endDate: today(),
     sessions: [
       {
-        key: `ltfx.n.a07e15de36e51cd91f70.v1`,
+        key: "agent:main:proxy-proof",
         label: "Proxy proof",
         agentId: "main",
         modelProvider: "openai",

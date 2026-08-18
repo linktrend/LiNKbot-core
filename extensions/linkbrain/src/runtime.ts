@@ -558,7 +558,7 @@ export function createBrainFakeTransport(fake: {
         };
       }
       const outcome = fake.callTool(params.toolName, params.arguments, {
-        authToken: `ltfx.n.aee2fbd3bbda68f5b3dc.v1`,
+        authToken: "fake-valid-token",
         requestId: params.idempotencyKey,
       });
       if (outcome.ok) {

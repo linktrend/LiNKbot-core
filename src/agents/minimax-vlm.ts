@@ -79,7 +79,7 @@ function coerceApiHost(params: {
   }
 }
 
-function pickString(rec: Record<string, unknown>, key: (string)): string {
+function pickString(rec: Record<string, unknown>, key: string): string {
   const v = rec[key];
   return typeof v === "string" ? v : "";
 }

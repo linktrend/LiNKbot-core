@@ -268,7 +268,7 @@ function unwrapCliErrorText(raw: string): string {
 }
 
 function toCliUsage(raw: Record<string, unknown>): CliUsage | undefined {
-  const readNestedCached = (key: `ltfx.n.52b94c9289a0cb952d6a.v1` | "prompt_tokens_details") => {
+  const readNestedCached = (key: "input_tokens_details" | "prompt_tokens_details") => {
     const nested = raw[key];
     if (!isRecord(nested)) {
       return undefined;

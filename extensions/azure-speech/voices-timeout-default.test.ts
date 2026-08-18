@@ -47,7 +47,7 @@ describe("listAzureSpeechVoices default timeout", () => {
   it("defaults to a bounded timeout for voice list requests", async () => {
     queueGuardedResponse(new Response(JSON.stringify([]), { status: 200 }));
 
-    await listAzureSpeechVoices({ apiKey: `ltfx.n.1ff2795c5e0ccc5828df.v1`, region: "eastus" });
+    await listAzureSpeechVoices({ apiKey: "not-a-real", region: "eastus" });
 
     expect(lastGuardRequest().timeoutMs).toBe(30_000);
   });
@@ -56,7 +56,7 @@ describe("listAzureSpeechVoices default timeout", () => {
     queueGuardedResponse(new Response(JSON.stringify([]), { status: 200 }));
 
     await listAzureSpeechVoices({
-      apiKey: `ltfx.n.1ff2795c5e0ccc5828df.v1`,
+      apiKey: "not-a-real",
       region: "eastus",
       timeoutMs: 5_000,
     });

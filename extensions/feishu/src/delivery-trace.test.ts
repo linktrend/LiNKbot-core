@@ -271,7 +271,7 @@ function createRecordingCardKitFetch(): typeof fetch {
           msg: "ok",
           // Short dummy value: autoreview's secret scanner rejects longer
           // token-keyed strings even in fixtures.
-          tenant_access_token: `ltfx.n.6837e3ddefdaeac2487a.v1`,
+          tenant_access_token: "tat-dummy",
           expire: 7200,
         });
       }
@@ -329,7 +329,7 @@ function makeTraceAccount(scenario: DeliveryTraceScenarioName): ResolvedFeishuAc
     // Run-unique app id busts the module-level CardKit token cache so every
     // scenario (and any same-worker re-run) records exactly one token fetch.
     appId: `app-${scenario}-${traceState.setupCount}`,
-    appSecret: `ltfx.n.9caf06bb4436cdbfa20a.v1`,
+    appSecret: "test-secret",
     domain: "feishu",
     // Nested streaming.mode "partial" matches the retired `streaming: true`
     // boolean, so the recorded wire goldens stay byte-identical.

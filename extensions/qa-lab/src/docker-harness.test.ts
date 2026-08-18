@@ -39,7 +39,7 @@ describe("qa docker harness", () => {
       outputDir,
       gatewayPort: 18889,
       qaLabPort: 43124,
-      gatewayToken: `ltfx.n.6271b674f5c645dbe0cc.v1`,
+      gatewayToken: "qa-token",
       providerBaseUrl: "http://host.docker.internal:45123/v1",
       repoRoot: "/repo/openclaw",
       usePrebuiltImage: true,
@@ -98,7 +98,7 @@ describe("qa docker harness", () => {
     expect(compose).toContain('OPENCLAW_NO_RESPAWN: "1"');
 
     const envExample = await readFile(path.join(outputDir, ".env.example"), "utf8");
-    expect(envExample).toContain("OPENCLAW_GATEWAY_TOKEN=(qa-token");)
+    expect(envExample).toContain("OPENCLAW_GATEWAY_TOKEN=qa-token");
     expect(envExample).toContain("QA_BUS_BASE_URL=http://qa-lab:43123");
     expect(envExample).toContain("QA_PROVIDER_BASE_URL=http://host.docker.internal:45123/v1");
     expect(envExample).toContain("QA_LAB_URL=http://127.0.0.1:43124");
@@ -170,7 +170,7 @@ describe("qa docker harness", () => {
     await writeQaDockerHarnessFiles({
       outputDir,
       repoRoot,
-      gatewayToken: `ltfx.n.6271b674f5c645dbe0cc.v1`,
+      gatewayToken: "qa-token",
       usePrebuiltImage: false,
       bindUiDist: true,
     });

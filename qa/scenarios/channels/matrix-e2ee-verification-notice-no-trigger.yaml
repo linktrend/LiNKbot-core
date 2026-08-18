@@ -19,7 +19,7 @@ scenario:
         defaultRoomKey: main
         rooms:
           - encrypted: true
-            key: "${ltfx.n.db744701bed5d5ae8d5b.v1}"
+            key: e2ee-verification-notice-no-trigger
             kind: group
             members:
               - driver

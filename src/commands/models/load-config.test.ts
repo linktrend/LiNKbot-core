@@ -27,10 +27,10 @@ import { loadModelsConfig, loadModelsConfigWithSource } from "./load-config.js";
 
 describe("models load-config", () => {
   const runtimeConfig = {
-    models: { providers: { openai: { apiKey: `ltfx.n.dd339347fbcf33cad482.v1` } } }, // pragma: allowlist secret
+    models: { providers: { openai: { apiKey: "sk-runtime" } } }, // pragma: allowlist secret
   };
   const resolvedConfig = {
-    models: { providers: { openai: { apiKey: `ltfx.n.22b938216dcc8ea2f1f1.v1` } } }, // pragma: allowlist secret
+    models: { providers: { openai: { apiKey: "sk-resolved" } } }, // pragma: allowlist secret
   };
   const targetIds = new Set(["models.providers.*.apiKey"]);
 

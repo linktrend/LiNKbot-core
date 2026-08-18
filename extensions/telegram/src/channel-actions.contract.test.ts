@@ -13,7 +13,7 @@ describe("telegram actions contract", () => {
         cfg: {
           channels: {
             telegram: {
-              botToken: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
+              botToken: "test-token-placeholder",
             },
           },
         } as OpenClawConfig,
@@ -46,7 +46,7 @@ describe("telegram actions contract", () => {
         cfg: {
           channels: {
             telegram: {
-              botToken: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
+              botToken: "test-token-placeholder",
               richMessages,
             },
           },
@@ -73,7 +73,7 @@ describe("telegram actions contract", () => {
       cfg: {
         channels: {
           telegram: {
-            botToken: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
+            botToken: "test-token-placeholder",
             richMessages: true,
           },
         },
@@ -89,7 +89,7 @@ describe("telegram actions contract", () => {
       cfg: {
         channels: {
           telegram: {
-            botToken: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
+            botToken: "test-token-placeholder",
             capabilities: [],
           },
         },
@@ -102,7 +102,7 @@ describe("telegram actions contract", () => {
   it("advertises rich send parameters without adding Telegram-only actions", () => {
     const discovery = telegramPlugin.actions?.describeMessageTool?.({
       cfg: {
-        channels: { telegram: { botToken: `ltfx.n.41dd96f1dccf65c2c9c7.v1` } },
+        channels: { telegram: { botToken: "test-token-placeholder" } },
       } as OpenClawConfig,
     });
     const schema = discovery?.schema;
@@ -120,7 +120,7 @@ describe("telegram actions contract", () => {
       cfg: {
         channels: {
           telegram: {
-            botToken: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
+            botToken: "test-token-placeholder",
             capabilities: ["vision"],
           },
         },
@@ -135,7 +135,7 @@ describe("telegram actions contract", () => {
       cfg: {
         channels: {
           telegram: {
-            botToken: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
+            botToken: "test-token-placeholder",
             richMessages: true,
             accounts: {
               ops: {
@@ -175,11 +175,11 @@ describe("telegram actions contract", () => {
             defaultAccount: "ops",
             accounts: {
               default: {
-                botToken: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
+                botToken: "test-token-placeholder",
                 richMessages: false,
               },
               ops: {
-                botToken: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
+                botToken: "test-token-placeholder",
                 richMessages: true,
               },
             },

@@ -117,7 +117,7 @@ describe("openclaw skills install ClawHub GitHub-backed E2E", () => {
             OPENCLAW_STATE_DIR: stateDir,
             OPENCLAW_CONFIG_PATH: path.join(stateDir, "openclaw.json"),
             OPENCLAW_CLAWHUB_URL: registry,
-            CLAWHUB_TOKEN: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+            CLAWHUB_TOKEN: "test-token",
             CLAWHUB_GITHUB_CODELOAD_BASE_URL: registry,
             CLAWHUB_DISABLE_TELEMETRY: "",
             CLAWDHUB_DISABLE_TELEMETRY: "",

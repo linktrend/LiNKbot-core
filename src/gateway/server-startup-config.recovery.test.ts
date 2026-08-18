@@ -403,7 +403,7 @@ describe("gateway startup config validation", () => {
         providers: {
           "dos-ai": {
             baseUrl: "https://dos.example.test/v1",
-            apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+            apiKey: "test-key",
             api: "openai-completions",
             models: [testModel("dos-ai", "DOS AI"), testModel("dos-auto", "DOS Auto")],
           },
@@ -448,7 +448,7 @@ describe("gateway startup config validation", () => {
     const sourceConfig = {
       channels: {
         telegram: {
-          botToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+          botToken: "test-token",
         },
       },
       gateway: { mode: "local" },

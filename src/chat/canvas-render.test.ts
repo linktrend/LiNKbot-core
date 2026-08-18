@@ -14,7 +14,7 @@ describe("extractCanvasFromText", () => {
           kind: "canvas",
           view: {
             id: "cv_status",
-            url: `ltfx.n.01316a97e2f6c47d35a0.v1`,
+            url: "/__openclaw__/canvas/documents/cv_status/index.html",
             boardWidgetName: "release-status",
           },
         }),

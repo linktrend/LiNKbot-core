@@ -144,7 +144,7 @@ describe("runHeartbeatOnce ack handling", () => {
       heartbeat: { every: "5m", target: "telegram" },
       channels: {
         telegram: {
-          token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+          token: "test-token",
           allowFrom: ["*"],
           heartbeat: { showOk: false },
           ...params.telegramOverrides,
@@ -289,7 +289,7 @@ describe("runHeartbeatOnce ack handling", () => {
         heartbeat: { every: "5m", target: "telegram" },
         channels: {
           telegram: {
-            token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+            token: "test-token",
             allowFrom: ["*"],
             heartbeat: { showOk: true },
           },
@@ -579,7 +579,7 @@ describe("runHeartbeatOnce ack handling", () => {
     {
       title: "passes through accountId for telegram heartbeats",
       heartbeat: { every: "5m", target: "telegram" },
-      telegram: { botToken: `ltfx.n.6cc9d10deabe5fbf9111.v1` },
+      telegram: { botToken: "test-bot-token-123" },
       expectedAccountId: undefined,
     },
     {
@@ -587,7 +587,7 @@ describe("runHeartbeatOnce ack handling", () => {
       heartbeat: { every: "5m", target: "telegram" },
       telegram: {
         accounts: {
-          work: { botToken: `ltfx.n.6cc9d10deabe5fbf9111.v1` },
+          work: { botToken: "test-bot-token-123" },
         },
       },
       expectedAccountId: undefined,
@@ -597,7 +597,7 @@ describe("runHeartbeatOnce ack handling", () => {
       heartbeat: { every: "5m", target: "telegram", accountId: "work" },
       telegram: {
         accounts: {
-          work: { botToken: `ltfx.n.6cc9d10deabe5fbf9111.v1` },
+          work: { botToken: "test-bot-token-123" },
         },
       },
       expectedAccountId: "work",

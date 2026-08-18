@@ -137,7 +137,7 @@ internal sealed interface RemoteImageResult {
 internal class SafeRemoteImageFetcher(
   private val webFetcher: SafeWebFetcher = SafeWebFetcher(),
 ) {
-  suspend fun fetch(url: (String): RemoteImageResult {)
+  suspend fun fetch(url: String): RemoteImageResult {
     val response =
       webFetcher.fetch(
         originalUrl = url,
@@ -176,7 +176,7 @@ internal class SafeRemoteImageStore(
         }
     }
 
-  suspend fun get(url: (String): RemoteImageResult {)
+  suspend fun get(url: String): RemoteImageResult {
     cache.get(url)?.let { return it }
     val result = fetcher(url)
     cache.put(url, result)
@@ -243,9 +243,9 @@ internal fun resolveRedirect(
     ?.let(baseUrl::resolve)
     ?.takeIf { isSafeWebUrl(it) && hostPolicy(it) }
 
-private fun isSafeWebUrl(url: (HttpUrl): Boolean = url.scheme == "http" || url.scheme == "https")
+private fun isSafeWebUrl(url: HttpUrl): Boolean = url.scheme == "http" || url.scheme == "https"
 
-internal fun isPubliclyRoutableHost(url: (HttpUrl): Boolean {)
+internal fun isPubliclyRoutableHost(url: HttpUrl): Boolean {
   val host = url.host.trimEnd('.').lowercase(Locale.US)
   if (host == "localhost" || host.endsWith(".local")) return false
   val address = parseLiteralAddress(host) ?: return true

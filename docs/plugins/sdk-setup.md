@@ -390,7 +390,7 @@ For channel-specific config, use the channel config section instead:
 {
   channels: {
     "my-channel": {
-      token: "${ltfx.n.df27f9beb68b7766af3a.v1}",
+      token: "bot-token",
       allowFrom: ["user1", "user2"],
     },
   },

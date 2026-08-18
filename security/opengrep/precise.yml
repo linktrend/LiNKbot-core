@@ -1411,7 +1411,7 @@ rules:
                 scopes: $SCOPES,
               })
               ...
-              return { ..., payload: { ..., bootstrapToken: (ltfx.n.1332c4c8c0696d28600b.v1), ... }, ... }
+              return { ..., payload: { ..., bootstrapToken: $ISSUED.token, ... }, ... }
     metadata:
       ghsa: GHSA-7H7G-X2PX-94HJ
       advisory-url: https://github.com/openclaw/openclaw/security/advisories/GHSA-7H7G-X2PX-94HJ
@@ -2073,7 +2073,7 @@ rules:
           - pattern: |
               const $KEY = `plivo:v2:${sha256Hex(`${$URL}\n${$NONCE}`)}`
           - pattern: |
-              const $KEY = "${ltfx.n.64bf3acc0fe73e823ca4.v1}" + $HASH(`${$URL}\n${$NONCE}`)
+              const $KEY = "plivo:v2:" + $HASH(`${$URL}\n${$NONCE}`)
       - metavariable-regex:
           metavariable: $URL
           regex: ^(verificationUrl|url)$
@@ -4124,9 +4124,9 @@ rules:
     patterns:
       - pattern-either:
           - pattern: |
-              ownerDisplaySecret: "${ltfx.n.03ee13fbd845f2f0780d.v1}" ?? $CFG?.gateway?.auth?.token ?? $CFG?.gateway?.remote?.token
+              ownerDisplaySecret: $CFG?.commands?.ownerDisplaySecret ?? $CFG?.gateway?.auth?.token ?? $CFG?.gateway?.remote?.token
           - pattern: |
-              ownerDisplaySecret: "${ltfx.n.03ee13fbd845f2f0780d.v1}" || $CFG?.gateway?.auth?.token || $CFG?.gateway?.remote?.token
+              ownerDisplaySecret: $CFG?.commands?.ownerDisplaySecret || $CFG?.gateway?.auth?.token || $CFG?.gateway?.remote?.token
           - pattern: |
               $CFG?.commands?.ownerDisplaySecret?.trim() || $CFG?.gateway?.auth?.token?.trim() || $CFG?.gateway?.remote?.token?.trim()
           - pattern: |

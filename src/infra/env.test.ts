@@ -19,14 +19,14 @@ beforeEach(() => {
 
 describe("normalizeZaiEnv", () => {
   it("copies Z_AI_API_KEY to ZAI_API_KEY when missing", () => {
-    withEnv({ ZAI_API_KEY: "", Z_AI_API_KEY: `ltfx.n.1e9851540c5c34943ad2.v1` }, () => {
+    withEnv({ ZAI_API_KEY: "", Z_AI_API_KEY: "zai-legacy" }, () => {
       normalizeZaiEnv();
       expect(process.env.ZAI_API_KEY).toBe("zai-legacy");
     });
   });
 
   it("does not override existing ZAI_API_KEY", () => {
-    withEnv({ ZAI_API_KEY: `ltfx.n.2f0793b903c40221b0f9.v1`, Z_AI_API_KEY: `ltfx.n.1e9851540c5c34943ad2.v1` }, () => {
+    withEnv({ ZAI_API_KEY: "zai-current", Z_AI_API_KEY: "zai-legacy" }, () => {
       normalizeZaiEnv();
       expect(process.env.ZAI_API_KEY).toBe("zai-current");
     });
@@ -153,7 +153,7 @@ describe("logAcceptedEnvOption", () => {
 
 describe("normalizeEnv", () => {
   it("normalizes the legacy ZAI env alias", () => {
-    withEnv({ ZAI_API_KEY: "", Z_AI_API_KEY: `ltfx.n.1e9851540c5c34943ad2.v1` }, () => {
+    withEnv({ ZAI_API_KEY: "", Z_AI_API_KEY: "zai-legacy" }, () => {
       normalizeEnv();
       expect(process.env.ZAI_API_KEY).toBe("zai-legacy");
     });

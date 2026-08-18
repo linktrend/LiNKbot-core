@@ -445,7 +445,7 @@ import Testing
                     "mode": "remote",
                     "remote": [
                         "transport": "direct",
-                        "url": "${ltfx.n.549b0100f00588beb908.v1}",
+                        "url": "wss://gateway.example.test",
                     ],
                 ],
             ],

@@ -66,13 +66,13 @@ describe("appendSessionTranscriptMessage - redaction", () => {
       transcriptPath: sessionFile,
       message: {
         role: "user",
-        content: [{ type: "text", text: "my key is ltfx.n.5a006a7a6d178872112c.v1 ok" }],
+        content: [{ type: "text", text: "my key is sk-abcdef1234567890xyz ok" }],
       },
       config,
     });
 
     const raw = fs.readFileSync(sessionFile, "utf-8");
-    expect(raw).not.toContain("ltfx.n.5a006a7a6d178872112c.v1");
+    expect(raw).not.toContain("sk-abcdef1234567890xyz");
     expect(raw).toContain("ok"); // safe text preserved
 
     const [msg] = readMessages(sessionFile) as Array<{
@@ -83,7 +83,7 @@ describe("appendSessionTranscriptMessage - redaction", () => {
         expectDefined(msg, "msg test invariant").content[0],
         "msg.content[0] test invariant",
       ).text,
-    ).not.toContain("ltfx.n.5a006a7a6d178872112c.v1");
+    ).not.toContain("sk-abcdef1234567890xyz");
   });
 
   it("preserves image base64 payloads before writing to disk", async () => {
@@ -98,7 +98,7 @@ describe("appendSessionTranscriptMessage - redaction", () => {
       message: {
         role: "user",
         content: [
-          { type: "text", text: "my key is ltfx.n.5a006a7a6d178872112c.v1" },
+          { type: "text", text: "my key is sk-abcdef1234567890xyz" },
           {
             type: "image",
             data: IMAGE_BASE64_WITH_SECRET_TOKEN_SUBSTRING,
@@ -110,7 +110,7 @@ describe("appendSessionTranscriptMessage - redaction", () => {
     });
 
     const raw = fs.readFileSync(sessionFile, "utf-8");
-    expect(raw).not.toContain("ltfx.n.5a006a7a6d178872112c.v1");
+    expect(raw).not.toContain("sk-abcdef1234567890xyz");
     expect(raw).toContain(IMAGE_BASE64_WITH_SECRET_TOKEN_SUBSTRING);
     expect(raw).not.toContain("AKID…MNOP");
 
@@ -122,7 +122,7 @@ describe("appendSessionTranscriptMessage - redaction", () => {
         expectDefined(msg, "msg test invariant").content[0],
         "msg.content[0] test invariant",
       ).text,
-    ).not.toContain("ltfx.n.5a006a7a6d178872112c.v1");
+    ).not.toContain("sk-abcdef1234567890xyz");
     expect(
       expectDefined(
         expectDefined(msg, "msg test invariant").content[1],
@@ -139,13 +139,13 @@ describe("appendSessionTranscriptMessage - redaction", () => {
       transcriptPath: sessionFile,
       message: {
         role: "user",
-        content: [{ type: "text", text: "my key is ltfx.n.5a006a7a6d178872112c.v1" }],
+        content: [{ type: "text", text: "my key is sk-abcdef1234567890xyz" }],
       },
       config,
     });
 
     const raw = fs.readFileSync(sessionFile, "utf-8");
-    expect(raw).toContain("ltfx.n.5a006a7a6d178872112c.v1");
+    expect(raw).toContain("sk-abcdef1234567890xyz");
   });
 
   it("masks secrets when config is undefined (default patterns)", async () => {
@@ -155,13 +155,13 @@ describe("appendSessionTranscriptMessage - redaction", () => {
       transcriptPath: sessionFile,
       message: {
         role: "user",
-        content: [{ type: "text", text: "my key is ltfx.n.5a006a7a6d178872112c.v1" }],
+        content: [{ type: "text", text: "my key is sk-abcdef1234567890xyz" }],
       },
       // config intentionally omitted
     });
 
     const raw = fs.readFileSync(sessionFile, "utf-8");
-    expect(raw).not.toContain("ltfx.n.5a006a7a6d178872112c.v1");
+    expect(raw).not.toContain("sk-abcdef1234567890xyz");
   });
 
   it("masks secrets in string payloads without role before writing to disk", async () => {
@@ -173,16 +173,16 @@ describe("appendSessionTranscriptMessage - redaction", () => {
 
     await appendSessionTranscriptMessage({
       transcriptPath: sessionFile,
-      message: "my key is ltfx.n.5a006a7a6d178872112c.v1 ok",
+      message: "my key is sk-abcdef1234567890xyz ok",
       config,
     });
 
     const raw = fs.readFileSync(sessionFile, "utf-8");
-    expect(raw).not.toContain("ltfx.n.5a006a7a6d178872112c.v1");
+    expect(raw).not.toContain("sk-abcdef1234567890xyz");
     expect(raw).toContain("ok");
 
     const [msg] = readMessages(sessionFile) as string[];
-    expect(msg).not.toContain("ltfx.n.5a006a7a6d178872112c.v1");
+    expect(msg).not.toContain("sk-abcdef1234567890xyz");
     expect(msg).toContain("ok");
   });
 
@@ -196,10 +196,10 @@ describe("appendSessionTranscriptMessage - redaction", () => {
     await appendSessionTranscriptMessage({
       transcriptPath: sessionFile,
       message: {
-        apiKey: `ltfx.n.066a431c0ceefb0deeff.v1`,
+        apiKey: "plainsecretvalue123",
         password: "hunter2",
         nested: { accessToken: ["nestedplainsecret123"] },
-        command: "OPENAI_API_KEY="${ltfx.n.5a006a7a6d178872112c.v1}" openclaw health",
+        command: "OPENAI_API_KEY=sk-abcdef1234567890xyz openclaw health",
         safe: "visible",
       },
       config,
@@ -209,7 +209,7 @@ describe("appendSessionTranscriptMessage - redaction", () => {
     expect(raw).not.toContain("plainsecretvalue123");
     expect(raw).not.toContain("hunter2");
     expect(raw).not.toContain("nestedplainsecret123");
-    expect(raw).not.toContain("ltfx.n.5a006a7a6d178872112c.v1");
+    expect(raw).not.toContain("sk-abcdef1234567890xyz");
     expect(raw).toContain("visible");
 
     const [msg] = readMessages(sessionFile) as Array<{
@@ -228,7 +228,7 @@ describe("appendSessionTranscriptMessage - redaction", () => {
       ),
     ).toBe("nested…t123");
     expect(expectDefined(msg, "msg test invariant").command).toBe(
-      "OPENAI_API_KEY=(sk-abc…0xyz openclaw health",)
+      "OPENAI_API_KEY=sk-abc…0xyz openclaw health",
     );
     expect(expectDefined(msg, "msg test invariant").safe).toBe("visible");
   });
@@ -247,7 +247,7 @@ describe("appendSessionTranscriptMessage - redaction", () => {
       transcriptPath: sessionFile,
       message: {
         role: "user",
-        content: [{ type: "text", text: "email peter@dc.io and key ltfx.n.5a006a7a6d178872112c.v1 ok" }],
+        content: [{ type: "text", text: "email peter@dc.io and key sk-abcdef1234567890xyz ok" }],
       },
       config: {
         session: {},
@@ -256,7 +256,7 @@ describe("appendSessionTranscriptMessage - redaction", () => {
 
     const raw = fs.readFileSync(sessionFile, "utf-8");
     expect(raw).not.toContain("peter@dc.io");
-    expect(raw).not.toContain("ltfx.n.5a006a7a6d178872112c.v1");
+    expect(raw).not.toContain("sk-abcdef1234567890xyz");
     expect(raw).toContain("ok");
   });
 
@@ -277,9 +277,9 @@ describe("appendSessionTranscriptMessage - redaction", () => {
             id: "call_1",
             name: "shell",
             arguments: {
-              command: "OPENAI_API_KEY="${ltfx.n.5a006a7a6d178872112c.v1}" openclaw health",
-              env: { nested: ["token ltfx.n.5a006a7a6d178872112c.v1"] },
-              apiKey: `ltfx.n.066a431c0ceefb0deeff.v1`,
+              command: "OPENAI_API_KEY=sk-abcdef1234567890xyz openclaw health",
+              env: { nested: ["token sk-abcdef1234567890xyz"] },
+              apiKey: "plainsecretvalue123",
               password: "hunter2",
             },
           },
@@ -289,10 +289,10 @@ describe("appendSessionTranscriptMessage - redaction", () => {
     });
 
     const raw = fs.readFileSync(sessionFile, "utf-8");
-    expect(raw).not.toContain("ltfx.n.5a006a7a6d178872112c.v1");
+    expect(raw).not.toContain("sk-abcdef1234567890xyz");
     expect(raw).not.toContain("plainsecretvalue123");
     expect(raw).not.toContain("hunter2");
-    expect(raw).toContain("OPENAI_API_KEY=(sk-abc…0xyz openclaw health");)
+    expect(raw).toContain("OPENAI_API_KEY=sk-abc…0xyz openclaw health");
     expect(raw).toContain("openclaw health");
 
     const [msg] = readMessages(sessionFile) as Array<{
@@ -312,13 +312,13 @@ describe("appendSessionTranscriptMessage - redaction", () => {
           "msg.content[0] test invariant",
         ).arguments,
       ),
-    ).not.toContain("ltfx.n.5a006a7a6d178872112c.v1");
+    ).not.toContain("sk-abcdef1234567890xyz");
     expect(
       expectDefined(
         expectDefined(msg, "msg test invariant").content[0],
         "msg.content[0] test invariant",
       ).arguments.command,
-    ).toBe("OPENAI_API_KEY=(sk-abc…0xyz openclaw health");)
+    ).toBe("OPENAI_API_KEY=sk-abc…0xyz openclaw health");
     expect(
       expectDefined(
         expectDefined(msg, "msg test invariant").content[0],
@@ -352,9 +352,9 @@ describe("appendSessionTranscriptMessage - redaction", () => {
         role: "toolResult",
         toolCallId: "call_1",
         toolName: "send_request",
-        content: [{ type: "text", text: "result ltfx.n.5a006a7a6d178872112c.v1" }],
+        content: [{ type: "text", text: "result sk-abcdef1234567890xyz" }],
         details: {
-          apiKey: `ltfx.n.066a431c0ceefb0deeff.v1`,
+          apiKey: "plainsecretvalue123",
           password: "hunter2",
           nested: { accessToken: ["nestedplainsecret123"] },
           safe: "visible",
@@ -366,7 +366,7 @@ describe("appendSessionTranscriptMessage - redaction", () => {
     });
 
     const raw = fs.readFileSync(sessionFile, "utf-8");
-    expect(raw).not.toContain("ltfx.n.5a006a7a6d178872112c.v1");
+    expect(raw).not.toContain("sk-abcdef1234567890xyz");
     expect(raw).not.toContain("plainsecretvalue123");
     expect(raw).not.toContain("hunter2");
     expect(raw).not.toContain("nestedplainsecret123");
@@ -386,7 +386,7 @@ describe("appendSessionTranscriptMessage - redaction", () => {
         expectDefined(msg, "msg test invariant").content[0],
         "msg.content[0] test invariant",
       ).text,
-    ).not.toContain("ltfx.n.5a006a7a6d178872112c.v1");
+    ).not.toContain("sk-abcdef1234567890xyz");
     expect(JSON.stringify(expectDefined(msg, "msg test invariant").details)).not.toContain(
       "plainsecretvalue123",
     );
@@ -459,7 +459,7 @@ describe("appendExactAssistantMessageToSessionTranscript - redaction", () => {
     const sessionKey = "test-channel:test-user";
     await seedSessionEntry({ sessionId, sessionKey, storePath });
 
-    const fakeApiKey = `ltfx.n.55fbf20d73e84d2e561e.v1`;
+    const fakeApiKey = "sk-proj-FAKEKEYFORTESTINGONLY1234567890";
     const config: OpenClawConfig = { logging: { redactSensitive: "off" } };
 
     const result = await appendExactAssistantMessageToSessionTranscript({
@@ -501,7 +501,7 @@ describe("appendExactAssistantMessageToSessionTranscript - redaction", () => {
     const sessionKey = "test-channel:test-redact-event";
     await seedSessionEntry({ sessionId, sessionKey, storePath });
 
-    const fakeApiKey = `ltfx.n.55fbf20d73e84d2e561e.v1`;
+    const fakeApiKey = "sk-proj-FAKEKEYFORTESTINGONLY1234567890";
     const config: OpenClawConfig = { logging: { redactSensitive: "tools" } };
     const updates: Array<{ message?: unknown }> = [];
     const unsubscribe = onSessionTranscriptUpdate((update) => updates.push(update));
@@ -552,7 +552,7 @@ describe("appendExactAssistantMessageToSessionTranscript - redaction", () => {
     const sessionKey = "test-channel:test-redact-dedupe";
     await seedSessionEntry({ sessionId, sessionKey, storePath });
 
-    const fakeApiKey = `ltfx.n.55fbf20d73e84d2e561e.v1`;
+    const fakeApiKey = "sk-proj-FAKEKEYFORTESTINGONLY1234567890";
     const config: OpenClawConfig = { logging: { redactSensitive: "tools" } };
 
     const first = await appendAssistantMessageToSessionTranscript({
@@ -589,7 +589,7 @@ describe("appendExactAssistantMessageToSessionTranscript - redaction", () => {
     const sessionKey = "test-channel:test-redact-upgrade-dedupe";
     await seedSessionEntry({ sessionId, sessionKey, storePath });
 
-    const fakeApiKey = `ltfx.n.168d1f23bccc807a3656.v1`;
+    const fakeApiKey = "sk-proj-OLDERUNREDACTEDTRANSCRIPT1234567890";
     const unredacted = await appendExactAssistantMessageToSessionTranscript({
       sessionKey,
       storePath,

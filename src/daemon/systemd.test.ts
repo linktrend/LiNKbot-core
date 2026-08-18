@@ -1117,7 +1117,7 @@ describe("readSystemdServiceExecStart", () => {
   it("loads OPENCLAW_GATEWAY_TOKEN from EnvironmentFile", async () => {
     const readFileSpy = mockReadGatewayServiceFile(
       ["[Service]", "ExecStart=/usr/bin/openclaw gateway run", "EnvironmentFile=%h/.openclaw/.env"],
-      { [`${TEST_SERVICE_HOME}/.openclaw/.env`]: "OPENCLAW_GATEWAY_TOKEN=(env-file-token\n" },)
+      { [`${TEST_SERVICE_HOME}/.openclaw/.env`]: "OPENCLAW_GATEWAY_TOKEN=env-file-token\n" },
     );
 
     const command = await readSystemdServiceExecStart({ HOME: TEST_SERVICE_HOME });
@@ -1131,9 +1131,9 @@ describe("readSystemdServiceExecStart", () => {
         "[Service]",
         "ExecStart=/usr/bin/openclaw gateway run",
         "EnvironmentFile=%h/.openclaw/.env",
-        'Environment="OPENCLAW_GATEWAY_TOKEN=(inline-token"',)
+        'Environment="OPENCLAW_GATEWAY_TOKEN=inline-token"',
       ],
-      { [`${TEST_SERVICE_HOME}/.openclaw/.env`]: "OPENCLAW_GATEWAY_TOKEN=(env-file-token\n" },)
+      { [`${TEST_SERVICE_HOME}/.openclaw/.env`]: "OPENCLAW_GATEWAY_TOKEN=env-file-token\n" },
     );
 
     const command = await readSystemdServiceExecStart({ HOME: TEST_SERVICE_HOME });
@@ -1160,18 +1160,18 @@ describe("readSystemdServiceExecStart", () => {
         ].join("\n");
       }
       if (pathValue === "/home/test/.openclaw/first.env") {
-        return "OPENCLAW_GATEWAY_TOKEN=(first-token\n"; // pragma: allowlist secret)
+        return "OPENCLAW_GATEWAY_TOKEN=first-token\n"; // pragma: allowlist secret
       }
       if (pathValue === "/home/test/.openclaw/second env.env") {
-        return 'OPENCLAW_GATEWAY_PASSWORD=`ltfx.n.8f2edcf480d832a6fe0d.v1`\n'; // pragma: allowlist secret
+        return 'OPENCLAW_GATEWAY_PASSWORD="second password"\n'; // pragma: allowlist secret
       }
       throw new Error(`unexpected readFile path: ${pathValue}`);
     });
 
     const command = await readSystemdServiceExecStart({ HOME: "/home/test" });
     expect(command?.environment).toEqual({
-      OPENCLAW_GATEWAY_TOKEN: `ltfx.n.55b4b48f529c3d2daa02.v1`,
-      OPENCLAW_GATEWAY_PASSWORD: `ltfx.n.8f2edcf480d832a6fe0d.v1`, // pragma: allowlist secret
+      OPENCLAW_GATEWAY_TOKEN: "first-token",
+      OPENCLAW_GATEWAY_PASSWORD: "second password", // pragma: allowlist secret
     });
   });
 
@@ -1187,20 +1187,20 @@ describe("readSystemdServiceExecStart", () => {
       }
       if (pathValue.endsWith("/.config/systemd/user/gateway.env")) {
         return [
-          "OPENCLAW_GATEWAY_TOKEN=(relative-token", // pragma: allowlist secret)
-          "OPENCLAW_GATEWAY_PASSWORD=(relative-password", // pragma: allowlist secret)
+          "OPENCLAW_GATEWAY_TOKEN=relative-token", // pragma: allowlist secret
+          "OPENCLAW_GATEWAY_PASSWORD=relative-password", // pragma: allowlist secret
         ].join("\n");
       }
       if (pathValue.endsWith("/.config/systemd/user/override.env")) {
-        return "OPENCLAW_GATEWAY_TOKEN=(override-token\n"; // pragma: allowlist secret)
+        return "OPENCLAW_GATEWAY_TOKEN=override-token\n"; // pragma: allowlist secret
       }
       throw new Error(`unexpected readFile path: ${pathValue}`);
     });
 
     const command = await readSystemdServiceExecStart({ HOME: "/home/test" });
     expect(command?.environment).toEqual({
-      OPENCLAW_GATEWAY_TOKEN: `ltfx.n.3af631932174740eec72.v1`,
-      OPENCLAW_GATEWAY_PASSWORD: `ltfx.n.a00a0498ea337f26a3fc.v1`, // pragma: allowlist secret
+      OPENCLAW_GATEWAY_TOKEN: "override-token",
+      OPENCLAW_GATEWAY_PASSWORD: "relative-password", // pragma: allowlist secret
     });
   });
 
@@ -1218,10 +1218,10 @@ describe("readSystemdServiceExecStart", () => {
         return [
           "# comment",
           "; another comment",
-          'OPENCLAW_GATEWAY_TOKEN=`ltfx.n.d2106fd16c18a27199ec.v1`', // pragma: allowlist secret
-          'OPENCLAW_GATEWAY_PASSWORD=`ltfx.n.74403e7f4ae859cacf63.v1` \\\\ \\$ \\`"', // pragma: allowlist secret
+          'OPENCLAW_GATEWAY_TOKEN="quoted token"', // pragma: allowlist secret
+          'OPENCLAW_GATEWAY_PASSWORD="symbol \\" \\\\ \\$ \\`"', // pragma: allowlist secret
           'MIXED_API_KEY="55\\"55" "FIVE" cinco',
-          'UNQUOTED_QUOTES_API_KEY=(foo"bar"',)
+          'UNQUOTED_QUOTES_API_KEY=foo"bar"',
         ].join("\n");
       }
       throw new Error(`unexpected readFile path: ${pathValue}`);
@@ -1229,10 +1229,10 @@ describe("readSystemdServiceExecStart", () => {
 
     const command = await readSystemdServiceExecStart({ HOME: "/home/test" });
     expect(command?.environment).toEqual({
-      OPENCLAW_GATEWAY_TOKEN: `ltfx.n.d2106fd16c18a27199ec.v1`,
+      OPENCLAW_GATEWAY_TOKEN: "quoted token",
       OPENCLAW_GATEWAY_PASSWORD: 'symbol " \\ $ `', // pragma: allowlist secret
-      MIXED_API_KEY: `ltfx.n.278d872c1ebcd722f468.v1`,
-      UNQUOTED_QUOTES_API_KEY: `ltfx.n.5155327720004e800f5f.v1`,
+      MIXED_API_KEY: '55"55FIVEcinco',
+      UNQUOTED_QUOTES_API_KEY: 'foo"bar"',
     });
     expect(command?.environmentValueSources).toEqual({
       OPENCLAW_GATEWAY_TOKEN: "file",
@@ -1289,7 +1289,7 @@ describe("stageSystemdService", () => {
     await withStageFixture(async ({ env, stateDir, unitPath, envFilePath }) => {
       await fs.writeFile(
         path.join(stateDir, ".env"),
-        ["OPENCLAW_GATEWAY_TOKEN=(dotenv-token", "LLM_API_KEY=(dotenv-key"].join("\n"),))
+        ["OPENCLAW_GATEWAY_TOKEN=dotenv-token", "LLM_API_KEY=dotenv-key"].join("\n"),
         "utf8",
       );
 
@@ -1301,8 +1301,8 @@ describe("stageSystemdService", () => {
         programArguments: ["/usr/bin/openclaw", "gateway", "run"],
         workingDirectory: "/tmp",
         environment: {
-          OPENCLAW_GATEWAY_TOKEN: `ltfx.n.c03e878e8c1a09deb98c.v1`,
-          LLM_API_KEY: `ltfx.n.6ebcddee28e6e58a5e6c.v1`,
+          OPENCLAW_GATEWAY_TOKEN: "dotenv-token",
+          LLM_API_KEY: "dotenv-key",
           OPENCLAW_GATEWAY_PORT: "18789",
         },
       });
@@ -1315,9 +1315,9 @@ describe("stageSystemdService", () => {
 
       expect(unit).toContain(`EnvironmentFile=-${envFilePath}`);
       expect(unit).toContain("Environment=OPENCLAW_GATEWAY_PORT=18789");
-      expect(unit).not.toContain("Environment=OPENCLAW_GATEWAY_TOKEN=(dotenv-token");)
-      expect(unit).not.toContain("Environment=LLM_API_KEY=(dotenv-key");)
-      expect(envFile).toBe("OPENCLAW_GATEWAY_TOKEN=(dotenv-token\nLLM_API_KEY=(dotenv-key\n");))
+      expect(unit).not.toContain("Environment=OPENCLAW_GATEWAY_TOKEN=dotenv-token");
+      expect(unit).not.toContain("Environment=LLM_API_KEY=dotenv-key");
+      expect(envFile).toBe("OPENCLAW_GATEWAY_TOKEN=dotenv-token\nLLM_API_KEY=dotenv-key\n");
       expect(envFileStat.mode & 0o777).toBe(0o600);
     });
   });
@@ -1335,7 +1335,7 @@ describe("stageSystemdService", () => {
         programArguments: ["/usr/bin/openclaw", "node", "run"],
         workingDirectory: "/tmp",
         environment: {
-          OPENCLAW_GATEWAY_TOKEN: `ltfx.n.c9d0f8cd2bff824c3521.v1`,
+          OPENCLAW_GATEWAY_TOKEN: "file-backed-token",
           OPENCLAW_GATEWAY_PASSWORD: gatewayPassword,
           OPENCLAW_GATEWAY_PORT: "18789",
           OPENCLAW_SERVICE_MANAGED_ENV_KEYS: "OPENCLAW_GATEWAY_PASSWORD,OPENCLAW_GATEWAY_TOKEN", // pragma: allowlist secret
@@ -1356,10 +1356,10 @@ describe("stageSystemdService", () => {
 
       expect(unit).toContain(`EnvironmentFile=-${nodeEnvFilePath}`);
       expect(unit).toContain("Environment=OPENCLAW_GATEWAY_PORT=18789");
-      expect(unit).not.toContain("Environment=OPENCLAW_GATEWAY_TOKEN=(file-backed-token");)
+      expect(unit).not.toContain("Environment=OPENCLAW_GATEWAY_TOKEN=file-backed-token");
       expect(unit).not.toContain("Environment=OPENCLAW_GATEWAY_PASSWORD=");
       expect(envFile).toBe(
-        'OPENCLAW_GATEWAY_TOKEN=(file-backed-token\nOPENCLAW_GATEWAY_PASSWORD=`ltfx.n.74403e7f4ae859cacf63.v1` \\\\ \\$ \\`"\n',)
+        'OPENCLAW_GATEWAY_TOKEN=file-backed-token\nOPENCLAW_GATEWAY_PASSWORD="symbol \\" \\\\ \\$ \\`"\n',
       );
       expect(envFileStat.mode & 0o777).toBe(0o600);
       await expect(readSystemdServiceExecStart(env)).resolves.toMatchObject({
@@ -1374,7 +1374,7 @@ describe("stageSystemdService", () => {
   it("migrates operator entries from the legacy gateway env file when writing node env files", async () => {
     await withStageFixture(async ({ env, unitPath, envFilePath, nodeEnvFilePath }) => {
       const legacyGatewayEnvFile =
-        ["OPENCLAW_GATEWAY_TOKEN=(legacy-node-token", "OPENROUTER_API_KEY=(operator-key"].join("\n") +))
+        ["OPENCLAW_GATEWAY_TOKEN=legacy-node-token", "OPENROUTER_API_KEY=operator-key"].join("\n") +
         "\n";
       await fs.writeFile(envFilePath, legacyGatewayEnvFile, {
         encoding: "utf8",
@@ -1389,7 +1389,7 @@ describe("stageSystemdService", () => {
         programArguments: ["/usr/bin/openclaw", "node", "run"],
         workingDirectory: "/tmp",
         environment: {
-          OPENCLAW_GATEWAY_TOKEN: `ltfx.n.e7aee83b1848bccde378.v1`,
+          OPENCLAW_GATEWAY_TOKEN: "fresh-file-token",
           OPENCLAW_GATEWAY_PORT: "18789",
           OPENCLAW_SERVICE_KIND: "node",
         },
@@ -1405,9 +1405,9 @@ describe("stageSystemdService", () => {
       ]);
 
       expect(unit).toContain(`EnvironmentFile=-${nodeEnvFilePath}`);
-      expect(unit).not.toContain("OPENCLAW_GATEWAY_TOKEN=(fresh-file-token");)
+      expect(unit).not.toContain("OPENCLAW_GATEWAY_TOKEN=fresh-file-token");
       expect(nodeEnvFile).toBe(
-        "OPENROUTER_API_KEY=(operator-key\nOPENCLAW_GATEWAY_TOKEN=(fresh-file-token\n",))
+        "OPENROUTER_API_KEY=operator-key\nOPENCLAW_GATEWAY_TOKEN=fresh-file-token\n",
       );
       expect(gatewayEnvFile).toBe(legacyGatewayEnvFile);
     });
@@ -1415,11 +1415,11 @@ describe("stageSystemdService", () => {
 
   it("clears stale node file-backed managed keys without touching the gateway env file", async () => {
     await withStageFixture(async ({ env, unitPath, envFilePath, nodeEnvFilePath }) => {
-      await fs.writeFile(envFilePath, "OPENCLAW_GATEWAY_TOKEN=(stale-token\n", {)
+      await fs.writeFile(envFilePath, "OPENCLAW_GATEWAY_TOKEN=stale-token\n", {
         encoding: "utf8",
         mode: 0o600,
       });
-      await fs.writeFile(nodeEnvFilePath, "OPENCLAW_GATEWAY_TOKEN=(stale-node-token\n", {)
+      await fs.writeFile(nodeEnvFilePath, "OPENCLAW_GATEWAY_TOKEN=stale-node-token\n", {
         encoding: "utf8",
         mode: 0o600,
       });
@@ -1445,14 +1445,14 @@ describe("stageSystemdService", () => {
       expect(unit).not.toContain("EnvironmentFile=");
       await expect(fs.access(nodeEnvFilePath)).rejects.toThrow();
       await expect(fs.readFile(envFilePath, "utf8")).resolves.toBe(
-        "OPENCLAW_GATEWAY_TOKEN=(stale-token\n",)
+        "OPENCLAW_GATEWAY_TOKEN=stale-token\n",
       );
     });
   });
 
   it("does not re-stage unresolved inline-and-file values from preserved service env (#88274)", async () => {
     await withStageFixture(async ({ env, unitPath, envFilePath }) => {
-      await fs.writeFile(envFilePath, "LLM_API_KEY=($SECRET_FROM_SHELL\n", {)
+      await fs.writeFile(envFilePath, "LLM_API_KEY=$SECRET_FROM_SHELL\n", {
         encoding: "utf8",
         mode: 0o600,
       });
@@ -1465,11 +1465,11 @@ describe("stageSystemdService", () => {
         programArguments: ["/usr/bin/openclaw", "gateway", "run"],
         workingDirectory: "/tmp",
         environment: {
-          LLM_API_KEY: `ltfx.n.dfaa70cfe472182076e7.v1`,
+          LLM_API_KEY: "$SECRET_FROM_SHELL",
           OPENCLAW_GATEWAY_PORT: "18789",
         },
         environmentValueSources: {
-          LLM_API_KEY: `ltfx.n.c26b94fe6f14e4d59433.v1`,
+          LLM_API_KEY: "inline-and-file",
         },
       });
 
@@ -1489,9 +1489,9 @@ describe("stageSystemdService", () => {
         [
           "[Service]",
           "ExecStart=/usr/bin/openclaw node run",
-          "Environment=FOO=bar OPENCLAW_GATEWAY_TOKEN=(inline-token BAZ=qux",)
-          "Environment=OPENCLAW_GATEWAY_TOKEN=(token-only-line",)
-          "Environment='OPENCLAW_GATEWAY_TOKEN=(single-quoted-token' FROM_SINGLE=kept",)
+          "Environment=FOO=bar OPENCLAW_GATEWAY_TOKEN=inline-token BAZ=qux",
+          "Environment=OPENCLAW_GATEWAY_TOKEN=token-only-line",
+          "Environment='OPENCLAW_GATEWAY_TOKEN=single-quoted-token' FROM_SINGLE=kept",
           "Environment=OPENCLAW_GATEWAY_PORT=18789",
         ].join("\n"),
         { encoding: "utf8", mode: 0o600 },
@@ -1506,7 +1506,7 @@ describe("stageSystemdService", () => {
         programArguments: ["/usr/bin/openclaw", "node", "run"],
         workingDirectory: "/tmp",
         environment: {
-          OPENCLAW_GATEWAY_TOKEN: `ltfx.n.5e2040ab40dda85da034.v1`,
+          OPENCLAW_GATEWAY_TOKEN: "fresh-token",
           OPENCLAW_GATEWAY_PORT: "18789",
           OPENCLAW_SERVICE_KIND: "node",
         },
@@ -1521,9 +1521,9 @@ describe("stageSystemdService", () => {
         fs.stat(`${unitPath}.bak`),
       ]);
 
-      expect(unit).not.toContain("Environment=OPENCLAW_GATEWAY_TOKEN=(fresh-token");)
-      expect(backupUnit).not.toContain("Environment=OPENCLAW_GATEWAY_TOKEN=(inline-token");)
-      expect(backupUnit).not.toContain("Environment=OPENCLAW_GATEWAY_TOKEN=(token-only-line");)
+      expect(unit).not.toContain("Environment=OPENCLAW_GATEWAY_TOKEN=fresh-token");
+      expect(backupUnit).not.toContain("Environment=OPENCLAW_GATEWAY_TOKEN=inline-token");
+      expect(backupUnit).not.toContain("Environment=OPENCLAW_GATEWAY_TOKEN=token-only-line");
       expect(backupUnit).not.toContain("single-quoted-token");
       expect(backupUnit).toContain("Environment=FOO=bar BAZ=qux");
       expect(backupUnit).toContain("Environment=FROM_SINGLE=kept");
@@ -1536,7 +1536,7 @@ describe("stageSystemdService", () => {
     await withStageFixture(async ({ env, stateDir, unitPath, envFilePath }) => {
       await fs.writeFile(
         path.join(stateDir, ".env"),
-        ["OPENCLAW_GATEWAY_TOKEN=(stale-token", "LLM_API_KEY=(dotenv-key"].join("\n"),))
+        ["OPENCLAW_GATEWAY_TOKEN=stale-token", "LLM_API_KEY=dotenv-key"].join("\n"),
         "utf8",
       );
 
@@ -1548,8 +1548,8 @@ describe("stageSystemdService", () => {
         programArguments: ["/usr/bin/openclaw", "gateway", "run"],
         workingDirectory: "/tmp",
         environment: {
-          OPENCLAW_GATEWAY_TOKEN: `ltfx.n.5e2040ab40dda85da034.v1`,
-          LLM_API_KEY: `ltfx.n.6ebcddee28e6e58a5e6c.v1`,
+          OPENCLAW_GATEWAY_TOKEN: "fresh-token",
+          LLM_API_KEY: "dotenv-key",
         },
       });
 
@@ -1559,8 +1559,8 @@ describe("stageSystemdService", () => {
       ]);
 
       expect(unit).toContain(`EnvironmentFile=-${envFilePath}`);
-      expect(unit).toContain("Environment=OPENCLAW_GATEWAY_TOKEN=(fresh-token");)
-      expect(envFile).toBe("LLM_API_KEY=(dotenv-key\n");)
+      expect(unit).toContain("Environment=OPENCLAW_GATEWAY_TOKEN=fresh-token");
+      expect(envFile).toBe("LLM_API_KEY=dotenv-key\n");
     });
   });
 
@@ -1570,13 +1570,13 @@ describe("stageSystemdService", () => {
       // operator previously wrote there but staging now supplies inline.
       await fs.writeFile(
         envFilePath,
-        ["OPENCLAW_GATEWAY_TOKEN=(stale-gateway-token", "OPENROUTER_API_KEY=(or-operator-key"].join())
+        ["OPENCLAW_GATEWAY_TOKEN=stale-gateway-token", "OPENROUTER_API_KEY=or-operator-key"].join(
           "\n",
         ) + "\n",
         { encoding: "utf8", mode: 0o600 },
       );
 
-      await fs.writeFile(path.join(stateDir, ".env"), "LLM_API_KEY=(dotenv-key\n", "utf8");)
+      await fs.writeFile(path.join(stateDir, ".env"), "LLM_API_KEY=dotenv-key\n", "utf8");
 
       mockSystemctlStatusOk();
 
@@ -1588,13 +1588,13 @@ describe("stageSystemdService", () => {
         // Staging manages OPENCLAW_GATEWAY_TOKEN inline; OPENCLAW_SERVICE_MANAGED_ENV_KEYS
         // marks it as an OpenClaw-managed key so the stale env-file copy is cleared.
         environment: {
-          OPENCLAW_GATEWAY_TOKEN: `ltfx.n.3a861d20bdccf250ec65.v1`,
-          LLM_API_KEY: `ltfx.n.6ebcddee28e6e58a5e6c.v1`,
-          OPENROUTER_API_KEY: `ltfx.n.48432ebc6c1323057fe6.v1`,
+          OPENCLAW_GATEWAY_TOKEN: "fresh-gateway-token",
+          LLM_API_KEY: "dotenv-key",
+          OPENROUTER_API_KEY: "or-operator-key",
           OPENCLAW_SERVICE_MANAGED_ENV_KEYS: "OPENCLAW_GATEWAY_TOKEN",
         },
         environmentValueSources: {
-          OPENCLAW_GATEWAY_TOKEN: `ltfx.n.c26b94fe6f14e4d59433.v1`,
+          OPENCLAW_GATEWAY_TOKEN: "inline-and-file",
           LLM_API_KEY: "inline",
           OPENROUTER_API_KEY: "file",
           OPENCLAW_SERVICE_MANAGED_ENV_KEYS: "inline",
@@ -1609,18 +1609,18 @@ describe("stageSystemdService", () => {
       // fresh inline Environment= value wins (EnvironmentFile would override it).
       expect(envFile).not.toContain("OPENCLAW_GATEWAY_TOKEN");
       // Operator-added key not managed inline must survive.
-      expect(envFile).toContain("OPENROUTER_API_KEY=(or-operator-key");)
-      expect(envFile).toContain("LLM_API_KEY=(dotenv-key");)
-      expect(unit).toContain("Environment=OPENCLAW_GATEWAY_TOKEN=(fresh-gateway-token");)
-      expect(unit).not.toContain("Environment=OPENROUTER_API_KEY=(or-operator-key");)
-      expect(unit).not.toContain("Environment=LLM_API_KEY=(dotenv-key");)
+      expect(envFile).toContain("OPENROUTER_API_KEY=or-operator-key");
+      expect(envFile).toContain("LLM_API_KEY=dotenv-key");
+      expect(unit).toContain("Environment=OPENCLAW_GATEWAY_TOKEN=fresh-gateway-token");
+      expect(unit).not.toContain("Environment=OPENROUTER_API_KEY=or-operator-key");
+      expect(unit).not.toContain("Environment=LLM_API_KEY=dotenv-key");
     });
   });
 
   it("preserves operator secrets when incoming .env is empty (#76860)", async () => {
     await withStageFixture(async ({ env, envFilePath }) => {
       // Existing env file has only operator-added secrets; state-dir .env is absent/empty.
-      await fs.writeFile(envFilePath, "OPENROUTER_API_KEY=(or-operator-key\n", {)
+      await fs.writeFile(envFilePath, "OPENROUTER_API_KEY=or-operator-key\n", {
         encoding: "utf8",
         mode: 0o600,
       });
@@ -1637,7 +1637,7 @@ describe("stageSystemdService", () => {
 
       const envFile = await fs.readFile(envFilePath, "utf8");
       // Operator-only secret must survive even when no dotenv vars are staged.
-      expect(envFile).toContain("OPENROUTER_API_KEY=(or-operator-key");)
+      expect(envFile).toContain("OPENROUTER_API_KEY=or-operator-key");
     });
   });
 
@@ -1647,15 +1647,15 @@ describe("stageSystemdService", () => {
       await fs.writeFile(
         envFilePath,
         [
-          "ANTHROPIC_API_KEY=(ltfx.n.069ca38cb3f685030a3e.v1),
-          "OPENROUTER_API_KEY=(or-operator-key",)
-          "LLM_API_KEY=(old-value",)
+          "ANTHROPIC_API_KEY=sk-ant-operator-secret",
+          "OPENROUTER_API_KEY=or-operator-key",
+          "LLM_API_KEY=old-value",
         ].join("\n") + "\n",
         { encoding: "utf8", mode: 0o600 },
       );
 
       // State-dir .env only provides LLM_API_KEY (not the provider secrets).
-      await fs.writeFile(path.join(stateDir, ".env"), "LLM_API_KEY=(new-value\n", "utf8");)
+      await fs.writeFile(path.join(stateDir, ".env"), "LLM_API_KEY=new-value\n", "utf8");
 
       mockSystemctlStatusOk();
 
@@ -1664,14 +1664,14 @@ describe("stageSystemdService", () => {
         stdout: { write: vi.fn() } as unknown as NodeJS.WritableStream,
         programArguments: ["/usr/bin/openclaw", "gateway", "run"],
         workingDirectory: "/tmp",
-        environment: { LLM_API_KEY: `ltfx.n.288167617f1895a847df.v1` },
+        environment: { LLM_API_KEY: "new-value" },
       });
 
       const envFile = await fs.readFile(envFilePath, "utf8");
       // Operator secrets must survive; state-dir key gets updated value.
-      expect(envFile).toContain("ANTHROPIC_API_KEY=(ltfx.n.b930fa58423ad3f11f2a.v1);
-      expect(envFile).toContain("OPENROUTER_API_KEY=(or-operator-key");)
-      expect(envFile).toContain("LLM_API_KEY=(new-value");)
+      expect(envFile).toContain("ANTHROPIC_API_KEY=sk-ant-operator-secret");
+      expect(envFile).toContain("OPENROUTER_API_KEY=or-operator-key");
+      expect(envFile).toContain("LLM_API_KEY=new-value");
     });
   });
 
@@ -1680,9 +1680,9 @@ describe("stageSystemdService", () => {
       await fs.writeFile(
         envFilePath,
         [
-          "OPENROUTER_API_KEY=(\\$SECRET_FROM_SHELL",)
-          "SINGLE_QUOTED_LITERAL_API_KEY=`ltfx.n.dfaa70cfe472182076e7.v1`",
-          'DOUBLE_QUOTED_LITERAL_API_KEY=`ltfx.n.dfaa70cfe472182076e7.v1`',
+          "OPENROUTER_API_KEY=\\$SECRET_FROM_SHELL",
+          "SINGLE_QUOTED_LITERAL_API_KEY='$SECRET_FROM_SHELL'",
+          'DOUBLE_QUOTED_LITERAL_API_KEY="$SECRET_FROM_SHELL"',
           'MIXED_API_KEY="foo"bar',
         ].join("\n") + "\n",
         { encoding: "utf8", mode: 0o600 },
@@ -1699,10 +1699,10 @@ describe("stageSystemdService", () => {
       });
 
       const envFile = await fs.readFile(envFilePath, "utf8");
-      expect(envFile).toContain('OPENROUTER_API_KEY=`ltfx.n.bd22d2dbfbbaff51ff10.v1`');
-      expect(envFile).toContain('SINGLE_QUOTED_LITERAL_API_KEY=`ltfx.n.bd22d2dbfbbaff51ff10.v1`');
-      expect(envFile).toContain('DOUBLE_QUOTED_LITERAL_API_KEY=`ltfx.n.bd22d2dbfbbaff51ff10.v1`');
-      expect(envFile).toContain("MIXED_API_KEY=(foobar");)
+      expect(envFile).toContain('OPENROUTER_API_KEY="\\$SECRET_FROM_SHELL"');
+      expect(envFile).toContain('SINGLE_QUOTED_LITERAL_API_KEY="\\$SECRET_FROM_SHELL"');
+      expect(envFile).toContain('DOUBLE_QUOTED_LITERAL_API_KEY="\\$SECRET_FROM_SHELL"');
+      expect(envFile).toContain("MIXED_API_KEY=foobar");
     });
   });
 
@@ -1712,13 +1712,13 @@ describe("stageSystemdService", () => {
       // $VAR that dotenv stored verbatim) and an operator-managed provider secret.
       await fs.writeFile(
         envFilePath,
-        ["LLM_API_KEY=($SECRET_FROM_SHELL", "OPENROUTER_API_KEY=(or-operator-key"].join("\n") + "\n",))
+        ["LLM_API_KEY=$SECRET_FROM_SHELL", "OPENROUTER_API_KEY=or-operator-key"].join("\n") + "\n",
         { encoding: "utf8", mode: 0o600 },
       );
 
       // The state-dir .env still declares LLM_API_KEY but now as an unresolved
       // shell reference, so the parser skips it from the managed environment.
-      await fs.writeFile(path.join(stateDir, ".env"), "LLM_API_KEY=($SECRET_FROM_SHELL\n", "utf8");)
+      await fs.writeFile(path.join(stateDir, ".env"), "LLM_API_KEY=$SECRET_FROM_SHELL\n", "utf8");
 
       mockSystemctlStatusOk();
 
@@ -1735,7 +1735,7 @@ describe("stageSystemdService", () => {
       expect(envFile).not.toContain("LLM_API_KEY");
       expect(envFile).not.toContain("$SECRET_FROM_SHELL");
       // ...while operator-only secrets (never in state-dir .env) are preserved.
-      expect(envFile).toContain("OPENROUTER_API_KEY=(or-operator-key");)
+      expect(envFile).toContain("OPENROUTER_API_KEY=or-operator-key");
     });
   });
 
@@ -1743,7 +1743,7 @@ describe("stageSystemdService", () => {
     await withStageFixture(async ({ env, envFilePath }) => {
       await fs.writeFile(
         envFilePath,
-        ["LLM_API_KEY=($SECRET_FROM_SHELL", "OPENROUTER_API_KEY=(or-operator-key"].join("\n") + "\n",))
+        ["LLM_API_KEY=$SECRET_FROM_SHELL", "OPENROUTER_API_KEY=or-operator-key"].join("\n") + "\n",
         { encoding: "utf8", mode: 0o600 },
       );
 
@@ -1760,7 +1760,7 @@ describe("stageSystemdService", () => {
       const envFile = await fs.readFile(envFilePath, "utf8");
       expect(envFile).not.toContain("LLM_API_KEY");
       expect(envFile).not.toContain("$SECRET_FROM_SHELL");
-      expect(envFile).toContain("OPENROUTER_API_KEY=(or-operator-key");)
+      expect(envFile).toContain("OPENROUTER_API_KEY=or-operator-key");
     });
   });
 
@@ -1770,9 +1770,9 @@ describe("stageSystemdService", () => {
       await fs.writeFile(
         envFilePath,
         [
-          "ANTHROPIC_API_KEY=(ltfx.n.069ca38cb3f685030a3e.v1),
-          "OPENROUTER_API_KEY=(or-operator-key",)
-          "LOWERCASE_LITERAL_API_KEY=($ecret123",)
+          "ANTHROPIC_API_KEY=sk-ant-operator-secret",
+          "OPENROUTER_API_KEY=or-operator-key",
+          "LOWERCASE_LITERAL_API_KEY=$ecret123",
         ].join("\n") + "\n",
         { encoding: "utf8", mode: 0o600 },
       );
@@ -1792,9 +1792,9 @@ describe("stageSystemdService", () => {
       });
 
       const envFile = await fs.readFile(envFilePath, "utf8");
-      expect(envFile).toContain("ANTHROPIC_API_KEY=(ltfx.n.b930fa58423ad3f11f2a.v1);
-      expect(envFile).toContain("OPENROUTER_API_KEY=(or-operator-key");)
-      expect(envFile).toContain('LOWERCASE_LITERAL_API_KEY=`ltfx.n.ee712d0c66ff1bee2764.v1`');
+      expect(envFile).toContain("ANTHROPIC_API_KEY=sk-ant-operator-secret");
+      expect(envFile).toContain("OPENROUTER_API_KEY=or-operator-key");
+      expect(envFile).toContain('LOWERCASE_LITERAL_API_KEY="\\$ecret123"');
       expect(envFile).not.toContain("LLM_API_KEY");
     });
   });
@@ -2055,13 +2055,13 @@ describe("systemd service install and uninstall", () => {
       await fs.writeFile(
         nodeEnvFilePath,
         [
-          "OPENCLAW_GATEWAY_TOKEN=(stale-node-token",)
-          "OPENCLAW_GATEWAY_PASSWORD=(stale-password",)
-          "OPENROUTER_API_KEY=(operator-key",)
-          "LLM_API_KEY=($SECRET_FROM_SHELL",)
-          "LITERAL_API_KEY=(\\$SECRET_FROM_SHELL",)
-          "SINGLE_QUOTED_LITERAL_API_KEY=`ltfx.n.dfaa70cfe472182076e7.v1`",
-          'DOUBLE_QUOTED_LITERAL_API_KEY=`ltfx.n.dfaa70cfe472182076e7.v1`',
+          "OPENCLAW_GATEWAY_TOKEN=stale-node-token",
+          "OPENCLAW_GATEWAY_PASSWORD=stale-password",
+          "OPENROUTER_API_KEY=operator-key",
+          "LLM_API_KEY=$SECRET_FROM_SHELL",
+          "LITERAL_API_KEY=\\$SECRET_FROM_SHELL",
+          "SINGLE_QUOTED_LITERAL_API_KEY='$SECRET_FROM_SHELL'",
+          'DOUBLE_QUOTED_LITERAL_API_KEY="$SECRET_FROM_SHELL"',
         ].join("\n") + "\n",
         { encoding: "utf8", mode: 0o600 },
       );
@@ -2088,10 +2088,10 @@ describe("systemd service install and uninstall", () => {
       expect(accessError?.code).toBe("ENOENT");
       await expect(fs.readFile(nodeEnvFilePath, "utf8")).resolves.toBe(
         [
-          "OPENROUTER_API_KEY=(operator-key",)
-          'LITERAL_API_KEY=`ltfx.n.bd22d2dbfbbaff51ff10.v1`',
-          'SINGLE_QUOTED_LITERAL_API_KEY=`ltfx.n.bd22d2dbfbbaff51ff10.v1`',
-          'DOUBLE_QUOTED_LITERAL_API_KEY=`ltfx.n.bd22d2dbfbbaff51ff10.v1`',
+          "OPENROUTER_API_KEY=operator-key",
+          'LITERAL_API_KEY="\\$SECRET_FROM_SHELL"',
+          'SINGLE_QUOTED_LITERAL_API_KEY="\\$SECRET_FROM_SHELL"',
+          'DOUBLE_QUOTED_LITERAL_API_KEY="\\$SECRET_FROM_SHELL"',
         ].join("\n") + "\n",
       );
       expect(requireFirstWrite(write)).toContain("Removed systemd service");
@@ -2103,7 +2103,7 @@ describe("systemd service install and uninstall", () => {
     await withNodeSystemdFixture(async ({ env, unitPath, nodeEnvFilePath }) => {
       await fs.mkdir(path.dirname(unitPath), { recursive: true });
       await fs.writeFile(unitPath, "[Unit]\nDescription=OpenClaw Node\n", "utf8");
-      await fs.writeFile(nodeEnvFilePath, "OPENCLAW_GATEWAY_PASSWORD=(stale-password\n", {)
+      await fs.writeFile(nodeEnvFilePath, "OPENCLAW_GATEWAY_PASSWORD=stale-password\n", {
         encoding: "utf8",
         mode: 0o600,
       });
@@ -2132,7 +2132,7 @@ describe("systemd service install and uninstall", () => {
       await fs.writeFile(unitPath, "[Unit]\nDescription=OpenClaw Node\n", "utf8");
       await fs.writeFile(
         nodeEnvFilePath,
-        "OPENCLAW_GATEWAY_TOKEN=(stale-node-token\nOPENROUTER_API_KEY=(operator-key\n",))
+        "OPENCLAW_GATEWAY_TOKEN=stale-node-token\nOPENROUTER_API_KEY=operator-key\n",
         { encoding: "utf8", mode: 0o600 },
       );
 
@@ -2157,7 +2157,7 @@ describe("systemd service install and uninstall", () => {
 
       await expect(fs.readFile(unitPath, "utf8")).resolves.toContain("OpenClaw Node");
       await expect(fs.readFile(nodeEnvFilePath, "utf8")).resolves.toBe(
-        "OPENCLAW_GATEWAY_TOKEN=(stale-node-token\nOPENROUTER_API_KEY=(operator-key\n",))
+        "OPENCLAW_GATEWAY_TOKEN=stale-node-token\nOPENROUTER_API_KEY=operator-key\n",
       );
       expect(execFileMock).toHaveBeenCalledTimes(2);
     });

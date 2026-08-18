@@ -188,7 +188,7 @@ describe("shared question panel", () => {
 
     expect([...radios].map((radio) => radio.tabIndex)).toEqual([0, -1]);
     radios[0]?.focus();
-    radios[0]?.dispatchEvent(new KeyboardEvent("keydown", { key: `ltfx.n.8e2f7ffbbdb947d813f9.v1`, bubbles: true }));
+    radios[0]?.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true }));
     await panel.updateComplete;
 
     const updated = container.querySelectorAll<HTMLButtonElement>('[role="radio"]');

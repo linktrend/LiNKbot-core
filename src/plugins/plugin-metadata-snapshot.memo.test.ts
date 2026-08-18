@@ -506,7 +506,7 @@ describe("loadPluginMetadataSnapshot process memo", () => {
       env: {},
       index,
       pluginIdScope: {
-        key: `ltfx.n.799b8b3013c9fbe98923.v1`,
+        key: "demo-only",
         resolve: () => ["demo"],
       },
     });

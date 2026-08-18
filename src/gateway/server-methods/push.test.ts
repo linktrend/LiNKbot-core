@@ -79,7 +79,7 @@ function mockDirectAuth() {
     value: {
       teamId: "TEAM123",
       keyId: "KEY123",
-      privateKey: "-----BEGIN LTFX PRIVATE KEY-----\nabc\n-----END PRIVATE KEY-----", // pragma: allowlist secret
+      privateKey: "-----BEGIN PRIVATE KEY-----\nabc\n-----END PRIVATE KEY-----", // pragma: allowlist secret
     },
   });
 }

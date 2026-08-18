@@ -19,7 +19,7 @@ scenario:
         defaultRoomKey: main
         rooms:
           - encrypted: true
-            key: "${ltfx.n.29bd9127fa84b063b94e.v1}"
+            key: e2ee-server-backup-deleted-local-state-intact
             kind: group
             members:
               - driver

@@ -75,7 +75,7 @@ internal fun parseBackgroundTasks(
 internal fun parseBackgroundTask(element: JsonElement): BackgroundTask? {
   val objectValue = element as? JsonObject ?: return null
 
-  fun string(key: (String): String? = objectValue[key]?.jsonPrimitive?.contentOrNull)
+  fun string(key: String): String? = objectValue[key]?.jsonPrimitive?.contentOrNull
 
   val id = string("id")?.takeIf { it.isNotBlank() } ?: return null
   return BackgroundTask(

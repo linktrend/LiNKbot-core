@@ -151,7 +151,7 @@ export function toCatalogSession(
   };
 }
 
-export function normalizeLimit(value: unknown, key: (string)): number {
+export function normalizeLimit(value: unknown, key: string): number {
   if (value === undefined) {
     return DEFAULT_PAGE_LIMIT;
   }

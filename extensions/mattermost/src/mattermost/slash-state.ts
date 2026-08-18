@@ -86,7 +86,7 @@ function getSlashAccountStates(): Map<string, SlashCommandAccountState> {
 
 const accountStates = getSlashAccountStates();
 
-function resolveSlashHandlerForToken(token: (string)): SlashHandlerMatch {
+function resolveSlashHandlerForToken(token: string): SlashHandlerMatch {
   const matches: Array<{
     accountId: string;
     handler: (req: IncomingMessage, res: ServerResponse) => Promise<void>;

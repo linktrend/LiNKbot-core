@@ -14,11 +14,11 @@ describe("getAccountConfig", () => {
         accounts: {
           default: {
             username: "testbot",
-            accessToken: `ltfx.n.9719e2e0668fef5c8519.v1`,
+            accessToken: "oauth:test123",
           },
           secondary: {
             username: "secondbot",
-            accessToken: `ltfx.n.24cae92041d0285ccf36.v1`,
+            accessToken: "oauth:secondary",
           },
         },
       },
@@ -29,7 +29,7 @@ describe("getAccountConfig", () => {
     channels: {
       twitch: {
         username: "testbot",
-        accessToken: `ltfx.n.9719e2e0668fef5c8519.v1`,
+        accessToken: "oauth:test123",
       },
     },
   };
@@ -56,12 +56,12 @@ describe("getAccountConfig", () => {
     const accounts = Object.create({
       inherited: {
         username: "inherited-bot",
-        accessToken: `ltfx.n.42e66c24f06047c3f862.v1`,
+        accessToken: "oauth:inherited",
       },
     }) as Record<string, unknown>;
     accounts.Secondary = {
       username: "secondbot",
-      accessToken: `ltfx.n.24cae92041d0285ccf36.v1`,
+      accessToken: "oauth:secondary",
     };
 
     const cfg = {
@@ -74,7 +74,7 @@ describe("getAccountConfig", () => {
 
     expect(getAccountConfig(cfg, "SECONDARY\r\n")).toEqual({
       username: "secondbot",
-      accessToken: `ltfx.n.24cae92041d0285ccf36.v1`,
+      accessToken: "oauth:secondary",
     });
     expect(getAccountConfig(cfg, "inherited")).toBeNull();
   });
@@ -123,7 +123,7 @@ describe("listAccountIds", () => {
         channels: {
           twitch: {
             username: "testbot",
-            accessToken: `ltfx.n.9719e2e0668fef5c8519.v1`,
+            accessToken: "oauth:test123",
           },
         },
       } as Parameters<typeof listAccountIds>[0]),
@@ -189,11 +189,11 @@ describe("resolveTwitchAccountContext", () => {
           accounts: {
             default: {
               username: "default-bot",
-              accessToken: `ltfx.n.2976d1d3b72d737e7a39.v1`,
+              accessToken: "oauth:default-token",
             },
             secondary: {
               username: "second-bot",
-              accessToken: `ltfx.n.70061447e7e274cd1d85.v1`,
+              accessToken: "oauth:second-token",
             },
           },
         },
@@ -212,7 +212,7 @@ describe("resolveTwitchAccountContext", () => {
             accounts: {
               Secondary: {
                 username: "second-bot",
-                accessToken: `ltfx.n.70061447e7e274cd1d85.v1`,
+                accessToken: "oauth:second-token",
                 clientId: "second-client",
                 channel: "#second",
               },
@@ -226,7 +226,7 @@ describe("resolveTwitchAccountContext", () => {
     expect(context.accountId).toBe("secondary");
     expect(context.account?.username).toBe("second-bot");
     expect(context.tokenResolution).toEqual({
-      token: `ltfx.n.70061447e7e274cd1d85.v1`,
+      token: "oauth:second-token",
       source: "config",
     });
     expect(context.configured).toBe(true);

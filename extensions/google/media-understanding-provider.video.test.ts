@@ -71,9 +71,9 @@ describe("describeGeminiVideo", () => {
     const result = await describeGeminiVideo({
       buffer: Buffer.from("video"),
       fileName: "clip.mp4",
-      apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+      apiKey: "test-key",
       timeoutMs: 1000,
-      headers: { "X-Goog-Api-Key": `ltfx.n.ce603774135699e9abdf.v1` },
+      headers: { "X-Goog-Api-Key": "override" },
       fetchFn,
     });
 
@@ -84,7 +84,7 @@ describe("describeGeminiVideo", () => {
   it("keeps private-network disabled for the default Google media endpoint", async () => {
     expect(
       resolveGoogleGenerativeAiHttpRequestConfig({
-        apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+        apiKey: "test-key",
         capability: "video",
         transport: "media-understanding",
       }).allowPrivateNetwork,
@@ -102,7 +102,7 @@ describe("describeGeminiVideo", () => {
     await describeGeminiVideo({
       buffer: Buffer.from("video"),
       fileName: "clip.mp4",
-      apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+      apiKey: "test-key",
       timeoutMs: 1000,
       fetchFn,
     });
@@ -122,7 +122,7 @@ describe("describeGeminiVideo", () => {
     const result = await describeGeminiVideo({
       buffer: Buffer.from("video-bytes"),
       fileName: "clip.mp4",
-      apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+      apiKey: "test-key",
       timeoutMs: 1500,
       baseUrl: "https://generativelanguage.googleapis.com/v1beta/",
       model: "gemini-3-pro",
@@ -170,7 +170,7 @@ describe("describeGeminiVideo", () => {
         describeGeminiVideo({
           buffer: Buffer.from("video-bytes"),
           fileName: "clip.mp4",
-          apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+          apiKey: "test-key",
           timeoutMs: 1500,
           fetchFn,
         }),
@@ -186,7 +186,7 @@ describe("describeGeminiVideo", () => {
       describeGeminiVideo({
         buffer: Buffer.from("video-bytes"),
         fileName: "clip.mp4",
-        apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+        apiKey: "test-key",
         timeoutMs: 1500,
         baseUrl: "https://example.com/v1beta/",
         fetchFn: async () => {
@@ -203,7 +203,7 @@ describe("describeGeminiVideo", () => {
       transcribeGeminiAudio({
         buffer: Buffer.from("audio-bytes"),
         fileName: "clip.wav",
-        apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+        apiKey: "test-key",
         timeoutMs: 1500,
         fetchFn: async () =>
           new Response(

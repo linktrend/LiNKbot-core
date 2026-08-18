@@ -95,8 +95,8 @@ describe("collectTestEnvMutationReport", () => {
       { file: "src/example.test.ts", key: "HOME", operation: "stubEnv" },
       { file: "src/example.test.ts", key: "OPENCLAW_WORKSPACE_DIR", operation: "stubEnv" },
       { file: "src/example.test.ts", key: "OPENCLAW_HOME", operation: "replace" },
-      { file: "src/example.test.ts", key: `ltfx.n.c12d8d268dbfcec8e934.v1`, operation: "assign" },
-      { file: "src/example.test.ts", key: `ltfx.n.c12d8d268dbfcec8e934.v1`, operation: "delete" },
+      { file: "src/example.test.ts", key: "<dynamic>", operation: "assign" },
+      { file: "src/example.test.ts", key: "<dynamic>", operation: "delete" },
     ]);
     expect(report.allowedFindings).toHaveLength(2);
     expect(report.summary).toMatchObject({

@@ -41,8 +41,8 @@ describe("Telegram QA transport adapter", () => {
     mocks.acquireQaCredentialLease.mockResolvedValue({
       payload: {
         groupId: "-100123",
-        driverToken: `ltfx.n.4097889236a2af26c293.v1`,
-        sutToken: `ltfx.n.4097889236a2af26c293.v1`,
+        driverToken: "placeholder",
+        sutToken: "placeholder",
       },
       source: "env",
       heartbeat: mocks.leaseHeartbeat,

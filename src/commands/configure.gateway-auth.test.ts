@@ -67,10 +67,10 @@ describe("buildGatewayAuthConfig", () => {
   it("does not silently omit password when literal string is provided", () => {
     const result = buildGatewayAuthConfig({
       mode: "password",
-      password: `ltfx.n.eb045d78d273107348b0.v1`, // pragma: allowlist secret
+      password: "undefined", // pragma: allowlist secret
     });
 
-    expect(result).toEqual({ mode: "password", password: `ltfx.n.eb045d78d273107348b0.v1` }); // pragma: allowlist secret
+    expect(result).toEqual({ mode: "password", password: "undefined" }); // pragma: allowlist secret
   });
 
   it("generates random token for missing, empty, and coerced-literal token inputs", () => {
@@ -84,7 +84,7 @@ describe("buildGatewayAuthConfig", () => {
   it("trims and preserves explicit token values", () => {
     const result = buildGatewayAuthConfig({
       mode: "token",
-      token: `ltfx.n.0d540847816824567550.v1`,
+      token: "  abc123  ",
     });
 
     expect(result).toEqual({ mode: "token", token: "abc123" });
@@ -93,7 +93,7 @@ describe("buildGatewayAuthConfig", () => {
   it("trims password values before storing them", () => {
     const result = buildGatewayAuthConfig({
       mode: "password",
-      password: `ltfx.n.95edfdaf4cf389344106.v1`, // pragma: allowlist secret
+      password: "  secret  ", // pragma: allowlist secret
     });
 
     expect(result).toEqual({ mode: "password", password: "secret" }); // pragma: allowlist secret

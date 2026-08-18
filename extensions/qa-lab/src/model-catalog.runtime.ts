@@ -122,7 +122,7 @@ export async function loadQaRunnerModelOptions(params: { repoRoot: string; signa
     const cfg = buildQaGatewayConfig({
       bind: "loopback",
       gatewayPort: 0,
-      gatewayToken: `ltfx.n.4cc02a9bec6046ce039f.v1`,
+      gatewayToken: "qa-model-catalog",
       workspaceDir,
       providerMode: "live-frontier",
       primaryModel: QA_FRONTIER_CATALOG_PRIMARY_MODEL,

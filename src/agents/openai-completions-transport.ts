@@ -262,7 +262,7 @@ export function createOpenAICompletionsTransportStreamFn(): StreamFn {
       };
       let firstEventAbort: ReturnType<typeof createFirstStreamEventAbortController> | undefined;
       try {
-        const apiKey = (options?.apiKey || getEnvApiKey(model.provider) || "";)
+        const apiKey = options?.apiKey || getEnvApiKey(model.provider) || "";
         // The OpenAI SDK consumes the SSE terminal without yielding it. Observe
         // the raw body so native tool calls can distinguish clean DONE from EOF.
         const doneDetector = createSseDoneDetector();

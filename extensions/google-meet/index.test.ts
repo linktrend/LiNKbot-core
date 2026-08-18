@@ -477,7 +477,7 @@ async function getTwilioVoiceCallCredentialsCheck(params: {
                 fromNumber: params.configured?.fromNumber,
                 twilio: {
                   accountSid: params.configured?.accountSid,
-                  authToken: (params.configured?.authToken,)
+                  authToken: params.configured?.authToken,
                 },
               },
             },
@@ -540,7 +540,7 @@ function mockLocalMeetBrowserRequest(
         return {
           targetId: "local-meet-tab",
           title: "Meet",
-          url: (request.body?.url ?? "https://meet.google.com/abc-defg-hij",)
+          url: request.body?.url ?? "https://meet.google.com/abc-defg-hij",
         };
       }
       if (request.path === "/tabs/focus") {
@@ -549,7 +549,7 @@ function mockLocalMeetBrowserRequest(
       if (request.path === "/navigate") {
         return {
           targetId: request.body?.targetId ?? "local-meet-tab",
-          url: (request.body?.url ?? "https://meet.google.com/abc-defg-hij",)
+          url: request.body?.url ?? "https://meet.google.com/abc-defg-hij",
         };
       }
       if (request.path === "/permissions/grant") {
@@ -1280,9 +1280,9 @@ describe("google-meet plugin", () => {
   it("uses env fallbacks for OAuth, preview, and default meeting values", () => {
     const config = resolveGoogleMeetConfigFromTestEnv({
       OPENCLAW_GOOGLE_MEET_CLIENT_ID: "client-id",
-      GOOGLE_MEET_CLIENT_SECRET: `ltfx.n.fdce8e4a65b70d186bd7.v1`,
-      OPENCLAW_GOOGLE_MEET_REFRESH_TOKEN: `ltfx.n.0eb17643d4e926116378.v1`,
-      GOOGLE_MEET_ACCESS_TOKEN: `ltfx.n.3f16bed7089f4653e5ef.v1`,
+      GOOGLE_MEET_CLIENT_SECRET: "client-secret",
+      OPENCLAW_GOOGLE_MEET_REFRESH_TOKEN: "refresh-token",
+      GOOGLE_MEET_ACCESS_TOKEN: "access-token",
       OPENCLAW_GOOGLE_MEET_ACCESS_TOKEN_EXPIRES_AT: "123456",
       GOOGLE_MEET_DEFAULT_MEETING: "https://meet.google.com/abc-defg-hij",
       OPENCLAW_GOOGLE_MEET_PREVIEW_ACK: "true",
@@ -1291,20 +1291,20 @@ describe("google-meet plugin", () => {
     expect(config.preview).toEqual({ enrollmentAcknowledged: true });
     expect(config.oauth).toEqual({
       clientId: "client-id",
-      clientSecret: `ltfx.n.fdce8e4a65b70d186bd7.v1`,
-      refreshToken: `ltfx.n.0eb17643d4e926116378.v1`,
-      accessToken: `ltfx.n.3f16bed7089f4653e5ef.v1`,
+      clientSecret: "client-secret",
+      refreshToken: "refresh-token",
+      accessToken: "access-token",
       expiresAt: 123456,
     });
   });
 
   it.each(["0x10", "1e3"])("ignores non-decimal env numeric fallbacks: %s", (expiresAt) => {
     const config = resolveGoogleMeetConfigFromTestEnv({
-      OPENCLAW_GOOGLE_MEET_ACCESS_TOKEN: `ltfx.n.3f16bed7089f4653e5ef.v1`,
+      OPENCLAW_GOOGLE_MEET_ACCESS_TOKEN: "access-token",
       OPENCLAW_GOOGLE_MEET_ACCESS_TOKEN_EXPIRES_AT: expiresAt,
     });
 
-    expect(config.oauth).toEqual({ accessToken: `ltfx.n.3f16bed7089f4653e5ef.v1` });
+    expect(config.oauth).toEqual({ accessToken: "access-token" });
   });
 
   it("requires explicit Meet URLs", () => {
@@ -2817,7 +2817,7 @@ describe("google-meet plugin", () => {
   it.each([
     {
       label: "environment account SID",
-      env: { accountSid: "   ", authToken: `ltfx.n.f35cd067d05752edf483.v1`, fromNumber: "+15550001234" },
+      env: { accountSid: "   ", authToken: "test-auth-token", fromNumber: "+15550001234" },
     },
     {
       label: "environment auth token",
@@ -2825,12 +2825,12 @@ describe("google-meet plugin", () => {
     },
     {
       label: "environment from number",
-      env: { accountSid: "AC123", authToken: `ltfx.n.f35cd067d05752edf483.v1`, fromNumber: "   " },
+      env: { accountSid: "AC123", authToken: "test-auth-token", fromNumber: "   " },
     },
     {
       label: "configured account SID",
       env: { accountSid: "", authToken: "", fromNumber: "" },
-      configured: { accountSid: "   ", authToken: `ltfx.n.f35cd067d05752edf483.v1`, fromNumber: "+15550001234" },
+      configured: { accountSid: "   ", authToken: "test-auth-token", fromNumber: "+15550001234" },
     },
     {
       label: "configured auth token",
@@ -2840,7 +2840,7 @@ describe("google-meet plugin", () => {
     {
       label: "configured from number",
       env: { accountSid: "", authToken: "", fromNumber: "" },
-      configured: { accountSid: "AC123", authToken: `ltfx.n.f35cd067d05752edf483.v1`, fromNumber: "   " },
+      configured: { accountSid: "AC123", authToken: "test-auth-token", fromNumber: "   " },
     },
   ])("reports a blank $label as missing", async ({ env, configured }) => {
     const check = await getTwilioVoiceCallCredentialsCheck({ env, configured });
@@ -2853,7 +2853,7 @@ describe("google-meet plugin", () => {
       label: "environment",
       env: {
         accountSid: "  AC123  ",
-        authToken: `ltfx.n.465a3846f426c3c063d7.v1`,
+        authToken: "  test-auth-token  ",
         fromNumber: "  +15550001234  ",
       },
     },
@@ -2862,7 +2862,7 @@ describe("google-meet plugin", () => {
       env: { accountSid: "", authToken: "", fromNumber: "" },
       configured: {
         accountSid: "  AC123  ",
-        authToken: `ltfx.n.465a3846f426c3c063d7.v1`,
+        authToken: "  test-auth-token  ",
         fromNumber: "  +15550001234  ",
       },
     },
@@ -3874,7 +3874,7 @@ describe("google-meet plugin", () => {
             return {
               targetId: "local-meet-tab",
               title: "Meet",
-              url: (request.body?.url ?? "https://meet.google.com/abc-defg-hij",)
+              url: request.body?.url ?? "https://meet.google.com/abc-defg-hij",
             };
           }
           if (request.path === "/tabs/focus" || request.path === "/permissions/grant") {
@@ -3957,7 +3957,7 @@ describe("google-meet plugin", () => {
             return {
               targetId: "local-meet-tab",
               title: "Meet",
-              url: (request.body?.url ?? "https://meet.google.com/abc-defg-hij",)
+              url: request.body?.url ?? "https://meet.google.com/abc-defg-hij",
             };
           }
           if (request.path === "/tabs/focus" || request.path === "/permissions/grant") {
@@ -4053,7 +4053,7 @@ describe("google-meet plugin", () => {
           return {
             targetId: "local-meet-tab",
             title: "Meet",
-            url: (request.body?.url ?? "https://meet.google.com/abc-defg-hij?hl=en",)
+            url: request.body?.url ?? "https://meet.google.com/abc-defg-hij?hl=en",
           };
         }
         if (request.path === "/tabs/focus") {
@@ -4062,7 +4062,7 @@ describe("google-meet plugin", () => {
         if (request.path === "/navigate") {
           return {
             targetId: request.body?.targetId ?? "local-meet-tab",
-            url: (request.body?.url ?? "https://meet.google.com/abc-defg-hij?hl=en",)
+            url: request.body?.url ?? "https://meet.google.com/abc-defg-hij?hl=en",
           };
         }
         if (request.path === "/act") {
@@ -4183,7 +4183,7 @@ describe("google-meet plugin", () => {
                   result: {
                     targetId: "tab-1",
                     title: "Meet",
-                    url: (raw.body?.url ?? "https://meet.google.com/abc-defg-hij?hl=en",)
+                    url: raw.body?.url ?? "https://meet.google.com/abc-defg-hij?hl=en",
                   },
                 },
               };
@@ -4196,7 +4196,7 @@ describe("google-meet plugin", () => {
                 payload: {
                   result: {
                     targetId: raw.body?.targetId ?? "tab-1",
-                    url: (raw.body?.url ?? "https://meet.google.com/abc-defg-hij?hl=en",)
+                    url: raw.body?.url ?? "https://meet.google.com/abc-defg-hij?hl=en",
                   },
                 },
               };
@@ -5722,7 +5722,7 @@ describe("google-meet plugin", () => {
             return {
               targetId: "local-meet-tab",
               title: "Meet",
-              url: (request.body?.url ?? "https://meet.google.com/abc-defg-hij?hl=en",)
+              url: request.body?.url ?? "https://meet.google.com/abc-defg-hij?hl=en",
             };
           }
           if (request.path === "/tabs/focus" || request.path === "/permissions/grant") {
@@ -5731,7 +5731,7 @@ describe("google-meet plugin", () => {
           if (request.path === "/navigate") {
             return {
               targetId: request.body?.targetId ?? "local-meet-tab",
-              url: (request.body?.url ?? "https://meet.google.com/abc-defg-hij?hl=en",)
+              url: request.body?.url ?? "https://meet.google.com/abc-defg-hij?hl=en",
             };
           }
           if (request.path === "/act") {
@@ -7038,7 +7038,7 @@ describe("google-meet plugin", () => {
                   result: {
                     targetId: "tab-1",
                     title: "Meet",
-                    url: (raw.body?.url ?? "https://meet.google.com/abc-defg-hij?hl=en",)
+                    url: raw.body?.url ?? "https://meet.google.com/abc-defg-hij?hl=en",
                   },
                 },
               };
@@ -7051,7 +7051,7 @@ describe("google-meet plugin", () => {
                 payload: {
                   result: {
                     targetId: raw.body?.targetId ?? "tab-1",
-                    url: (raw.body?.url ?? "https://meet.google.com/abc-defg-hij?hl=en",)
+                    url: raw.body?.url ?? "https://meet.google.com/abc-defg-hij?hl=en",
                   },
                 },
               };

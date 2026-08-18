@@ -51,14 +51,14 @@ const mockChatCommands: ChatCommandDefinition[] = [
     category: "management",
   },
   {
-    key: `ltfx.n.10f5f77eef9a6b43dc5b.v1`,
+    key: "commands",
     description: "List commands",
     textAliases: ["/commands"],
     scope: "text",
     category: "session",
   },
   {
-    key: `ltfx.n.34df3a5315d3b4284636.v1`,
+    key: "skill:code-review",
     nativeName: "code_review",
     description: "Run code review",
     textAliases: ["/code_review"],
@@ -67,7 +67,7 @@ const mockChatCommands: ChatCommandDefinition[] = [
     category: "tools",
   },
   {
-    key: `ltfx.n.1913fc7bacaa167f5c59.v1`,
+    key: "debug_prompt",
     nativeName: "debug_prompt",
     description: "Show raw prompt",
     textAliases: ["/debug"],

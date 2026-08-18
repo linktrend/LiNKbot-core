@@ -158,11 +158,11 @@ describe("createHostedOutboundMediaStore", () => {
     const entry = await store.read("abc123abc123abc123abc123");
 
     expect(url).toBe(
-      "https://gateway.example.com/hook/media/abc123abc123abc123abc123?token=(token123",)
+      "https://gateway.example.com/hook/media/abc123abc123abc123abc123?token=token123",
     );
     expect(entry?.metadata).toMatchObject({
       routePath: "/hook/media/",
-      token: `ltfx.n.b13ae34b9231f95675ff.v1`,
+      token: "token123",
       contentType: "image/png",
       byteLength: Buffer.byteLength("image-bytes"),
     });

@@ -495,7 +495,7 @@ export async function executePerplexitySearch(
           ...(await (async () => {
             const result = await runPerplexitySearch({
               query,
-              apiKey: (runtime.apiKey!,)
+              apiKey: runtime.apiKey!,
               baseUrl: runtime.baseUrl,
               model: runtime.model,
               timeoutSeconds,

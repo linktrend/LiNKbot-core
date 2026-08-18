@@ -9,9 +9,9 @@ import { describe, expect, it } from "vitest";
 import { createAnthropicPayloadLogger } from "./anthropic-payload-log.js";
 
 describe("createAnthropicPayloadLogger", () => {
-  const bareAnthropicKey = `ltfx.n.cbba12be3d95e2fe8351.v1`; // pragma: allowlist secret
-  const bareGithubKey = `ltfx.n.922665d61d52e957593f.v1`; // pragma: allowlist secret
-  const bareGoogleKey = `ltfx.n.0fbe035d631cdb666ddb.v1`; // pragma: allowlist secret
+  const bareAnthropicKey = "sk-ant-api03-AbCdEfGhIjKlMnOpQrStUvWx"; // pragma: allowlist secret
+  const bareGithubKey = "ghp_AbCdEfGhIjKlMnOpQrStUvWxYz1234567890"; // pragma: allowlist secret
+  const bareGoogleKey = "AIzaSyA1bC2dE3fG4hI5jK6lM7nO8pQrStUvW"; // pragma: allowlist secret
 
   it("sanitizes credential fields and image base64 payload data before writing logs", async () => {
     const lines: string[] = [];

@@ -59,7 +59,7 @@ function firstMockArgAsString(mock: { mock: { calls: readonly unknown[][] } }): 
 }
 
 describe("enableConsoleCapture", () => {
-  const secret = `ltfx.n.398db6d1a7d6cc253b73.v1`;
+  const secret = "sk-testsecret1234567890abcd";
 
   it("swallows EIO from stderr writes", () => {
     setLoggerOverride({ level: "info", file: tempLogPath() });

@@ -149,7 +149,7 @@ function mockProbeGatewayResult(overrides: Partial<ProbeGatewayResult>) {
 function createDefaultProbeGatewayResult(): ProbeGatewayResult {
   return {
     ok: false,
-    url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+    url: "ws://127.0.0.1:18789",
     connectLatencyMs: null,
     error: "timeout",
     close: null,
@@ -352,7 +352,7 @@ async function createMockStatusScanResult(params: { includePluginCompatibility?:
       },
       registry: { latestVersion: "0.0.0" },
     },
-    gatewayConnection: { url: `ltfx.n.0edbee82f0824a1ed09b.v1` },
+    gatewayConnection: { url: "ws://127.0.0.1:18789" },
     remoteUrlMissing: false,
     gatewayMode: "local" as const,
     gatewayProbeAuth: process.env.OPENCLAW_GATEWAY_TOKEN
@@ -677,7 +677,7 @@ vi.mock("../gateway/call.js", () => ({
         };
       };
     }) => {
-      const token = (params.config?.gateway?.auth?.token;)
+      const token = params.config?.gateway?.auth?.token;
       if (token && typeof token === "object" && "source" in token) {
         throw Object.assign(new Error("gateway.auth.token unavailable"), {
           name: "GatewaySecretRefUnavailableError",

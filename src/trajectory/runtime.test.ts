@@ -64,8 +64,8 @@ describe("trajectory runtime", () => {
     const runtimeRecorder = expectTrajectoryRuntimeRecorder(recorder);
     runtimeRecorder.recordEvent("context.compiled", {
       systemPrompt: "system prompt",
-      headers: [{ name: "Authorization", value: "Bearer ltfx.n.97a2279cb2ef5bc1891e.v1" }],
-      command: "curl -H 'Authorization: Bearer ltfx.n.88bd66c12b981cba2a59.v1'",
+      headers: [{ name: "Authorization", value: "Bearer sk-test-secret-token" }],
+      command: "curl -H 'Authorization: Bearer sk-other-secret-token'",
       oauth: "ya29.fake-access-token-with-enough-length",
       apple: "abcd-efgh-ijkl-mnop",
       tools: toTrajectoryToolDefinitions([
@@ -84,8 +84,8 @@ describe("trajectory runtime", () => {
       { name: "a-tool", description: "alpha", parameters: { a: 1 } },
       { name: "z-tool", parameters: { z: 1 } },
     ]);
-    expect(JSON.stringify(parsed.data)).not.toContain("ltfx.n.97a2279cb2ef5bc1891e.v1");
-    expect(JSON.stringify(parsed.data)).not.toContain("ltfx.n.88bd66c12b981cba2a59.v1");
+    expect(JSON.stringify(parsed.data)).not.toContain("sk-test-secret-token");
+    expect(JSON.stringify(parsed.data)).not.toContain("sk-other-secret-token");
     expect(JSON.stringify(parsed.data)).not.toContain("ya29.fake-access-token");
     expect(JSON.stringify(parsed.data)).not.toContain("abcd-efgh-ijkl-mnop");
   });
@@ -363,9 +363,9 @@ describe("trajectory runtime", () => {
     runtimeRecorder.recordEvent("model.completed", {
       usage: {
         total: 1,
-        note: "Authorization: Bearer ltfx.n.f900caf360095ebde672.v1",
-        apiKey: `ltfx.n.97a2279cb2ef5bc1891e.v1`,
-        authorization: "Bearer ltfx.n.88bd66c12b981cba2a59.v1",
+        note: "Authorization: Bearer sk-inline-secret-token",
+        apiKey: "sk-test-secret-token",
+        authorization: "Bearer sk-other-secret-token",
       },
       messagesSnapshot: Array.from({ length: 12 }, (_value, index) => ({
         role: index % 2 === 0 ? "user" : "assistant",
@@ -378,9 +378,9 @@ describe("trajectory runtime", () => {
     const preservedUsage = JSON.stringify(parsed.data.usage);
     expect(parsed.data.truncated).toBe(true);
     expect(preservedUsage).toContain("redacted");
-    expect(preservedUsage).not.toContain("ltfx.n.f900caf360095ebde672.v1");
-    expect(preservedUsage).not.toContain("ltfx.n.97a2279cb2ef5bc1891e.v1");
-    expect(preservedUsage).not.toContain("ltfx.n.88bd66c12b981cba2a59.v1");
+    expect(preservedUsage).not.toContain("sk-inline-secret-token");
+    expect(preservedUsage).not.toContain("sk-test-secret-token");
+    expect(preservedUsage).not.toContain("sk-other-secret-token");
   });
 
   it("describes queued writer state for cleanup timeout logs", () => {

@@ -185,7 +185,7 @@ function configSnapshot(isWorkboardEnabled: boolean) {
 function readOnlyConnectResponse() {
   return {
     auth: {
-      deviceToken: `ltfx.n.caba5b8b1d1f6714db03.v1`,
+      deviceToken: "plugins-read-only-device-token",
       role: "operator",
       scopes: ["operator.read"],
     },

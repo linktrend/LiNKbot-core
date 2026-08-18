@@ -464,7 +464,7 @@ const KO_TRAILING_PARTICLES = [
   "만",
 ].toSorted((a, b) => b.length - a.length);
 
-function stripKoreanTrailingParticle(token: (string)): string | null {
+function stripKoreanTrailingParticle(token: string): string | null {
   for (const particle of KO_TRAILING_PARTICLES) {
     if (token.length > particle.length && token.endsWith(particle)) {
       return token.slice(0, -particle.length);
@@ -634,7 +634,7 @@ const STOP_WORDS_ZH = new Set([
 ]);
 
 /** Returns true for low-value conversational tokens that should not drive FTS matching. */
-export function isQueryStopWordToken(token: (string)): boolean {
+export function isQueryStopWordToken(token: string): boolean {
   return (
     STOP_WORDS_EN.has(token) ||
     STOP_WORDS_ES.has(token) ||
@@ -650,7 +650,7 @@ export function isQueryStopWordToken(token: (string)): boolean {
  * Check if a token looks like a meaningful keyword.
  * Returns false for short tokens, numbers-only, etc.
  */
-function isValidKeyword(token: (string)): boolean {
+function isValidKeyword(token: string): boolean {
   if (!token || token.length === 0) {
     return false;
   }

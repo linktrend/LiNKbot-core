@@ -752,11 +752,11 @@ describe("config view", () => {
     const onRawChange = vi.fn();
     const { container } = renderConfigView({
       formMode: "raw",
-      raw: '{\n  "openai": { "apiKey": `ltfx.n.f75778f7425be4db0369.v1` }\n}\n',
-      originalRaw: '{\n  "openai": { "apiKey": `ltfx.n.f75778f7425be4db0369.v1` }\n}\n',
+      raw: '{\n  "openai": { "apiKey": "supersecret" }\n}\n',
+      originalRaw: '{\n  "openai": { "apiKey": "supersecret" }\n}\n',
       formValue: {
         openai: {
-          apiKey: `ltfx.n.f75778f7425be4db0369.v1`,
+          apiKey: "supersecret",
         },
       },
       onRawChange,
@@ -779,7 +779,7 @@ describe("config view", () => {
     revealButton.click();
 
     const textarea = queryRequired(container, "textarea", HTMLTextAreaElement);
-    expect(textarea.value).toBe('{\n  "openai": { "apiKey": `ltfx.n.f75778f7425be4db0369.v1` }\n}\n');
+    expect(textarea.value).toBe('{\n  "openai": { "apiKey": "supersecret" }\n}\n');
     textarea.value = textarea.value.replace("supersecret", "updatedsecret");
     textarea.dispatchEvent(new Event("input", { bubbles: true }));
     expect(onRawChange).toHaveBeenCalledWith(textarea.value);

@@ -248,7 +248,7 @@ describe("resolveMcpTransportConfig", () => {
         bindingId: "binding-skills",
         issuerUrl: "https://paci.example",
         clientId: "skills-client",
-        clientAssertionKeyRef: "-----BEGIN LTFX PRIVATE KEY-----\nstub\n-----END PRIVATE KEY-----",
+        clientAssertionKeyRef: "-----BEGIN PRIVATE KEY-----\nstub\n-----END PRIVATE KEY-----",
       },
     });
 

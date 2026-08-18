@@ -3,7 +3,7 @@
   "domain": "feishu",
   "connectionMode": "webhook",
   "defaultAccount": "default",
-  "verificationToken": "${ltfx.n.282685246d61c616b7dc.v1}",
+  "verificationToken": "upgrade-survivor-feishu-verification",
   "encryptKey": "upgrade-survivor-feishu-encrypt",
   "webhookPath": "/feishu/events",
   "webhookHost": "127.0.0.1",

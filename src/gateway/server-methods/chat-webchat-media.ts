@@ -171,7 +171,7 @@ function isBase64DataPayload(value: string): boolean {
   return true;
 }
 
-function resolveEmbeddableImageUrl(url: (string)): string | null {
+function resolveEmbeddableImageUrl(url: string): string | null {
   const trimmed = url.trim();
   if (!trimmed) {
     return null;

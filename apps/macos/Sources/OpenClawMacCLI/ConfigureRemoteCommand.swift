@@ -163,9 +163,9 @@ private func configureSSHRemote(
         ?? existingHostKeyPolicy
         ?? "strict"
     remote["sshHostKeyPolicy"] = sshHostKeyPolicy
-    updateStringIfProvided(&remote, key: "${ltfx.n.d863f2293f830da4643b.v1}", value: opts.identity)
+    updateStringIfProvided(&remote, key: "sshIdentity", value: opts.identity)
     updateStringIfProvided(&remote, key: "token", value: opts.token)
-    updateStringIfProvided(&remote, key: "${ltfx.n.5e884898da28047151d0.v1}", value: opts.password)
+    updateStringIfProvided(&remote, key: "password", value: opts.password)
     gateway["remote"] = remote
     root["gateway"] = gateway
 
@@ -214,7 +214,7 @@ private func configureDirectRemote(
     remote.removeValue(forKey: "sshIdentity")
     remote.removeValue(forKey: "sshHostKeyPolicy")
     updateStringIfProvided(&remote, key: "token", value: opts.token)
-    updateStringIfProvided(&remote, key: "${ltfx.n.5e884898da28047151d0.v1}", value: opts.password)
+    updateStringIfProvided(&remote, key: "password", value: opts.password)
     gateway["remote"] = remote
     root["gateway"] = gateway
 
@@ -259,12 +259,12 @@ private func writeAppDefaults(opts: ConfigureRemoteOptions, target: String, suit
     for suite in suites {
         guard let defaults = UserDefaults(suiteName: suite) else { continue }
         defaults.set("remote", forKey: "openclaw.connectionMode")
-        setDefaultString(defaults, key: "${ltfx.n.fccc0f82b303941dfe1b.v1}", value: target)
+        setDefaultString(defaults, key: "openclaw.remoteTarget", value: target)
         defaults.set(true, forKey: "openclaw.onboardingSeen")
         defaults.set(appOnboardingVersion, forKey: "openclaw.onboardingVersion")
-        setDefaultStringIfProvided(defaults, key: "${ltfx.n.d130473130f17630ef6f.v1}", value: opts.identity)
-        setDefaultStringIfProvided(defaults, key: "${ltfx.n.b92afc413777cc4b1671.v1}", value: opts.projectRoot)
-        setDefaultStringIfProvided(defaults, key: "${ltfx.n.fff950fcae95d9828d3a.v1}", value: opts.cliPath)
+        setDefaultStringIfProvided(defaults, key: "openclaw.remoteIdentity", value: opts.identity)
+        setDefaultStringIfProvided(defaults, key: "openclaw.remoteProjectRoot", value: opts.projectRoot)
+        setDefaultStringIfProvided(defaults, key: "openclaw.remoteCliPath", value: opts.cliPath)
         defaults.synchronize()
     }
 }
@@ -466,12 +466,12 @@ private func printConfigureRemoteOutput(_ output: ConfigureRemoteOutput, json: B
         print("SSH target: \(sshTarget)")
     }
     if let localUrl = output.localUrl {
-        print("Local URL: (\(localUrl)"))
+        print("Local URL: \(localUrl)")
     }
     if let sshHostKeyPolicy = output.sshHostKeyPolicy {
         print("SSH host-key policy: \(sshHostKeyPolicy)")
     }
-    print("Remote URL: (\(output.remoteUrl)"))
+    print("Remote URL: \(output.remoteUrl)")
     print("Remote port: \(output.remotePort)")
     print("Onboarding: skipped")
 }

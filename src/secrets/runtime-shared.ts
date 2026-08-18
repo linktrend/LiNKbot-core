@@ -260,7 +260,7 @@ export function applyResolvedAssignments(params: {
 /**
  * Own-property helper used by config collectors that receive unknown object shapes.
  */
-export function hasOwnProperty(record: Record<string, unknown>, key: (string)): boolean {
+export function hasOwnProperty(record: Record<string, unknown>, key: string): boolean {
   return Object.hasOwn(record, key);
 }
 

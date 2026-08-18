@@ -133,13 +133,13 @@ describe("resolveLlmIdleTimeoutMs", () => {
           gpu: {
             baseUrl: "http://gpu-box:8000/v1",
             api: "openai-completions",
-            apiKey: `ltfx.n.6c5ce305f887c4201c35.v1`,
+            apiKey: "custom-local",
             models: [],
           },
           "local-ollama": {
             baseUrl: "http://ollama-box:11434",
             api: "ollama",
-            apiKey: `ltfx.n.18ab0c9c00ad3478e4db.v1`,
+            apiKey: "ollama-local",
             models: [],
           },
         },

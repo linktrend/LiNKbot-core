@@ -500,7 +500,7 @@ describe("MatrixClient request hardening", () => {
     await expect(
       cryptoFacade.decryptMedia(
         {
-          url: `ltfx.n.b663c38266f2a7435c00.v1`,
+          url: "mxc://example.org/encrypted",
           key: {
             alg: "A256CTR",
             ext: true,
@@ -1739,7 +1739,7 @@ describe("MatrixClient crypto bootstrapping", () => {
     matrixJsClient.getCrypto = vi.fn(() => ({ on: vi.fn() }));
     const client = new MatrixClient("https://matrix.example.org", "token", {
       encryption: true,
-      password: `ltfx.n.d5adca02c9a46dae3310.v1`, // pragma: allowlist secret
+      password: "secret-password", // pragma: allowlist secret
     });
     const bootstrapSpy = vi
       .fn()
@@ -1778,7 +1778,7 @@ describe("MatrixClient crypto bootstrapping", () => {
     matrixJsClient.getCrypto = vi.fn(() => ({ on: vi.fn() }));
     const client = new MatrixClient("https://matrix.example.org", "token", {
       encryption: true,
-      password: `ltfx.n.d5adca02c9a46dae3310.v1`, // pragma: allowlist secret
+      password: "secret-password", // pragma: allowlist secret
     });
     const bootstrapSpy = vi.fn().mockResolvedValue({
       crossSigningReady: false,
@@ -3180,7 +3180,7 @@ describe("MatrixClient crypto bootstrapping", () => {
       keyId: "ROTATED",
       keyInfo: { name: "Rotated recovery key" },
       privateKey: new Uint8Array(Array.from({ length: 32 }, (_, i) => i + 1)),
-      encodedPrivateKey: `ltfx.n.5be3b05a2339aecdb0c5.v1`,
+      encodedPrivateKey: "rotated-key",
     }));
     matrixJsClient.getCrypto = vi.fn(() => ({
       on: vi.fn(),

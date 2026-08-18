@@ -799,7 +799,7 @@ struct RootSidebar: View {
     private func deleteSession(_ session: OpenClawChatSessionEntry) {
         Task {
             do {
-                try await self.appModel.makeChatTransport().deleteSession(key: (session.key))
+                try await self.appModel.makeChatTransport().deleteSession(key: session.key)
                 if session.key == self.appModel.chatSessionKey {
                     self.appModel.focusChatSession(nil)
                 }

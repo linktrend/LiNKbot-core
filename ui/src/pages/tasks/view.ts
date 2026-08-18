@@ -126,7 +126,7 @@ function renderSummaryStrip(tasks: readonly TaskSummary[]) {
       value: countByStatus("queued"),
     },
     {
-      key: `ltfx.n.4ddb3e96801a1ee2b77d.v1`,
+      key: "completed",
       iconName: "check",
       label: t("tasksPage.status.completed"),
       value: countByStatus("completed"),

@@ -327,7 +327,7 @@ describe(`Phase 6 integrated Brain+Skills (${PHASE6_EVIDENCE_TIER})`, () => {
         idempotencyKey: "cap:phase6:brain-ok",
         batch: sampleBrainBatch,
       },
-      { authToken: `ltfx.n.aee2fbd3bbda68f5b3dc.v1` },
+      { authToken: "fake-valid-token" },
     );
     expect(capture.ok).toBe(true);
   });

@@ -37,7 +37,7 @@ describe("status-all format", () => {
         gatewayMode: "remote",
         remoteUrlMissing: true,
         gatewayConnection: {
-          url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+          url: "ws://127.0.0.1:18789",
           urlSource: "missing gateway.remote.url (fallback local)",
         },
         gatewayReachable: false,
@@ -182,7 +182,7 @@ describe("status-all format", () => {
       buildGatewayStatusJsonPayload({
         gatewayMode: "remote",
         gatewayConnection: {
-          url: `ltfx.n.72e4dc7921c2128a3b3f.v1`,
+          url: "wss://gateway.example.com",
           urlSource: "config",
         },
         remoteUrlMissing: false,
@@ -193,7 +193,7 @@ describe("status-all format", () => {
       }),
     ).toEqual({
       mode: "remote",
-      url: `ltfx.n.72e4dc7921c2128a3b3f.v1`,
+      url: "wss://gateway.example.com",
       urlSource: "config",
       misconfigured: false,
       reachable: true,
@@ -211,7 +211,7 @@ describe("status-all format", () => {
         gatewayMode: "remote",
         remoteUrlMissing: false,
         gatewayConnection: {
-          url: `ltfx.n.72e4dc7921c2128a3b3f.v1`,
+          url: "wss://gateway.example.com",
           urlSource: "config",
         },
         gatewayReachable: true,
@@ -255,7 +255,7 @@ describe("status-all format", () => {
         gatewayMode: "local",
         remoteUrlMissing: false,
         gatewayConnection: {
-          url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+          url: "ws://127.0.0.1:18789",
           urlSource: "local loopback",
         },
         gatewayReachable: true,
@@ -283,7 +283,7 @@ describe("status-all format", () => {
         gatewayMode: "local",
         remoteUrlMissing: false,
         gatewayConnection: {
-          url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+          url: "ws://127.0.0.1:18789",
         },
         gatewayReachable: false,
         gatewayProbe: null,
@@ -375,7 +375,7 @@ describe("status-all format", () => {
         gatewayMode: "remote",
         remoteUrlMissing: false,
         gatewayConnection: {
-          url: `ltfx.n.72e4dc7921c2128a3b3f.v1`,
+          url: "wss://gateway.example.com",
           urlSource: "config",
         },
         gatewayReachable: true,

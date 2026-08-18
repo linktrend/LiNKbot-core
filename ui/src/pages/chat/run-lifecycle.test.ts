@@ -31,7 +31,7 @@ describe("hasAbortableSessionRun", () => {
         chatRunId: null,
         sessionKey: "main",
         sessionsResult: makeSessionsResult([
-          { key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`, hasActiveRun: true, status: "running" },
+          { key: "agent:main:main", hasActiveRun: true, status: "running" },
         ]),
       }),
     ).toBe(true);
@@ -227,7 +227,7 @@ describe("reconcileChatRunFromCurrentSessionRow stale-active suppression (#87875
       sessionKey: "main",
       sessionsResult: makeSessionsResult([
         {
-          key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+          key: "agent:main:main",
           hasActiveRun: true,
           activeRunIds: ["r1"],
           status: "running",
@@ -418,7 +418,7 @@ describe("reconcileChatRunFromCurrentSessionRow stale-active suppression (#87875
       chatRunId: "run-global",
       chatStream: "streaming",
       sessionsResult: makeSessionsResult([
-        { key: `ltfx.n.8410a9442e3fb5c8ccf3.v1`, hasActiveRun: true, status: "running" },
+        { key: "agent:work:main", hasActiveRun: true, status: "running" },
       ]),
     });
 
@@ -439,7 +439,7 @@ describe("reconcileChatRunFromCurrentSessionRow stale-active suppression (#87875
       chatRunId: "run-global",
       chatStream: "streaming",
       sessionsResult: makeSessionsResult([
-        { key: `ltfx.n.83c93012e0a20d07ab8e.v1`, hasActiveRun: true, status: "running" },
+        { key: "agent:work:global", hasActiveRun: true, status: "running" },
       ]),
     });
 
@@ -461,7 +461,7 @@ describe("reconcileChatRunFromCurrentSessionRow stale-active suppression (#87875
       chatRunId: "run-global",
       chatStream: "streaming",
       sessionsResult: makeSessionsResult([
-        { key: `ltfx.n.ae334507f14ff501994b.v1`, hasActiveRun: true, status: "running" },
+        { key: "agent:work:inbox", hasActiveRun: true, status: "running" },
       ]),
     });
 

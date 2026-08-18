@@ -57,7 +57,7 @@ describe("acp setSessionMode bridge behavior", () => {
           },
           sessions: [
             {
-              key: `ltfx.n.80c9ee4a612936d8c1b4.v1`,
+              key: "mode-session",
               kind: "direct",
               updatedAt: Date.now(),
               thinkingLevel: "high",
@@ -113,7 +113,7 @@ describe("acp setSessionConfigOption bridge behavior", () => {
           },
           sessions: [
             {
-              key: `ltfx.n.709fd0a0a57bd99a2b0a.v1`,
+              key: "config-session",
               kind: "direct",
               updatedAt: Date.now(),
               thinkingLevel: "minimal",
@@ -170,7 +170,7 @@ describe("acp setSessionConfigOption bridge behavior", () => {
           },
           sessions: [
             {
-              key: `ltfx.n.66d37416f051880878b8.v1`,
+              key: "reasoning-session",
               kind: "direct",
               updatedAt: Date.now(),
               thinkingLevel: "minimal",
@@ -221,7 +221,7 @@ describe("acp setSessionConfigOption bridge behavior", () => {
           },
           sessions: [
             {
-              key: `ltfx.n.5f1fd903649ddc87a35f.v1`,
+              key: "fast-session",
               kind: "direct",
               updatedAt: Date.now(),
               thinkingLevel: "minimal",
@@ -234,7 +234,7 @@ describe("acp setSessionConfigOption bridge behavior", () => {
       }
       if (method === "sessions.patch") {
         expect(_params).toEqual({
-          key: `ltfx.n.5f1fd903649ddc87a35f.v1`,
+          key: "fast-session",
           fastMode: true,
         });
       }
@@ -277,7 +277,7 @@ describe("acp setSessionConfigOption bridge behavior", () => {
           },
           sessions: [
             {
-              key: `ltfx.n.bf6c1b9f7b18b832fbda.v1`,
+              key: "timeout-session",
               kind: "direct",
               updatedAt: Date.now(),
               thinkingLevel: "minimal",
@@ -323,7 +323,7 @@ describe("acp setSessionConfigOption bridge behavior", () => {
           },
           sessions: [
             {
-              key: `ltfx.n.85f6d231b7d8c872adfc.v1`,
+              key: "bool-config-session",
               kind: "direct",
               updatedAt: Date.now(),
               thinkingLevel: "minimal",
@@ -371,7 +371,7 @@ describe("acp setSessionConfigOption bridge behavior", () => {
           defaults: { modelProvider: null, model: null, contextTokens: null },
           sessions: [
             {
-              key: `ltfx.n.6b9db561586f76cd93aa.v1`,
+              key: "usage-inherit-session",
               kind: "direct",
               updatedAt: Date.now(),
               thinkingLevel: "minimal",
@@ -384,7 +384,7 @@ describe("acp setSessionConfigOption bridge behavior", () => {
       }
       if (method === "sessions.patch") {
         expect(requireRecord(_params, "sessions.patch params")).toMatchObject({
-          key: `ltfx.n.6b9db561586f76cd93aa.v1`,
+          key: "usage-inherit-session",
           responseUsage: null,
         });
       }
@@ -423,7 +423,7 @@ describe("acp setSessionConfigOption bridge behavior", () => {
           defaults: { modelProvider: null, model: null, contextTokens: null },
           sessions: [
             {
-              key: `ltfx.n.276ff71ea567c19d52b2.v1`,
+              key: "usage-off-session",
               kind: "direct",
               updatedAt: Date.now(),
               thinkingLevel: "minimal",
@@ -435,7 +435,7 @@ describe("acp setSessionConfigOption bridge behavior", () => {
       }
       if (method === "sessions.patch") {
         expect(requireRecord(_params, "sessions.patch params")).toMatchObject({
-          key: `ltfx.n.276ff71ea567c19d52b2.v1`,
+          key: "usage-off-session",
           responseUsage: "off",
         });
       }

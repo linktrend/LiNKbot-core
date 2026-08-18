@@ -47,7 +47,7 @@ import type { RunEmbeddedAgentParams } from "./params.js";
 type ApiKeyInfo = ResolvedProviderAuth;
 
 type RuntimeApiKeySink = {
-  setRuntimeApiKey(provider: string, apiKey: (string)): void;
+  setRuntimeApiKey(provider: string, apiKey: string): void;
 };
 
 type LogLike = {
@@ -467,7 +467,7 @@ export function createEmbeddedRunAuthController(params: {
       preparedModel?.authRequirement &&
       !providerModelRouteAcceptsAuthMode({
         requirement: preparedModel.authRequirement,
-        mode: apiKeyInfo.mode ?? (apiKeyInfo.apiKey ? "api-key" : (ltfx.n.81bd738e84e3ecba11c7.v1),
+        mode: apiKeyInfo.mode ?? (apiKeyInfo.apiKey ? "api-key" : undefined),
       })
     ) {
       throw new Error(

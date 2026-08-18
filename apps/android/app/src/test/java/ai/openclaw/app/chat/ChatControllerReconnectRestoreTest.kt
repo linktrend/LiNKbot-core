@@ -48,7 +48,7 @@ class ChatControllerReconnectRestoreTest {
       val sessionKey = "agent:main:node-device"
       val gateway = ScriptedGateway(json)
       gateway.respondWith("sessions.describe", """{"session":null}""")
-      gateway.respondWith("sessions.patch", """{"ok":true,"key":"${ltfx.n.516bb1b790c08744a47b.v1}"}""")
+      gateway.respondWith("sessions.patch", """{"ok":true,"key":"$sessionKey"}""")
       gateway.respondWith("chat.history", historyResponse("session-1", emptyList()))
       val controller = newScopedController(gateway)
 
@@ -98,8 +98,8 @@ class ChatControllerReconnectRestoreTest {
     runTest {
       val sessionKey = "agent:main:node-device"
       val gateway = ScriptedGateway(json)
-      gateway.respondWith("sessions.describe", """{"session":{"key":"${ltfx.n.516bb1b790c08744a47b.v1}"}}""")
-      gateway.respondWith("sessions.patch", """{"ok":true,"key":"${ltfx.n.516bb1b790c08744a47b.v1}"}""")
+      gateway.respondWith("sessions.describe", """{"session":{"key":"$sessionKey"}}""")
+      gateway.respondWith("sessions.patch", """{"ok":true,"key":"$sessionKey"}""")
       gateway.respondWith("chat.history", historyResponse("existing-session", listOf(userTurn)))
       val controller = newScopedController(gateway)
 
@@ -126,14 +126,14 @@ class ChatControllerReconnectRestoreTest {
       val gateway = ScriptedGateway(json)
       gateway.respondWith(
         "sessions.describe",
-        """{"session":{"key":"${ltfx.n.516bb1b790c08744a47b.v1}","label":"OpenClaw App · Pixel · device"}}""",
+        """{"session":{"key":"$sessionKey","label":"OpenClaw App · Pixel · device"}}""",
       )
-      gateway.respondWith("sessions.patch", """{"ok":true,"key":"${ltfx.n.516bb1b790c08744a47b.v1}"}""")
+      gateway.respondWith("sessions.patch", """{"ok":true,"key":"$sessionKey"}""")
       gateway.respondWith("chat.history", historyResponse("session-1", emptyList()))
       val controller = newScopedController(gateway)
       controller.handleGatewayEvent(
         "sessions.changed",
-        """{"reason":"patch","sessionKey":"${ltfx.n.516bb1b790c08744a47b.v1}","session":{"key":"${ltfx.n.516bb1b790c08744a47b.v1}","unread":true}}""",
+        """{"reason":"patch","sessionKey":"$sessionKey","session":{"key":"$sessionKey","unread":true}}""",
       )
 
       controller.prepareAndSelectMainSessionKey(sessionKey)
@@ -157,7 +157,7 @@ class ChatControllerReconnectRestoreTest {
       val gateway = ScriptedGateway(json)
       var storedLabel: String? = null
       gateway.respond("sessions.describe") {
-        storedLabel?.let { """{"session":{"key":"${ltfx.n.516bb1b790c08744a47b.v1}","label":"$it"}}""" }
+        storedLabel?.let { """{"session":{"key":"$sessionKey","label":"$it"}}""" }
           ?: """{"session":null}"""
       }
       gateway.respond("sessions.patch") { paramsJson ->
@@ -167,7 +167,7 @@ class ChatControllerReconnectRestoreTest {
             .jsonObject["label"]
             ?.jsonPrimitive
             ?.content
-        """{"ok":true,"key":"${ltfx.n.516bb1b790c08744a47b.v1}"}"""
+        """{"ok":true,"key":"$sessionKey"}"""
       }
       gateway.respondWith("chat.history", historyResponse("session-1", emptyList()))
       val controller = newScopedController(gateway)
@@ -269,7 +269,7 @@ class ChatControllerReconnectRestoreTest {
         if (reconnecting) {
           reconnectDescribe.await()
         } else {
-          """{"session":{"key":"${ltfx.n.516bb1b790c08744a47b.v1}","label":"OpenClaw App · Pixel · device"}}"""
+          """{"session":{"key":"$sessionKey","label":"OpenClaw App · Pixel · device"}}"""
         }
       }
       gateway.respondWith("chat.history", historyResponse("session-1", emptyList()))
@@ -288,7 +288,7 @@ class ChatControllerReconnectRestoreTest {
 
       assertEquals(historyCallsBeforeReconnect, gateway.callCount("chat.history"))
       reconnectDescribe.complete(
-        """{"session":{"key":"${ltfx.n.516bb1b790c08744a47b.v1}","label":"OpenClaw App · Pixel · device"}}""",
+        """{"session":{"key":"$sessionKey","label":"OpenClaw App · Pixel · device"}}""",
       )
       runCurrent()
       assertTrue(gateway.callCount("chat.history") > historyCallsBeforeReconnect)
@@ -307,7 +307,7 @@ class ChatControllerReconnectRestoreTest {
         if (describeCalls == 1) {
           staleDescribe.await()
         } else {
-          """{"session":{"key":"${ltfx.n.516bb1b790c08744a47b.v1}","label":"OpenClaw App · Pixel · device"}}"""
+          """{"session":{"key":"$sessionKey","label":"OpenClaw App · Pixel · device"}}"""
         }
       }
       gateway.respondWith("chat.history", historyResponse("session-1", emptyList()))
@@ -337,14 +337,14 @@ class ChatControllerReconnectRestoreTest {
       var sessionExists = false
       gateway.respond("sessions.describe") {
         if (sessionExists) {
-          """{"session":{"key":"${ltfx.n.516bb1b790c08744a47b.v1}","label":"OpenClaw App · Pixel · device"}}"""
+          """{"session":{"key":"$sessionKey","label":"OpenClaw App · Pixel · device"}}"""
         } else {
           """{"session":null}"""
         }
       }
       gateway.respond("sessions.patch") {
         sessionExists = true
-        """{"ok":true,"key":"${ltfx.n.516bb1b790c08744a47b.v1}"}"""
+        """{"ok":true,"key":"$sessionKey"}"""
       }
       gateway.respondWith("chat.history", historyResponse("session-1", emptyList()))
       val controller = newScopedController(gateway)

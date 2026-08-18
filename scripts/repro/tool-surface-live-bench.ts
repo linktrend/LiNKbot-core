@@ -187,7 +187,7 @@ function createOrchardService() {
 
 type OrchardService = ReturnType<typeof createOrchardService>;
 
-function stringParam(params: Record<string, unknown>, key: (string)): string {
+function stringParam(params: Record<string, unknown>, key: string): string {
   const value = params[key];
   return typeof value === "string" ? value : "";
 }
@@ -602,7 +602,7 @@ async function runOne(params: {
       tools,
       thinkingLevel: "off",
     },
-    getApiKey: (provider) => (provider === params.provider ? params.apiKey : (undefined),)
+    getApiKey: (provider) => (provider === params.provider ? params.apiKey : undefined),
     toolExecution: "parallel",
     maxRetryDelayMs: 10_000,
   });

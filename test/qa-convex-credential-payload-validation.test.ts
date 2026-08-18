@@ -9,8 +9,8 @@ describe("QA Convex credential payload validation", () => {
         guildId: " 1496962067029299350 ",
         channelId: "1496962068027281447",
         voiceChannelId: "1496962069025263624",
-        driverBotToken: `ltfx.n.d9b3c45f0ef675fe6db3.v1`,
-        sutBotToken: `ltfx.n.50f83cc49e938a081165.v1`,
+        driverBotToken: " driver-token ",
+        sutBotToken: "sut-token",
         sutApplicationId: "1496963665587601428",
         ignored: true,
       }),
@@ -18,8 +18,8 @@ describe("QA Convex credential payload validation", () => {
       guildId: "1496962067029299350",
       channelId: "1496962068027281447",
       voiceChannelId: "1496962069025263624",
-      driverBotToken: `ltfx.n.d09452324ca1e7009307.v1`,
-      sutBotToken: `ltfx.n.50f83cc49e938a081165.v1`,
+      driverBotToken: "driver-token",
+      sutBotToken: "sut-token",
       sutApplicationId: "1496963665587601428",
     });
   });
@@ -29,8 +29,8 @@ describe("QA Convex credential payload validation", () => {
       normalizeCredentialPayloadForKind("discord", {
         guildId: "not-a-snowflake",
         channelId: "1496962068027281447",
-        driverBotToken: `ltfx.n.d09452324ca1e7009307.v1`,
-        sutBotToken: `ltfx.n.50f83cc49e938a081165.v1`,
+        driverBotToken: "driver-token",
+        sutBotToken: "sut-token",
         sutApplicationId: "1496963665587601428",
       }),
     ).toThrow(/Discord snowflake/u);
@@ -42,7 +42,7 @@ describe("QA Convex credential payload validation", () => {
         guildId: "1496962067029299350",
         channelId: "1496962068027281447",
         driverBotToken: " ",
-        sutBotToken: `ltfx.n.50f83cc49e938a081165.v1`,
+        sutBotToken: "sut-token",
         sutApplicationId: "1496963665587601428",
       }),
     ).toThrow(/driverBotToken/u);
@@ -54,8 +54,8 @@ describe("QA Convex credential payload validation", () => {
         guildId: "1496962067029299350",
         channelId: "1496962068027281447",
         voiceChannelId: "voice-channel",
-        driverBotToken: `ltfx.n.d09452324ca1e7009307.v1`,
-        sutBotToken: `ltfx.n.50f83cc49e938a081165.v1`,
+        driverBotToken: "driver-token",
+        sutBotToken: "sut-token",
         sutApplicationId: "1496963665587601428",
       }),
     ).toThrow(/voiceChannelId/u);
@@ -73,7 +73,7 @@ describe("QA Convex credential payload validation", () => {
     expect(
       normalizeCredentialPayloadForKind("telegram-user", {
         groupId: " -100123 ",
-        sutToken: `ltfx.n.183ad1f7a58e0b5e9005.v1`,
+        sutToken: " sut-token ",
         testerUserId: " 8709353529 ",
         testerUsername: " OpenClawTestUser ",
         telegramApiId: " 123456 ",
@@ -87,7 +87,7 @@ describe("QA Convex credential payload validation", () => {
       }),
     ).toEqual({
       groupId: "-100123",
-      sutToken: `ltfx.n.50f83cc49e938a081165.v1`,
+      sutToken: "sut-token",
       testerUserId: "8709353529",
       testerUsername: "OpenClawTestUser",
       telegramApiId: "123456",
@@ -103,7 +103,7 @@ describe("QA Convex credential payload validation", () => {
   it("rejects malformed Telegram user credential payloads", () => {
     const validPayload = {
       groupId: "-100123",
-      sutToken: `ltfx.n.50f83cc49e938a081165.v1`,
+      sutToken: "sut-token",
       testerUserId: "8709353529",
       testerUsername: "OpenClawTestUser",
       telegramApiId: "123456",

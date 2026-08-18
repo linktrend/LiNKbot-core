@@ -183,7 +183,7 @@ describe("SessionManager tool-result replay", () => {
 
     let capturedPayload: unknown;
     const stream = streamAnthropic(makeAnthropicModel(), toLlmContext(context), {
-      apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`,
+      apiKey: "sk-ant-provider",
       onPayload: (payload) => {
         capturedPayload = payload;
         throw new Error("stop before network");
@@ -215,7 +215,7 @@ describe("SessionManager tool-result replay", () => {
 
     let capturedPayload: unknown;
     const stream = streamAnthropic(makeAnthropicModel(), toLlmContext(context), {
-      apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`,
+      apiKey: "sk-ant-provider",
       onPayload: (payload) => {
         capturedPayload = payload;
         throw new Error("stop before network");
@@ -256,7 +256,7 @@ describe("SessionManager tool-result replay", () => {
 
     let capturedPayload: unknown;
     const stream = streamAnthropic(makeAnthropicModel(), toLlmContext(context), {
-      apiKey: `ltfx.n.b952ad73a7d9b69133f3.v1`,
+      apiKey: "sk-ant-provider",
       onPayload: (payload) => {
         capturedPayload = payload;
         throw new Error("stop before network");

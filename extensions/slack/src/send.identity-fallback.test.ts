@@ -11,7 +11,7 @@ vi.mock("openclaw/plugin-sdk/runtime-env", () => ({
 
 const { sendMessageSlack, setSlackDefaultSendIdentity } = await import("./send.js");
 const { slackPlugin } = await import("./channel.js");
-const SLACK_TEST_CFG = { channels: { slack: { botToken: `ltfx.n.87894fe048938b686cfb.v1` } } };
+const SLACK_TEST_CFG = { channels: { slack: { botToken: "xoxb-test" } } };
 
 type SlackMissingScopeError = Error & {
   data?: {
@@ -78,7 +78,7 @@ describe("sendMessageSlack customize-scope fallback", () => {
     });
 
     await sendMessageSlack("channel:C123", "hello", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
     });
@@ -113,7 +113,7 @@ describe("sendMessageSlack customize-scope fallback", () => {
     vi.mocked(client.chat.postMessage).mockResolvedValueOnce({ ts: "171234.567" });
 
     await sendMessageSlack(target, "hello", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
     });
@@ -125,7 +125,7 @@ describe("sendMessageSlack customize-scope fallback", () => {
     const client = createSlackSendTestClient();
 
     await sendMessageSlack("u09g2dj0276", "hello", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       threadTs: "1712345678.123456",
@@ -143,7 +143,7 @@ describe("sendMessageSlack customize-scope fallback", () => {
     expect(target).toBe("channel:c08gqh53ejm");
 
     await sendMessageSlack(target ?? "", "hello", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
     });
@@ -157,7 +157,7 @@ describe("sendMessageSlack customize-scope fallback", () => {
       const client = createSlackSendTestClient();
 
       await sendMessageSlack(target, "hello", {
-        token: `ltfx.n.87894fe048938b686cfb.v1`,
+        token: "xoxb-test",
         cfg: SLACK_TEST_CFG,
         client,
         threadTs: "1712345678.123456",
@@ -174,7 +174,7 @@ describe("sendMessageSlack customize-scope fallback", () => {
     setSlackDefaultSendIdentity("default", { username: "Nik Team Claw" });
 
     await sendMessageSlack("channel:C123", "hello", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       identity: { username: "Explicit Bot", iconEmoji: ":robot_face:" },
@@ -196,7 +196,7 @@ describe("sendMessageSlack customize-scope fallback", () => {
       .mockResolvedValueOnce({ ts: "171234.567" });
 
     const result = await sendMessageSlack("channel:C123", "hello", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       identity: { username: "Bot", iconUrl: "https://example.com/bot.png" },
@@ -232,7 +232,7 @@ describe("sendMessageSlack customize-scope fallback", () => {
       .mockResolvedValueOnce({ ts: "171234.567" });
 
     await sendMessageSlack("channel:C123", "hello", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       identity: { iconEmoji: ":robot_face:" },
@@ -253,7 +253,7 @@ describe("sendMessageSlack customize-scope fallback", () => {
       .mockResolvedValueOnce({ ts: "171234.567" });
 
     await sendMessageSlack("channel:C123", "hello", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       identity: { username: "Bot" },
@@ -272,7 +272,7 @@ describe("sendMessageSlack customize-scope fallback", () => {
       .mockResolvedValueOnce({ ts: "171234.567" });
 
     await sendMessageSlack("channel:C123", "hello", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       identity: { username: "Pulse", iconEmoji: "📟" },
@@ -301,7 +301,7 @@ describe("sendMessageSlack customize-scope fallback", () => {
       .mockResolvedValueOnce({ ts: "171234.567" });
 
     await sendMessageSlack("channel:C123", "hello", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       cfg: SLACK_TEST_CFG,
       client,
       identity: { username: "Pulse", iconEmoji: "📟" },
@@ -326,8 +326,8 @@ describe("sendMessageSlack customize-scope fallback", () => {
       .mockResolvedValue({ ts: "171234.567" });
 
     await sendMessageSlack("channel:C123", "alpha beta", {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
-      cfg: { channels: { slack: { botToken: `ltfx.n.87894fe048938b686cfb.v1`, textChunkLimit: 5 } } },
+      token: "xoxb-test",
+      cfg: { channels: { slack: { botToken: "xoxb-test", textChunkLimit: 5 } } },
       client,
       identity: { username: "Pulse", iconEmoji: "📟" },
     });
@@ -350,7 +350,7 @@ describe("sendMessageSlack customize-scope fallback", () => {
 
     await expect(
       sendMessageSlack("channel:C123", "hello", {
-        token: `ltfx.n.87894fe048938b686cfb.v1`,
+        token: "xoxb-test",
         cfg: SLACK_TEST_CFG,
         client,
         identity: { username: "Bot" },
@@ -368,7 +368,7 @@ describe("sendMessageSlack customize-scope fallback", () => {
 
     await expect(
       sendMessageSlack("channel:C123", "hello", {
-        token: `ltfx.n.87894fe048938b686cfb.v1`,
+        token: "xoxb-test",
         cfg: SLACK_TEST_CFG,
         client,
       }),
@@ -390,7 +390,7 @@ describe("sendMessageSlack customize-scope fallback", () => {
 
     await expect(
       sendMessageSlack("channel:C123", "hello", {
-        token: `ltfx.n.87894fe048938b686cfb.v1`,
+        token: "xoxb-test",
         cfg: SLACK_TEST_CFG,
         client,
       }),
@@ -410,7 +410,7 @@ describe("sendMessageSlack customize-scope fallback", () => {
 
     await expect(
       sendMessageSlack("user:U123", "hello", {
-        token: `ltfx.n.87894fe048938b686cfb.v1`,
+        token: "xoxb-test",
         cfg: SLACK_TEST_CFG,
         client,
         threadTs: "171234.100",

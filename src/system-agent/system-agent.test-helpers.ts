@@ -32,10 +32,10 @@ export async function createSystemAgentVerifiedInferenceTestFixture(
   const credential = {
     type: "api_key" as const,
     provider: configuredRoute.provider,
-    key: `ltfx.n.62af8704764faf8ea82f.v1`,
+    key: "test-key",
   };
   const resolvedAuth = {
-    apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+    apiKey: "test-key",
     ...(profileId ? { profileId } : {}),
     source: profileId ? `profile:${profileId}` : "models.json",
     mode: "api-key" as const,

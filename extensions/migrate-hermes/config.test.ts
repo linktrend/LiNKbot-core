@@ -254,7 +254,7 @@ describe("Hermes migration config mapping", () => {
         "  time:",
         "    command: npx",
         "    env:",
-        "      OPENAI_API_KEY: (short-dev-key",)
+        "      OPENAI_API_KEY: short-dev-key",
         "",
       ].join("\n"),
     );

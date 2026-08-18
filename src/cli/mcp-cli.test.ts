@@ -1028,7 +1028,7 @@ describe("mcp cli", () => {
 
       expect(serveOpenClawChannelMcp).toHaveBeenCalledWith({
         gatewayUrl: "ws://127.0.0.1:18789",
-        gatewayToken: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
+        gatewayToken: "secret-token",
         gatewayPassword: undefined,
         claudeChannelMode: "on",
         verbose: true,

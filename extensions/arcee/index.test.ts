@@ -55,7 +55,7 @@ describe("arcee provider plugin", () => {
         log: () => {},
       },
       resolveApiKey: async () => ({
-        key: `ltfx.n.0610a0635a6fb4029973.v1`,
+        key: "sk-or-test",
         source: "profile",
       }),
       toApiKeyCredential: () => null,
@@ -84,7 +84,7 @@ describe("arcee provider plugin", () => {
     const provider = await registerSingleProviderPlugin(arceePlugin);
     const catalogProvider = await runSingleProviderCatalog(provider, {
       resolveProviderApiKey: (id?: string) =>
-        id === "arcee" ? { apiKey: `ltfx.n.62af8704764faf8ea82f.v1` } : { apiKey: undefined },
+        id === "arcee" ? { apiKey: "test-key" } : { apiKey: undefined },
     });
 
     expect(catalogProvider.api).toBe("openai-completions");
@@ -105,9 +105,9 @@ describe("arcee provider plugin", () => {
     const provider = await registerSingleProviderPlugin(arceePlugin);
     const catalogProvider = await runSingleProviderCatalog(provider, {
       resolveProviderApiKey: (id?: string) =>
-        id === "openrouter" ? { apiKey: `ltfx.n.0610a0635a6fb4029973.v1` } : { apiKey: undefined },
+        id === "openrouter" ? { apiKey: "sk-or-test" } : { apiKey: undefined },
       resolveProviderAuth: () => ({
-        apiKey: `ltfx.n.0610a0635a6fb4029973.v1`,
+        apiKey: "sk-or-test",
         mode: "api_key",
         source: "env",
       }),

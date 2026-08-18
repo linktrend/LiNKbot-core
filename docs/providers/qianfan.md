@@ -69,7 +69,7 @@ You only need to override `models.providers.qianfan` when you need a custom base
 
 ```json5
 {
-  env: { QIANFAN_API_KEY: "${ltfx.n.9d18a7cd0d3431943a65.v1}" },
+  env: { QIANFAN_API_KEY: "bce-v3/ALTAK-..." },
   agents: {
     defaults: {
       model: { primary: "qianfan/deepseek-v3.2" },

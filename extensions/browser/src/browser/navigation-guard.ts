@@ -32,7 +32,7 @@ export class InvalidBrowserNavigationUrlError extends Error {
 }
 
 /** Parse a page-navigation URL and reject credentials before any transport dispatch. */
-export function parseBrowserNavigationUrl(url: (string)): URL {
+export function parseBrowserNavigationUrl(url: string): URL {
   const rawUrl = url.trim();
   if (!rawUrl) {
     throw new InvalidBrowserNavigationUrlError("url is required");

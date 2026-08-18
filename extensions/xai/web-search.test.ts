@@ -194,13 +194,13 @@ describe("xai web search config resolution", () => {
   });
 
   it("prefers configured api keys and resolves grok scoped defaults", () => {
-    expect(resolveXaiWebSearchCredential({ grok: { apiKey: `ltfx.n.537d3df13db5071308ae.v1` } })).toBe("xai-secret");
+    expect(resolveXaiWebSearchCredential({ grok: { apiKey: "xai-secret" } })).toBe("xai-secret");
     expect(resolveXaiWebSearchModel()).toBe("grok-4.3");
     expect(resolveXaiInlineCitations()).toBe(false);
   });
 
   it("uses config apiKey when provided", () => {
-    expect(resolveXaiWebSearchCredential({ grok: { apiKey: `ltfx.n.6ccc25dc7ade3810857a.v1` } })).toBe(
+    expect(resolveXaiWebSearchCredential({ grok: { apiKey: "xai-test-key" } })).toBe(
       "xai-test-key",
     );
   });
@@ -236,7 +236,7 @@ describe("xai web search config resolution", () => {
               enabled: true,
               config: {
                 webSearch: {
-                  apiKey: `ltfx.n.63fd23d8d91d38a2f24e.v1`,
+                  apiKey: "plugin-key",
                   inlineCitations: true,
                   model: "grok-4-fast-reasoning",
                 },
@@ -254,7 +254,7 @@ describe("xai web search config resolution", () => {
   });
 
   it("treats unresolved non-env SecretRefs as missing credentials instead of using env fallback", async () => {
-    await withEnvAsync({ XAI_API_KEY: `ltfx.n.7f737a6eb2c033c9bb7a.v1` }, async () => {
+    await withEnvAsync({ XAI_API_KEY: "ambient-xai-test-key" }, async () => {
       const provider = createXaiWebSearchProvider();
       const maybeTool = provider.createTool({
         config: {
@@ -288,7 +288,7 @@ describe("xai web search config resolution", () => {
 
   it("uses xAI OAuth auth before API-key fallback for web search", async () => {
     providerAuthRuntimeMocks.resolveApiKeyForProvider.mockResolvedValue({
-      apiKey: `ltfx.n.12d9dec609e00a33a35a.v1`,
+      apiKey: "oauth-web-search-token",
       source: "profile:xai:default",
       mode: "oauth",
       profileId: "xai:default",
@@ -305,7 +305,7 @@ describe("xai web search config resolution", () => {
             xai: {
               config: {
                 webSearch: {
-                  apiKey: `ltfx.n.a1625e3020a5e9c96c08.v1`,
+                  apiKey: "configured-xai-key",
                 },
               },
             },
@@ -330,7 +330,7 @@ describe("xai web search config resolution", () => {
 
   it("uses the active agentDir for xAI OAuth web search auth", async () => {
     providerAuthRuntimeMocks.resolveApiKeyForProvider.mockResolvedValue({
-      apiKey: `ltfx.n.a8e70da6c1c16e622a2c.v1`,
+      apiKey: "active-agent-oauth-token",
       source: "profile:xai:active",
       mode: "oauth",
       profileId: "xai:active",
@@ -366,13 +366,13 @@ describe("xai web search config resolution", () => {
   it("refreshes xAI OAuth auth and retries web search after a 401", async () => {
     providerAuthRuntimeMocks.resolveApiKeyForProvider
       .mockResolvedValueOnce({
-        apiKey: `ltfx.n.9f0286e915aa015d99f3.v1`,
+        apiKey: "expired-oauth-token",
         source: "profile:xai:default",
         mode: "oauth",
         profileId: "xai:default",
       })
       .mockResolvedValueOnce({
-        apiKey: `ltfx.n.a8e91d725336a257f65c.v1`,
+        apiKey: "fresh-oauth-token",
         source: "profile:xai:default",
         mode: "oauth",
         profileId: "xai:default",
@@ -430,19 +430,19 @@ describe("xai web search config resolution", () => {
   it("falls back to xAI API-key auth when OAuth refresh cannot recover", async () => {
     providerAuthRuntimeMocks.resolveApiKeyForProvider
       .mockResolvedValueOnce({
-        apiKey: `ltfx.n.9f0286e915aa015d99f3.v1`,
+        apiKey: "expired-oauth-token",
         source: "profile:xai:default",
         mode: "oauth",
         profileId: "xai:default",
       })
       .mockResolvedValueOnce({
-        apiKey: `ltfx.n.9f0286e915aa015d99f3.v1`,
+        apiKey: "expired-oauth-token",
         source: "profile:xai:default",
         mode: "oauth",
         profileId: "xai:default",
       })
       .mockResolvedValueOnce({
-        apiKey: `ltfx.n.142f474942f18734c706.v1`,
+        apiKey: "xai-env-fallback-key",
         source: "XAI_API_KEY",
         mode: "api-key",
       });
@@ -496,25 +496,25 @@ describe("xai web search config resolution", () => {
   it("falls back to an xAI API-key auth profile when stale OAuth remains first", async () => {
     providerAuthRuntimeMocks.resolveApiKeyForProvider
       .mockResolvedValueOnce({
-        apiKey: `ltfx.n.9f0286e915aa015d99f3.v1`,
+        apiKey: "expired-oauth-token",
         source: "profile:xai:default",
         mode: "oauth",
         profileId: "xai:default",
       })
       .mockResolvedValueOnce({
-        apiKey: `ltfx.n.9f0286e915aa015d99f3.v1`,
+        apiKey: "expired-oauth-token",
         source: "profile:xai:default",
         mode: "oauth",
         profileId: "xai:default",
       })
       .mockResolvedValueOnce({
-        apiKey: `ltfx.n.9f0286e915aa015d99f3.v1`,
+        apiKey: "expired-oauth-token",
         source: "profile:xai:default",
         mode: "oauth",
         profileId: "xai:default",
       })
       .mockResolvedValueOnce({
-        apiKey: `ltfx.n.e66d55c60540b3f13fb7.v1`,
+        apiKey: "xai-profile-api-key",
         source: "profile:xai:key",
         mode: "api-key",
         profileId: "xai:key",
@@ -592,13 +592,13 @@ describe("xai web search config resolution", () => {
   it("falls back to env auth after a stale xAI API-key auth profile returns unauthorized", async () => {
     providerAuthRuntimeMocks.resolveApiKeyForProvider
       .mockResolvedValueOnce({
-        apiKey: `ltfx.n.0450199094151b82fdd8.v1`,
+        apiKey: "stale-profile-key",
         source: "profile:xai:default",
         mode: "api-key",
         profileId: "xai:default",
       })
       .mockResolvedValueOnce({
-        apiKey: `ltfx.n.142f474942f18734c706.v1`,
+        apiKey: "xai-env-fallback-key",
         source: "XAI_API_KEY",
         mode: "api-key",
       });
@@ -667,7 +667,7 @@ describe("xai web search config resolution", () => {
               enabled: true,
               config: {
                 webSearch: {
-                  apiKey: `ltfx.n.6ccc25dc7ade3810857a.v1`,
+                  apiKey: "xai-test-key",
                 },
               },
             },
@@ -736,7 +736,7 @@ describe("xai web search config resolution", () => {
             xai: {
               config: {
                 webSearch: {
-                  apiKey: `ltfx.n.2b45467c746505c513d6.v1`, // pragma: allowlist secret
+                  apiKey: "xai-provider-fallback", // pragma: allowlist secret
                 },
               },
             },
@@ -744,7 +744,7 @@ describe("xai web search config resolution", () => {
         },
       } as never),
     ).toEqual({
-      apiKey: `ltfx.n.2b45467c746505c513d6.v1`,
+      apiKey: "xai-provider-fallback",
       source: "plugins.entries.xai.config.webSearch.apiKey",
     });
   });
@@ -797,7 +797,7 @@ describe("xai web search config resolution", () => {
             xai: {
               config: {
                 webSearch: {
-                  apiKey: `ltfx.n.a373864f193351ba8c5f.v1`,
+                  apiKey: "xai-config-test",
                   baseUrl: "https://api.x.ai/proxy/v1/",
                 },
               },
@@ -840,7 +840,7 @@ describe("xai web search config resolution", () => {
             xai: {
               config: {
                 webSearch: {
-                  apiKey: `ltfx.n.6ccc25dc7ade3810857a.v1`, // pragma: allowlist secret
+                  apiKey: "xai-test-key", // pragma: allowlist secret
                 },
               },
             },
@@ -870,7 +870,7 @@ describe("xai web search config resolution", () => {
             xai: {
               config: {
                 webSearch: {
-                  apiKey: `ltfx.n.6ccc25dc7ade3810857a.v1`, // pragma: allowlist secret
+                  apiKey: "xai-test-key", // pragma: allowlist secret
                 },
               },
             },
@@ -935,7 +935,7 @@ describe("xai web search config resolution", () => {
       requestXaiWebSearch({
         query: "OpenClaw",
         model: "grok-4.3",
-        apiKey: `ltfx.n.6ccc25dc7ade3810857a.v1`,
+        apiKey: "xai-test-key",
         endpoint: "https://api.x.ai/v1/responses",
         timeoutSeconds: 60,
         inlineCitations: false,

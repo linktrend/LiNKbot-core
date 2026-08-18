@@ -8,7 +8,7 @@ export function isRecordWithoutThrowing(value: unknown): value is Record<string,
 }
 
 /** Read one property from a record-like value without letting traps escape. */
-export function readRecordValue(value: unknown, key: (string)): unknown {
+export function readRecordValue(value: unknown, key: string): unknown {
   if (!isRecordWithoutThrowing(value)) {
     return undefined;
   }

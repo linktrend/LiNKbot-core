@@ -86,15 +86,15 @@ describe("Slack live QA runtime helpers", () => {
     expect(
       testing.resolveSlackQaRuntimeEnv({
         OPENCLAW_QA_SLACK_CHANNEL_ID: "C123456789",
-        OPENCLAW_QA_SLACK_DRIVER_BOT_TOKEN: `ltfx.n.0d74cd34ae29be463d9b.v1`,
-        OPENCLAW_QA_SLACK_SUT_BOT_TOKEN: `ltfx.n.d6314f1fab97bd5f6d0b.v1`,
-        OPENCLAW_QA_SLACK_SUT_APP_TOKEN: `ltfx.n.b76cbb98b7e8f1ee9819.v1`,
+        OPENCLAW_QA_SLACK_DRIVER_BOT_TOKEN: "xoxb-driver",
+        OPENCLAW_QA_SLACK_SUT_BOT_TOKEN: "xoxb-sut",
+        OPENCLAW_QA_SLACK_SUT_APP_TOKEN: "xapp-sut",
       }),
     ).toEqual({
       channelId: "C123456789",
-      driverBotToken: `ltfx.n.0d74cd34ae29be463d9b.v1`,
-      sutBotToken: `ltfx.n.d6314f1fab97bd5f6d0b.v1`,
-      sutAppToken: `ltfx.n.b76cbb98b7e8f1ee9819.v1`,
+      driverBotToken: "xoxb-driver",
+      sutBotToken: "xoxb-sut",
+      sutAppToken: "xapp-sut",
     });
   });
 
@@ -102,9 +102,9 @@ describe("Slack live QA runtime helpers", () => {
     expect(() =>
       testing.resolveSlackQaRuntimeEnv({
         OPENCLAW_QA_SLACK_CHANNEL_ID: "qa-channel",
-        OPENCLAW_QA_SLACK_DRIVER_BOT_TOKEN: `ltfx.n.0d74cd34ae29be463d9b.v1`,
-        OPENCLAW_QA_SLACK_SUT_BOT_TOKEN: `ltfx.n.d6314f1fab97bd5f6d0b.v1`,
-        OPENCLAW_QA_SLACK_SUT_APP_TOKEN: `ltfx.n.b76cbb98b7e8f1ee9819.v1`,
+        OPENCLAW_QA_SLACK_DRIVER_BOT_TOKEN: "xoxb-driver",
+        OPENCLAW_QA_SLACK_SUT_BOT_TOKEN: "xoxb-sut",
+        OPENCLAW_QA_SLACK_SUT_APP_TOKEN: "xapp-sut",
       }),
     ).toThrow("OPENCLAW_QA_SLACK channelId must be a Slack id like C123 or U123.");
   });
@@ -113,15 +113,15 @@ describe("Slack live QA runtime helpers", () => {
     expect(
       testing.parseSlackQaCredentialPayload({
         channelId: "C123456789",
-        driverBotToken: `ltfx.n.0d74cd34ae29be463d9b.v1`,
-        sutBotToken: `ltfx.n.d6314f1fab97bd5f6d0b.v1`,
-        sutAppToken: `ltfx.n.b76cbb98b7e8f1ee9819.v1`,
+        driverBotToken: "xoxb-driver",
+        sutBotToken: "xoxb-sut",
+        sutAppToken: "xapp-sut",
       }),
     ).toEqual({
       channelId: "C123456789",
-      driverBotToken: `ltfx.n.0d74cd34ae29be463d9b.v1`,
-      sutBotToken: `ltfx.n.d6314f1fab97bd5f6d0b.v1`,
-      sutAppToken: `ltfx.n.b76cbb98b7e8f1ee9819.v1`,
+      driverBotToken: "xoxb-driver",
+      sutBotToken: "xoxb-sut",
+      sutAppToken: "xapp-sut",
     });
   });
 
@@ -208,8 +208,8 @@ describe("Slack live QA runtime helpers", () => {
           },
         },
         sutAccountId: "sut",
-        sutAppToken: `ltfx.n.b76cbb98b7e8f1ee9819.v1`,
-        sutBotToken: `ltfx.n.d6314f1fab97bd5f6d0b.v1`,
+        sutAppToken: "xapp-sut",
+        sutBotToken: "xoxb-sut",
       },
     );
 
@@ -251,8 +251,8 @@ describe("Slack live QA runtime helpers", () => {
         },
         primaryModel: "openai/gpt-5.6-luna",
         sutAccountId: "sut",
-        sutAppToken: `ltfx.n.b76cbb98b7e8f1ee9819.v1`,
-        sutBotToken: `ltfx.n.d6314f1fab97bd5f6d0b.v1`,
+        sutAppToken: "xapp-sut",
+        sutBotToken: "xoxb-sut",
       },
     );
 
@@ -289,8 +289,8 @@ describe("Slack live QA runtime helpers", () => {
           users: ["U_NEVER_ALLOWED"],
         },
         sutAccountId: "sut",
-        sutAppToken: `ltfx.n.b76cbb98b7e8f1ee9819.v1`,
-        sutBotToken: `ltfx.n.d6314f1fab97bd5f6d0b.v1`,
+        sutAppToken: "xapp-sut",
+        sutBotToken: "xoxb-sut",
       },
     );
 
@@ -370,8 +370,8 @@ describe("Slack live QA runtime helpers", () => {
           driverBotUserId: "U999999999",
           overrides: scenario.configOverrides,
           sutAccountId: "sut",
-          sutAppToken: `ltfx.n.b76cbb98b7e8f1ee9819.v1`,
-          sutBotToken: `ltfx.n.d6314f1fab97bd5f6d0b.v1`,
+          sutAppToken: "xapp-sut",
+          sutBotToken: "xoxb-sut",
         },
       );
     };
@@ -960,8 +960,8 @@ describe("Slack live QA runtime helpers", () => {
         channelId: "C123456789",
         driverBotUserId: "U111111111",
         sutAccountId: "sut",
-        sutAppToken: `ltfx.n.b76cbb98b7e8f1ee9819.v1`,
-        sutBotToken: `ltfx.n.d6314f1fab97bd5f6d0b.v1`,
+        sutAppToken: "xapp-sut",
+        sutBotToken: "xoxb-sut",
       },
     );
 
@@ -1013,8 +1013,8 @@ describe("Slack live QA runtime helpers", () => {
         channelId: "C123456789",
         driverBotUserId: "U111111111",
         sutAccountId: "sut",
-        sutAppToken: `ltfx.n.b76cbb98b7e8f1ee9819.v1`,
-        sutBotToken: `ltfx.n.d6314f1fab97bd5f6d0b.v1`,
+        sutAppToken: "xapp-sut",
+        sutBotToken: "xoxb-sut",
       },
     );
 
@@ -1047,8 +1047,8 @@ describe("Slack live QA runtime helpers", () => {
         channelId: "C123456789",
         driverBotUserId: "U111111111",
         sutAccountId: "sut",
-        sutAppToken: `ltfx.n.b76cbb98b7e8f1ee9819.v1`,
-        sutBotToken: `ltfx.n.d6314f1fab97bd5f6d0b.v1`,
+        sutAppToken: "xapp-sut",
+        sutBotToken: "xoxb-sut",
       },
     );
 
@@ -1075,8 +1075,8 @@ describe("Slack live QA runtime helpers", () => {
         driverBotUserId: "U999999999",
         overrides: scenario?.configOverrides,
         sutAccountId: "sut",
-        sutAppToken: `ltfx.n.b76cbb98b7e8f1ee9819.v1`,
-        sutBotToken: `ltfx.n.d6314f1fab97bd5f6d0b.v1`,
+        sutAppToken: "xapp-sut",
+        sutBotToken: "xoxb-sut",
       },
     );
 
@@ -1092,8 +1092,8 @@ describe("Slack live QA runtime helpers", () => {
         driverBotUserId: "U999999999",
         overrides: scenario?.configOverrides,
         sutAccountId: "sut",
-        sutAppToken: `ltfx.n.b76cbb98b7e8f1ee9819.v1`,
-        sutBotToken: `ltfx.n.d6314f1fab97bd5f6d0b.v1`,
+        sutAppToken: "xapp-sut",
+        sutBotToken: "xoxb-sut",
       },
     );
 
@@ -1110,8 +1110,8 @@ describe("Slack live QA runtime helpers", () => {
         driverBotUserId: "U999999999",
         overrides: scenario?.configOverrides,
         sutAccountId: "sut",
-        sutAppToken: `ltfx.n.b76cbb98b7e8f1ee9819.v1`,
-        sutBotToken: `ltfx.n.d6314f1fab97bd5f6d0b.v1`,
+        sutAppToken: "xapp-sut",
+        sutBotToken: "xoxb-sut",
       },
     );
 

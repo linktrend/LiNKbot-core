@@ -120,7 +120,7 @@ describe("createCodexSupervisionToolsMcpServer", () => {
           entries: {
             " CODEX ": {
               config: {
-                appServer: { transport: "websocket", url: `ltfx.n.e4c3a801a18ffb80b599.v1` },
+                appServer: { transport: "websocket", url: "ws://127.0.0.1:4500" },
                 supervision: { enabled: false },
               },
             },
@@ -137,7 +137,7 @@ describe("createCodexSupervisionToolsMcpServer", () => {
         codex: {
           enabled: true,
           config: {
-            appServer: { transport: "websocket", url: `ltfx.n.e4c3a801a18ffb80b599.v1` },
+            appServer: { transport: "websocket", url: "ws://127.0.0.1:4500" },
             supervision: { enabled: true },
           },
         },

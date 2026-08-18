@@ -362,7 +362,7 @@ describe("TelnyxProvider Media Streaming (PCMU)", () => {
       to: "+15550000002",
       webhookUrl: "https://example.test/voice/webhook",
       streamUrl: "wss://example.test/voice/stream/realtime/token-xyz",
-      streamAuthToken: `ltfx.n.0f55333bafabf7977430.v1`,
+      streamAuthToken: "token-xyz",
     });
 
     const request = requireFetchRequest();
@@ -419,7 +419,7 @@ describe("TelnyxProvider Media Streaming (PCMU)", () => {
       callId: "call-1",
       providerCallId: "call-control-1",
       streamUrl: "wss://example.test/voice/stream/realtime/token-xyz",
-      streamAuthToken: `ltfx.n.0f55333bafabf7977430.v1`,
+      streamAuthToken: "token-xyz",
     });
 
     const body = JSON.parse(requireFetchRequest().init?.body as string) as Record<string, unknown>;

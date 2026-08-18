@@ -41,7 +41,7 @@ describe("resolveGatewayHealthProbeToken", () => {
     await withTempDir(async (dir) => {
       const tokenPath = path.join(dir, "gateway-token.txt");
       await writeSecureFile(tokenPath, "file-secret-token\n");
-      process.env.OPENCLAW_GATEWAY_TOKEN = `ltfx.n.23189e4e6d23fbb8f28d.v1`;
+      process.env.OPENCLAW_GATEWAY_TOKEN = "stale-env-token";
 
       const resolved = await resolveGatewayHealthProbeToken({
         gateway: {
@@ -65,13 +65,13 @@ describe("resolveGatewayHealthProbeToken", () => {
         },
       } as OpenClawConfig);
 
-      expect(resolved).toEqual({ token: `ltfx.n.3c36425812a20e70fdc1.v1` });
+      expect(resolved).toEqual({ token: "file-secret-token" });
     });
   });
 
   it("does not fall back to stale OPENCLAW_GATEWAY_TOKEN when a SecretRef is unresolved", async () => {
     await withTempDir(async (dir) => {
-      process.env.OPENCLAW_GATEWAY_TOKEN = `ltfx.n.23189e4e6d23fbb8f28d.v1`;
+      process.env.OPENCLAW_GATEWAY_TOKEN = "stale-env-token";
 
       const resolved = await resolveGatewayHealthProbeToken({
         gateway: {
@@ -103,8 +103,8 @@ describe("resolveGatewayHealthProbeToken", () => {
   });
 
   it("resolves password auth for the local onboarding health probe", async () => {
-    process.env.OPENCLAW_GATEWAY_TOKEN = `ltfx.n.23189e4e6d23fbb8f28d.v1`;
-    process.env.OPENCLAW_GATEWAY_PASSWORD = `ltfx.n.b1eb3909e2f829bebf9e.v1`; // pragma: allowlist secret
+    process.env.OPENCLAW_GATEWAY_TOKEN = "stale-env-token";
+    process.env.OPENCLAW_GATEWAY_PASSWORD = "resolved-password"; // pragma: allowlist secret
 
     const resolved = await resolveGatewayHealthProbeToken({
       gateway: {
@@ -119,16 +119,16 @@ describe("resolveGatewayHealthProbeToken", () => {
       },
     } as OpenClawConfig);
 
-    expect(resolved).toEqual({ password: `ltfx.n.b1eb3909e2f829bebf9e.v1` });
+    expect(resolved).toEqual({ password: "resolved-password" });
   });
 
   it("resolves environment-only password auth for the local onboarding health probe", async () => {
-    process.env.OPENCLAW_GATEWAY_PASSWORD = `ltfx.n.317447a4583475a65e68.v1`; // pragma: allowlist secret
+    process.env.OPENCLAW_GATEWAY_PASSWORD = "environment-password"; // pragma: allowlist secret
 
     const resolved = await resolveGatewayHealthProbeToken({
       gateway: { auth: { mode: "password" } },
     } as OpenClawConfig);
 
-    expect(resolved).toEqual({ password: `ltfx.n.317447a4583475a65e68.v1` });
+    expect(resolved).toEqual({ password: "environment-password" });
   });
 });

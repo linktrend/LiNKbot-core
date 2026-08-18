@@ -56,7 +56,7 @@ describe("resolveNonInteractiveApiKey", () => {
       runtime: runtime as never,
     });
 
-    expect(result).toEqual({ key: `ltfx.n.7964c71c12f373c8b925.v1`, source: "flag" });
+    expect(result).toEqual({ key: "xai-flag-key", source: "flag" });
     expect(resolveEnvApiKey).not.toHaveBeenCalled();
     expect(runtime.exit).not.toHaveBeenCalled();
   });
@@ -138,7 +138,7 @@ describe("resolveNonInteractiveApiKey", () => {
     const runtime = createRuntime();
     resolveEnvApiKey.mockReturnValue(null);
     const previousCustomApiKey = process.env.CUSTOM_API_KEY;
-    process.env.CUSTOM_API_KEY = `ltfx.n.09a114ed843aa73818d9.v1`; // pragma: allowlist secret
+    process.env.CUSTOM_API_KEY = "custom-env-key"; // pragma: allowlist secret
 
     try {
       const result = await resolveNonInteractiveApiKey({
@@ -151,7 +151,7 @@ describe("resolveNonInteractiveApiKey", () => {
       });
 
       expect(result).toEqual({
-        key: `ltfx.n.09a114ed843aa73818d9.v1`,
+        key: "custom-env-key",
         source: "env",
         envVarName: "CUSTOM_API_KEY",
       });
@@ -169,7 +169,7 @@ describe("resolveNonInteractiveApiKey", () => {
     const runtime = createRuntime();
     resolveEnvApiKey.mockReturnValue(null);
     const previousCustomApiKey = process.env.CUSTOM_API_KEY;
-    process.env.CUSTOM_API_KEY = `ltfx.n.09a114ed843aa73818d9.v1`; // pragma: allowlist secret
+    process.env.CUSTOM_API_KEY = "custom-env-key"; // pragma: allowlist secret
 
     try {
       const result = await resolveNonInteractiveApiKey({
@@ -183,7 +183,7 @@ describe("resolveNonInteractiveApiKey", () => {
       });
 
       expect(result).toEqual({
-        key: `ltfx.n.09a114ed843aa73818d9.v1`,
+        key: "custom-env-key",
         source: "env",
         envVarName: "CUSTOM_API_KEY",
       });
@@ -202,7 +202,7 @@ describe("resolveNonInteractiveApiKey", () => {
     authStore.profiles["custom-models-custom-local:default"] = {
       type: "api_key",
       provider: "custom-models-custom-local",
-      key: `ltfx.n.51b403c78970dd4ead58.v1`,
+      key: "custom-profile-key",
     };
     resolveEnvApiKey.mockReturnValue(null);
 
@@ -214,7 +214,7 @@ describe("resolveNonInteractiveApiKey", () => {
       runtime: runtime as never,
     });
 
-    expect(result).toEqual({ key: `ltfx.n.51b403c78970dd4ead58.v1`, source: "profile" });
+    expect(result).toEqual({ key: "custom-profile-key", source: "profile" });
     expect(resolveApiKeyForProfile).toHaveBeenCalledOnce();
     const [profileParams] = resolveApiKeyForProfile.mock.calls[0] ?? [];
     expect(profileParams?.profileId).toBe("custom-models-custom-local:default");

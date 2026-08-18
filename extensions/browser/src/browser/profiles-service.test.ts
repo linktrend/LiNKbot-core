@@ -348,7 +348,7 @@ describe("BrowserProfilesService", () => {
       ssrfPolicy: { dangerouslyAllowPrivateNetwork: true },
     });
     const { ctx } = createCtx(resolved);
-    const cdpUrl = "http://browser-user:browser-password@127.0.0.1:9222/?token=(browser-token";)
+    const cdpUrl = "http://browser-user:browser-password@127.0.0.1:9222/?token=browser-token";
 
     vi.mocked(getRuntimeConfig).mockReturnValue({ browser: { profiles: {} } });
 
@@ -870,7 +870,7 @@ describe("BrowserProfilesService", () => {
         state,
         runtime,
         configRevision: getProfileLifecycle(runtime).configRevision,
-        key: `ltfx.n.6f3d98480bd02d6d6d2a.v1`,
+        key: "after-drift",
         run: async () => {},
       }),
     ).resolves.toBeUndefined();

@@ -279,7 +279,7 @@ describe("session message-cut methods", () => {
     mocks.capability = true;
     mocks.upstreamFork.mockResolvedValue({
       status: "created",
-      key: `ltfx.n.3512782ecaf30b31f6c5.v1`,
+      key: "agent:main:dashboard:forked",
       editorText: "edit me",
     });
 

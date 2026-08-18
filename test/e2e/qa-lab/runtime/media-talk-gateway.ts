@@ -139,7 +139,7 @@ module.exports = {
           provider: ${JSON.stringify(FIXTURE_REALTIME_PROVIDER_ID)},
           transport: "provider-websocket",
           protocol: "google-live-bidi",
-          clientSecret: `ltfx.n.3e8dd9b9c8a65de2910e.v1`,
+          clientSecret: "qa-browser-token",
           websocketUrl: "wss://qa.invalid/realtime",
           audio: {
             inputEncoding: "pcm16",

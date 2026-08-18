@@ -13,7 +13,7 @@ describe("poll params", () => {
     ).toBe(false);
   });
 
-  it.each([{ key: `ltfx.n.efe4d9fa578bdd380645.v1` }, { key: `ltfx.n.c4d5d227aaa4bd6bf47f.v1` }])(
+  it.each([{ key: "pollAnonymous" }, { key: "pollPublic" }])(
     "does not treat channel-extra $key=true as poll creation intent",
     ({ key }) => {
       expect(

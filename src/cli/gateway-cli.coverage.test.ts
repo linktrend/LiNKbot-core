@@ -54,12 +54,12 @@ vi.mock(
   () => ({
     buildGatewayConnectionDetails: () => ({
       message: "Gateway mode: local\nGateway target: ws://127.0.0.1:18789",
-      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      url: "ws://127.0.0.1:18789",
     }),
     buildGatewayProbeConnectionDetails: () => ({
       preauthHandshakeTimeoutMs: 1000,
       tlsFingerprint: undefined,
-      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      url: "ws://127.0.0.1:18789",
     }),
     callGateway: (opts: unknown) => callGateway(opts),
     formatGatewayClientRequestErrorJson: (error: unknown) =>
@@ -448,7 +448,7 @@ describe("gateway-cli coverage", () => {
         message: "gateway closed (1006)",
       },
       gateway: {
-        url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+        url: "ws://127.0.0.1:18789",
         urlSource: "local loopback",
       },
     };

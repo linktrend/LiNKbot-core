@@ -312,7 +312,7 @@ describe("command gating", () => {
       elevated: {
         enabled: true,
         allowed: false,
-        failures: [{ gate: "allowFrom", key: `ltfx.n.5343600702f0ae50ff3b.v1` }],
+        failures: [{ gate: "allowFrom", key: "tools.elevated.allowFrom.whatsapp" }],
       },
     });
     expect(result.text).toContain("elevated is not available");
@@ -401,14 +401,14 @@ describe("command gating", () => {
         },
         browser: {
           cdpUrl:
-            "wss://chrome.example.test/devtools?token=(OPENCLAW_CONFIG_SHOW_CANARY_CDP_TOKEN_65623&apiKey=(OPENCLAW_CONFIG_SHOW_CANARY_CDP_API_KEY_65623",))
+            "wss://chrome.example.test/devtools?token=OPENCLAW_CONFIG_SHOW_CANARY_CDP_TOKEN_65623&apiKey=OPENCLAW_CONFIG_SHOW_CANARY_CDP_API_KEY_65623",
           profiles: {
             local: {
               cdpUrl: "ws://localhost:9222",
             },
             remote: {
               cdpUrl:
-                "wss://chrome.remote.example.test/devtools?apiKey=(OPENCLAW_CONFIG_SHOW_CANARY_CDP_PROFILE_API_KEY_65623",)
+                "wss://chrome.remote.example.test/devtools?apiKey=OPENCLAW_CONFIG_SHOW_CANARY_CDP_PROFILE_API_KEY_65623",
             },
           },
         },
@@ -423,7 +423,7 @@ describe("command gating", () => {
         },
         channels: {
           telegram: {
-            botToken: `ltfx.n.9795af3d0ce2196a901c.v1`,
+            botToken: "1234567890TELEGRAM_BOT_TOKEN",
             enabled: true,
           },
           slack: {
@@ -499,7 +499,7 @@ describe("command gating", () => {
       parsed: {
         browser: {
           cdpUrl:
-            "wss://chrome.example.test/devtools?token=(OPENCLAW_CONFIG_SHOW_CANARY_CDP_TOKEN_65623&apiKey=(OPENCLAW_CONFIG_SHOW_CANARY_CDP_API_KEY_65623",))
+            "wss://chrome.example.test/devtools?token=OPENCLAW_CONFIG_SHOW_CANARY_CDP_TOKEN_65623&apiKey=OPENCLAW_CONFIG_SHOW_CANARY_CDP_API_KEY_65623",
         },
       },
     });

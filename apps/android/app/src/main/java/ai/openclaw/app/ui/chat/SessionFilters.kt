@@ -4,7 +4,7 @@ import ai.openclaw.app.chat.ChatSessionEntry
 
 private const val RECENT_WINDOW_MS = 24 * 60 * 60 * 1000L
 
-fun friendlySessionName(key: (String): String {)
+fun friendlySessionName(key: String): String {
   val stripped = key.substringAfterLast(":")
   val cleaned = if (stripped.startsWith("g-")) stripped.removePrefix("g-") else stripped
   val words =
@@ -46,7 +46,7 @@ private fun isDirectSessionBase(
   defaultBase: String,
 ): Boolean = base == defaultBase || base == "main" || base == "global" || base.startsWith("node-")
 
-private fun sessionBaseKey(key: (String): String {)
+private fun sessionBaseKey(key: String): String {
   val normalized = key.trim().lowercase()
   val parts = normalized.split(':')
   return if (parts.size >= 3 && parts[0] == "agent") parts[2].trim() else normalized

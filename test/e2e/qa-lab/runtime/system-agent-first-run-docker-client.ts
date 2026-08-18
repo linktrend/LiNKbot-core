@@ -353,7 +353,7 @@ async function main() {
     "OpenClaw wrote a per-agent model instead of inheriting the verified default",
   );
   assert(config.channels?.discord?.enabled === true, "OpenClaw did not enable Discord");
-  const discordToken = (config.channels?.discord?.token;)
+  const discordToken = config.channels?.discord?.token;
   assert(
     discordToken &&
       typeof discordToken === "object" &&

@@ -69,7 +69,7 @@ describe("Hermes migration secret items", () => {
     const workspaceDir = path.join(root, "workspace");
     const stateDir = path.join(root, "state");
     const customAgentDir = path.join(root, "custom-agent");
-    await writeFile(path.join(source, ".env"), "OPENAI_API_KEY=(sk-hermes\n");)
+    await writeFile(path.join(source, ".env"), "OPENAI_API_KEY=sk-hermes\n");
     const config = {
       agents: {
         defaults: {
@@ -131,7 +131,7 @@ describe("Hermes migration secret items", () => {
     expect(authStore.profiles?.["openai:hermes-import"]).toEqual({
       type: "api_key",
       provider: "openai",
-      key: `ltfx.n.f50ca498170091191e8e.v1`,
+      key: "sk-hermes",
       displayName: "Hermes import",
     });
     await expectMissingPath(path.join(stateDir, "agents", "custom", "agent", "auth-profiles.json"));
@@ -252,7 +252,7 @@ describe("Hermes migration secret items", () => {
   });
 
   it.each([
-    ["ltfx.n.4d777459fa23c36f2928.v1", "kimi"],
+    ["sk-kimi-placeholder", "kimi"],
     ["legacy-moonshot-placeholder", "moonshot"],
   ])("aligns KIMI_API_KEY with its effective %s route", async (apiKey, expectedProvider) => {
     const root = await makeTempRoot();
@@ -650,7 +650,7 @@ describe("Hermes migration secret items", () => {
     const stateDir = path.join(root, "state");
     const reportDir = path.join(root, "report");
     const agentDir = path.join(stateDir, "agents", "main", "agent");
-    await writeFile(path.join(source, ".env"), "OPENAI_API_KEY=(sk-hermes\n");)
+    await writeFile(path.join(source, ".env"), "OPENAI_API_KEY=sk-hermes\n");
     const config = {
       agents: {
         defaults: {
@@ -681,7 +681,7 @@ describe("Hermes migration secret items", () => {
 
     const result = await provider.apply(ctx, plan);
 
-    const item = result.items.find((entry) => entry.id === "secret:(openai");)
+    const item = result.items.find((entry) => entry.id === "secret:openai");
     expect(item).toEqual(
       expect.objectContaining({
         status: "migrated",
@@ -695,7 +695,7 @@ describe("Hermes migration secret items", () => {
       expect.objectContaining({
         type: "api_key",
         provider: "openai",
-        key: `ltfx.n.f50ca498170091191e8e.v1`,
+        key: "sk-hermes",
       }),
     );
   });
@@ -706,11 +706,11 @@ describe("Hermes migration secret items", () => {
     const workspaceDir = path.join(root, "workspace");
     const stateDir = path.join(root, "state");
     const agentDir = path.join(stateDir, "agents", "main", "agent");
-    await writeFile(path.join(source, ".env"), "OPENAI_API_KEY=(sk-hermes\n");)
+    await writeFile(path.join(source, ".env"), "OPENAI_API_KEY=sk-hermes\n");
     await writeFile(
       path.join(agentDir, "auth.json"),
       JSON.stringify({
-        openai: { type: "api_key", provider: "openai", key: `ltfx.n.e22504ae91b29eb8e93a.v1` },
+        openai: { type: "api_key", provider: "openai", key: "legacy-main-key" },
       }),
     );
 
@@ -728,7 +728,7 @@ describe("Hermes migration secret items", () => {
     const stateDir = path.join(root, "state");
     const reportDir = path.join(root, "report");
     const agentDir = path.join(stateDir, "agents", "main", "agent");
-    await writeFile(path.join(source, ".env"), "OPENAI_API_KEY=(sk-hermes\n");)
+    await writeFile(path.join(source, ".env"), "OPENAI_API_KEY=sk-hermes\n");
 
     const provider = buildHermesMigrationProvider();
     const ctx = makeContext({
@@ -786,7 +786,7 @@ describe("Hermes migration secret items", () => {
     const workspaceDir = path.join(root, "workspace");
     const stateDir = path.join(root, "state");
     const agentDir = path.join(stateDir, "agents", "main", "agent");
-    await writeFile(path.join(source, ".env"), "OPENAI_API_KEY=(sk-hermes\n");)
+    await writeFile(path.join(source, ".env"), "OPENAI_API_KEY=sk-hermes\n");
     const config = {
       agents: {
         defaults: {
@@ -833,7 +833,7 @@ describe("Hermes migration secret items", () => {
     const workspaceDir = path.join(root, "workspace");
     const stateDir = path.join(root, "state");
     const agentDir = path.join(stateDir, "agents", "main", "agent");
-    await writeFile(path.join(source, ".env"), "OPENAI_API_KEY=(sk-hermes\n");)
+    await writeFile(path.join(source, ".env"), "OPENAI_API_KEY=sk-hermes\n");
     const config = {
       agents: {
         defaults: {
@@ -883,7 +883,7 @@ describe("Hermes migration secret items", () => {
     const agentDir = path.join(stateDir, "agents", "main", "agent");
     await writeFile(
       path.join(source, ".env"),
-      ["OPENCODE_ZEN_API_KEY=(opencode-key", "COPILOT_GITHUB_TOKEN=(gho-copilot-token", ""].join())
+      ["OPENCODE_ZEN_API_KEY=opencode-key", "COPILOT_GITHUB_TOKEN=gho-copilot-token", ""].join(
         "\n",
       ),
     );
@@ -910,7 +910,7 @@ describe("Hermes migration secret items", () => {
     expect(plan.items).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          id: "secret:(opencode",)
+          id: "secret:opencode",
           status: "planned",
           details: expect.objectContaining({
             envVar: "OPENCODE_ZEN_API_KEY",
@@ -919,7 +919,7 @@ describe("Hermes migration secret items", () => {
           }),
         }),
         expect.objectContaining({
-          id: "secret:(opencode-go",)
+          id: "secret:opencode-go",
           status: "planned",
           details: expect.objectContaining({
             envVar: "OPENCODE_ZEN_API_KEY",
@@ -928,7 +928,7 @@ describe("Hermes migration secret items", () => {
           }),
         }),
         expect.objectContaining({
-          id: "secret:(github-copilot",)
+          id: "secret:github-copilot",
           status: "planned",
           details: expect.objectContaining({
             envVar: "COPILOT_GITHUB_TOKEN",
@@ -948,21 +948,21 @@ describe("Hermes migration secret items", () => {
       expect.objectContaining({
         type: "api_key",
         provider: "opencode",
-        key: `ltfx.n.fdb8098c5444351c67f4.v1`,
+        key: "opencode-key",
       }),
     );
     expect(authStore.profiles?.["opencode-go:hermes-import"]).toEqual(
       expect.objectContaining({
         type: "api_key",
         provider: "opencode-go",
-        key: `ltfx.n.fdb8098c5444351c67f4.v1`,
+        key: "opencode-key",
       }),
     );
     expect(authStore.profiles?.["github-copilot:github"]).toEqual(
       expect.objectContaining({
         type: "token",
         provider: "github-copilot",
-        token: `ltfx.n.e5ca4faa36614ca2f0dc.v1`,
+        token: "gho-copilot-token",
       }),
     );
     expect(config.auth?.profiles?.["github-copilot:github"]).toEqual(
@@ -980,7 +980,7 @@ describe("Hermes migration secret items", () => {
     const stateDir = path.join(root, "state");
     const reportDir = path.join(root, "report");
     const agentDir = path.join(stateDir, "agents", "main", "agent");
-    await writeFile(path.join(source, ".env"), "PERPLEXITY_API_KEY=(pplx-hermes\n");)
+    await writeFile(path.join(source, ".env"), "PERPLEXITY_API_KEY=pplx-hermes\n");
 
     const provider = buildHermesMigrationProvider();
     const ctx = makeContext({
@@ -1019,11 +1019,11 @@ describe("Hermes migration secret items", () => {
         },
         opencode: {
           type: "api",
-          key: `ltfx.n.de54b64c268b20bc7bdb.v1`,
+          key: "opencode-zen-key",
         },
         "opencode-go": {
           type: "api",
-          key: `ltfx.n.6602b55f9d592f5f015d.v1`,
+          key: "opencode-go-key",
         },
       }),
     );
@@ -1050,7 +1050,7 @@ describe("Hermes migration secret items", () => {
     expect(plan.items).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          id: "secret:(opencode:opencode-auth-json",)
+          id: "secret:opencode:opencode-auth-json",
           status: "planned",
           source: path.join(root, ".local", "share", "opencode", "auth.json"),
           details: expect.objectContaining({
@@ -1061,7 +1061,7 @@ describe("Hermes migration secret items", () => {
           }),
         }),
         expect.objectContaining({
-          id: "secret:(opencode-go:opencode-auth-json",)
+          id: "secret:opencode-go:opencode-auth-json",
           status: "planned",
           details: expect.objectContaining({
             provider: "opencode-go",
@@ -1071,7 +1071,7 @@ describe("Hermes migration secret items", () => {
           }),
         }),
         expect.objectContaining({
-          id: "secret:(github-copilot:opencode-auth-json",)
+          id: "secret:github-copilot:opencode-auth-json",
           status: "planned",
           details: expect.objectContaining({
             mode: "token",
@@ -1092,21 +1092,21 @@ describe("Hermes migration secret items", () => {
       expect.objectContaining({
         type: "api_key",
         provider: "opencode",
-        key: `ltfx.n.de54b64c268b20bc7bdb.v1`,
+        key: "opencode-zen-key",
       }),
     );
     expect(authStore.profiles?.["opencode-go:hermes-import"]).toEqual(
       expect.objectContaining({
         type: "api_key",
         provider: "opencode-go",
-        key: `ltfx.n.6602b55f9d592f5f015d.v1`,
+        key: "opencode-go-key",
       }),
     );
     expect(authStore.profiles?.["github-copilot:github"]).toEqual(
       expect.objectContaining({
         type: "token",
         provider: "github-copilot",
-        token: `ltfx.n.e2fdd28e11aeeb562c78.v1`,
+        token: "gho-opencode-copilot-token",
       }),
     );
   });
@@ -1176,7 +1176,7 @@ describe("Hermes migration secret items", () => {
       JSON.stringify({
         opencode: {
           type: "api",
-          key: `ltfx.n.2949032bbccd0e5843ba.v1`,
+          key: "sibling-opencode-key",
         },
       }),
     );
@@ -1185,7 +1185,7 @@ describe("Hermes migration secret items", () => {
       JSON.stringify({
         opencode: {
           type: "api",
-          key: `ltfx.n.b9dd6d39b6336a21c49b.v1`,
+          key: "xdg-opencode-key",
         },
       }),
     );
@@ -1214,7 +1214,7 @@ describe("Hermes migration secret items", () => {
       expect(plan.items).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
-            id: "secret:(opencode:opencode-auth-json",)
+            id: "secret:opencode:opencode-auth-json",
             source: path.join(xdgDataHome, "opencode", "auth.json"),
             status: "planned",
           }),
@@ -1229,7 +1229,7 @@ describe("Hermes migration secret items", () => {
         expect.objectContaining({
           type: "api_key",
           provider: "opencode",
-          key: `ltfx.n.b9dd6d39b6336a21c49b.v1`,
+          key: "xdg-opencode-key",
         }),
       );
     } finally {

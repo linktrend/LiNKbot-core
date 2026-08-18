@@ -397,7 +397,7 @@ export function resolveCodexAppServerPreparedApiKeyCacheKey(
   return resolved ? fingerprintApiKeyAuthProfileCacheKey(resolved) : undefined;
 }
 
-function fingerprintApiKeyAuthProfileCacheKey(apiKey: (string)): string {
+function fingerprintApiKeyAuthProfileCacheKey(apiKey: string): string {
   const hash = createHash("sha256");
   hash.update("openclaw:codex:app-server-auth-profile-api-key:v1");
   hash.update("\0");
@@ -405,7 +405,7 @@ function fingerprintApiKeyAuthProfileCacheKey(apiKey: (string)): string {
   return `api_key:sha256:${hash.digest("hex")}`;
 }
 
-function fingerprintTokenAuthProfileCacheKey(accessToken: (string)): string {
+function fingerprintTokenAuthProfileCacheKey(accessToken: string): string {
   const hash = createHash("sha256");
   hash.update("openclaw:codex:app-server-auth-profile-token:v1");
   hash.update("\0");
@@ -413,7 +413,7 @@ function fingerprintTokenAuthProfileCacheKey(accessToken: (string)): string {
   return `token:sha256:${hash.digest("hex")}`;
 }
 
-function fingerprintCodexCliAuthFileApiKeyCacheKey(apiKey: (string)): string {
+function fingerprintCodexCliAuthFileApiKeyCacheKey(apiKey: string): string {
   const hash = createHash("sha256");
   hash.update("openclaw:codex:app-server-cli-auth-json-api-key:v1");
   hash.update("\0");

@@ -129,7 +129,7 @@ function renderAssistantMessages(
       : Date.now();
   const group: MessageGroup = {
     kind: "group",
-    key: `ltfx.n.da20cb624556a4804c8c.v1`,
+    key: "assistant-group",
     role: "assistant",
     messages: messages.map((message, index) => ({
       key: `assistant-message-${index}`,
@@ -157,7 +157,7 @@ function renderAssistantMessageEntries(
 ) {
   const group: MessageGroup = {
     kind: "group",
-    key: `ltfx.n.da20cb624556a4804c8c.v1`,
+    key: "assistant-group",
     role: "assistant",
     messages: entries,
     timestamp: Date.now(),
@@ -473,7 +473,7 @@ describe("grouped chat rendering", () => {
     const container = document.createElement("div");
     renderAssistantMessageEntries(container, [
       {
-        key: `ltfx.n.01f9048160382e83f80b.v1`,
+        key: "assistant-heartbeat",
         message: {
           role: "assistant",
           content: [{ type: "text", text: "HEARTBEAT_OK" }],
@@ -1000,15 +1000,15 @@ describe("grouped chat rendering", () => {
 
     render(
       renderStreamGroup([
-        { kind: "stream", key: `ltfx.n.62c3579faac9768d7d4b.v1`, text: "first", startedAt: 20, isStreaming: false },
+        { kind: "stream", key: "stream-seg:s:0", text: "first", startedAt: 20, isStreaming: false },
         {
           kind: "stream",
-          key: `ltfx.n.cfdecace8057de6be637.v1`,
+          key: "stream-seg:s:1",
           text: "second",
           startedAt: 10,
           isStreaming: false,
         },
-        { kind: "stream", key: `ltfx.n.d5fad0c94734a83a32a9.v1`, text: "third", startedAt: 30, isStreaming: true },
+        { kind: "stream", key: "stream:s:live", text: "third", startedAt: 30, isStreaming: true },
       ]),
       container,
     );
@@ -1047,7 +1047,7 @@ describe("grouped chat rendering", () => {
       renderStreamGroup([
         {
           kind: "stream",
-          key: `ltfx.n.373a2a154984ddc0f767.v1`,
+          key: "stream:1",
           text: "Completed segment",
           startedAt: 1,
           isStreaming: false,
@@ -1069,7 +1069,7 @@ describe("grouped chat rendering", () => {
       renderStreamGroup([
         {
           kind: "stream",
-          key: `ltfx.n.373a2a154984ddc0f767.v1`,
+          key: "stream:1",
           text: "**live**\nreply",
           startedAt: 1,
           isStreaming: true,
@@ -1138,7 +1138,7 @@ describe("grouped chat rendering", () => {
       renderStreamGroup(
         [
           { kind: "reading-indicator", key: "reading", startedAt: 1_000 },
-          { kind: "plan", key: `ltfx.n.06ec0ae185d2551dbb0f.v1` },
+          { kind: "plan", key: "plan:main:active" },
         ],
         {
           planActive: true,
@@ -1164,7 +1164,7 @@ describe("grouped chat rendering", () => {
 
     render(
       renderStreamGroup([
-        { kind: "stream", key: `ltfx.n.d5fad0c94734a83a32a9.v1`, text: "reply", startedAt: 10, isStreaming: true },
+        { kind: "stream", key: "stream:s:live", text: "reply", startedAt: 10, isStreaming: true },
         { kind: "reading-indicator", key: "reading", startedAt: 10 },
       ]),
       container,
@@ -1247,13 +1247,13 @@ describe("grouped chat rendering", () => {
     const container = document.createElement("div");
     const group: MessageGroup = {
       kind: "group",
-      key: `ltfx.n.a29eca1279f587ded62a.v1`,
+      key: "attributed-user-group",
       role: "user",
       senderLabel: "alice",
       sender: { id: "profile-1", name: "Alice Example" },
       messages: [
         {
-          key: `ltfx.n.6b0d132a354ad1f51a1c.v1`,
+          key: "attributed-user-message",
           message: { role: "user", content: "hello", timestamp: 1000 },
         },
       ],
@@ -1288,13 +1288,13 @@ describe("grouped chat rendering", () => {
       renderMessageGroup(
         {
           kind: "group",
-          key: `ltfx.n.003b3a22bb64c5301268.v1`,
+          key: "attributed-user",
           role: "user",
           senderLabel: "Alice Example",
           sender: { id: "profile_123", name: "Alice Example" },
           messages: [
             {
-              key: `ltfx.n.e1c0f96a7f98e9c5cbe3.v1`,
+              key: "attributed-message",
               message: { role: "user", content: "hello", timestamp: 1000 },
             },
           ],
@@ -1324,7 +1324,7 @@ describe("grouped chat rendering", () => {
     const container = document.createElement("div");
     const group: MessageGroup = {
       kind: "group",
-      key: `ltfx.n.147f081c8b82a5d4caa2.v1`,
+      key: "gravatar-user",
       role: "user",
       senderLabel: "alice",
       // profileAvatarUrl exercises the img tier; bare emails render initials
@@ -1332,7 +1332,7 @@ describe("grouped chat rendering", () => {
       sender: { id: "alice@example.com", profileAvatarUrl: "/api/users/alice/avatar" },
       messages: [
         {
-          key: `ltfx.n.d629d423d8e0d155b53c.v1`,
+          key: "gravatar-message",
           message: { role: "user", content: "hello", timestamp: 1000 },
         },
       ],
@@ -1371,13 +1371,13 @@ describe("grouped chat rendering", () => {
     const container = document.createElement("div");
     const group: MessageGroup = {
       kind: "group",
-      key: `ltfx.n.a28de7bdd3cacaa73166.v1`,
+      key: "assistant-with-sender",
       role: "assistant",
       senderLabel: "Forwarded Agent",
       sender: { id: "agent@example.com", name: "Forwarded Agent" },
       messages: [
         {
-          key: `ltfx.n.226b930ac461d570b17c.v1`,
+          key: "assistant-message",
           message: { role: "assistant", content: "hello", timestamp: 1000 },
         },
       ],
@@ -1399,12 +1399,12 @@ describe("grouped chat rendering", () => {
     const container = document.createElement("div");
     const group: MessageGroup = {
       kind: "group",
-      key: `ltfx.n.8899b9885c41a4bfe763.v1`,
+      key: "forwarded-group",
       role: "assistant",
       senderLabel: "Forwarded from main",
       messages: [
         {
-          key: `ltfx.n.22cfa1686752c5206852.v1`,
+          key: "forwarded-message",
           message: { role: "assistant", content: "forwarded report", timestamp: 1000 },
         },
       ],
@@ -1430,11 +1430,11 @@ describe("grouped chat rendering", () => {
     const container = document.createElement("div");
     const group: MessageGroup = {
       kind: "group",
-      key: `ltfx.n.5a51589c0f51b0c77587.v1`,
+      key: "tool-group",
       role: "tool",
       messages: [
         {
-          key: `ltfx.n.f71ea4d4890652e229ff.v1`,
+          key: "tool-message-1",
           message: {
             role: "toolResult",
             toolCallId: "call-1",
@@ -1444,7 +1444,7 @@ describe("grouped chat rendering", () => {
           },
         },
         {
-          key: `ltfx.n.66971283643efd29353d.v1`,
+          key: "tool-message-2",
           message: {
             role: "toolResult",
             toolCallId: "call-2",
@@ -1475,11 +1475,11 @@ describe("grouped chat rendering", () => {
     const container = document.createElement("div");
     const group: MessageGroup = {
       kind: "group",
-      key: `ltfx.n.a4c79097d743b916c072.v1`,
+      key: "parallel-tool-group",
       role: "tool",
       messages: [
         {
-          key: `ltfx.n.b16a9a6f3f891a8a89e3.v1`,
+          key: "parallel-tool-message",
           message: {
             role: "assistant",
             content: [
@@ -1533,11 +1533,11 @@ describe("grouped chat rendering", () => {
     const container = document.createElement("div");
     const group: MessageGroup = {
       kind: "group",
-      key: `ltfx.n.c56336397077bb25a9dd.v1`,
+      key: "running-tool-group",
       role: "tool",
       messages: [
         {
-          key: `ltfx.n.bd45f77e997b15755010.v1`,
+          key: "finished-read",
           message: {
             role: "toolResult",
             toolCallId: "call-read",
@@ -1546,7 +1546,7 @@ describe("grouped chat rendering", () => {
           },
         },
         {
-          key: `ltfx.n.cbb6baea4dc93e5291bd.v1`,
+          key: "running-edit",
           message: {
             role: "assistant",
             __openclawToolStreamLive: true,
@@ -1579,11 +1579,11 @@ describe("grouped chat rendering", () => {
     const onToggleToolMessageExpanded = vi.fn();
     const group: MessageGroup = {
       kind: "group",
-      key: `ltfx.n.5a51589c0f51b0c77587.v1`,
+      key: "tool-group",
       role: "tool",
       messages: [
         {
-          key: `ltfx.n.f71ea4d4890652e229ff.v1`,
+          key: "tool-message-1",
           message: {
             role: "toolResult",
             toolCallId: "call-1",
@@ -1594,7 +1594,7 @@ describe("grouped chat rendering", () => {
           },
         },
         {
-          key: `ltfx.n.66971283643efd29353d.v1`,
+          key: "tool-message-2",
           message: {
             role: "toolResult",
             toolCallId: "call-2",
@@ -1643,12 +1643,12 @@ describe("grouped chat rendering", () => {
     const container = document.createElement("div");
     const group: MessageGroup = {
       kind: "group",
-      key: `ltfx.n.5a51589c0f51b0c77587.v1`,
+      key: "tool-group",
       role: "tool",
       turnSucceeded: true,
       messages: [
         {
-          key: `ltfx.n.f71ea4d4890652e229ff.v1`,
+          key: "tool-message-1",
           message: {
             role: "toolResult",
             toolCallId: "call-1",
@@ -1659,7 +1659,7 @@ describe("grouped chat rendering", () => {
           },
         },
         {
-          key: `ltfx.n.66971283643efd29353d.v1`,
+          key: "tool-message-2",
           message: {
             role: "toolResult",
             toolCallId: "call-2",
@@ -1687,12 +1687,12 @@ describe("grouped chat rendering", () => {
     const container = document.createElement("div");
     const group: MessageGroup = {
       kind: "group",
-      key: `ltfx.n.cb49848bea06afd2f9d5.v1`,
+      key: "recovered-tool-group",
       role: "tool",
       turnSucceeded: true,
       messages: [
         {
-          key: `ltfx.n.7d7a9d25f34c0947ab2a.v1`,
+          key: "recovered-tool-message",
           message: {
             role: "assistant",
             isError: true,
@@ -1715,7 +1715,7 @@ describe("grouped chat rendering", () => {
           },
         },
         {
-          key: `ltfx.n.64ee805b0d339ae4970c.v1`,
+          key: "recovered-followup",
           message: {
             role: "toolResult",
             toolCallId: "call-followup",
@@ -1749,11 +1749,11 @@ describe("grouped chat rendering", () => {
     const container = document.createElement("div");
     const group: MessageGroup = {
       kind: "group",
-      key: `ltfx.n.5a51589c0f51b0c77587.v1`,
+      key: "tool-group",
       role: "tool",
       messages: [
         {
-          key: `ltfx.n.f71ea4d4890652e229ff.v1`,
+          key: "tool-message-1",
           message: {
             role: "toolResult",
             toolCallId: "call-1",
@@ -1763,7 +1763,7 @@ describe("grouped chat rendering", () => {
           },
         },
         {
-          key: `ltfx.n.66971283643efd29353d.v1`,
+          key: "tool-message-2",
           message: {
             role: "toolResult",
             toolCallId: "call-2",
@@ -2346,7 +2346,7 @@ describe("grouped chat rendering", () => {
         {
           showToolCalls: false,
           basePath: "/openclaw",
-          assistantAttachmentAuthToken: `ltfx.n.c101e911469c96917104.v1`,
+          assistantAttachmentAuthToken: "session-token",
           localMediaPreviewRoots: ["/tmp/openclaw"],
           onRequestUpdate: renderMessage,
         },
@@ -2451,7 +2451,7 @@ describe("grouped chat rendering", () => {
         {
           showToolCalls: false,
           basePath: "/openclaw",
-          assistantAttachmentAuthToken: `ltfx.n.f35cd067d05752edf483.v1`,
+          assistantAttachmentAuthToken: "test-auth-token",
           localMediaPreviewRoots: ["/tmp/openclaw"],
           onRequestUpdate: rerender,
         },
@@ -2662,7 +2662,7 @@ describe("grouped chat rendering", () => {
         renderGroupedMessage(container, message, "user", {
           showToolCalls: false,
           basePath: "/openclaw",
-          assistantAttachmentAuthToken: `ltfx.n.f35cd067d05752edf483.v1`,
+          assistantAttachmentAuthToken: "test-auth-token",
           localMediaPreviewRoots: ["/tmp/openclaw"],
           onRequestUpdate: rerender,
         });
@@ -2736,7 +2736,7 @@ describe("grouped chat rendering", () => {
         {
           showToolCalls: false,
           basePath: "/openclaw",
-          assistantAttachmentAuthToken: `ltfx.n.f35cd067d05752edf483.v1`,
+          assistantAttachmentAuthToken: "test-auth-token",
           localMediaPreviewRoots: [],
           onRequestUpdate: rerender,
         },
@@ -2828,7 +2828,7 @@ describe("grouped chat rendering", () => {
       "user",
       {
         showToolCalls: false,
-        assistantAttachmentAuthToken: `ltfx.n.c101e911469c96917104.v1`,
+        assistantAttachmentAuthToken: "session-token",
         localMediaPreviewRoots: [],
       },
     );
@@ -2874,7 +2874,7 @@ describe("grouped chat rendering", () => {
       },
       {
         showToolCalls: false,
-        assistantAttachmentAuthToken: `ltfx.n.f35cd067d05752edf483.v1`,
+        assistantAttachmentAuthToken: "test-auth-token",
       },
     );
 
@@ -2920,7 +2920,7 @@ describe("grouped chat rendering", () => {
       },
       {
         showToolCalls: false,
-        assistantAttachmentAuthToken: `ltfx.n.f35cd067d05752edf483.v1`,
+        assistantAttachmentAuthToken: "test-auth-token",
       },
     );
 
@@ -3135,7 +3135,7 @@ describe("grouped chat rendering", () => {
       },
       {
         showToolCalls: false,
-        assistantAttachmentAuthToken: `ltfx.n.c101e911469c96917104.v1`,
+        assistantAttachmentAuthToken: "session-token",
       },
     );
 
@@ -3272,7 +3272,7 @@ describe("grouped chat rendering", () => {
               render: "url",
               viewId: "cv_inline_scoped",
               title: "Scoped preview",
-              url: `ltfx.n.0310a9d4e721819b7039.v1`,
+              url: "/__openclaw__/canvas/documents/cv_inline_scoped/index.html",
               preferredHeight: 320,
             },
           },
@@ -3308,7 +3308,7 @@ describe("grouped chat rendering", () => {
               render: "url",
               viewId: "cv_canvas_live_history",
               title: "Live history preview",
-              url: `ltfx.n.49ae200546e0660e8ea0.v1`,
+              url: "/__openclaw__/canvas/documents/cv_canvas_live_history/index.html",
               preferredHeight: 420,
             },
             rawText: JSON.stringify({
@@ -3316,7 +3316,7 @@ describe("grouped chat rendering", () => {
               view: {
                 backend: "canvas",
                 id: "cv_canvas_live_history",
-                url: `ltfx.n.49ae200546e0660e8ea0.v1`,
+                url: "/__openclaw__/canvas/documents/cv_canvas_live_history/index.html",
               },
               presentation: {
                 target: "assistant_message",
@@ -3503,7 +3503,7 @@ describe("grouped chat rendering", () => {
               view: {
                 backend: "canvas",
                 id: "cv_inline_visible",
-                url: `ltfx.n.f94d100a727281be77d3.v1`,
+                url: "/__openclaw__/canvas/documents/cv_inline_visible/index.html",
                 title: "Inline demo",
                 preferred_height: 360,
               },

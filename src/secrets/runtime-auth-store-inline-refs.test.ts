@@ -15,7 +15,7 @@ describe("secrets runtime snapshot inline auth-store refs", () => {
   it("normalizes inline SecretRef object on token to tokenRef", async () => {
     const snapshot = await prepareSecretsRuntimeSnapshot({
       config: asConfig({ models: {}, secrets: {} }),
-      env: { MY_TOKEN: `ltfx.n.add2ad8b691adcee95e6.v1` },
+      env: { MY_TOKEN: "resolved-token-value" },
       agentDirs: ["/tmp/openclaw-agent-main"],
       loadablePluginOrigins: EMPTY_LOADABLE_PLUGIN_ORIGINS,
       loadAuthStore: () =>
@@ -180,6 +180,6 @@ describe("secrets runtime snapshot inline auth-store refs", () => {
     expect(profiles?.[coldProfileId]).toMatchObject({
       keyRef: { source: "env", provider: "default", id: "MISSING_OPENAI_PROFILE_KEY" },
     });
-    expect(profiles?.[healthyProfileId]).toMatchObject({ key: `ltfx.n.444cbbce5b955ec626f7.v1` });
+    expect(profiles?.[healthyProfileId]).toMatchObject({ key: "anthropic-runtime-key" });
   });
 });

@@ -286,7 +286,7 @@ final class WatchConnectivityReceiver: NSObject, @unchecked Sendable {
     }
 
     func consumeExecApprovalSnapshotAcknowledgment(
-        for token: (WatchExecApprovalSnapshotRequestToken) -> Bool)
+        for token: WatchExecApprovalSnapshotRequestToken) -> Bool
     {
         self.execApprovalSnapshotAcknowledgmentLock.withLock {
             guard self.acceptedExecApprovalSnapshotRequests.remove(token) != nil else { return false }

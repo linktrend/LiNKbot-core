@@ -17,7 +17,7 @@ import {
   type MachineTokenBinding,
 } from "./machine-token.js";
 
-function withBearerHeader(headers: Headers, accessToken: (string)): Headers {
+function withBearerHeader(headers: Headers, accessToken: string): Headers {
   const next = new Headers(headers);
   next.set("authorization", `Bearer ${accessToken}`);
   return next;

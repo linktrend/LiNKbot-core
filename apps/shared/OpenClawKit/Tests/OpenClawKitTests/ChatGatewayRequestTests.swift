@@ -122,7 +122,7 @@ struct ChatGatewayRequestTests {
         #expect(fork.params["fork"]?.value as? Bool == true)
 
         let create = OpenClawChatGatewayRequests.createSession(
-            key: "${ltfx.n.6a13cd635db08d19d7a4.v1}",
+            key: "agent:reviewer:new",
             agentID: "reviewer",
             label: nil,
             parentSessionKey: "global",

@@ -133,7 +133,7 @@ describe("Gateway startup SecretRef owner isolation", () => {
       {
         MISSING_TTS_KEY: undefined,
         MISSING_UNUSED_PROVIDER_KEY: undefined,
-        OPENAI_API_KEY: `ltfx.n.4097889236a2af26c293.v1`,
+        OPENAI_API_KEY: "placeholder",
       },
       async () => {
         await writeConfig({
@@ -286,7 +286,7 @@ describe("Gateway startup SecretRef owner isolation", () => {
     const vault = await startVaultAclFixture();
     try {
       await withEnvAsync(
-        { VAULT_ADDR: vault.vaultAddr, VAULT_TOKEN: `ltfx.n.f82f214c7b552d831e8e.v1` },
+        { VAULT_ADDR: vault.vaultAddr, VAULT_TOKEN: "not-a-real-auth-header" },
         async () => {
           await writeConfig({
             ...baseConfig(),

@@ -147,7 +147,7 @@ describe("runWizardWithPromptNavigation", () => {
       result = { secret, done };
     });
 
-    expect(result).toEqual({ secret: `ltfx.n.cebdf378f2d2bd60d3e3.v1`, done: "done" });
+    expect(result).toEqual({ secret: "secret-two", done: "done" });
     expect(text).toHaveBeenCalledTimes(2);
     expect(text.mock.calls[1]?.[0]).toMatchObject({
       message: "Secret",

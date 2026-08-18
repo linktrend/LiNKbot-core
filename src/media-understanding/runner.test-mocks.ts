@@ -19,7 +19,7 @@ export function createAvailableModelAuthMockModule() {
   return {
     hasAvailableAuthForProvider: vi.fn(() => true),
     resolveApiKeyForProvider: vi.fn(async () => ({
-      apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+      apiKey: "test-key",
       source: "test",
       mode: "api-key",
     })),

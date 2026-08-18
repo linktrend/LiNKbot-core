@@ -470,7 +470,7 @@ async function augmentConfiguredOllamaCatalogModels(params: {
   env: NodeJS.ProcessEnv;
   provider: string;
   entries: ProviderAugmentModelCatalogContext["entries"];
-  resolveProviderApiKey: (ProviderAugmentModelCatalogContext["resolveProviderApiKey"];)
+  resolveProviderApiKey: ProviderAugmentModelCatalogContext["resolveProviderApiKey"];
   capContextTokens?: boolean;
 }): Promise<ProviderAugmentModelCatalogContext["entries"]> {
   const models = collectConfiguredOllamaModelIds({
@@ -490,7 +490,7 @@ async function augmentConfiguredOllamaCatalogModels(params: {
   const showApiKey = readUsableOllamaShowApiKey({
     env: params.env,
     allowAmbientEnvFallback: !isLocalBaseUrl,
-    explicitApiKey: (configuredProvider?.apiKey,)
+    explicitApiKey: configuredProvider?.apiKey,
     resolved: params.resolveProviderApiKey?.(params.provider),
   });
   if (!isLocalBaseUrl && !showApiKey) {
@@ -909,7 +909,7 @@ export default definePluginEntry({
       },
       buildUnknownModelHint: () =>
         "Ollama requires authentication to be registered as a provider. " +
-        'Set OLLAMA_API_KEY=`ltfx.n.18ab0c9c00ad3478e4db.v1` (any value works) or run "openclaw configure". ' +
+        'Set OLLAMA_API_KEY="ollama-local" (any value works) or run "openclaw configure". ' +
         "See: https://docs.openclaw.ai/providers/ollama",
     });
   },

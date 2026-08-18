@@ -57,7 +57,7 @@ async function runFallbackStoreCase(): Promise<FallbackStoreCaseResult> {
       "openai:default": {
         type: "api_key",
         provider: "openai",
-        key: `ltfx.n.6823e438f494077cce88.v1`,
+        key: "fallback-key",
       },
     },
   };
@@ -131,7 +131,7 @@ describe("provider auth profile helpers", () => {
         profileId: "openai:default",
         store: expect.objectContaining({
           profiles: expect.objectContaining({
-            "openai:default": expect.objectContaining({ key: `ltfx.n.6823e438f494077cce88.v1` }),
+            "openai:default": expect.objectContaining({ key: "fallback-key" }),
           }),
         }),
       }),
@@ -154,7 +154,7 @@ describe("provider auth profile helpers", () => {
         "openai:key": {
           type: "api_key",
           provider: "openai",
-          key: `ltfx.n.a02e3e704612559abefb.v1`,
+          key: "sk-profile",
         },
       },
     };
@@ -300,7 +300,7 @@ describe("provider auth profile helpers", () => {
       async () =>
         new Response(
           JSON.stringify({
-            token: `ltfx.n.36f435a58fc1a7347b75.v1`,
+            token: "token;proxy-ep=proxy.individual.githubcopilot.com",
             expires_at: "+2000000000",
           }),
           { status: 200, headers: { "content-type": "application/json" } },
@@ -310,7 +310,7 @@ describe("provider auth profile helpers", () => {
     const { resolveCopilotApiToken } = await import("./provider-auth.js");
 
     const result = await resolveCopilotApiToken({
-      githubToken: `ltfx.n.141b3bca5f6076f5fe82.v1`,
+      githubToken: "github-token",
       fetchImpl,
       cachePath: "/tmp/copilot-token.json",
       loadJsonFileImpl: () => undefined,
@@ -322,7 +322,7 @@ describe("provider auth profile helpers", () => {
       expect.objectContaining({
         expiresAt: 2_000_000_000_000,
         sourceCredentialFingerprint: createHash("sha256").update("github-token").digest("hex"),
-        token: `ltfx.n.36f435a58fc1a7347b75.v1`,
+        token: "token;proxy-ep=proxy.individual.githubcopilot.com",
       }),
     ]);
     const [, init] = fetchImpl.mock.calls[0] as unknown as [string, RequestInit];
@@ -357,7 +357,7 @@ describe("provider auth profile helpers", () => {
       async () =>
         new Response(
           JSON.stringify({
-            token: `ltfx.n.36f435a58fc1a7347b75.v1`,
+            token: "token;proxy-ep=proxy.individual.githubcopilot.com",
             expires_at: Number.MAX_SAFE_INTEGER,
           }),
           { status: 200, headers: { "content-type": "application/json" } },
@@ -368,7 +368,7 @@ describe("provider auth profile helpers", () => {
 
     await expect(
       resolveCopilotApiToken({
-        githubToken: `ltfx.n.141b3bca5f6076f5fe82.v1`,
+        githubToken: "github-token",
         fetchImpl,
         cachePath: "/tmp/copilot-token.json",
         loadJsonFileImpl: () => undefined,
@@ -390,7 +390,7 @@ describe("provider auth profile helpers", () => {
 
     await expect(
       resolveCopilotApiToken({
-        githubToken: `ltfx.n.141b3bca5f6076f5fe82.v1`,
+        githubToken: "github-token",
         fetchImpl,
         cachePath: "/tmp/copilot-token.json",
         loadJsonFileImpl: () => undefined,
@@ -433,7 +433,7 @@ describe("provider auth profile helpers", () => {
 
     await expect(
       resolveCopilotApiToken({
-        githubToken: `ltfx.n.141b3bca5f6076f5fe82.v1`,
+        githubToken: "github-token",
         fetchImpl,
         cachePath: "/tmp/copilot-token.json",
         loadJsonFileImpl: () => undefined,
@@ -498,7 +498,7 @@ describe("provider auth profile helpers", () => {
 
       await expect(
         resolveCopilotApiToken({
-          githubToken: `ltfx.n.141b3bca5f6076f5fe82.v1`,
+          githubToken: "github-token",
           fetchImpl: fetchImpl as typeof fetch,
           cachePath: "/tmp/copilot-token-http-proof.json",
           loadJsonFileImpl: () => undefined,
@@ -522,7 +522,7 @@ describe("provider auth profile helpers", () => {
     const http = await import("node:http");
     const { once } = await import("node:events");
     const body = JSON.stringify({
-      token: `ltfx.n.ae82f4f81fbcb23fe297.v1`,
+      token: "gho_abc;proxy-ep=proxy.individual.githubcopilot.com",
       expires_at: "+2000000000",
     });
 
@@ -549,7 +549,7 @@ describe("provider auth profile helpers", () => {
       const { resolveCopilotApiToken } = await import("./provider-auth.js");
 
       const result = await resolveCopilotApiToken({
-        githubToken: `ltfx.n.141b3bca5f6076f5fe82.v1`,
+        githubToken: "github-token",
         fetchImpl: fetchImpl as typeof fetch,
         cachePath: "/tmp/copilot-token-http-happy.json",
         loadJsonFileImpl: () => undefined,
@@ -575,7 +575,7 @@ describe("provider auth profile helpers", () => {
       async () =>
         new Response(
           JSON.stringify({
-            token: `ltfx.n.118902c80924a38dc445.v1`,
+            token: "fresh;proxy-ep=proxy.individual.githubcopilot.com",
             expires_at: "+2000000000",
           }),
           { status: 200, headers: { "content-type": "application/json" } },
@@ -585,11 +585,11 @@ describe("provider auth profile helpers", () => {
     const { COPILOT_INTEGRATION_ID, resolveCopilotApiToken } = await import("./provider-auth.js");
 
     const result = await resolveCopilotApiToken({
-      githubToken: `ltfx.n.141b3bca5f6076f5fe82.v1`,
+      githubToken: "github-token",
       fetchImpl,
       cachePath: "/tmp/copilot-token.json",
       loadJsonFileImpl: () => ({
-        token: `ltfx.n.2588db86c600caec8570.v1`,
+        token: "cached;proxy-ep=proxy.individual.githubcopilot.com",
         expiresAt: Number.MAX_SAFE_INTEGER,
         updatedAt: Date.now(),
         integrationId: COPILOT_INTEGRATION_ID,
@@ -604,7 +604,7 @@ describe("provider auth profile helpers", () => {
     expect(saved).toEqual([
       expect.objectContaining({
         expiresAt: 2_000_000_000_000,
-        token: `ltfx.n.118902c80924a38dc445.v1`,
+        token: "fresh;proxy-ep=proxy.individual.githubcopilot.com",
       }),
     ]);
   });
@@ -647,7 +647,7 @@ describe("provider auth profile helpers", () => {
 
     await expect(
       resolveCopilotApiToken({
-        githubToken: `ltfx.n.141b3bca5f6076f5fe82.v1`,
+        githubToken: "github-token",
         fetchImpl: fetchImpl as typeof fetch,
         cachePath: "/tmp/copilot-token-hang.json",
         loadJsonFileImpl: () => undefined,
@@ -721,7 +721,7 @@ describe("provider auth profile helpers", () => {
 
       await expect(
         resolveCopilotApiToken({
-          githubToken: `ltfx.n.141b3bca5f6076f5fe82.v1`,
+          githubToken: "github-token",
           fetchImpl: fetchImpl as typeof fetch,
           cachePath: "/tmp/copilot-token-http-hang.json",
           loadJsonFileImpl: () => undefined,
@@ -802,7 +802,7 @@ describe("provider auth profile helpers", () => {
       async () =>
         new Response(
           JSON.stringify({
-            token: `ltfx.n.118902c80924a38dc445.v1`,
+            token: "fresh;proxy-ep=proxy.individual.githubcopilot.com",
             expires_at: "+2000000000",
           }),
           { status: 200, headers: { "content-type": "application/json" } },
@@ -829,7 +829,7 @@ describe("provider auth profile helpers", () => {
     expect(saved).toEqual([
       expect.objectContaining({
         sourceCredentialFingerprint: TEST_GITHUB_TOKEN_FINGERPRINT,
-        token: `ltfx.n.118902c80924a38dc445.v1`,
+        token: "fresh;proxy-ep=proxy.individual.githubcopilot.com",
       }),
     ]);
   });
@@ -860,17 +860,17 @@ describe("provider auth profile helpers", () => {
       const env = { OPENCLAW_STATE_DIR: stateDir } as NodeJS.ProcessEnv;
 
       const firstA = await resolveCopilotApiToken({
-        githubToken: `ltfx.n.f35cd067d05752edf483.v1`,
+        githubToken: "test-auth-token",
         env,
         fetchImpl: fetchImpl as typeof fetch,
       });
       const firstB = await resolveCopilotApiToken({
-        githubToken: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
+        githubToken: "test-token-placeholder",
         env,
         fetchImpl: fetchImpl as typeof fetch,
       });
       const secondA = await resolveCopilotApiToken({
-        githubToken: `ltfx.n.f35cd067d05752edf483.v1`,
+        githubToken: "test-auth-token",
         env,
         fetchImpl: fetchImpl as typeof fetch,
       });
@@ -955,7 +955,7 @@ describe("Copilot data-residency domain resolution", () => {
       }) as never;
     const resolveWithConfigDomain = (githubDomain: string) =>
       resolveCopilotApiToken({
-        githubToken: `ltfx.n.141b3bca5f6076f5fe82.v1`,
+        githubToken: "github-token",
         env: {},
         config: withDomain(githubDomain),
         fetchImpl,
@@ -1017,7 +1017,7 @@ describe("Copilot data-residency domain resolution", () => {
     const fetchImpl = vi.fn(
       async () =>
         // GHE data-residency tokens carry a stamp but no proxy-ep hint.
-        new Response(JSON.stringify({ token: `ltfx.n.3fad097703a37e99135f.v1`, expires_at: "+2000000000" }), {
+        new Response(JSON.stringify({ token: "ghe;st=prod-sdc-01", expires_at: "+2000000000" }), {
           status: 200,
           headers: { "content-type": "application/json" },
         }),
@@ -1026,7 +1026,7 @@ describe("Copilot data-residency domain resolution", () => {
     const { resolveCopilotApiToken } = await import("./provider-auth.js");
 
     const result = await resolveCopilotApiToken({
-      githubToken: `ltfx.n.141b3bca5f6076f5fe82.v1`,
+      githubToken: "github-token",
       env: {},
       githubDomain: "acme.ghe.com",
       fetchImpl,
@@ -1046,7 +1046,7 @@ describe("Copilot data-residency domain resolution", () => {
 
     const fetchImpl = vi.fn(
       async () =>
-        new Response(JSON.stringify({ token: `ltfx.n.3fad097703a37e99135f.v1`, expires_at: "+2000000000" }), {
+        new Response(JSON.stringify({ token: "ghe;st=prod-sdc-01", expires_at: "+2000000000" }), {
           status: 200,
           headers: { "content-type": "application/json" },
         }),
@@ -1055,7 +1055,7 @@ describe("Copilot data-residency domain resolution", () => {
     const { resolveCopilotApiToken } = await import("./provider-auth.js");
 
     const result = await resolveCopilotApiToken({
-      githubToken: `ltfx.n.141b3bca5f6076f5fe82.v1`,
+      githubToken: "github-token",
       env: { COPILOT_GITHUB_DOMAIN: "env.ghe.com" },
       githubDomain: "config.ghe.com",
       fetchImpl,
@@ -1075,7 +1075,7 @@ describe("Copilot data-residency domain resolution", () => {
     const saved: unknown[] = [];
     const fetchImpl = vi.fn(
       async () =>
-        new Response(JSON.stringify({ token: `ltfx.n.3fad097703a37e99135f.v1`, expires_at: "+2000000000" }), {
+        new Response(JSON.stringify({ token: "ghe;st=prod-sdc-01", expires_at: "+2000000000" }), {
           status: 200,
           headers: { "content-type": "application/json" },
         }),
@@ -1087,13 +1087,13 @@ describe("Copilot data-residency domain resolution", () => {
     // request targets a GHE tenant, so it must be re-exchanged rather than
     // sending a github.com token to api.acme.ghe.com.
     const result = await resolveCopilotApiToken({
-      githubToken: `ltfx.n.141b3bca5f6076f5fe82.v1`,
+      githubToken: "github-token",
       env: {},
       githubDomain: "acme.ghe.com",
       fetchImpl,
       cachePath: "/tmp/copilot-token-cross.json",
       loadJsonFileImpl: () => ({
-        token: `ltfx.n.199a0d5f30c2af027512.v1`,
+        token: "public;proxy-ep=proxy.individual.githubcopilot.com",
         expiresAt: Number.MAX_SAFE_INTEGER - 1,
         updatedAt: Date.now(),
         integrationId: COPILOT_INTEGRATION_ID,
@@ -1115,7 +1115,7 @@ describe("Copilot data-residency domain resolution", () => {
       async () =>
         new Response(
           JSON.stringify({
-            token: `ltfx.n.0382c22016c80de88a30.v1`,
+            token: "fresh-public;proxy-ep=proxy.individual.githubcopilot.com",
             expires_at: "+2000000000",
           }),
           { status: 200, headers: { "content-type": "application/json" } },
@@ -1124,12 +1124,12 @@ describe("Copilot data-residency domain resolution", () => {
     const { COPILOT_INTEGRATION_ID, resolveCopilotApiToken } = await import("./provider-auth.js");
 
     const result = await resolveCopilotApiToken({
-      githubToken: `ltfx.n.141b3bca5f6076f5fe82.v1`,
+      githubToken: "github-token",
       env: {},
       fetchImpl: fetchImpl as unknown as typeof fetch,
       cachePath: "/tmp/copilot-token-legacy.json",
       loadJsonFileImpl: () => ({
-        token: `ltfx.n.73b90121b1395081b9d1.v1`,
+        token: "legacy-public;proxy-ep=proxy.individual.githubcopilot.com",
         expiresAt: Date.now() + 60 * 60 * 1000,
         updatedAt: Date.now(),
         integrationId: COPILOT_INTEGRATION_ID,
@@ -1154,7 +1154,7 @@ describe("Copilot data-residency domain resolution", () => {
     const saved: unknown[] = [];
     const fetchImpl = vi.fn(
       async () =>
-        new Response(JSON.stringify({ token: `ltfx.n.3fad097703a37e99135f.v1`, expires_at: "+2000000000" }), {
+        new Response(JSON.stringify({ token: "ghe;st=prod-sdc-01", expires_at: "+2000000000" }), {
           status: 200,
           headers: { "content-type": "application/json" },
         }),
@@ -1163,13 +1163,13 @@ describe("Copilot data-residency domain resolution", () => {
     const { COPILOT_INTEGRATION_ID, resolveCopilotApiToken } = await import("./provider-auth.js");
 
     const result = await resolveCopilotApiToken({
-      githubToken: `ltfx.n.141b3bca5f6076f5fe82.v1`,
+      githubToken: "github-token",
       env: {},
       githubDomain: "acme.ghe.com",
       fetchImpl,
       cachePath: "/tmp/copilot-token-legacy-tenant.json",
       loadJsonFileImpl: () => ({
-        token: `ltfx.n.73b90121b1395081b9d1.v1`,
+        token: "legacy-public;proxy-ep=proxy.individual.githubcopilot.com",
         expiresAt: Date.now() + 60 * 60 * 1000,
         updatedAt: Date.now(),
         integrationId: COPILOT_INTEGRATION_ID,
@@ -1190,13 +1190,13 @@ describe("Copilot data-residency domain resolution", () => {
     const { COPILOT_INTEGRATION_ID, resolveCopilotApiToken } = await import("./provider-auth.js");
 
     const result = await resolveCopilotApiToken({
-      githubToken: `ltfx.n.141b3bca5f6076f5fe82.v1`,
+      githubToken: "github-token",
       env: {},
       githubDomain: "acme.ghe.com",
       fetchImpl: fetchImpl as unknown as typeof fetch,
       cachePath: "/tmp/copilot-token-same.json",
       loadJsonFileImpl: () => ({
-        token: `ltfx.n.920a9b1cc20f860a4d09.v1`,
+        token: "tenant-cached;st=prod-sdc-01",
         expiresAt: Date.now() + 60 * 60 * 1000,
         updatedAt: Date.now(),
         integrationId: COPILOT_INTEGRATION_ID,

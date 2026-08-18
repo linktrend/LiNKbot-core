@@ -23,7 +23,7 @@ describe("provider request config", () => {
     };
 
     const bearerModel = applyPreparedRuntimeAuthToModel(model, {
-      request: { auth: { mode: "authorization-bearer", token: `ltfx.n.80a594e32889208afa4a.v1` } },
+      request: { auth: { mode: "authorization-bearer", token: "entra-token" } },
     });
     expect(bearerModel.headers).toEqual({
       "X-Tenant": "tenant-a",
@@ -37,7 +37,7 @@ describe("provider request config", () => {
     });
     expect(apiKeyModel.headers).toEqual({
       "X-Tenant": "tenant-a",
-      "x-api-key": `ltfx.n.78e9a0b0da3e1c943f21.v1`,
+      "x-api-key": "profile-key",
     });
   });
 
@@ -131,7 +131,7 @@ describe("provider request config", () => {
         },
         tls: {
           cert: "client-cert",
-          key: `ltfx.n.8eb943e7040b69a94bf3.v1`,
+          key: "client-key",
           serverName: "gateway.internal",
         },
       },
@@ -165,7 +165,7 @@ describe("provider request config", () => {
     expect(resolved.tls).toEqual({
       configured: true,
       cert: "client-cert",
-      key: `ltfx.n.8eb943e7040b69a94bf3.v1`,
+      key: "client-key",
       serverName: "gateway.internal",
     });
   });
@@ -211,7 +211,7 @@ describe("provider request config", () => {
         },
         tls: {
           cert: "client-cert",
-          key: `ltfx.n.8eb943e7040b69a94bf3.v1`,
+          key: "client-key",
         },
       },
     });
@@ -235,7 +235,7 @@ describe("provider request config", () => {
         },
         tls: {
           cert: "client-cert",
-          key: `ltfx.n.8eb943e7040b69a94bf3.v1`,
+          key: "client-key",
           serverName: "gateway.internal",
         },
       },
@@ -245,7 +245,7 @@ describe("provider request config", () => {
       mode: "env-proxy",
       connect: {
         cert: "client-cert",
-        key: `ltfx.n.8eb943e7040b69a94bf3.v1`,
+        key: "client-key",
         servername: "gateway.internal",
       },
     });
@@ -300,7 +300,7 @@ describe("provider request config", () => {
         },
         tls: {
           cert: "client-cert",
-          key: `ltfx.n.8eb943e7040b69a94bf3.v1`,
+          key: "client-key",
           serverName: "gateway.internal",
         },
       }),
@@ -321,7 +321,7 @@ describe("provider request config", () => {
       },
       tls: {
         cert: "client-cert",
-        key: `ltfx.n.8eb943e7040b69a94bf3.v1`,
+        key: "client-key",
         serverName: "gateway.internal",
       },
     });
@@ -420,7 +420,7 @@ describe("provider request config", () => {
           },
           auth: {
             mode: "authorization-bearer",
-            token: `ltfx.n.2ad21144ec11edbd5535.v1`,
+            token: "provider-token",
           },
         },
         {

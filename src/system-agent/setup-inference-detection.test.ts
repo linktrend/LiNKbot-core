@@ -36,7 +36,7 @@ async function loadDetectionModule() {
   return await import("./setup-inference-detection.js");
 }
 
-async function requestHealth(url: (string)): Promise<{ body: string; statusCode: number }> {
+async function requestHealth(url: string): Promise<{ body: string; statusCode: number }> {
   return await new Promise((resolve, reject) => {
     const request = get(url, { agent: false, headers: { connection: "close" } }, (response) => {
       let body = "";

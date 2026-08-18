@@ -37,7 +37,7 @@ function createSessions(client: GatewayBrowserClient, key: string) {
 
 describe("session list replacement options", () => {
   it("preserves derived-title hydration when refreshing after session patches", async () => {
-    const key = `ltfx.n.3d1336ed1e6e86c65f63.v1`;
+    const key = "agent:main:untitled";
     const request = vi.fn(async (method: string, _params?: unknown) => {
       if (method === "sessions.list") {
         return sessionsResult(
@@ -91,7 +91,7 @@ describe("session list replacement options", () => {
   });
 
   it("keeps foreground list options across background hydration and mutation refreshes", async () => {
-    const key = `ltfx.n.285e313c635392644eba.v1`;
+    const key = "agent:main:filtered";
     const request = vi.fn(async (method: string, _params?: unknown) => {
       if (method === "sessions.list") {
         return sessionsResult([{ key, kind: "direct", updatedAt: 1 }], 1);
@@ -132,7 +132,7 @@ describe("session list replacement options", () => {
   });
 
   it("captures foreground list options before concurrent mutation refreshes", async () => {
-    const key = `ltfx.n.67b721738fe80df6cfa6.v1`;
+    const key = "agent:main:concurrent";
     const firstList = deferred<SessionsListResult>();
     let listCalls = 0;
     const request = vi.fn(async (method: string, _params?: unknown) => {
@@ -172,7 +172,7 @@ describe("session list replacement options", () => {
   });
 
   it("drops pagination while preserving filters when refreshing after session patches", async () => {
-    const key = `ltfx.n.5109c44b05a5d18c41f4.v1`;
+    const key = "agent:main:page-b";
     const request = vi.fn(async (method: string, _params?: unknown) => {
       if (method === "sessions.list") {
         return sessionsResult(

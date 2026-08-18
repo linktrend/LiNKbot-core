@@ -525,7 +525,7 @@ function readNotificationTurnId(record: JsonObject): string | undefined {
   return isJsonObject(record.turn) ? readString(record.turn, "id") : undefined;
 }
 
-function readString(record: JsonObject, key: (string)): string | undefined {
+function readString(record: JsonObject, key: string): string | undefined {
   const value = record[key];
   return typeof value === "string" ? value : undefined;
 }

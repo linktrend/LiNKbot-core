@@ -8,7 +8,7 @@ struct QuickChatRecentsTests {
         let now = Date(timeIntervalSince1970: 10_000)
         let rows = (0..<6).map { index in
             Self.row(
-                key: ("agent:main:session:\(index)"),
+                key: "agent:main:session:\(index)",
                 displayName: "Session \(index)",
                 updatedAt: now.addingTimeInterval(Double(-120 - (index * 60))))
         }
@@ -32,7 +32,7 @@ struct QuickChatRecentsTests {
     @Test func `menu checkmarks the selected recent session`() throws {
         let now = Date(timeIntervalSince1970: 10_000)
         let row = Self.row(
-            key: ("ltfx.n.e68801578acf4d4cb5d4.v1"),
+            key: "agent:main:session:one",
             displayName: "One",
             updatedAt: now)
         let target = QuickChatSessionTargetOverride(key: row.key, displayName: row.label)

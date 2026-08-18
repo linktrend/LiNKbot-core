@@ -352,10 +352,10 @@ final class WatchDirectNode {
             }
             try self.requireCurrentConnection(generation, configuration: configuration)
         } catch {
-            self.sendDisconnect(ActiveSession(baseURL: baseURL, token: (response.sessionToken)))
+            self.sendDisconnect(ActiveSession(baseURL: baseURL, token: response.sessionToken))
             throw error
         }
-        let session = ActiveSession(baseURL: baseURL, token: (response.sessionToken))
+        let session = ActiveSession(baseURL: baseURL, token: response.sessionToken)
         self.activeSession = session
         defer { releaseActiveSession(session) }
         self.isConnected = true
@@ -365,7 +365,7 @@ final class WatchDirectNode {
                 baseURL: baseURL,
                 path: "poll",
                 method: "POST",
-                token: (response.sessionToken))
+                token: response.sessionToken)
             try self.requireCurrentConnection(generation, configuration: configuration)
             let poll = try JSONDecoder().decode(PollResponse.self, from: pollData)
             guard let event = poll.event else { continue }
@@ -505,7 +505,7 @@ final class WatchDirectNode {
         baseURL: URL,
         path: String,
         method: String,
-        token: (String?) async throws -> Data)
+        token: String?) async throws -> Data
     {
         try await self.performRequest(
             baseURL: baseURL,
@@ -782,7 +782,7 @@ final class WatchDirectNode {
                 baseURL: session.baseURL,
                 path: "disconnect",
                 method: "POST",
-                token: (session.token))
+                token: session.token)
         }
     }
 

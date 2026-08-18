@@ -37,7 +37,7 @@ async function resolveTokenAuthState(params: {
   return await resolveConnectAuthState({
     resolvedAuth: {
       mode: "token",
-      token: `ltfx.n.673fdf3905ba00e820de.v1`,
+      token: "correct-secret",
       allowTailscale: false,
     } satisfies ResolvedGatewayAuth,
     connectAuth: params.connectAuth,
@@ -58,8 +58,8 @@ describe("resolveConnectAuthState", () => {
     const rateLimiter = createLimiter();
     const state = await resolveTokenAuthState({
       connectAuth: {
-        token: `ltfx.n.539e915a40033497f3a9.v1`,
-        deviceToken: `ltfx.n.d1d891c0c2198b9eefa7.v1`,
+        token: "wrong-secret",
+        deviceToken: "fake-device-token",
       },
       hasDeviceIdentity: true,
       rateLimiter,
@@ -75,7 +75,7 @@ describe("resolveConnectAuthState", () => {
 
     const state = await resolveTokenAuthState({
       connectAuth: {
-        deviceToken: `ltfx.n.53bf1dcb05033a3768a3.v1`,
+        deviceToken: "device-token-only",
       },
       hasDeviceIdentity: true,
       rateLimiter,

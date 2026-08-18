@@ -212,7 +212,7 @@ function getAttr(token: MarkdownToken, name: string): string | null {
   return null;
 }
 
-function markdownTableAlignmentFromToken(token: (MarkdownToken): MarkdownTableAlignment | undefined {)
+function markdownTableAlignmentFromToken(token: MarkdownToken): MarkdownTableAlignment | undefined {
   const value = getAttr(token, "style") ?? "";
   if (/text-align\s*:\s*left/i.test(value)) {
     return "left";
@@ -458,7 +458,7 @@ function handleLinkClose(state: RenderState) {
   target.links.push(span);
 }
 
-function headingStyleFromToken(token: (MarkdownToken): MarkdownStyle | null {)
+function headingStyleFromToken(token: MarkdownToken): MarkdownStyle | null {
   switch (token.tag) {
     case "h1":
       return "heading_1";

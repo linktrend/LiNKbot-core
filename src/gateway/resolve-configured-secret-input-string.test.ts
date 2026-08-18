@@ -89,7 +89,7 @@ describe("resolveConfiguredSecretInputWithFallback", () => {
   it("returns resolved SecretRef value with fallback metadata", async () => {
     const resolved = await resolveConfiguredSecretInputWithFallback({
       config: createConfig("${CUSTOM_GATEWAY_TOKEN}"),
-      env: { CUSTOM_GATEWAY_TOKEN: `ltfx.n.cad2ed06900405ac7d61.v1` } as NodeJS.ProcessEnv,
+      env: { CUSTOM_GATEWAY_TOKEN: "resolved-token" } as NodeJS.ProcessEnv,
       value: "${CUSTOM_GATEWAY_TOKEN}",
       path: "gateway.auth.token",
       readFallback: () => undefined,
@@ -164,7 +164,7 @@ describe("resolveRequiredConfiguredSecretRefInputString", () => {
   it("returns resolved SecretRef value when required", async () => {
     const value = await resolveRequiredConfiguredSecretRefInputString({
       config: createConfig("${CUSTOM_GATEWAY_TOKEN}"),
-      env: { CUSTOM_GATEWAY_TOKEN: `ltfx.n.cad2ed06900405ac7d61.v1` } as NodeJS.ProcessEnv,
+      env: { CUSTOM_GATEWAY_TOKEN: "resolved-token" } as NodeJS.ProcessEnv,
       value: "${CUSTOM_GATEWAY_TOKEN}",
       path: "gateway.auth.token",
     });

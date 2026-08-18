@@ -164,11 +164,11 @@ export function describeAnthropicProviderRuntimeContract(
           provider: "anthropic",
           resolveApiKeyFromConfigAndStore: () => undefined,
           resolveOAuthToken: async () => ({
-            token: `ltfx.n.952eecd06e19a33a4506.v1`,
+            token: "anthropic-oauth-token",
           }),
         }),
       ).resolves.toEqual({
-        token: `ltfx.n.952eecd06e19a33a4506.v1`,
+        token: "anthropic-oauth-token",
       });
     });
 
@@ -222,7 +222,7 @@ export function describeAnthropicProviderRuntimeContract(
           config: {} as never,
           env: {} as NodeJS.ProcessEnv,
           provider: "anthropic",
-          token: `ltfx.n.952eecd06e19a33a4506.v1`,
+          token: "anthropic-oauth-token",
           timeoutMs: 5_000,
           fetchFn: mockFetch as unknown as typeof fetch,
         }),
@@ -355,12 +355,12 @@ export function describeGoogleProviderRuntimeContract(load: ProviderRuntimeContr
           provider: "google-gemini-cli",
           resolveApiKeyFromConfigAndStore: () => undefined,
           resolveOAuthToken: async () => ({
-            token: '{"token":`ltfx.n.31a72f4af8190257b9fa.v1`}',
+            token: '{"token":"google-oauth-token"}',
             accountId: "google-account",
           }),
         }),
       ).resolves.toEqual({
-        token: `ltfx.n.31a72f4af8190257b9fa.v1`,
+        token: "google-oauth-token",
         accountId: "google-account",
       });
     });
@@ -377,7 +377,7 @@ export function describeGoogleProviderRuntimeContract(load: ProviderRuntimeContr
           expires: Date.now() + 60_000,
           projectId: "proj-123",
         }),
-      ).toBe('{"token":`ltfx.n.31a72f4af8190257b9fa.v1`,"projectId":"proj-123"}');
+      ).toBe('{"token":"google-oauth-token","projectId":"proj-123"}');
     });
 
     it("owns usage snapshot fetching", async () => {
@@ -398,7 +398,7 @@ export function describeGoogleProviderRuntimeContract(load: ProviderRuntimeContr
         config: {} as never,
         env: {} as NodeJS.ProcessEnv,
         provider: "google-gemini-cli",
-        token: `ltfx.n.31a72f4af8190257b9fa.v1`,
+        token: "google-oauth-token",
         timeoutMs: 5_000,
         fetchFn: mockFetch as unknown as typeof fetch,
       });
@@ -695,7 +695,7 @@ export function describeOpenAIProviderRuntimeContract(load: ProviderRuntimeContr
           config: {} as never,
           env: {} as NodeJS.ProcessEnv,
           provider: "openai",
-          token: `ltfx.n.051759422436278d8d68.v1`,
+          token: "codex-token",
           accountId: "acc-1",
           timeoutMs: 5_000,
           fetchFn: mockFetch as unknown as typeof fetch,
@@ -806,14 +806,14 @@ export function describeZAIProviderRuntimeContract(load: ProviderRuntimeContract
         provider.resolveUsageAuth?.({
           config: {} as never,
           env: {
-            ZAI_API_KEY: `ltfx.n.63c40f34e73751624b76.v1`,
+            ZAI_API_KEY: "env-zai-token",
           } as NodeJS.ProcessEnv,
           provider: "zai",
           resolveApiKeyFromConfigAndStore: () => "env-zai-token",
           resolveOAuthToken: async () => null,
         }),
       ).resolves.toEqual({
-        token: `ltfx.n.63c40f34e73751624b76.v1`,
+        token: "env-zai-token",
       });
     });
 
@@ -846,7 +846,7 @@ export function describeZAIProviderRuntimeContract(load: ProviderRuntimeContract
           config: {} as never,
           env: {} as NodeJS.ProcessEnv,
           provider: "zai",
-          token: `ltfx.n.63c40f34e73751624b76.v1`,
+          token: "env-zai-token",
           timeoutMs: 5_000,
           fetchFn: mockFetch as unknown as typeof fetch,
         }),

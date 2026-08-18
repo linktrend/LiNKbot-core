@@ -168,8 +168,8 @@ describe("config mcp config", () => {
                 "billing-mcp",
                 "--api-key",
                 "real-argv-key",
-                "--token=(real-inline-token",)
-                "ltfx.n.6296a7c949bdc7b32007.v1",
+                "--token=real-inline-token",
+                "ghp_realgithubtoken1234567890ABCD",
                 "--region",
                 "us-east-1",
               ],
@@ -177,7 +177,7 @@ describe("config mcp config", () => {
                 Authorization: "Bearer real-token",
               },
               env: {
-                BILLING_TOKEN: `ltfx.n.ebd60cbbb8c90bdf11d6.v1`,
+                BILLING_TOKEN: "real-env-secret",
               },
             },
           },
@@ -218,8 +218,8 @@ describe("config mcp config", () => {
             "billing-mcp",
             "--api-key",
             "real-argv-key",
-            "--token=(real-inline-token",)
-            "ltfx.n.6296a7c949bdc7b32007.v1",
+            "--token=real-inline-token",
+            "ghp_realgithubtoken1234567890ABCD",
             "--region",
             "us-east-1",
           ],
@@ -227,7 +227,7 @@ describe("config mcp config", () => {
             Authorization: "Bearer real-token",
           },
           env: {
-            BILLING_TOKEN: `ltfx.n.ebd60cbbb8c90bdf11d6.v1`,
+            BILLING_TOKEN: "real-env-secret",
           },
         });
       },

@@ -35,74 +35,74 @@ describe("security audit gateway auth selection", () => {
     }> = [
       {
         name: "uses local auth when gateway.mode is local",
-        cfg: { gateway: { mode: "local", auth: { token: `ltfx.n.f404e77b922f409a71c4.v1` } } },
-        expectedAuth: { token: `ltfx.n.f404e77b922f409a71c4.v1` },
+        cfg: { gateway: { mode: "local", auth: { token: "local-token-abc123" } } },
+        expectedAuth: { token: "local-token-abc123" },
       },
       {
         name: "prefers env token over local config token",
-        cfg: { gateway: { mode: "local", auth: { token: `ltfx.n.c7ec7c548f5992a239dc.v1` } } },
-        env: { token: `ltfx.n.25d37ba7752ae1d95b57.v1` },
-        expectedAuth: { token: `ltfx.n.25d37ba7752ae1d95b57.v1` },
+        cfg: { gateway: { mode: "local", auth: { token: "local-token" } } },
+        env: { token: "env-token" },
+        expectedAuth: { token: "env-token" },
       },
       {
         name: "uses local auth when gateway.mode is undefined (default)",
-        cfg: { gateway: { auth: { token: `ltfx.n.a68604b984c664438981.v1` } } },
-        expectedAuth: { token: `ltfx.n.a68604b984c664438981.v1` },
+        cfg: { gateway: { auth: { token: "default-local-token" } } },
+        expectedAuth: { token: "default-local-token" },
       },
       {
         name: "uses remote auth when gateway.mode is remote with URL",
         cfg: {
           gateway: {
             mode: "remote",
-            auth: { token: `ltfx.n.eb501fed59d5d93226f8.v1` },
-            remote: { url: `ltfx.n.381ad3a3d616596dd5f8.v1`, token: `ltfx.n.48c96f0e28e6af6b76ed.v1` },
+            auth: { token: "local-token-should-not-use" },
+            remote: { url: "wss://remote.example.com:18789", token: "remote-token-xyz789" },
           },
         },
-        expectedAuth: { token: `ltfx.n.48c96f0e28e6af6b76ed.v1` },
+        expectedAuth: { token: "remote-token-xyz789" },
       },
       {
         name: "ignores env token when gateway.mode is remote",
         cfg: {
           gateway: {
             mode: "remote",
-            auth: { token: `ltfx.n.eb501fed59d5d93226f8.v1` },
-            remote: { url: `ltfx.n.381ad3a3d616596dd5f8.v1`, token: `ltfx.n.b79f8018a1bfa2040be5.v1` },
+            auth: { token: "local-token-should-not-use" },
+            remote: { url: "wss://remote.example.com:18789", token: "remote-token" },
           },
         },
-        env: { token: `ltfx.n.25d37ba7752ae1d95b57.v1` },
-        expectedAuth: { token: `ltfx.n.b79f8018a1bfa2040be5.v1` },
+        env: { token: "env-token" },
+        expectedAuth: { token: "remote-token" },
       },
       {
         name: "falls back to local auth when gateway.mode is remote but URL is missing",
         cfg: {
           gateway: {
             mode: "remote",
-            auth: { token: `ltfx.n.ae843c293e59230756e3.v1` },
-            remote: { token: `ltfx.n.b782c20a93bdaceaa5e0.v1` },
+            auth: { token: "fallback-local-token" },
+            remote: { token: "remote-token-should-not-use" },
           },
         },
-        expectedAuth: { token: `ltfx.n.ae843c293e59230756e3.v1` },
+        expectedAuth: { token: "fallback-local-token" },
       },
       {
         name: "uses remote password when env is unset",
         cfg: {
           gateway: {
             mode: "remote",
-            remote: { url: `ltfx.n.381ad3a3d616596dd5f8.v1`, password: `ltfx.n.ff01a57b6ce2163baf63.v1` },
+            remote: { url: "wss://remote.example.com:18789", password: "remote-pass" },
           },
         },
-        expectedAuth: { password: `ltfx.n.ff01a57b6ce2163baf63.v1` },
+        expectedAuth: { password: "remote-pass" },
       },
       {
         name: "prefers env password over remote password",
         cfg: {
           gateway: {
             mode: "remote",
-            remote: { url: `ltfx.n.381ad3a3d616596dd5f8.v1`, password: `ltfx.n.ff01a57b6ce2163baf63.v1` },
+            remote: { url: "wss://remote.example.com:18789", password: "remote-pass" },
           },
         },
-        env: { password: `ltfx.n.b208a30575f62d0d732c.v1` },
-        expectedAuth: { password: `ltfx.n.b208a30575f62d0d732c.v1` },
+        env: { password: "env-pass" },
+        expectedAuth: { password: "env-pass" },
       },
     ];
 
@@ -145,7 +145,7 @@ describe("security audit gateway auth selection", () => {
         deep: {
           gateway: {
             attempted: true,
-            url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+            url: "ws://127.0.0.1:18789",
             ok: true,
             error: null,
             close: null,

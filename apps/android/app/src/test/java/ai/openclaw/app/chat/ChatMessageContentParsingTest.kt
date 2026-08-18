@@ -48,7 +48,7 @@ class ChatMessageContentParsingTest {
   fun parsesCapabilityGatedCanvasWidgets() {
     val content =
       Json.parseToJsonElement(
-        """{"type":"canvas","preview":{"kind":"canvas","surface":"assistant_message","render":"url","title":"Status","preferredHeight":240,"url":"${ltfx.n.8ff1aa874be725f22793.v1}","sandbox":"scripts"}}""",
+        """{"type":"canvas","preview":{"kind":"canvas","surface":"assistant_message","render":"url","title":"Status","preferredHeight":240,"url":"/__openclaw__/canvas/documents/widget-1/index.html","sandbox":"scripts"}}""",
       )
 
     assertEquals(
@@ -70,7 +70,7 @@ class ChatMessageContentParsingTest {
   fun dropsCanvasBlocksWithoutWidgetSandbox() {
     val content =
       Json.parseToJsonElement(
-        """{"type":"canvas","preview":{"kind":"canvas","surface":"assistant_message","render":"url","url":"${ltfx.n.8ff1aa874be725f22793.v1}"}}""",
+        """{"type":"canvas","preview":{"kind":"canvas","surface":"assistant_message","render":"url","url":"/__openclaw__/canvas/documents/widget-1/index.html"}}""",
       )
 
     assertNull(parseChatMessageContent(content))
@@ -283,7 +283,7 @@ class ChatMessageContentParsingTest {
       )
     val managedImage =
       Json.parseToJsonElement(
-        """{"type":"image","mimeType":"image/png","fileName":"chart.png","url":"${ltfx.n.bcf5c96709757c2d333f.v1}"}""",
+        """{"type":"image","mimeType":"image/png","fileName":"chart.png","url":"/api/chat/media/outgoing/main/id"}""",
       )
 
     assertEquals(

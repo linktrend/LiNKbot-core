@@ -400,7 +400,7 @@ describe("linkbrain capture/lifecycle timeout integration", () => {
     expect((await capture.getBuffer("agent:lisa:flush-stall"))?.events).toHaveLength(1);
     expect((await runtime.diagnostics()).stalledCount).toBeGreaterThan(0);
 
-    enqueueGate.resolve({ key: `ltfx.n.d73eeb148e0826b60ea6.v1` });
+    enqueueGate.resolve({ key: "late-key" });
     await Promise.resolve();
     await Promise.resolve();
   });

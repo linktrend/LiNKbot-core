@@ -232,7 +232,7 @@ function assertNoCanary(surfaces: unknown[]) {
   for (const surface of surfaces) {
     const json = JSON.stringify(surface);
     expect(json).not.toContain(PHASE6_SECRET_CANARY);
-    expect(json).not.toContain("ltfx.n.bd6417d549aefc1ece8e.v1");
+    expect(json).not.toContain("sk-phase6test");
   }
 }
 

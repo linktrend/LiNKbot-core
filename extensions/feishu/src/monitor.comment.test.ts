@@ -13,8 +13,8 @@ const handleFeishuCommentEventMock = vi.hoisted(() => vi.fn(async (_params?: unk
 const createFeishuClientMock = vi.hoisted(() => vi.fn());
 
 let lastRuntime = createNonExitingRuntimeEnv();
-const TEST_DOC_TOKEN = `ltfx.n.a710be647ae930279e1c.v1`;
-const TEST_WIKI_TOKEN = `ltfx.n.881de4fcea55e467366f.v1`;
+const TEST_DOC_TOKEN = "ZsJfdxrBFo0RwuxteOLc1Ekvneb";
+const TEST_WIKI_TOKEN = "OtYpd5pKOoMeQzxrzkocv9KIn4H";
 
 vi.mock("./client.js", () => ({
   createFeishuClient: createFeishuClientMock,
@@ -272,7 +272,7 @@ describe("resolveDriveCommentEventTurn", () => {
       data: {
         node: {
           obj_type: "docx",
-          obj_token: `ltfx.n.0ad290bbf21032e671e6.v1`,
+          obj_token: "doc_ref_1",
         },
       },
     }));

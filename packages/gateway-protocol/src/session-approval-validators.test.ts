@@ -34,16 +34,16 @@ const terminal = {
 
 describe("session approval protocol validators", () => {
   it("keeps approval subscription opt-in additive and literal", () => {
-    expect(validateSessionsMessagesSubscribeParams({ key: `ltfx.n.6d9217fe77c7f11d9cc9.v1` })).toBe(true);
+    expect(validateSessionsMessagesSubscribeParams({ key: "agent:main:main" })).toBe(true);
     expect(
       validateSessionsMessagesSubscribeParams({
-        key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+        key: "agent:main:main",
         includeApprovals: true,
       }),
     ).toBe(true);
     expect(
       validateSessionsMessagesSubscribeParams({
-        key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+        key: "agent:main:main",
         includeApprovals: false,
       }),
     ).toBe(false);

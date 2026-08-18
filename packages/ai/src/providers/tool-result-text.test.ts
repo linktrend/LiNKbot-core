@@ -34,7 +34,7 @@ describe("extractToolResultText", () => {
     const text = extractToolResultText([
       { type: "text", text: "summary" },
       { type: "image", data: "image-binary", mimeType: "image/png" },
-      { type: "image_url", image_url: { url: `ltfx.n.5d4d2edd3c5d7a5d25ef.v1` } },
+      { type: "image_url", image_url: { url: "data:image/png;base64,abc123" } },
       { type: "input_image", image_url: "data:image/png;base64,def456" },
       { type: "audio", data: "audio-binary", mimeType: "audio/mpeg" },
     ]);

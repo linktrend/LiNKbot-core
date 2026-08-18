@@ -194,7 +194,7 @@ describeControlUiE2e("Control UI chat run lifecycle", () => {
     const sessionListsBeforeOtherSession = (await gateway.getRequests("sessions.list")).length;
     await gateway.deferNext("sessions.list");
     await gateway.emitGatewayEvent("sessions.changed", {
-      key: `ltfx.n.dd19b842df3774ef500a.v1`,
+      key: "agent:main:another-session",
       kind: "direct",
       label: "Another session",
       reason: "lifecycle",

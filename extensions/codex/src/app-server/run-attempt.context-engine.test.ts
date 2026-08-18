@@ -2028,7 +2028,7 @@ describe("runCodexAppServerAttempt context-engine lifecycle", () => {
   it("logs assemble failures as a formatted message instead of the raw error object", async () => {
     const sessionFile = path.join(tempDir, "session.jsonl");
     const workspaceDir = path.join(tempDir, "workspace");
-    const rawError = new Error("Authorization: Bearer ltfx.n.cfd467d34b70cd6bf224.v1");
+    const rawError = new Error("Authorization: Bearer sk-abcdefghijklmnopqrstuv");
     const contextEngine = createContextEngine({
       assemble: vi.fn(async () => {
         throw rawError;
@@ -2051,7 +2051,7 @@ describe("runCodexAppServerAttempt context-engine lifecycle", () => {
     const details = requireRecord(warning?.[1], "assemble warning details");
     expect(typeof details.error).toBe("string");
     expect(warning?.[1]).not.toEqual({ error: rawError });
-    expect(String(details.error)).not.toContain("ltfx.n.cfd467d34b70cd6bf224.v1");
+    expect(String(details.error)).not.toContain("sk-abcdefghijklmnopqrstuv");
   });
 
   it("falls back to ingestBatch and skips turn maintenance on prompt failure", async () => {

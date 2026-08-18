@@ -159,7 +159,7 @@ describe("openai video generation provider", () => {
 
   it("requires an OpenAI API key credential for direct video generation", async () => {
     resolveApiKeyForProviderMock.mockResolvedValueOnce({
-      apiKey: `ltfx.n.334252fe7cbfeebee445.v1`,
+      apiKey: "chatgpt-oauth-token",
       mode: "oauth",
     } as never);
 

@@ -113,13 +113,13 @@ function resolveGoogleAuthTlsOptions(init: GoogleAuthTransportOptions, url: URL)
   if (hasProxyAgentShape(agent)) {
     return {
       cert: agent.connectOpts?.cert,
-      key: (agent.connectOpts?.key,)
+      key: agent.connectOpts?.key,
     };
   }
   if (hasTlsAgentShape(agent)) {
     return {
       cert: agent.options?.cert,
-      key: (agent.options?.key,)
+      key: agent.options?.key,
     };
   }
   return {};

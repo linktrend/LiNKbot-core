@@ -87,11 +87,11 @@ Cloud workers run the OpenClaw agent runtime. Choose an `openai/*` or other mode
 
 ```bash
 openclaw gateway call sessions.create \
-  --params '{"key":"${ltfx.n.2ea65b2c99a95fbf2656.v1}","worktree":true,"cwd":"/path/to/repo","worktreeName":"big-refactor"}'
+  --params '{"key":"agent:main:big-refactor","worktree":true,"cwd":"/path/to/repo","worktreeName":"big-refactor"}'
 
 openclaw gateway call sessions.dispatch \
   --timeout 1500000 \
-  --params '{"key":"${ltfx.n.2ea65b2c99a95fbf2656.v1}","profileId":"aws"}'
+  --params '{"key":"agent:main:big-refactor","profileId":"aws"}'
 ```
 
 `sessions.dispatch` closes local turn admission, drains active work, provisions the lease, runs setup, bootstraps OpenClaw, syncs the workspace, and returns once the placement reaches `active` worker ownership. Budget several minutes for the first dispatch; leases and installs are cached where the provider supports it. After that, talk to the session as usual — turns route to the worker automatically.
@@ -107,7 +107,7 @@ The equivalent administrative RPC is:
 ```bash
 openclaw gateway call sessions.reclaim \
   --timeout 600000 \
-  --params '{"key":"${ltfx.n.2ea65b2c99a95fbf2656.v1}"}'
+  --params '{"key":"agent:main:big-refactor"}'
 ```
 
 Placement moves through a durable state machine (`local → requested → provisioning → syncing → starting → active`), so a Gateway restart mid-dispatch reconciles instead of leaking machines. A failed model turn keeps the active placement available for a retry. If inbound workspace reconciliation fails, the worker also stays active so the operator can resolve the local conflict and retry without losing the remote result; lifecycle failures instead move the placement to an error or reclaimed state and preserve their diagnostic tail.

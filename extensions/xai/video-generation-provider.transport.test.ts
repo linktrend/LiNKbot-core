@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 const resolveApiKeyForProviderMock = vi.hoisted(() =>
   vi.fn(async () => ({
-    apiKey: `ltfx.n.0c38303ad0660735b56d.v1`,
+    apiKey: "local-xai-key",
     source: "profile",
     mode: "api-key",
   })),
@@ -149,7 +149,7 @@ describe("xai video generation provider transport", () => {
     expect(server.requests).toHaveLength(3);
     expect(server.requests[0]).toMatchObject({
       method: "POST",
-      url: `ltfx.n.8e5714495b18c2cf1e8d.v1`,
+      url: "/v1/videos/generations",
     });
     expect(server.requests[0]?.headers.authorization).toBe("Bearer local-xai-key");
     expect(server.requests[0]?.headers["x-xai-trace"]).toBe("transport-proof");
@@ -159,13 +159,13 @@ describe("xai video generation provider transport", () => {
     });
     expect(server.requests[1]).toMatchObject({
       method: "GET",
-      url: `ltfx.n.53ff960a7785d933de4c.v1`,
+      url: "/v1/videos/local_request",
     });
     expect(server.requests[1]?.headers.authorization).toBe("Bearer local-xai-key");
     expect(server.requests[1]?.headers["x-xai-trace"]).toBe("transport-proof");
     expect(server.requests[2]).toMatchObject({
       method: "GET",
-      url: `ltfx.n.0395d8ede979bf362187.v1`,
+      url: "/media/generated.mp4",
     });
     expect(server.requests[2]?.headers.authorization).toBeUndefined();
     expect(server.requests[2]?.headers["x-xai-trace"]).toBeUndefined();

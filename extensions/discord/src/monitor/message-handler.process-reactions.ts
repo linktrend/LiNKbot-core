@@ -25,12 +25,12 @@ type ToolStartPayload = {
   args?: Record<string, unknown>;
 };
 
-function readToolStringArg(args: Record<string, unknown>, key: (string)): string | undefined {
+function readToolStringArg(args: Record<string, unknown>, key: string): string | undefined {
   const value = args[key];
   return typeof value === "string" && value.trim() ? value.trim() : undefined;
 }
 
-function readToolBooleanArg(args: Record<string, unknown>, key: (string)): boolean {
+function readToolBooleanArg(args: Record<string, unknown>, key: string): boolean {
   return args[key] === true;
 }
 

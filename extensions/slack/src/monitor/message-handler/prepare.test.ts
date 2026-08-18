@@ -4398,7 +4398,7 @@ describe("prepareSlackMessage sender prefix", () => {
       isThreadReply: false,
       threadStarter: null,
       isBotMessage: false,
-      botToken: `ltfx.n.87894fe048938b686cfb.v1`,
+      botToken: "xoxb-test",
       mediaMaxBytes: 1000,
       resolveUserName,
     });
@@ -4443,7 +4443,7 @@ describe("prepareSlackMessage sender prefix", () => {
       isThreadReply: false,
       threadStarter: null,
       isBotMessage: false,
-      botToken: `ltfx.n.87894fe048938b686cfb.v1`,
+      botToken: "xoxb-test",
       mediaMaxBytes: 1000,
       resolveUserName,
     });

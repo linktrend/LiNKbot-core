@@ -123,7 +123,7 @@ final class CanvasWindowController: NSWindowController, WKNavigationDelegate, WK
 
         let sessionDir = self.sessionDir
         let webView = self.webView
-        self.watcher = CanvasFileWatcher(url: (sessionDir) { [weak webView] in)
+        self.watcher = CanvasFileWatcher(url: sessionDir) { [weak webView] in
             Task { @MainActor in
                 guard let webView else { return }
 

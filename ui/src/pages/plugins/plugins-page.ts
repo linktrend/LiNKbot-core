@@ -200,7 +200,7 @@ class PluginsPage extends OpenClawLightDomElement {
     const nextIconAuthCandidates = resolveControlUiAuthCandidates({
       hello: snapshot.hello,
       settings: { token: this.context.gateway.connection.token },
-      password: (this.context.gateway.connection.password,)
+      password: this.context.gateway.connection.password,
     });
     const iconAuthChanged =
       nextIconAuthCandidates.length !== this.iconAuthCandidates.length ||
@@ -372,7 +372,7 @@ class PluginsPage extends OpenClawLightDomElement {
       auth: {
         hello: this.context.gateway.snapshot.hello,
         settings: { token: this.context.gateway.connection.token },
-        password: (this.context.gateway.connection.password,)
+        password: this.context.gateway.connection.password,
       },
       signal: controller.signal,
     })

@@ -610,7 +610,7 @@ export function registerNodesStatusCommands(nodes: Command) {
                   { key: "Node", header: "Node", minWidth: 14, flex: true },
                   { key: "Id", header: "ID", minWidth: 10 },
                   { key: "IP", header: "IP", minWidth: 10 },
-                  { key: `ltfx.n.02dd5634b7eca0109cff.v1`, header: "Last Connect", minWidth: 14 },
+                  { key: "LastConnect", header: "Last Connect", minWidth: 14 },
                 ],
                 rows: pairedTableRows,
               }).trimEnd(),

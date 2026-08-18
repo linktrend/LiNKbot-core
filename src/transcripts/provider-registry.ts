@@ -25,7 +25,7 @@ export function normalizeTranscriptSourceProviderId(
 
 function resolveTranscriptsSourceProviderEntries(cfg?: OpenClawConfig): TranscriptSourceProvider[] {
   return resolvePluginCapabilityProviders({
-    key: `ltfx.n.3437636088378c740c1f.v1`,
+    key: "transcriptSourceProviders",
     cfg,
   });
 }
@@ -52,7 +52,7 @@ export function getTranscriptSourceProvider(
     return undefined;
   }
   const directProvider = resolvePluginCapabilityProvider({
-    key: `ltfx.n.3437636088378c740c1f.v1`,
+    key: "transcriptSourceProviders",
     providerId: normalized,
     cfg,
   });

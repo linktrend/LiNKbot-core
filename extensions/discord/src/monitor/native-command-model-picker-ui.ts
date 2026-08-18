@@ -57,7 +57,7 @@ function resolveDiscordModelPickerCommandContext(
   return null;
 }
 
-function resolveCommandArgStringValue(args: CommandArgs | undefined, key: (string)): string {
+function resolveCommandArgStringValue(args: CommandArgs | undefined, key: string): string {
   const value = args?.values?.[key];
   if (typeof value !== "string") {
     return "";

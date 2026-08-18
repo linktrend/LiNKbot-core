@@ -66,7 +66,7 @@ async function startLifecycleMonitor(
   const abort = new AbortController();
   const runtime = createRuntimeEnv();
   const run = monitorZaloProvider({
-    token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+    token: "test-token",
     account: TEST_ACCOUNT,
     config: TEST_CONFIG,
     runtime,
@@ -239,7 +239,7 @@ describe("monitorZaloProvider lifecycle", () => {
     const { abort, runtime, run } = await startLifecycleMonitor({
       useWebhook: true,
       webhookUrl: "https://example.com/hooks/zalo",
-      webhookSecret: `ltfx.n.f75778f7425be4db0369.v1`, // pragma: allowlist secret
+      webhookSecret: "supersecret", // pragma: allowlist secret
     });
     const monitoredRun = run.then(() => {
       settled = true;

@@ -123,7 +123,7 @@ describe("provider-usage.load plugin boundary", () => {
     await expect(
       loadProviderUsageSummary({
         now: usageNow,
-        auth: [{ provider: "github-copilot", token: `ltfx.n.be36160a0bfcf3f715db.v1` }],
+        auth: [{ provider: "github-copilot", token: "copilot-token" }],
         fetch: mockFetch as unknown as typeof fetch,
         env: {},
       }),
@@ -160,7 +160,7 @@ describe("provider-usage.load plugin boundary", () => {
         auth: [
           {
             provider: "openai",
-            token: `ltfx.n.2bbc6ce9917113417ef2.v1`,
+            token: "codex-app-server",
             authProfileId: "openai:work",
             hookProvider: "codex",
           },
@@ -203,7 +203,7 @@ describe("provider-usage.load plugin boundary", () => {
     await expect(
       loadProviderUsageSummary({
         now: usageNow,
-        auth: [{ provider: "openai", token: `ltfx.n.051759422436278d8d68.v1`, accountId: "acc-1" }],
+        auth: [{ provider: "openai", token: "codex-token", accountId: "acc-1" }],
         env: {
           HTTP_PROXY: "",
           HTTPS_PROXY: "http://proxy.test:8080",
@@ -248,7 +248,7 @@ describe("provider-usage.load plugin boundary", () => {
     await expect(
       loadProviderUsageSummary({
         now: usageNow,
-        auth: [{ provider: "openai", token: `ltfx.n.051759422436278d8d68.v1`, accountId: "acc-1" }],
+        auth: [{ provider: "openai", token: "codex-token", accountId: "acc-1" }],
         env: {
           HTTP_PROXY: "",
           HTTPS_PROXY: "http://proxy.test:8080",

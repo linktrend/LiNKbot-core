@@ -1652,7 +1652,7 @@ describe("runCliAgent spawn path", () => {
           config: {
             skills: {
               entries: {
-                envskill: { apiKey: `ltfx.n.4bdead91a7cb8fe69f61.v1` }, // pragma: allowlist secret
+                envskill: { apiKey: "skill-secret" }, // pragma: allowlist secret
               },
             },
           },
@@ -5894,7 +5894,7 @@ ${JSON.stringify({
           env: {
             SAFE_KEEP: "ok",
             ANTHROPIC_BASE_URL: "https://override.example.com/v1",
-            CLAUDE_CODE_OAUTH_TOKEN: `ltfx.n.380cacea5fec490a31e2.v1`,
+            CLAUDE_CODE_OAUTH_TOKEN: "override-oauth-token",
             CLAUDE_CODE_PROVIDER_MANAGED_BY_HOST: "1",
           },
           clearEnv: [
@@ -5944,13 +5944,13 @@ ${JSON.stringify({
     vi.stubEnv("ANTHROPIC_API_KEY", "sk-ant-host");
     vi.stubEnv("ANTHROPIC_API_TOKEN", "token-host");
     vi.stubEnv("GEMINI_CLI_SYSTEM_SETTINGS_PATH", "/tmp/host-gemini-settings.json");
-    vi.stubEnv("OPENAI_API_KEY", "ltfx.n.b2903936ebaf7c96b0c7.v1");
+    vi.stubEnv("OPENAI_API_KEY", "sk-openai-host");
 
     const log = buildCliEnvAuthLog({
-      ANTHROPIC_API_TOKEN: `ltfx.n.ec2af79a03e5bce949b4.v1`,
+      ANTHROPIC_API_TOKEN: "token-child",
       CLAUDE_CODE_PROVIDER_MANAGED_BY_HOST: "1",
       GEMINI_CLI_HOME: "/tmp/child-gemini-home",
-      OPENAI_API_KEY: `ltfx.n.dce10065b9f3542dc43c.v1`,
+      OPENAI_API_KEY: "sk-openai-child",
     });
 
     expect(log).toMatch(/host=.*ANTHROPIC_API_KEY/);
@@ -5966,7 +5966,7 @@ ${JSON.stringify({
     expect(log).not.toContain("sk-ant-host");
     expect(log).not.toContain("token-child");
     expect(log).not.toContain("/tmp/child-gemini-home");
-    expect(log).not.toContain("ltfx.n.dce10065b9f3542dc43c.v1");
+    expect(log).not.toContain("sk-openai-child");
   });
 
   it("prepends bootstrap warnings to the CLI prompt body", async () => {

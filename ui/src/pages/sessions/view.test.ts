@@ -145,7 +145,7 @@ describe("sessions view", () => {
         ...buildProps(
           buildMultiResult([
             {
-              key: `ltfx.n.86fb4a046f4e4a5af91a.v1`,
+              key: "agent:main:launch",
               kind: "direct",
               label: "Launch planning",
               updatedAt: Date.parse("2026-07-12T12:00:00.000Z"),
@@ -245,9 +245,9 @@ describe("sessions view", () => {
       renderSessions({
         ...buildProps(
           buildMultiResult([
-            { key: `ltfx.n.fa84dde052446ccd4036.v1`, kind: "group", updatedAt: 3 },
-            { key: `ltfx.n.e8415269d4c14a97b1c9.v1`, kind: "direct", updatedAt: 2 },
-            { key: `ltfx.n.01f8ad7100aaeac7a2c1.v1`, kind: "group", updatedAt: 1 },
+            { key: "agent:main:discord:channel:1", kind: "group", updatedAt: 3 },
+            { key: "agent:main:telegram:direct:2", kind: "direct", updatedAt: 2 },
+            { key: "agent:main:discord:channel:3", kind: "group", updatedAt: 1 },
           ]),
         ),
         groupBy: "channel",
@@ -272,7 +272,7 @@ describe("sessions view", () => {
     render(
       renderSessions({
         ...buildProps(
-          buildMultiResult([{ key: `ltfx.n.fa84dde052446ccd4036.v1`, kind: "group", updatedAt: 1 }]),
+          buildMultiResult([{ key: "agent:main:discord:channel:1", kind: "group", updatedAt: 1 }]),
         ),
         groupBy: "category",
         knownCategories: ["Research"],
@@ -293,8 +293,8 @@ describe("sessions view", () => {
       renderSessions({
         ...buildProps(
           buildMultiResult([
-            { key: `ltfx.n.fa84dde052446ccd4036.v1`, kind: "group", updatedAt: 2 },
-            { key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`, kind: "direct", updatedAt: 1, category: "Research" },
+            { key: "agent:main:discord:channel:1", kind: "group", updatedAt: 2 },
+            { key: "agent:main:main", kind: "direct", updatedAt: 1, category: "Research" },
           ]),
         ),
         groupBy: "category",
@@ -338,7 +338,7 @@ describe("sessions view", () => {
     expect(onAssignCategory).toHaveBeenCalledTimes(1);
 
     dropWithPayload(["application/x-openclaw-session-key"], {
-      "application/x-openclaw-session-key": `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+      "application/x-openclaw-session-key": "agent:main:main",
     });
     expect(onAssignCategory).toHaveBeenCalledWith("agent:main:main", "Research");
   });
@@ -347,7 +347,7 @@ describe("sessions view", () => {
     const container = document.createElement("div");
     const onOpenSessionMenu = vi.fn();
     const session = {
-      key: `ltfx.n.4c04fdfd20feeccbd765.v1`,
+      key: "agent:main:dashboard:1",
       kind: "direct",
       updatedAt: Date.now(),
     } as const;
@@ -489,7 +489,7 @@ describe("sessions view", () => {
       renderSessions({
         ...buildProps(
           buildResult({
-            key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+            key: "agent:main:main",
             kind: "direct",
             updatedAt: Date.now(),
             thinkingLevel: "adaptive",
@@ -533,7 +533,7 @@ describe("sessions view", () => {
       renderSessions({
         ...buildProps(
           buildResult({
-            key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+            key: "agent:main:main",
             kind: "direct",
             updatedAt: Date.now(),
             thinkingDefault: "adaptive",
@@ -566,7 +566,7 @@ describe("sessions view", () => {
         ...buildProps(
           buildResult(
             {
-              key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+              key: "agent:main:main",
               kind: "direct",
               updatedAt: Date.now(),
             },
@@ -602,7 +602,7 @@ describe("sessions view", () => {
       renderSessions({
         ...buildProps(
           buildResult({
-            key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+            key: "agent:main:main",
             kind: "direct",
             updatedAt: Date.now(),
             thinkingLevel: "low",
@@ -636,7 +636,7 @@ describe("sessions view", () => {
       renderSessions({
         ...buildProps(
           buildResult({
-            key: `ltfx.n.990a9a01e3f06f953624.v1`,
+            key: "agent:data-expert:dingtalk:cidzg6sF43NZMy52Rnk8EN",
             kind: "direct",
             updatedAt: Date.now(),
           }),
@@ -667,7 +667,7 @@ describe("sessions view", () => {
       renderSessions(
         buildProps(
           buildResult({
-            key: `ltfx.n.4cc61728995d10c795b2.v1`,
+            key: "agent:unknown-agent:telegram:abc123",
             kind: "direct",
             updatedAt: Date.now(),
           }),
@@ -690,7 +690,7 @@ describe("sessions view", () => {
       renderSessions(
         buildProps(
           buildResult({
-            key: `ltfx.n.fb4a958585dc00adf03f.v1`,
+            key: "agent:main:cron:daily-digest",
             kind: "cron",
             updatedAt: Date.now(),
           }),
@@ -711,27 +711,27 @@ describe("sessions view", () => {
         buildProps(
           buildMultiResult([
             {
-              key: `ltfx.n.3970a22c28e33bd039a5.v1`,
+              key: "agent:main:live",
               kind: "direct",
               updatedAt: 30,
               hasActiveRun: true,
               status: "running",
             },
             {
-              key: `ltfx.n.52add5ea8e16190f27b6.v1`,
+              key: "agent:main:idle",
               kind: "direct",
               updatedAt: 20,
               hasActiveRun: false,
               status: "running",
             },
             {
-              key: `ltfx.n.e8a7696bb5b05bf951ab.v1`,
+              key: "agent:main:failed",
               kind: "direct",
               updatedAt: 10,
               status: "failed",
             },
             {
-              key: `ltfx.n.45ac7aff0d184eeaf58d.v1`,
+              key: "agent:main:done",
               kind: "direct",
               updatedAt: 5,
               hasActiveRun: true,
@@ -771,7 +771,7 @@ describe("sessions view", () => {
       renderSessions({
         ...buildProps(
           buildResult({
-            key: `ltfx.n.df02491daa2dae915dcf.v1`,
+            key: "agent:main:goal",
             kind: "direct",
             updatedAt: 20,
             hasActiveRun: true,
@@ -817,13 +817,13 @@ describe("sessions view", () => {
         ...buildProps(
           buildMultiResult([
             {
-              key: `ltfx.n.1906eca974dbcc8e55dc.v1`,
+              key: "agent:main:claude",
               kind: "direct",
               updatedAt: 20,
               agentRuntime: { id: "claude-cli", fallback: "none", source: "agent" },
             },
             {
-              key: `ltfx.n.6a5cda5483c177bbb196.v1`,
+              key: "agent:main:pi",
               kind: "direct",
               updatedAt: 10,
               agentRuntime: { id: "pi", source: "implicit" },
@@ -856,14 +856,14 @@ describe("sessions view", () => {
         ...buildProps(
           buildMultiResult([
             {
-              key: `ltfx.n.45ac7aff0d184eeaf58d.v1`,
+              key: "agent:main:done",
               kind: "direct",
               updatedAt: 20,
               hasActiveRun: true,
               status: "done",
             },
             {
-              key: `ltfx.n.dc07a04b056c0647a539.v1`,
+              key: "agent:main:running",
               kind: "direct",
               updatedAt: 10,
               hasActiveRun: true,
@@ -890,7 +890,7 @@ describe("sessions view", () => {
       renderSessions(
         buildProps(
           buildResult({
-            key: `ltfx.n.9140891a57a32fb4b6e1.v1`,
+            key: "agent:constructor:telegram:abc123",
             kind: "direct",
             updatedAt: Date.now(),
           }),
@@ -911,7 +911,7 @@ describe("sessions view", () => {
       renderSessions({
         ...buildProps(
           buildResult({
-            key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+            key: "agent:main:main",
             kind: "direct",
             updatedAt: Date.now(),
             totalTokens: 123456,
@@ -946,7 +946,7 @@ describe("sessions view", () => {
       renderSessions({
         ...buildProps(
           buildResult({
-            key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+            key: "agent:main:main",
             kind: "direct",
             updatedAt: Date.now(),
             compactionCheckpointCount: 1,
@@ -978,7 +978,7 @@ describe("sessions view", () => {
       renderSessions(
         buildProps(
           buildResult({
-            key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+            key: "agent:main:main",
             kind: "direct",
             updatedAt: Date.now(),
           }),
@@ -999,7 +999,7 @@ describe("sessions view", () => {
       renderSessions({
         ...buildProps(
           buildResult({
-            key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+            key: "agent:main:main",
             kind: "direct",
             updatedAt: Date.now(),
             totalTokens: 123456,
@@ -1108,7 +1108,7 @@ describe("sessions view", () => {
         ...buildProps(
           buildMultiResult([
             {
-              key: `ltfx.n.c67efa67c76c69891c52.v1`,
+              key: "agent:main:with-checkpoint",
               kind: "direct",
               updatedAt: 20,
               compactionCheckpointCount: 1,
@@ -1119,7 +1119,7 @@ describe("sessions view", () => {
               },
             },
             {
-              key: `ltfx.n.cf7a0d86f52d0d285915.v1`,
+              key: "agent:main:no-checkpoint",
               kind: "direct",
               updatedAt: 10,
               compactionCheckpointCount: 0,
@@ -1155,12 +1155,12 @@ describe("sessions view", () => {
         ...buildProps(
           buildMultiResult([
             {
-              key: `ltfx.n.990a9a01e3f06f953624.v1`,
+              key: "agent:data-expert:dingtalk:cidzg6sF43NZMy52Rnk8EN",
               kind: "direct",
               updatedAt: 20,
             },
             {
-              key: `ltfx.n.91d7dbdc2a5c4dc2de9c.v1`,
+              key: "agent:code-agent:telegram:abc123",
               kind: "direct",
               updatedAt: 10,
             },
@@ -1192,7 +1192,7 @@ describe("sessions view", () => {
       renderSessions({
         ...buildProps(
           buildResult({
-            key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+            key: "agent:main:main",
             kind: "direct",
             updatedAt: Date.now(),
             fastMode: true,
@@ -1274,7 +1274,7 @@ describe("sessions view", () => {
         ...buildProps(
           buildMultiResult([
             {
-              key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+              key: "agent:main:main",
               kind: "direct",
               updatedAt: Date.now(),
             },
@@ -1353,7 +1353,7 @@ describe("sessions view", () => {
         buildProps(
           buildMultiResult([
             {
-              key: `ltfx.n.3970a22c28e33bd039a5.v1`,
+              key: "agent:main:live",
               kind: "direct",
               updatedAt: 2,
               hasActiveRun: true,
@@ -1361,7 +1361,7 @@ describe("sessions view", () => {
               totalTokens: 1200,
             },
             {
-              key: `ltfx.n.52add5ea8e16190f27b6.v1`,
+              key: "agent:main:idle",
               kind: "cron",
               updatedAt: 1,
               unread: true,
@@ -1395,7 +1395,7 @@ describe("sessions view", () => {
       renderSessions(
         buildProps(
           buildResult({
-            key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+            key: "agent:main:main",
             kind: "direct",
             updatedAt: Date.now(),
             totalTokens: 180_000,
@@ -1424,7 +1424,7 @@ describe("sessions view", () => {
       renderSessions(
         buildProps(
           buildResult({
-            key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+            key: "agent:main:main",
             kind: "direct",
             updatedAt: Date.now(),
             totalTokens: 180_000,
@@ -1454,8 +1454,8 @@ describe("sessions view", () => {
       renderSessions(
         buildProps(
           buildMultiResult([
-            { key: `ltfx.n.8d58a705b979a4e362ea.v1`, kind: "direct", updatedAt: 2, totalTokens: 1200 },
-            { key: `ltfx.n.55d2be10b02ac88a86ac.v1`, kind: "direct", updatedAt: 1 },
+            { key: "agent:main:a", kind: "direct", updatedAt: 2, totalTokens: 1200 },
+            { key: "agent:main:b", kind: "direct", updatedAt: 1 },
           ]),
         ),
       ),
@@ -1470,7 +1470,7 @@ describe("sessions view", () => {
 
     render(
       renderSessions(
-        buildProps(buildMultiResult([{ key: `ltfx.n.55d2be10b02ac88a86ac.v1`, kind: "direct", updatedAt: 1 }])),
+        buildProps(buildMultiResult([{ key: "agent:main:b", kind: "direct", updatedAt: 1 }])),
       ),
       container,
     );
@@ -1489,7 +1489,7 @@ describe("sessions view", () => {
       renderSessions(
         buildProps(
           buildResult({
-            key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+            key: "agent:main:main",
             kind: "direct",
             updatedAt: Date.now(),
             totalTokens: 4200,
@@ -1511,13 +1511,13 @@ describe("sessions view", () => {
         buildProps(
           buildMultiResult([
             {
-              key: `ltfx.n.3970a22c28e33bd039a5.v1`,
+              key: "agent:main:live",
               kind: "cron",
               updatedAt: 2,
               hasActiveRun: true,
               status: "running",
             },
-            { key: `ltfx.n.52add5ea8e16190f27b6.v1`, kind: "direct", updatedAt: 1, hasActiveRun: false },
+            { key: "agent:main:idle", kind: "direct", updatedAt: 1, hasActiveRun: false },
           ]),
         ),
       ),

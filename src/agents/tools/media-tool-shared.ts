@@ -138,7 +138,7 @@ export function resolveRemoteMediaSsrfPolicy(
 
 function applyAgentDefaultModelConfig(
   cfg: OpenClawConfig | undefined,
-  key: `ltfx.n.ee18ceb2e2cc564ce02a.v1` | "imageGenerationModel" | "videoGenerationModel" | "musicGenerationModel",
+  key: "imageModel" | "imageGenerationModel" | "videoGenerationModel" | "musicGenerationModel",
   modelConfig: ToolModelConfig,
 ): OpenClawConfig | undefined {
   if (!cfg) {

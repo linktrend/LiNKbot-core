@@ -215,7 +215,7 @@ esac
     FAKE_ATTEMPT_RUN_ID: ARTIFACT_RUN_ID,
     FAKE_DOCKER_LOG: dockerLog,
     FAKE_GH_LOG: ghLog,
-    GH_TOKEN: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+    GH_TOKEN: "test-token",
     GITHUB_REPOSITORY: "openclaw/openclaw",
     GITHUB_RUN_ATTEMPT: "2",
     GITHUB_RUN_ID: "123456",

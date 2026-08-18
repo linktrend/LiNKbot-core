@@ -22,7 +22,7 @@ describe("AppSidebar agent chip", () => {
       defaults: { modelProvider: null, model: null, contextTokens: null },
       sessions: [
         {
-          key: `ltfx.n.0f862d870216bfed212b.v1`,
+          key: "agent:main:child-one",
           spawnedBy: "agent:main:parent",
           kind: "direct",
           label: "Research sources",
@@ -33,7 +33,7 @@ describe("AppSidebar agent chip", () => {
           runtimeMs: 30_000,
         },
         {
-          key: `ltfx.n.b5638c2277465cab98de.v1`,
+          key: "agent:main:child-two",
           spawnedBy: "agent:main:parent",
           kind: "direct",
           label: "Check tests",
@@ -53,7 +53,7 @@ describe("AppSidebar agent chip", () => {
         defaults: { modelProvider: null, model: null, contextTokens: null },
         sessions: [
           {
-            key: `ltfx.n.4e2f2223ab973b1aed69.v1`,
+            key: "agent:main:parent",
             kind: "direct",
             label: "Plan release",
             updatedAt: 1,
@@ -91,7 +91,7 @@ describe("AppSidebar agent chip", () => {
     expect(childRows.every((row) => row.querySelector(".session-row-actions") === null)).toBe(true);
     expect(sidebar.querySelector('[aria-label="Done"]')).not.toBeNull();
     const runtimeStartMs = (
-      sidebar.querySelector('[data-session-key=`ltfx.n.0f862d870216bfed212b.v1`] openclaw-elapsed-time') as
+      sidebar.querySelector('[data-session-key="agent:main:child-one"] openclaw-elapsed-time') as
         | (HTMLElement & { startMs: number })
         | null
     )?.startMs;
@@ -108,7 +108,7 @@ describe("AppSidebar agent chip", () => {
       defaults: { modelProvider: null, model: null, contextTokens: null },
       sessions: [
         {
-          key: `ltfx.n.0f862d870216bfed212b.v1`,
+          key: "agent:main:child-one",
           spawnedBy: "agent:main:parent",
           kind: "direct",
           label: "Research sources",
@@ -119,7 +119,7 @@ describe("AppSidebar agent chip", () => {
           runtimeMs: 60_000,
         },
         {
-          key: `ltfx.n.b5638c2277465cab98de.v1`,
+          key: "agent:main:child-two",
           spawnedBy: "agent:main:parent",
           kind: "direct",
           label: "Check tests",
@@ -139,7 +139,7 @@ describe("AppSidebar agent chip", () => {
         defaults: { modelProvider: null, model: null, contextTokens: null },
         sessions: [
           {
-            key: `ltfx.n.4e2f2223ab973b1aed69.v1`,
+            key: "agent:main:parent",
             kind: "direct",
             label: "Plan release",
             updatedAt: 4,
@@ -151,7 +151,7 @@ describe("AppSidebar agent chip", () => {
     await waitForFast(() => expect(harness.list).toHaveBeenCalledTimes(2));
     await waitForFast(() =>
       expect(
-        sidebar.querySelector('[data-session-key=`ltfx.n.0f862d870216bfed212b.v1`] [aria-label="Done"]'),
+        sidebar.querySelector('[data-session-key="agent:main:child-one"] [aria-label="Done"]'),
       ).not.toBeNull(),
     );
   });
@@ -188,7 +188,7 @@ describe("AppSidebar agent chip", () => {
         defaults: { modelProvider: null, model: null, contextTokens: null },
         sessions: [
           {
-            key: `ltfx.n.4e2f2223ab973b1aed69.v1`,
+            key: "agent:main:parent",
             kind: "direct",
             updatedAt: 1,
             childSessions: ["agent:worker:first", "agent:worker:second"],
@@ -223,13 +223,13 @@ describe("AppSidebar agent chip", () => {
       sessions,
     });
     const firstChild = {
-      key: `ltfx.n.b4f43d0554047c2d1024.v1`,
+      key: "agent:worker:first",
       spawnedBy: "agent:main:parent",
       kind: "direct" as const,
       updatedAt: 1,
     };
     const secondChild = {
-      key: `ltfx.n.c36fb76a642ba6e9e8ad.v1`,
+      key: "agent:worker:second",
       spawnedBy: "agent:main:parent",
       kind: "direct" as const,
       updatedAt: 2,
@@ -248,7 +248,7 @@ describe("AppSidebar agent chip", () => {
           defaults: { modelProvider: null, model: null, contextTokens: null },
           sessions: [
             {
-              key: `ltfx.n.4e2f2223ab973b1aed69.v1`,
+              key: "agent:main:parent",
               kind: "direct",
               updatedAt: ts,
               childSessions: [firstChild.key, secondChild.key],
@@ -284,7 +284,7 @@ describe("AppSidebar agent chip", () => {
         defaults: { modelProvider: null, model: null, contextTokens: null },
         sessions: [
           {
-            key: `ltfx.n.4e2f2223ab973b1aed69.v1`,
+            key: "agent:main:parent",
             kind: "direct",
             updatedAt: 1,
             childSessions: ["agent:worker:child"],
@@ -304,7 +304,7 @@ describe("AppSidebar agent chip", () => {
       defaults: { modelProvider: null, model: null, contextTokens: null },
       sessions: [
         {
-          key: `ltfx.n.b607d8b02f97cdb35e3c.v1`,
+          key: "agent:worker:child",
           spawnedBy: "agent:main:parent",
           kind: "direct",
           updatedAt: 2,
@@ -320,7 +320,7 @@ describe("AppSidebar agent chip", () => {
         defaults: { modelProvider: null, model: null, contextTokens: null },
         sessions: [
           {
-            key: `ltfx.n.4e2f2223ab973b1aed69.v1`,
+            key: "agent:main:parent",
             kind: "direct",
             updatedAt: 2,
             childSessions: ["agent:worker:child"],
@@ -330,13 +330,13 @@ describe("AppSidebar agent chip", () => {
     });
     provider.setContext(createContext(gateway, replacement.sessions));
     await waitForFast(() =>
-      expect(sidebar.querySelector('[data-session-key=`ltfx.n.b607d8b02f97cdb35e3c.v1`]')).not.toBeNull(),
+      expect(sidebar.querySelector('[data-session-key="agent:worker:child"]')).not.toBeNull(),
     );
 
     stale.reject(new Error("old capability failed"));
     await Promise.resolve();
     await sidebar.updateComplete;
-    expect(sidebar.querySelector('[data-session-key=`ltfx.n.b607d8b02f97cdb35e3c.v1`]')?.textContent).toContain(
+    expect(sidebar.querySelector('[data-session-key="agent:worker:child"]')?.textContent).toContain(
       "Replacement child",
     );
   });
@@ -346,7 +346,7 @@ describe("AppSidebar agent chip", () => {
       if (method === "sessions.describe") {
         return {
           session: {
-            key: `ltfx.n.b607d8b02f97cdb35e3c.v1`,
+            key: "agent:worker:child",
             parentSessionKey: "agent:main:parent",
             kind: "direct" as const,
             label: "Selected child",
@@ -368,7 +368,7 @@ describe("AppSidebar agent chip", () => {
         defaults: { modelProvider: null, model: null, contextTokens: null },
         sessions: [
           {
-            key: `ltfx.n.4e2f2223ab973b1aed69.v1`,
+            key: "agent:main:parent",
             kind: "direct",
             label: "Parent task",
             updatedAt: 1,
@@ -383,16 +383,16 @@ describe("AppSidebar agent chip", () => {
     sidebar.sessionKey = "agent:worker:child";
     await waitForFast(() =>
       expect(request).toHaveBeenCalledWith("sessions.describe", {
-        key: `ltfx.n.b607d8b02f97cdb35e3c.v1`,
+        key: "agent:worker:child",
       }),
     );
     await waitForFast(() =>
-      expect(sidebar.querySelectorAll('[data-session-key=`ltfx.n.b607d8b02f97cdb35e3c.v1`]')).toHaveLength(1),
+      expect(sidebar.querySelectorAll('[data-session-key="agent:worker:child"]')).toHaveLength(1),
     );
     await waitForFast(() => expect(harness.list).toHaveBeenCalledOnce());
 
     expect(sidebar.querySelectorAll(".sidebar-recent-session")).toHaveLength(2);
-    expect(sidebar.querySelectorAll('[data-session-key=`ltfx.n.b607d8b02f97cdb35e3c.v1`]')).toHaveLength(1);
+    expect(sidebar.querySelectorAll('[data-session-key="agent:worker:child"]')).toHaveLength(1);
     expect(
       sidebar
         .querySelector('[data-child-session-toggle="agent:main:parent"]')
@@ -400,7 +400,7 @@ describe("AppSidebar agent chip", () => {
     ).toBe("true");
     expect(
       sidebar
-        .querySelector('[data-session-key=`ltfx.n.b607d8b02f97cdb35e3c.v1`]')
+        .querySelector('[data-session-key="agent:worker:child"]')
         ?.classList.contains("sidebar-recent-session--active"),
     ).toBe(true);
 
@@ -410,13 +410,13 @@ describe("AppSidebar agent chip", () => {
     toggle?.click();
     await sidebar.updateComplete;
     expect(toggle?.getAttribute("aria-expanded")).toBe("false");
-    expect(sidebar.querySelector('[data-session-key=`ltfx.n.b607d8b02f97cdb35e3c.v1`]')).toBeNull();
+    expect(sidebar.querySelector('[data-session-key="agent:worker:child"]')).toBeNull();
 
     sidebar.sessionKey = "agent:main:parent";
     await sidebar.updateComplete;
     sidebar.sessionKey = "agent:worker:child";
     await waitForFast(() =>
-      expect(sidebar.querySelector('[data-session-key=`ltfx.n.b607d8b02f97cdb35e3c.v1`]')).not.toBeNull(),
+      expect(sidebar.querySelector('[data-session-key="agent:worker:child"]')).not.toBeNull(),
     );
   });
 
@@ -430,7 +430,7 @@ describe("AppSidebar agent chip", () => {
       defaults: { modelProvider: null, model: null, contextTokens: null },
       sessions: [
         {
-          key: `ltfx.n.b607d8b02f97cdb35e3c.v1`,
+          key: "agent:worker:child",
           spawnedBy: "agent:main:parent",
           kind: "direct",
           label: "Recovered child",
@@ -447,7 +447,7 @@ describe("AppSidebar agent chip", () => {
         defaults: { modelProvider: null, model: null, contextTokens: null },
         sessions: [
           {
-            key: `ltfx.n.4e2f2223ab973b1aed69.v1`,
+            key: "agent:main:parent",
             kind: "direct",
             updatedAt: 1,
             childSessions: ["agent:worker:child"],
@@ -471,14 +471,14 @@ describe("AppSidebar agent chip", () => {
       session:
         params.key === "agent:worker:child"
           ? {
-              key: `ltfx.n.b607d8b02f97cdb35e3c.v1`,
+              key: "agent:worker:child",
               spawnedBy: "agent:main:hidden-parent",
               kind: "direct" as const,
               label: "Selected child",
               updatedAt: 3,
             }
           : {
-              key: `ltfx.n.a475a60763b87d10ee49.v1`,
+              key: "agent:main:hidden-parent",
               kind: "direct" as const,
               label: "Hidden parent",
               updatedAt: 2,
@@ -493,10 +493,10 @@ describe("AppSidebar agent chip", () => {
 
     await waitForFast(() => expect(request).toHaveBeenCalledTimes(2));
     await waitForFast(() =>
-      expect(sidebar.querySelector('[data-session-key=`ltfx.n.b607d8b02f97cdb35e3c.v1`]')).not.toBeNull(),
+      expect(sidebar.querySelector('[data-session-key="agent:worker:child"]')).not.toBeNull(),
     );
     expect(
-      sidebar.querySelector('[data-session-key=`ltfx.n.a475a60763b87d10ee49.v1`]')?.textContent,
+      sidebar.querySelector('[data-session-key="agent:main:hidden-parent"]')?.textContent,
     ).toContain("Hidden parent");
   });
 
@@ -512,7 +512,7 @@ describe("AppSidebar agent chip", () => {
       defaults: { modelProvider: null, model: null, contextTokens: null },
       sessions: [
         {
-          key: `ltfx.n.b607d8b02f97cdb35e3c.v1`,
+          key: "agent:worker:child",
           spawnedBy: "agent:main:parent",
           kind: "direct",
           label: "Selected child",
@@ -520,7 +520,7 @@ describe("AppSidebar agent chip", () => {
           status: "done",
         },
         {
-          key: `ltfx.n.f6bafe8ed8c7819658e2.v1`,
+          key: "agent:worker:sibling",
           spawnedBy: "agent:main:parent",
           kind: "direct",
           label: "Loaded sibling",
@@ -537,7 +537,7 @@ describe("AppSidebar agent chip", () => {
         defaults: { modelProvider: null, model: null, contextTokens: null },
         sessions: [
           {
-            key: `ltfx.n.4e2f2223ab973b1aed69.v1`,
+            key: "agent:main:parent",
             kind: "direct",
             updatedAt: 1,
             childSessions: ["agent:worker:child", "agent:worker:sibling"],
@@ -553,7 +553,7 @@ describe("AppSidebar agent chip", () => {
 
     described.resolve({
       session: {
-        key: `ltfx.n.b607d8b02f97cdb35e3c.v1`,
+        key: "agent:worker:child",
         spawnedBy: "agent:main:parent",
         kind: "direct",
         label: "Selected child",
@@ -566,7 +566,7 @@ describe("AppSidebar agent chip", () => {
     );
     expect(sidebar.textContent).toContain("Loaded sibling");
     expect(
-      sidebar.querySelector('[data-session-key=`ltfx.n.b607d8b02f97cdb35e3c.v1`] [aria-label="Done"]'),
+      sidebar.querySelector('[data-session-key="agent:worker:child"] [aria-label="Done"]'),
     ).not.toBeNull();
   });
 
@@ -582,7 +582,7 @@ describe("AppSidebar agent chip", () => {
         defaults: { modelProvider: null, model: null, contextTokens: null },
         sessions: [
           {
-            key: `ltfx.n.28760ff0218c403139e7.v1`,
+            key: "agent:main:child",
             spawnedBy: "agent:main:missing-parent",
             kind: "direct",
             label: "Reachable orphan",
@@ -596,7 +596,7 @@ describe("AppSidebar agent chip", () => {
     sidebar.sessionKey = "agent:main:child";
     await sidebar.updateComplete;
 
-    const row = sidebar.querySelector('[data-session-key=`ltfx.n.28760ff0218c403139e7.v1`]');
+    const row = sidebar.querySelector('[data-session-key="agent:main:child"]');
     expect(row?.textContent).toContain("Reachable orphan");
     expect(row?.classList.contains("sidebar-recent-session--child")).toBe(false);
   });

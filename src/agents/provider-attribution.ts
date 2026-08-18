@@ -135,7 +135,7 @@ export type ProviderRequestCapabilities = ProviderRequestPolicyResolution & {
 
 function readCompatBoolean(
   compat: unknown,
-  key: `ltfx.n.a0b7d91174626a0cefce.v1` | "supportsPromptCacheKey",
+  key: "supportsStore" | "supportsPromptCacheKey",
 ): boolean | undefined {
   if (!compat || typeof compat !== "object") {
     return undefined;

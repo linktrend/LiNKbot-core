@@ -25,7 +25,7 @@ function createLiveFacade(bindingId: string) {
       return {
         bindingId,
         bindingFingerprint: `fp-${bindingId}`,
-        accessToken: `ltfx.n.597480d4b62ca612193f.v1`,
+        accessToken: "test-access-token",
         expiresAt: Date.now() + 60_000,
         tokenType: "Bearer",
       };
@@ -113,7 +113,7 @@ describe("linkskills machine-token facade stop/reload lifecycle", () => {
     expect(generation.facade.health("linkskills-stage").registered).toBe(true);
     await expect(
       generation.facade.acquire({ bindingId: "linkskills-stage" }),
-    ).resolves.toMatchObject({ accessToken: `ltfx.n.597480d4b62ca612193f.v1` });
+    ).resolves.toMatchObject({ accessToken: "test-access-token" });
 
     await service.stop?.({} as never);
     expect(generation.facade.health("linkskills-stage").registered).toBe(false);
@@ -131,7 +131,7 @@ describe("linkskills machine-token facade stop/reload lifecycle", () => {
     expect(first.facade.health("linkskills-stage").registered).toBe(false);
     expect(second.facade.health("linkskills-stage").registered).toBe(true);
     await expect(second.facade.acquire({ bindingId: "linkskills-stage" })).resolves.toMatchObject({
-      accessToken: `ltfx.n.597480d4b62ca612193f.v1`,
+      accessToken: "test-access-token",
     });
   });
 
@@ -144,7 +144,7 @@ describe("linkskills machine-token facade stop/reload lifecycle", () => {
     const { service: second } = await registerStartedService({ facade: replacement.facade });
     await expect(
       replacement.facade.acquire({ bindingId: "linkskills-stage" }),
-    ).resolves.toMatchObject({ accessToken: `ltfx.n.597480d4b62ca612193f.v1` });
+    ).resolves.toMatchObject({ accessToken: "test-access-token" });
 
     await second.stop?.({} as never);
     expect(replacement.facade.health("linkskills-stage").registered).toBe(false);

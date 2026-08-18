@@ -2821,7 +2821,7 @@ describe("createOllamaStreamFn", () => {
         const stream = await createOllamaTestStream({
           baseUrl: "http://ollama-host:11434",
           defaultHeaders: {
-            "X-OLLAMA-KEY": `ltfx.n.e65f74547fff782068bf.v1`,
+            "X-OLLAMA-KEY": "provider-secret",
             "X-Trace": "default",
           },
           options: {
@@ -2858,7 +2858,7 @@ describe("createOllamaStreamFn", () => {
             Authorization: "Bearer proxy-token",
           },
           options: {
-            apiKey: `ltfx.n.18ab0c9c00ad3478e4db.v1`, // pragma: allowlist secret
+            apiKey: "ollama-local", // pragma: allowlist secret
             headers: {
               Authorization: "Bearer proxy-token",
             },
@@ -2894,7 +2894,7 @@ describe("createOllamaStreamFn", () => {
               messages: [{ role: "user", content: "hello" }],
             } as never,
             {
-              apiKey: `ltfx.n.1a2379b4b1e6ec841868.v1`, // pragma: allowlist secret
+              apiKey: "real-token", // pragma: allowlist secret
             } as never,
           ),
         );
@@ -3065,7 +3065,7 @@ describe("createConfiguredOllamaStreamFn", () => {
               messages: [{ role: "user", content: "hello" }],
             } as never,
             {
-              apiKey: `ltfx.n.18ab0c9c00ad3478e4db.v1`, // pragma: allowlist secret
+              apiKey: "ollama-local", // pragma: allowlist secret
             } as never,
           ),
         );

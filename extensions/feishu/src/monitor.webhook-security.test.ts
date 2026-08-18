@@ -92,7 +92,7 @@ async function waitForSlowBodyTimeoutResponse(
   });
 }
 
-async function waitForOversizedBodyResponse(url: (string)): Promise<string> {
+async function waitForOversizedBodyResponse(url: string): Promise<string> {
   return await new Promise<string>((resolve, reject) => {
     const target = new URL(url);
     const body = JSON.stringify({ payload: "x".repeat(70 * 1024) });
@@ -197,7 +197,7 @@ describe("Feishu webhook security hardening", () => {
       accountId: "missing-encrypt-key",
       path: "/hook-missing-encrypt",
       port: await getFreePort(),
-      verificationToken: `ltfx.n.20b40fbfc56685798390.v1`,
+      verificationToken: "verify_token",
     });
 
     await expect(monitorFeishuProvider({ config: cfg })).rejects.toThrow(/requires encryptKey/i);
@@ -236,7 +236,7 @@ describe("Feishu webhook security hardening", () => {
       {
         accountId: "content-type",
         path: "/hook-content-type",
-        verificationToken: `ltfx.n.20b40fbfc56685798390.v1`,
+        verificationToken: "verify_token",
         encryptKey: "encrypt_key",
       },
       monitorFeishuProvider,
@@ -259,7 +259,7 @@ describe("Feishu webhook security hardening", () => {
       {
         accountId: "payload-too-large",
         path: "/hook-payload-too-large",
-        verificationToken: `ltfx.n.20b40fbfc56685798390.v1`,
+        verificationToken: "verify_token",
         encryptKey: "encrypt_key",
       },
       monitorFeishuProvider,
@@ -282,7 +282,7 @@ describe("Feishu webhook security hardening", () => {
       {
         accountId: "slow-body-timeout",
         path: "/hook-slow-body-timeout",
-        verificationToken: `ltfx.n.20b40fbfc56685798390.v1`,
+        verificationToken: "verify_token",
         encryptKey: "encrypt_key",
       },
       monitorFeishuProvider,
@@ -301,7 +301,7 @@ describe("Feishu webhook security hardening", () => {
       {
         accountId: "rate-limit",
         path: "/hook-rate-limit",
-        verificationToken: `ltfx.n.20b40fbfc56685798390.v1`,
+        verificationToken: "verify_token",
         encryptKey: "encrypt_key",
       },
       monitorFeishuProvider,
@@ -349,10 +349,10 @@ describe("Feishu webhook security hardening", () => {
         clientIp: resolveTestClientIp("::1"),
       }),
     ]).toEqual([
-      "rate-limit-key:(/hook-rate-limit-key:(ltfx.n.fe2d3eb061d0b3965cfc.v1),)
-      "rate-limit-key:(/hook-rate-limit-key:(ltfx.n.fe2d3eb061d0b3965cfc.v1),)
-      "rate-limit-key:(/hook-rate-limit-key:(ltfx.n.fe2d3eb061d0b3965cfc.v1),)
-      "rate-limit-key:(/hook-rate-limit-key:(ltfx.n.fe2d3eb061d0b3965cfc.v1),)
+      "rate-limit-key:/hook-rate-limit-key:loopback",
+      "rate-limit-key:/hook-rate-limit-key:loopback",
+      "rate-limit-key:/hook-rate-limit-key:loopback",
+      "rate-limit-key:/hook-rate-limit-key:loopback",
     ]);
   });
 
@@ -363,10 +363,10 @@ describe("Feishu webhook security hardening", () => {
     };
 
     expect(buildFeishuWebhookRateLimitKey({ ...base, clientIp: "10.0.0.1" })).toBe(
-      "rate-limit-key:(/hook-rate-limit-key:(ltfx.n.84aba59f27a56dd03b7c.v1),)
+      "rate-limit-key:/hook-rate-limit-key:10.0.0.1",
     );
     expect(buildFeishuWebhookRateLimitKey(base)).toBe(
-      "rate-limit-key:(/hook-rate-limit-key:(ltfx.n.371a1befa9c42a4bd6e6.v1),)
+      "rate-limit-key:/hook-rate-limit-key:unknown",
     );
   });
 

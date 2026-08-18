@@ -28,7 +28,7 @@ function inspection(running = false): Extract<FleetContainerInspectResult, { kin
       "openclaw.fleet.env-keys": "",
       "openclaw.fleet.disk-limit": "10g",
     },
-    environment: { OPENCLAW_GATEWAY_TOKEN: `ltfx.n.9bdf10a691a1cfda89d9.v1` },
+    environment: { OPENCLAW_GATEWAY_TOKEN: "old-token" },
     imageId: "sha256:image",
     memory: "2147483648",
     cpus: "2",

@@ -204,7 +204,7 @@ async function shouldProcessLineEvent(
     channelId: "line",
     accountId: account.accountId,
     identity: {
-      key: `ltfx.n.d0033ceba04f433837d7.v1`,
+      key: "line-user-id",
       normalize: normalizeLineIngressEntry,
       sensitivity: "pii",
       entryIdPrefix: "line-entry",
@@ -306,7 +306,7 @@ async function shouldProcessLineEvent(
     }
     await sendLinePairingReply({
       senderId,
-      replyToken: `ltfx.n.7e7fe4f5dc80919d4dcc.v1` in event ? event.replyToken : undefined,
+      replyToken: "replyToken" in event ? event.replyToken : undefined,
       context,
     });
     return null;

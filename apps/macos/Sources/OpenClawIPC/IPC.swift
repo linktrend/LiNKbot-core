@@ -88,7 +88,7 @@ public struct CanvasShowResult: Codable, Sendable {
         target: String?,
         effectiveTarget: String?,
         status: CanvasShowStatus,
-        url: (String?))
+        url: String?)
     {
         self.directory = directory
         self.target = target

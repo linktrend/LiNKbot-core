@@ -27,7 +27,7 @@ function withStableOwnerDisplaySecretForTest(cfg: unknown): unknown {
     ...record,
     commands: {
       ...commands,
-      ownerDisplaySecret: `ltfx.n.8efe71e07cb06798f949.v1`,
+      ownerDisplaySecret: "openclaw-test-owner-display-secret",
     },
   };
 }

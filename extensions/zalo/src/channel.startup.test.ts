@@ -64,7 +64,7 @@ function buildAccount(): ResolvedZaloAccount {
   return {
     accountId: "default",
     enabled: true,
-    token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+    token: "test-token",
     tokenSource: "config",
     config: {},
   };
@@ -113,7 +113,7 @@ describe("zaloPlugin gateway.startAccount", () => {
     expect(hoisted.monitorZaloProvider).toHaveBeenCalledTimes(1);
     const monitorArgs = requireMonitorArgs();
     expect(monitorArgs).toStrictEqual({
-      token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+      token: "test-token",
       account: buildAccount(),
       abortSignal: abort.signal,
       useWebhook: false,

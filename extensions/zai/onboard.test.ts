@@ -83,7 +83,7 @@ describe("zai onboard", () => {
             ...cfg.models,
             providers: {
               ...cfg.models?.providers,
-              zai: { ...cfg.models?.providers?.zai, apiKey: `ltfx.n.62af8704764faf8ea82f.v1` },
+              zai: { ...cfg.models?.providers?.zai, apiKey: "test-key" },
             },
           }),
         );

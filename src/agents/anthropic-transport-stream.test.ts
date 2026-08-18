@@ -334,7 +334,7 @@ describe("anthropic transport stream", () => {
     const result = await runTransportStream(
       makeAnthropicTransportModel({ id: "claude-fable-5", name: "Claude Fable 5" }),
       { messages: [{ role: "user", content: "hello" }] } as AnthropicStreamContext,
-      { apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1` } as AnthropicStreamOptions,
+      { apiKey: "sk-ant-api" } as AnthropicStreamOptions,
     );
 
     expect(result.usage).toMatchObject({
@@ -393,7 +393,7 @@ describe("anthropic transport stream", () => {
     const result = await runTransportStream(
       makeAnthropicTransportModel({ id: "claude-fable-5", name: "Claude Fable 5" }),
       { messages: [{ role: "user", content: "hello" }] } as AnthropicStreamContext,
-      { apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1` } as AnthropicStreamOptions,
+      { apiKey: "sk-ant-api" } as AnthropicStreamOptions,
     );
 
     expect(result.usage.totalTokens).toBe(927_907);
@@ -433,7 +433,7 @@ describe("anthropic transport stream", () => {
     const result = await runTransportStream(
       makeAnthropicTransportModel({ id: "claude-fable-5", name: "Claude Fable 5" }),
       { messages: [{ role: "user", content: "hello" }] } as AnthropicStreamContext,
-      { apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1` } as AnthropicStreamOptions,
+      { apiKey: "sk-ant-api" } as AnthropicStreamOptions,
     );
 
     expect(result.usage.contextUsage).toEqual({
@@ -471,7 +471,7 @@ describe("anthropic transport stream", () => {
     const result = await runTransportStream(
       makeAnthropicTransportModel({ id: "claude-fable-5", name: "Claude Fable 5" }),
       { messages: [{ role: "user", content: "hello" }] } as AnthropicStreamContext,
-      { apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1` } as AnthropicStreamOptions,
+      { apiKey: "sk-ant-api" } as AnthropicStreamOptions,
     );
 
     expect(result.usage.contextUsage).toEqual({ state: "unavailable" });
@@ -510,7 +510,7 @@ describe("anthropic transport stream", () => {
     const result = await runTransportStream(
       makeAnthropicTransportModel(),
       { messages: [{ role: "user", content: "hello" }] } as AnthropicStreamContext,
-      { apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1` } as AnthropicStreamOptions,
+      { apiKey: "sk-ant-api" } as AnthropicStreamOptions,
     );
 
     expect(result.usage.contextUsage).toEqual({
@@ -552,7 +552,7 @@ describe("anthropic transport stream", () => {
     const result = await runTransportStream(
       makeAnthropicTransportModel(),
       { messages: [{ role: "user", content: "hello" }] } as AnthropicStreamContext,
-      { apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1` } as AnthropicStreamOptions,
+      { apiKey: "sk-ant-api" } as AnthropicStreamOptions,
     );
 
     expect(result.usage).toMatchObject({
@@ -609,7 +609,7 @@ describe("anthropic transport stream", () => {
         messages: [{ role: "user", content: "run date" }],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+        apiKey: "sk-ant-api",
       } as AnthropicStreamOptions,
     );
 
@@ -640,7 +640,7 @@ describe("anthropic transport stream", () => {
         messages: [{ role: "user", content: "hello" }],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+        apiKey: "sk-ant-api",
         headers: { "X-Call": "1" },
       } as AnthropicStreamOptions,
     );
@@ -686,7 +686,7 @@ describe("anthropic transport stream", () => {
         messages: [{ role: "user", content: "hello" }],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+        apiKey: "sk-ant-api",
       } as AnthropicStreamOptions,
     );
 
@@ -700,7 +700,7 @@ describe("anthropic transport stream", () => {
     {
       label: "OAuth tokens",
       model: { id: "claude-fable-5", name: "Claude Fable 5" },
-      apiKey: `ltfx.n.d5cc95a1cf90a874f835.v1`,
+      apiKey: "sk-ant-oat01-token",
     },
     {
       label: "custom proxy endpoints",
@@ -709,12 +709,12 @@ describe("anthropic transport stream", () => {
         name: "Claude Fable 5",
         baseUrl: "https://proxy.example.com/v1",
       },
-      apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+      apiKey: "sk-ant-api",
     },
     {
       label: "non-Fable models",
       model: { id: "claude-opus-4-8", name: "Claude Opus 4.8" },
-      apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+      apiKey: "sk-ant-api",
     },
   ])("omits server-side fallback params for $label", async ({ model, apiKey }) => {
     guardedFetchMock.mockResolvedValueOnce(
@@ -822,7 +822,7 @@ describe("anthropic transport stream", () => {
         messages: [{ role: "user", content: "hello" }],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+        apiKey: "sk-ant-api",
       } as AnthropicStreamOptions,
     );
 
@@ -857,8 +857,8 @@ describe("anthropic transport stream", () => {
       baseUrl: "https://example.services.ai.azure.com/anthropic",
       authHeader: true,
       headers: {
-        "api-key": `ltfx.n.8705995e5bb397e6fd74.v1`,
-        "x-api-key": `ltfx.n.f3b588853eee79e56481.v1`,
+        "api-key": "stale-foundry-key",
+        "x-api-key": "stale-resource-key",
         "X-Provider": "foundry",
       },
     });
@@ -869,7 +869,7 @@ describe("anthropic transport stream", () => {
         messages: [{ role: "user", content: "hello" }],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.fc08fbc9840da76b1e3e.v1`,
+        apiKey: "entra-access-token",
       } as AnthropicStreamOptions,
     );
 
@@ -902,7 +902,7 @@ describe("anthropic transport stream", () => {
       {
         messages: [{ role: "user", content: "hello" }],
       } as AnthropicStreamContext,
-      { apiKey: `ltfx.n.4c806362b613f7496abf.v1` } as AnthropicStreamOptions,
+      { apiKey: "test-api-key" } as AnthropicStreamOptions,
     );
 
     expect(result.stopReason).toBe("error");
@@ -939,7 +939,7 @@ describe("anthropic transport stream", () => {
       {
         messages: [{ role: "user", content: "hello" }],
       } as AnthropicStreamContext,
-      { apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1` } as AnthropicStreamOptions,
+      { apiKey: "sk-ant-api" } as AnthropicStreamOptions,
     );
 
     expect(result.stopReason).toBe("error");
@@ -971,7 +971,7 @@ describe("anthropic transport stream", () => {
       {
         messages: [{ role: "user", content: "hello" }],
       } as AnthropicStreamContext,
-      { apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1` } as AnthropicStreamOptions,
+      { apiKey: "sk-ant-api" } as AnthropicStreamOptions,
     );
 
     await vi.advanceTimersByTimeAsync(0);
@@ -1011,7 +1011,7 @@ describe("anthropic transport stream", () => {
       {
         messages: [{ role: "user", content: "hello" }],
       } as AnthropicStreamContext,
-      { apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`, signal: controller.signal } as AnthropicStreamOptions,
+      { apiKey: "sk-ant-api", signal: controller.signal } as AnthropicStreamOptions,
     );
 
     const timedOut = Symbol("timed out");
@@ -1037,7 +1037,7 @@ describe("anthropic transport stream", () => {
       {
         messages: [{ role: "user", content: "hello" }],
       } as AnthropicStreamContext,
-      { apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1` } as AnthropicStreamOptions,
+      { apiKey: "sk-ant-api" } as AnthropicStreamOptions,
     );
 
     const [url] = guardedFetchCall();
@@ -1056,7 +1056,7 @@ describe("anthropic transport stream", () => {
       {
         messages: [{ role: "user", content: "hello" }],
       } as AnthropicStreamContext,
-      { apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1` } as AnthropicStreamOptions,
+      { apiKey: "sk-ant-api" } as AnthropicStreamOptions,
     );
 
     const [url] = guardedFetchCall();
@@ -1070,7 +1070,7 @@ describe("anthropic transport stream", () => {
         messages: [{ role: "user", content: "hello" }],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+        apiKey: "sk-ant-api",
         toolChoice: { type: "tool", name: "read_file" },
       } as AnthropicStreamOptions,
     );
@@ -1089,7 +1089,7 @@ describe("anthropic transport stream", () => {
         messages: [{ role: "user", content: "hello" }],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.0610a0635a6fb4029973.v1`,
+        apiKey: "sk-or-test",
       } as AnthropicStreamOptions,
     );
 
@@ -1106,7 +1106,7 @@ describe("anthropic transport stream", () => {
         messages: [{ role: "user", content: "hello" }],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+        apiKey: "sk-ant-api",
       } as AnthropicStreamOptions,
     );
 
@@ -1128,7 +1128,7 @@ describe("anthropic transport stream", () => {
         messages: [{ role: "user", content: "hello" }],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.92c6d0b54cae0389493a.v1`,
+        apiKey: "sk-kimi-api",
         reasoning: "high",
       } as AnthropicStreamOptions,
     );
@@ -1154,7 +1154,7 @@ describe("anthropic transport stream", () => {
         messages: [{ role: "user", content: "hello" }],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+        apiKey: "sk-ant-api",
       } as AnthropicStreamOptions,
     );
 
@@ -1174,12 +1174,12 @@ describe("anthropic transport stream", () => {
         messages: [{ role: "user", content: "hello" }],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.ddacfdc4493df4c505af.v1`,
+        apiKey: "sk-ant-oat-token",
       } as AnthropicStreamOptions,
     );
 
     const headers = latestAnthropicRequestHeaders();
-    expect(headers.get("authorization")).toBe("Bearer ltfx.n.ddacfdc4493df4c505af.v1");
+    expect(headers.get("authorization")).toBe("Bearer sk-ant-oat-token");
     expect(headers.get("anthropic-beta")).toBeNull();
   });
 
@@ -1190,7 +1190,7 @@ describe("anthropic transport stream", () => {
         messages: [{ role: "user", content: "hello" }],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.ddacfdc4493df4c505af.v1`,
+        apiKey: "sk-ant-oat-token",
       } as AnthropicStreamOptions,
     );
 
@@ -1206,7 +1206,7 @@ describe("anthropic transport stream", () => {
         messages: [{ role: "user", content: "hello" }],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+        apiKey: "sk-ant-api",
       } as AnthropicStreamOptions,
     );
 
@@ -1222,7 +1222,7 @@ describe("anthropic transport stream", () => {
         messages: [{ role: "user", content: "hello" }],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+        apiKey: "sk-ant-api",
       } as AnthropicStreamOptions,
     );
 
@@ -1236,7 +1236,7 @@ describe("anthropic transport stream", () => {
         messages: [{ role: "user", content: "hello" }],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+        apiKey: "sk-ant-api",
         maxTokens: 0,
       } as AnthropicStreamOptions,
     );
@@ -1253,7 +1253,7 @@ describe("anthropic transport stream", () => {
         messages: [{ role: "user", content: "hello" }],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+        apiKey: "sk-ant-api",
         maxTokens: 0.5,
       } as AnthropicStreamOptions,
     );
@@ -1270,7 +1270,7 @@ describe("anthropic transport stream", () => {
         messages: [{ role: "user", content: "hello" }],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+        apiKey: "sk-ant-api",
         stop: ["User:", "Assistant:"],
       } as AnthropicStreamOptions,
     );
@@ -1290,7 +1290,7 @@ describe("anthropic transport stream", () => {
         messages: [{ role: "user", content: "hello" }],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.b84e9df69aeaf6b21f80.v1`,
+        apiKey: "sk-minimax-redacted",
       } as AnthropicStreamOptions,
     );
 
@@ -1328,7 +1328,7 @@ describe("anthropic transport stream", () => {
           messages: [{ role: "user", content: "hello" }],
         } as Parameters<typeof streamFn>[1],
         {
-          apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+          apiKey: "sk-ant-api",
         } as Parameters<typeof streamFn>[2],
       ),
     );
@@ -1421,7 +1421,7 @@ describe("anthropic transport stream", () => {
         messages: [{ role: "user", content: "hello" }],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+        apiKey: "sk-ant-api",
       } as AnthropicStreamOptions,
     );
 
@@ -1476,7 +1476,7 @@ describe("anthropic transport stream", () => {
           provider,
         }),
         { messages: [{ role: "user", content: "hello" }] } as AnthropicStreamContext,
-        { apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1` } as AnthropicStreamOptions,
+        { apiKey: "sk-ant-api" } as AnthropicStreamOptions,
       ),
     );
     const eventTypes: string[] = [];
@@ -1527,7 +1527,7 @@ describe("anthropic transport stream", () => {
           name: "Claude Fable 5",
         }),
         { messages: [{ role: "user", content: "hello" }] } as AnthropicStreamContext,
-        { apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1` } as AnthropicStreamOptions,
+        { apiKey: "sk-ant-api" } as AnthropicStreamOptions,
       ),
     );
     const eventTypes: string[] = [];
@@ -1575,7 +1575,7 @@ describe("anthropic transport stream", () => {
       streamFn(
         makeAnthropicTransportModel(),
         { messages: [{ role: "user", content: "inspect" }] } as AnthropicStreamContext,
-        { apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1` } as AnthropicStreamOptions,
+        { apiKey: "sk-ant-api" } as AnthropicStreamOptions,
       ),
     );
     const order: string[] = [];
@@ -1629,7 +1629,7 @@ describe("anthropic transport stream", () => {
       streamFn(
         makeAnthropicTransportModel(),
         { messages: [{ role: "user", content: "answer me" }] } as AnthropicStreamContext,
-        { apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1` } as AnthropicStreamOptions,
+        { apiKey: "sk-ant-api" } as AnthropicStreamOptions,
       ),
     );
     const order: string[] = [];
@@ -1699,7 +1699,7 @@ describe("anthropic transport stream", () => {
         messages: [{ role: "user", content: "message this channel" }],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+        apiKey: "sk-ant-api",
       } as AnthropicStreamOptions,
     );
 
@@ -1780,7 +1780,7 @@ describe("anthropic transport stream", () => {
           ],
         } as unknown as Parameters<typeof streamFn>[1],
         {
-          apiKey: `ltfx.n.049c0755e009ad59f1db.v1`,
+          apiKey: "sk-ant-oat-example",
           toolChoice: { type: "tool", name: "read" },
         } as Parameters<typeof streamFn>[2],
       ),
@@ -1790,7 +1790,7 @@ describe("anthropic transport stream", () => {
     const [url, init] = guardedFetchCall();
     expect(url).toBe("https://api.anthropic.com/v1/messages");
     const headers = new Headers(init?.headers);
-    expect(headers.get("authorization")).toBe("Bearer ltfx.n.049c0755e009ad59f1db.v1");
+    expect(headers.get("authorization")).toBe("Bearer sk-ant-oat-example");
     expect(headers.get("x-app")).toBe("cli");
     expect(headers.get("user-agent")).toContain("claude-cli/");
     const firstCallParams = latestAnthropicRequest().payload;
@@ -1863,7 +1863,7 @@ describe("anthropic transport stream", () => {
           messages: [{ role: "user", content: "heartbeat" }],
         } as Parameters<typeof streamFn>[1],
         {
-          apiKey: `ltfx.n.dd17ff6d37bdbe974207.v1`,
+          apiKey: "meridian-key",
         } as Parameters<typeof streamFn>[2],
       ),
     );
@@ -1933,7 +1933,7 @@ describe("anthropic transport stream", () => {
         messages: [{ role: "user", content: "think" }],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+        apiKey: "sk-ant-api",
       } as AnthropicStreamOptions,
     );
 
@@ -1985,7 +1985,7 @@ describe("anthropic transport stream", () => {
     const result = await runTransportStream(
       makeAnthropicTransportModel(),
       { messages: [{ role: "user", content: "hello" }] } as AnthropicStreamContext,
-      { apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1` } as AnthropicStreamOptions,
+      { apiKey: "sk-ant-api" } as AnthropicStreamOptions,
     );
 
     expect(result.content).toEqual([
@@ -2024,7 +2024,7 @@ describe("anthropic transport stream", () => {
         messages: [{ role: "user", content: "think" }],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+        apiKey: "sk-ant-api",
       } as AnthropicStreamOptions,
     );
 
@@ -2080,7 +2080,7 @@ describe("anthropic transport stream", () => {
         messages: [{ role: "user", content: "think" }],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+        apiKey: "sk-ant-api",
       } as AnthropicStreamOptions,
     );
 
@@ -2121,7 +2121,7 @@ describe("anthropic transport stream", () => {
     const result = await runTransportStream(
       makeAnthropicTransportModel(),
       { messages: [{ role: "user", content: "think" }] } as AnthropicStreamContext,
-      { apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1` } as AnthropicStreamOptions,
+      { apiKey: "sk-ant-api" } as AnthropicStreamOptions,
     );
 
     expect(result.stopReason).toBe(stopReason);
@@ -2146,7 +2146,7 @@ describe("anthropic transport stream", () => {
       makeAnthropicTransportModel(),
       { messages: [{ role: "user", content: "think" }] } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+        apiKey: "sk-ant-api",
         signal: controller.signal,
       } as AnthropicStreamOptions,
     );
@@ -2192,7 +2192,7 @@ describe("anthropic transport stream", () => {
     const result = await runTransportStream(
       makeAnthropicTransportModel(),
       { messages: [{ role: "user", content: "think" }] } as AnthropicStreamContext,
-      { apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1` } as AnthropicStreamOptions,
+      { apiKey: "sk-ant-api" } as AnthropicStreamOptions,
     );
 
     expect(result.content).toEqual([
@@ -2260,7 +2260,7 @@ describe("anthropic transport stream", () => {
         messages: [{ role: "user", content: "think" }],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.b89481a08167ee1b6c5f.v1`,
+        apiKey: "sk-xiaomi-test",
         reasoning: "high",
       } as AnthropicStreamOptions,
     );
@@ -2290,7 +2290,7 @@ describe("anthropic transport stream", () => {
         ],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.b89481a08167ee1b6c5f.v1`,
+        apiKey: "sk-xiaomi-test",
         reasoning: "high",
       } as AnthropicStreamOptions,
     );
@@ -2355,7 +2355,7 @@ describe("anthropic transport stream", () => {
         messages: [{ role: "user", content: "think" }],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.b89481a08167ee1b6c5f.v1`,
+        apiKey: "sk-xiaomi-test",
         reasoning: "high",
       } as AnthropicStreamOptions,
     );
@@ -2423,7 +2423,7 @@ describe("anthropic transport stream", () => {
         messages: [{ role: "user", content: "think" }],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.b89481a08167ee1b6c5f.v1`,
+        apiKey: "sk-xiaomi-test",
         reasoning: "high",
       } as AnthropicStreamOptions,
     );
@@ -2475,7 +2475,7 @@ describe("anthropic transport stream", () => {
           messages: [{ role: "user", content: "hello" }],
         } as Parameters<typeof streamFn>[1],
         {
-          apiKey: `ltfx.n.c5908972ddb5860c239d.v1`,
+          apiKey: "kimi-key",
         } as Parameters<typeof streamFn>[2],
       ),
     );
@@ -2537,7 +2537,7 @@ describe("anthropic transport stream", () => {
         ],
       } as unknown as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+        apiKey: "sk-ant-api",
       } as AnthropicStreamOptions,
     );
 
@@ -2566,7 +2566,7 @@ describe("anthropic transport stream", () => {
         ],
       } as unknown as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+        apiKey: "sk-ant-api",
         toolChoice: "auto",
       } as AnthropicStreamOptions,
     );
@@ -2598,7 +2598,7 @@ describe("anthropic transport stream", () => {
         ],
       } as unknown as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+        apiKey: "sk-ant-api",
         toolChoice: { type: "tool", name: "unreadable_plugin_tool" },
       } as AnthropicStreamOptions,
     );
@@ -2629,7 +2629,7 @@ describe("anthropic transport stream", () => {
         ],
       } as unknown as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.049c0755e009ad59f1db.v1`,
+        apiKey: "sk-ant-oat-example",
       } as AnthropicStreamOptions,
     );
 
@@ -2659,7 +2659,7 @@ describe("anthropic transport stream", () => {
         ],
       } as unknown as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.049c0755e009ad59f1db.v1`,
+        apiKey: "sk-ant-oat-example",
         toolChoice: { type: "tool", name: "Read" },
       } as AnthropicStreamOptions,
     );
@@ -2705,7 +2705,7 @@ describe("anthropic transport stream", () => {
           ],
         } as never,
         {
-          apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+          apiKey: "sk-ant-api",
         } as Parameters<typeof streamFn>[2],
       ),
     );
@@ -2760,7 +2760,7 @@ describe("anthropic transport stream", () => {
         ],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.b89481a08167ee1b6c5f.v1`,
+        apiKey: "sk-xiaomi-test",
         reasoning: "high",
       } as AnthropicStreamOptions,
     );
@@ -2824,7 +2824,7 @@ describe("anthropic transport stream", () => {
         ],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+        apiKey: "sk-ant-api",
         reasoning: "high",
       } as AnthropicStreamOptions,
     );
@@ -2878,7 +2878,7 @@ describe("anthropic transport stream", () => {
         ],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+        apiKey: "sk-ant-api",
       } as AnthropicStreamOptions,
     );
 
@@ -2922,7 +2922,7 @@ describe("anthropic transport stream", () => {
         ],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+        apiKey: "sk-ant-api",
       } as AnthropicStreamOptions,
     );
 
@@ -2966,7 +2966,7 @@ describe("anthropic transport stream", () => {
         ],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.b89481a08167ee1b6c5f.v1`,
+        apiKey: "sk-xiaomi-test",
         reasoning: "high",
       } as AnthropicStreamOptions,
     );
@@ -3017,7 +3017,7 @@ describe("anthropic transport stream", () => {
         ],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.b89481a08167ee1b6c5f.v1`,
+        apiKey: "sk-xiaomi-test",
       } as AnthropicStreamOptions,
     );
 
@@ -3061,7 +3061,7 @@ describe("anthropic transport stream", () => {
         ],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.b89481a08167ee1b6c5f.v1`,
+        apiKey: "sk-xiaomi-test",
         reasoning: "high",
       } as AnthropicStreamOptions,
     );
@@ -3111,7 +3111,7 @@ describe("anthropic transport stream", () => {
         ],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.265fb7f799a3757bf6d8.v1`,
+        apiKey: "sk-gateway-test",
         reasoning: "high",
       } as AnthropicStreamOptions,
     );
@@ -3157,7 +3157,7 @@ describe("anthropic transport stream", () => {
         ],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.b89481a08167ee1b6c5f.v1`,
+        apiKey: "sk-xiaomi-test",
       } as AnthropicStreamOptions,
     );
 
@@ -3208,7 +3208,7 @@ describe("anthropic transport stream", () => {
         ],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+        apiKey: "sk-ant-api",
       } as AnthropicStreamOptions,
     );
 
@@ -3249,7 +3249,7 @@ describe("anthropic transport stream", () => {
         }),
         context,
         {
-          apiKey: `ltfx.n.d1cc8cd5e791091ae2c2.v1`,
+          apiKey: "sk-minimax-test",
         } as AnthropicStreamOptions,
       );
 
@@ -3303,7 +3303,7 @@ describe("anthropic transport stream", () => {
         ],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+        apiKey: "sk-ant-api",
       } as AnthropicStreamOptions,
     );
 
@@ -3386,7 +3386,7 @@ describe("anthropic transport stream", () => {
         ],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+        apiKey: "sk-ant-api",
       } as AnthropicStreamOptions,
     );
 
@@ -3444,7 +3444,7 @@ describe("anthropic transport stream", () => {
         ],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+        apiKey: "sk-ant-api",
       } as AnthropicStreamOptions,
     );
 
@@ -3500,7 +3500,7 @@ describe("anthropic transport stream", () => {
         ],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+        apiKey: "sk-ant-api",
       } as AnthropicStreamOptions,
     );
 
@@ -3548,7 +3548,7 @@ describe("anthropic transport stream", () => {
       runTransportStream(
         makeAnthropicTransportModel(),
         { messages: [{ role: "user", content: "hello" }] } as AnthropicStreamContext,
-        { apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`, signal: controller.signal } as AnthropicStreamOptions,
+        { apiKey: "sk-ant-api", signal: controller.signal } as AnthropicStreamOptions,
       ),
       delay(1_000, timedOut),
     ]);
@@ -3578,7 +3578,7 @@ describe("anthropic transport stream", () => {
     const result = await runTransportStream(
       makeAnthropicTransportModel(),
       { messages: [{ role: "user", content: "hello" }] } as AnthropicStreamContext,
-      { apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`, signal: controller.signal } as AnthropicStreamOptions,
+      { apiKey: "sk-ant-api", signal: controller.signal } as AnthropicStreamOptions,
     );
 
     expect(result.stopReason).toBe("aborted");
@@ -3600,7 +3600,7 @@ describe("anthropic transport stream", () => {
     const result = await runTransportStream(
       makeAnthropicTransportModel(),
       { messages: [{ role: "user", content: "hello" }] } as AnthropicStreamContext,
-      { apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1` } as AnthropicStreamOptions,
+      { apiKey: "sk-ant-api" } as AnthropicStreamOptions,
     );
 
     expect(result.stopReason).toBe("error");
@@ -3621,7 +3621,7 @@ describe("anthropic transport stream", () => {
         messages: [{ role: "user", content: "Think deeply." }],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+        apiKey: "sk-ant-api",
         reasoning: "xhigh",
       } as AnthropicStreamOptions,
     );
@@ -3647,7 +3647,7 @@ describe("anthropic transport stream", () => {
         messages: [{ role: "user", content: "Think as much as supported." }],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.be36160a0bfcf3f715db.v1`,
+        apiKey: "copilot-token",
         reasoning: "max",
       } as AnthropicStreamOptions,
     );
@@ -3673,7 +3673,7 @@ describe("anthropic transport stream", () => {
         messages: [{ role: "user", content: "hello" }],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+        apiKey: "test-token",
         reasoning: "minimal",
       } as AnthropicStreamOptions,
     );
@@ -3696,7 +3696,7 @@ describe("anthropic transport stream", () => {
         messages: [{ role: "user", content: "hello" }],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+        apiKey: "test-token",
         reasoning: "low",
       } as AnthropicStreamOptions,
     );
@@ -3720,7 +3720,7 @@ describe("anthropic transport stream", () => {
         messages: [{ role: "user", content: "Think as much as supported." }],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.be36160a0bfcf3f715db.v1`,
+        apiKey: "copilot-token",
         reasoning: "max",
       } as AnthropicStreamOptions,
     );
@@ -3744,7 +3744,7 @@ describe("anthropic transport stream", () => {
         messages: [{ role: "user", content: "Think extra hard." }],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+        apiKey: "sk-ant-api",
         reasoning: "xhigh",
         temperature: 0.2,
       } as AnthropicStreamOptions,
@@ -3775,7 +3775,7 @@ describe("anthropic transport stream", () => {
       await runTransportStream(
         model,
         { messages: [{ role: "user", content: "Reply briefly." }] } as AnthropicStreamContext,
-        { apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`, temperature: 0.2 } as AnthropicStreamOptions,
+        { apiKey: "sk-ant-api", temperature: 0.2 } as AnthropicStreamOptions,
       );
 
       expect(latestAnthropicRequest().payload.temperature).toBe(expectedTemperature);
@@ -3805,7 +3805,7 @@ describe("anthropic transport stream", () => {
     });
 
     await runTransportStream(model, makeSonnet5PrefillContext(), {
-      apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+      apiKey: "sk-ant-api",
       reasoning: testCase.reasoning,
       temperature: 0.2,
       toolChoice: "any",
@@ -3861,7 +3861,7 @@ describe("anthropic transport stream", () => {
         messages: [{ role: "user", content: "Think." }],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+        apiKey: "sk-ant-api",
         temperature: 0.2,
         toolChoice: { type: "tool", name: "read_file" },
       } as AnthropicStreamOptions,
@@ -3892,7 +3892,7 @@ describe("anthropic transport stream", () => {
         messages: [{ role: "user", content: "Think." }],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+        apiKey: "sk-ant-api",
         reasoning: "off",
         temperature: 0.2,
         onPayload: (payload) => ({
@@ -3929,7 +3929,7 @@ describe("anthropic transport stream", () => {
         messages: [{ role: "user", content: "Think." }],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+        apiKey: "sk-ant-api",
         reasoning: "high",
       } as AnthropicStreamOptions,
     );
@@ -3957,7 +3957,7 @@ describe("anthropic transport stream", () => {
         messages: [{ role: "user", content: "Think." }],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+        apiKey: "sk-ant-api",
       } as AnthropicStreamOptions,
     );
 
@@ -3977,7 +3977,7 @@ describe("anthropic transport stream", () => {
         }),
         { messages: [{ role: "user", content: "hello" }] } as AnthropicStreamContext,
         {
-          apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+          apiKey: "sk-ant-api",
           reasoning: "high",
           temperature: 0.2,
           onPayload: (payload) => ({
@@ -4015,7 +4015,7 @@ describe("anthropic transport stream", () => {
           messages: [{ role: "user", content: "Think carefully." }],
         } as AnthropicStreamContext,
         {
-          apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+          apiKey: "sk-ant-api",
           reasoning: testCase.reasoning,
         } as unknown as AnthropicStreamOptions,
       );
@@ -4043,7 +4043,7 @@ describe("anthropic transport stream", () => {
         messages: [{ role: "user", content: "Think carefully." }],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.be36160a0bfcf3f715db.v1`,
+        apiKey: "copilot-token",
         reasoning: "xhigh",
       } as unknown as AnthropicStreamOptions,
     );
@@ -4067,7 +4067,7 @@ describe("anthropic transport stream", () => {
         messages: [{ role: "user", content: "Think carefully." }],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.12be5f8eb77758aa1e59.v1`,
+        apiKey: "vertex-token",
         reasoning: "high",
       } as AnthropicStreamOptions,
     );
@@ -4091,7 +4091,7 @@ describe("anthropic transport stream", () => {
         messages: [{ role: "user", content: "Think extra hard." }],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+        apiKey: "sk-ant-api",
         reasoning: "xhigh",
       } as AnthropicStreamOptions,
     );
@@ -4115,7 +4115,7 @@ describe("anthropic transport stream", () => {
         messages: [{ role: "user", content: "Think as much as needed." }],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+        apiKey: "sk-ant-api",
         reasoning: "max",
       } as AnthropicStreamOptions,
     );
@@ -4140,7 +4140,7 @@ describe("anthropic transport stream", () => {
         messages: [{ role: "user", content: "Think as much as supported." }],
       } as AnthropicStreamContext,
       {
-        apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1`,
+        apiKey: "sk-ant-api",
         reasoning: "max",
       } as AnthropicStreamOptions,
     );
@@ -4168,7 +4168,7 @@ describe("anthropic transport stream", () => {
     const stream = streamFn(
       makeAnthropicTransportModel(),
       { messages: [{ role: "user", content: "hi" }] } as AnthropicStreamContext,
-      { apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1` } as AnthropicStreamOptions,
+      { apiKey: "sk-ant-api" } as AnthropicStreamOptions,
     );
 
     const eventTypes: string[] = [];
@@ -4196,7 +4196,7 @@ describe("anthropic transport stream", () => {
     const stream = streamFn(
       makeAnthropicTransportModel(),
       { messages: [{ role: "user", content: "hi" }] } as AnthropicStreamContext,
-      { apiKey: `ltfx.n.1a89c6aaa0b6e2c76f87.v1` } as AnthropicStreamOptions,
+      { apiKey: "sk-ant-api" } as AnthropicStreamOptions,
     );
 
     const eventTypes: string[] = [];

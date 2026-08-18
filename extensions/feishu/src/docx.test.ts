@@ -188,7 +188,7 @@ describe("feishu_doc image fetch hardening", () => {
         feishu: {
           enabled: true,
           appId: "app_id",
-          appSecret: `ltfx.n.5a0a9233e4503def486e.v1`,
+          appSecret: "app_secret",
         },
       },
     });

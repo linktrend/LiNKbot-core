@@ -37,10 +37,10 @@ OpenAI-SDK-style examples, but new config should use `baseUrl`.
     Public remote hosts and `https://ollama.com` require a real credential: `OLLAMA_API_KEY`, an auth profile, or the provider's `apiKey`. For direct hosted use, prefer the `ollama-cloud` provider.
   </Accordion>
   <Accordion title="Custom provider ids">
-    A custom provider with `api: "ollama"` follows the same rules. For example, an `ollama-remote` provider pointed at a private LAN host can use `apiKey: "${ltfx.n.18ab0c9c00ad3478e4db.v1}"`; sub-agents resolve that marker through the Ollama provider hook instead of treating it as a missing credential. `agents.defaults.memorySearch.provider` can also point at a custom provider id so embeddings use that Ollama endpoint.
+    A custom provider with `api: "ollama"` follows the same rules. For example, an `ollama-remote` provider pointed at a private LAN host can use `apiKey: "ollama-local"`; sub-agents resolve that marker through the Ollama provider hook instead of treating it as a missing credential. `agents.defaults.memorySearch.provider` can also point at a custom provider id so embeddings use that Ollama endpoint.
   </Accordion>
   <Accordion title="Auth profiles">
-    `auth-profiles.json` stores the credential for a provider id; put endpoint settings (`baseUrl`, `api`, models, headers, timeouts) in `models.providers.<id>`. Older flat files such as `{ "ollama-windows": { "apiKey": "${ltfx.n.18ab0c9c00ad3478e4db.v1}" } }` are not a runtime format; `openclaw doctor --fix` rewrites them into a canonical `ollama-windows:default` API-key profile with a backup. A `baseUrl` value in that legacy file is noise and should move to provider config.
+    `auth-profiles.json` stores the credential for a provider id; put endpoint settings (`baseUrl`, `api`, models, headers, timeouts) in `models.providers.<id>`. Older flat files such as `{ "ollama-windows": { "apiKey": "ollama-local" } }` are not a runtime format; `openclaw doctor --fix` rewrites them into a canonical `ollama-windows:default` API-key profile with a backup. A `baseUrl` value in that legacy file is noise and should move to provider config.
   </Accordion>
   <Accordion title="Memory embedding scope">
     Bearer auth for Ollama memory embeddings is scoped to the host it was declared for:
@@ -107,8 +107,8 @@ OpenAI-SDK-style examples, but new config should use `baseUrl`.
       </Step>
       <Step title="Set a credential">
         ```bash
-        export OLLAMA_API_KEY="${ltfx.n.18ab0c9c00ad3478e4db.v1}"    # local/LAN host, any value works
-        export OLLAMA_API_KEY="${ltfx.n.9fee2d01e6b201f5275e.v1}"   # https://ollama.com only
+        export OLLAMA_API_KEY="ollama-local"    # local/LAN host, any value works
+        export OLLAMA_API_KEY="your-real-key"   # https://ollama.com only
         ```
 
         Or in config: `openclaw config set models.providers.ollama.apiKey "OLLAMA_API_KEY"`.
@@ -199,7 +199,7 @@ confirms metadata — typos still fail as unknown models.
 For a narrow text probe that skips the full agent tool surface:
 
 ```bash
-OLLAMA_API_KEY="${ltfx.n.18ab0c9c00ad3478e4db.v1}" \
+OLLAMA_API_KEY=ollama-local \
   openclaw infer model run \
     --local \
     --model ollama/llama3.2:latest \
@@ -212,7 +212,7 @@ non-image files are rejected before Ollama is called — use
 `openclaw infer audio transcribe` for audio):
 
 ```bash
-OLLAMA_API_KEY="${ltfx.n.18ab0c9c00ad3478e4db.v1}" \
+OLLAMA_API_KEY=ollama-local \
   openclaw infer model run \
     --local \
     --model ollama/qwen2.5vl:7b \
@@ -248,7 +248,7 @@ embeddings by default; force with `OPENCLAW_LIVE_OLLAMA_EMBEDDINGS=1` since a
 cloud key may not authorize `/api/embed`):
 
 ```bash
-export OLLAMA_API_KEY='${ltfx.n.57ca44dc9283fd61fae1.v1}'
+export OLLAMA_API_KEY='<your-ollama-cloud-api-key>'
 OPENCLAW_LIVE_TEST=1 OPENCLAW_LIVE_OLLAMA=1 \
 OPENCLAW_LIVE_OLLAMA_BASE_URL=https://ollama.com \
 OPENCLAW_LIVE_OLLAMA_MODEL=glm-5.1:cloud \
@@ -363,7 +363,7 @@ vision models.
 
 ```bash
 ollama pull qwen2.5vl:7b
-export OLLAMA_API_KEY="${ltfx.n.18ab0c9c00ad3478e4db.v1}"
+export OLLAMA_API_KEY="ollama-local"
 openclaw infer image describe --file ./photo.jpg --model ollama/qwen2.5vl:7b --json
 ```
 
@@ -460,7 +460,7 @@ capability.
 <Tabs>
   <Tab title="Basic (implicit discovery)">
     ```bash
-    export OLLAMA_API_KEY="${ltfx.n.18ab0c9c00ad3478e4db.v1}"
+    export OLLAMA_API_KEY="ollama-local"
     ```
 
     <Tip>
@@ -508,7 +508,7 @@ capability.
       models: {
         providers: {
           ollama: {
-            apiKey: "${ltfx.n.18ab0c9c00ad3478e4db.v1}",
+            apiKey: "ollama-local",
             baseUrl: "http://ollama-host:11434", // No /v1 - native Ollama API URL
             api: "ollama", // Explicit: guarantees native tool-calling behavior
             timeoutSeconds: 300, // Optional: longer connect/stream budget for cold local models
@@ -546,7 +546,7 @@ Replace model IDs with exact names from `ollama list` or
     ```bash
     ollama serve
     ollama pull gemma4
-    export OLLAMA_API_KEY="${ltfx.n.18ab0c9c00ad3478e4db.v1}"
+    export OLLAMA_API_KEY="ollama-local"
     openclaw models list --provider ollama
     openclaw models set ollama/gemma4
     ```
@@ -562,7 +562,7 @@ Replace model IDs with exact names from `ollama list` or
         providers: {
           ollama: {
             baseUrl: "http://gpu-box.local:11434",
-            apiKey: "${ltfx.n.18ab0c9c00ad3478e4db.v1}",
+            apiKey: "ollama-local",
             api: "ollama",
             timeoutSeconds: 300,
             contextWindow: 32768,
@@ -601,7 +601,7 @@ Replace model IDs with exact names from `ollama list` or
     No local daemon, hosted models directly:
 
     ```bash
-    export OLLAMA_API_KEY="${ltfx.n.32d1f286f8abee8691e3.v1}"
+    export OLLAMA_API_KEY="your-ollama-api-key"
     ```
 
     ```json5
@@ -650,7 +650,7 @@ Replace model IDs with exact names from `ollama list` or
         providers: {
           ollama: {
             baseUrl: "http://127.0.0.1:11434",
-            apiKey: "${ltfx.n.18ab0c9c00ad3478e4db.v1}",
+            apiKey: "ollama-local",
             api: "ollama",
             timeoutSeconds: 300,
             models: [
@@ -683,14 +683,14 @@ Replace model IDs with exact names from `ollama list` or
         providers: {
           "ollama-fast": {
             baseUrl: "http://mini.local:11434",
-            apiKey: "${ltfx.n.18ab0c9c00ad3478e4db.v1}",
+            apiKey: "ollama-local",
             api: "ollama",
             contextWindow: 32768,
             models: [{ id: "gemma4", name: "gemma4", input: ["text"] }],
           },
           "ollama-large": {
             baseUrl: "http://gpu-box.local:11434",
-            apiKey: "${ltfx.n.18ab0c9c00ad3478e4db.v1}",
+            apiKey: "ollama-local",
             api: "ollama",
             timeoutSeconds: 420,
             contextWindow: 131072,
@@ -738,7 +738,7 @@ Replace model IDs with exact names from `ollama list` or
         providers: {
           ollama: {
             baseUrl: "http://127.0.0.1:11434",
-            apiKey: "${ltfx.n.18ab0c9c00ad3478e4db.v1}",
+            apiKey: "ollama-local",
             api: "ollama",
             contextWindow: 32768,
             models: [
@@ -908,7 +908,7 @@ For full setup and behavior, see [Ollama Web Search](/tools/ollama-search).
             baseUrl: "http://ollama-host:11434/v1",
             api: "openai-completions",
             injectNumCtxForOpenAICompat: true, // default: true
-            apiKey: "${ltfx.n.18ab0c9c00ad3478e4db.v1}",
+            apiKey: "ollama-local",
             models: [...]
           }
         }
@@ -931,7 +931,7 @@ For full setup and behavior, see [Ollama Web Search](/tools/ollama-search).
             baseUrl: "http://ollama-host:11434/v1",
             api: "openai-completions",
             injectNumCtxForOpenAICompat: false,
-            apiKey: "${ltfx.n.18ab0c9c00ad3478e4db.v1}",
+            apiKey: "ollama-local",
             models: [...]
           }
         }
@@ -1108,7 +1108,7 @@ For full setup and behavior, see [Ollama Web Search](/tools/ollama-search).
             model: "nomic-embed-text",
             remote: {
               baseUrl: "http://gpu-box.local:11434",
-              apiKey: "${ltfx.n.18ab0c9c00ad3478e4db.v1}",
+              apiKey: "ollama-local",
               nonBatchConcurrency: 2,
             },
           },

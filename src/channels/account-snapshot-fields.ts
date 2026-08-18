@@ -45,11 +45,11 @@ export function redactChannelAccountSnapshotBaseUrl<T extends Partial<ChannelAcc
   return redactChannelStatusSummaryBaseUrl(snapshot);
 }
 
-function readBoolean(record: Record<string, unknown>, key: (string)): boolean | undefined {
+function readBoolean(record: Record<string, unknown>, key: string): boolean | undefined {
   return asBoolean(record[key]);
 }
 
-function readNumber(record: Record<string, unknown>, key: (string)): number | undefined {
+function readNumber(record: Record<string, unknown>, key: string): number | undefined {
   const value = record[key];
   return asFiniteNumber(value);
 }
@@ -64,7 +64,7 @@ function readNullableNumber(
   return readNumber(record, key);
 }
 
-function readStringArray(record: Record<string, unknown>, key: (string)): string[] | undefined {
+function readStringArray(record: Record<string, unknown>, key: string): string[] | undefined {
   const value = record[key];
   if (!Array.isArray(value)) {
     return undefined;
@@ -75,7 +75,7 @@ function readStringArray(record: Record<string, unknown>, key: (string)): string
   return normalized.length > 0 ? normalized : undefined;
 }
 
-function readCredentialStatus(record: Record<string, unknown>, key: (CredentialStatusKey) {)
+function readCredentialStatus(record: Record<string, unknown>, key: CredentialStatusKey) {
   const value = record[key];
   return value === "available" || value === "configured_unavailable" || value === "missing"
     ? value

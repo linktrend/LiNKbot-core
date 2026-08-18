@@ -213,8 +213,8 @@ describe("slackPlugin actions", () => {
       cfg: {
         channels: {
           slack: {
-            botToken: `ltfx.n.87894fe048938b686cfb.v1`,
-            appToken: `ltfx.n.424766b94c5b9f0f5861.v1`,
+            botToken: "xoxb-test",
+            appToken: "xapp-test",
             capabilities: { interactiveReplies: true },
           },
         },
@@ -232,8 +232,8 @@ describe("slackPlugin actions", () => {
     const cfg: OpenClawConfig = {
       channels: {
         slack: {
-          botToken: `ltfx.n.a1fde847c8ff0e78f11b.v1`,
-          appToken: `ltfx.n.fb6dd2c42c390b66b9f9.v1`,
+          botToken: "xoxb-root",
+          appToken: "xapp-root",
           actions: {
             reactions: false,
             messages: false,
@@ -246,8 +246,8 @@ describe("slackPlugin actions", () => {
           },
           accounts: {
             default: {
-              botToken: `ltfx.n.4f68dd56cdc3b48ad886.v1`,
-              appToken: `ltfx.n.f19ab51df9fdc80f5d51.v1`,
+              botToken: "xoxb-default",
+              appToken: "xapp-default",
               actions: {
                 reactions: false,
                 messages: false,
@@ -260,8 +260,8 @@ describe("slackPlugin actions", () => {
               },
             },
             work: {
-              botToken: `ltfx.n.95b0664cb949350b3191.v1`,
-              appToken: `ltfx.n.600b236f3d56d622ddab.v1`,
+              botToken: "xoxb-work",
+              appToken: "xapp-work",
               actions: {
                 reactions: true,
                 messages: true,
@@ -312,7 +312,7 @@ describe("slackPlugin actions", () => {
           defaultAccount: "work",
           accounts: {
             work: {
-              botToken: `ltfx.n.95b0664cb949350b3191.v1`,
+              botToken: "xoxb-work",
             },
           },
         },
@@ -339,7 +339,7 @@ describe("slackPlugin actions", () => {
     expectRecordFields(requireMockCallArg(sendMessageSlackMock, 0, 2), "send options", {
       accountId: "work",
       cfg,
-      token: `ltfx.n.95b0664cb949350b3191.v1`,
+      token: "xoxb-work",
     });
   });
 
@@ -367,8 +367,8 @@ describe("slackPlugin actions", () => {
       cfg: {
         channels: {
           slack: {
-            botToken: `ltfx.n.87894fe048938b686cfb.v1`,
-            appToken: `ltfx.n.424766b94c5b9f0f5861.v1`,
+            botToken: "xoxb-test",
+            appToken: "xapp-test",
           },
         },
       } as OpenClawConfig,
@@ -484,8 +484,8 @@ describe("slackPlugin status", () => {
       channels: {
         slack: {
           identity: "user",
-          userToken: `ltfx.n.19bbb7d9c45e18a41bce.v1`,
-          appToken: `ltfx.n.229a79260e17de2a406e.v1`,
+          userToken: "test-user-token",
+          appToken: "test-app-token",
         },
       },
     } as OpenClawConfig;
@@ -520,8 +520,8 @@ describe("slackPlugin status", () => {
         slack: {
           accounts: {
             work: {
-              botToken: `ltfx.n.95b0664cb949350b3191.v1`,
-              appToken: `ltfx.n.600b236f3d56d622ddab.v1`,
+              botToken: "xoxb-work",
+              appToken: "xapp-work",
             },
           },
         },
@@ -638,8 +638,8 @@ describe("slackPlugin status", () => {
         session: { dmScope: "per-channel-peer" },
         channels: {
           slack: {
-            botToken: `ltfx.n.87894fe048938b686cfb.v1`,
-            appToken: `ltfx.n.424766b94c5b9f0f5861.v1`,
+            botToken: "xoxb-test",
+            appToken: "xapp-test",
           },
         },
       } as OpenClawConfig,
@@ -685,8 +685,8 @@ describe("slackPlugin status", () => {
         session: { dmScope: "per-channel-peer" },
         channels: {
           slack: {
-            botToken: `ltfx.n.87894fe048938b686cfb.v1`,
-            appToken: `ltfx.n.424766b94c5b9f0f5861.v1`,
+            botToken: "xoxb-test",
+            appToken: "xapp-test",
           },
         },
       } as OpenClawConfig,
@@ -744,7 +744,7 @@ describe("slackPlugin status", () => {
     });
 
     const route = await resolveRoute({
-      cfg: { channels: { slack: { botToken: `ltfx.n.87894fe048938b686cfb.v1` } } } as OpenClawConfig,
+      cfg: { channels: { slack: { botToken: "xoxb-test" } } } as OpenClawConfig,
       agentId: "main",
       target: "g08gqh53ejm",
     });
@@ -810,8 +810,8 @@ describe("slackPlugin security", () => {
         {
           channels: {
             slack: {
-              botToken: `ltfx.n.87894fe048938b686cfb.v1`,
-              appToken: `ltfx.n.424766b94c5b9f0f5861.v1`,
+              botToken: "xoxb-test",
+              appToken: "xapp-test",
               dmPolicy: "allowlist",
               allowFrom: ["  slack:U123  "],
             },
@@ -837,8 +837,8 @@ describe("slackPlugin outbound", () => {
   const cfg = {
     channels: {
       slack: {
-        botToken: `ltfx.n.87894fe048938b686cfb.v1`,
-        appToken: `ltfx.n.424766b94c5b9f0f5861.v1`,
+        botToken: "xoxb-test",
+        appToken: "xapp-test",
       },
     },
   };
@@ -1025,13 +1025,13 @@ describe("slackPlugin outbound", () => {
 
     expect(resolveSlackDmChannelIdMock).not.toHaveBeenCalled();
     expect(assistantThreadsSetStatusMock).toHaveBeenNthCalledWith(1, {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       channel_id: "C08GQH53EJM",
       thread_ts: "1712345678.123456",
       status: "is typing...",
     });
     expect(assistantThreadsSetStatusMock).toHaveBeenNthCalledWith(2, {
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       channel_id: "C08GQH53EJM",
       thread_ts: "1712345678.123456",
       status: "",
@@ -1050,10 +1050,10 @@ describe("slackPlugin outbound", () => {
       client: expect.any(Object),
       userId: "U09G2DJ0275",
       accountId: "default",
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
     });
     expect(assistantThreadsSetStatusMock).toHaveBeenCalledWith({
-      token: `ltfx.n.87894fe048938b686cfb.v1`,
+      token: "xoxb-test",
       channel_id: "D123",
       thread_ts: "1712345678.123456",
       status: "is typing...",
@@ -1261,8 +1261,8 @@ describe("slackPlugin outbound", () => {
       cfg: {
         channels: {
           slack: {
-            botToken: `ltfx.n.87894fe048938b686cfb.v1`,
-            appToken: `ltfx.n.424766b94c5b9f0f5861.v1`,
+            botToken: "xoxb-test",
+            appToken: "xapp-test",
             capabilities: { interactiveReplies: true },
           },
         },
@@ -1441,8 +1441,8 @@ describe("slackPlugin agentPrompt", () => {
       cfg: {
         channels: {
           slack: {
-            botToken: `ltfx.n.87894fe048938b686cfb.v1`,
-            appToken: `ltfx.n.424766b94c5b9f0f5861.v1`,
+            botToken: "xoxb-test",
+            appToken: "xapp-test",
           },
         },
       },
@@ -1470,8 +1470,8 @@ describe("slackPlugin agentPrompt", () => {
       cfg: {
         channels: {
           slack: {
-            botToken: `ltfx.n.87894fe048938b686cfb.v1`,
-            appToken: `ltfx.n.424766b94c5b9f0f5861.v1`,
+            botToken: "xoxb-test",
+            appToken: "xapp-test",
             capabilities: { interactiveReplies: true },
           },
         },
@@ -1506,8 +1506,8 @@ describe("slackPlugin outbound new targets", () => {
   const cfg = {
     channels: {
       slack: {
-        botToken: `ltfx.n.87894fe048938b686cfb.v1`,
-        appToken: `ltfx.n.424766b94c5b9f0f5861.v1`,
+        botToken: "xoxb-test",
+        appToken: "xapp-test",
       },
     },
   };
@@ -1637,8 +1637,8 @@ describe("slackPlugin config", () => {
       name: "Socket Mode",
       slack: {
         identity: "user" as const,
-        userToken: `ltfx.n.19bbb7d9c45e18a41bce.v1`,
-        appToken: `ltfx.n.229a79260e17de2a406e.v1`,
+        userToken: "test-user-token",
+        appToken: "test-app-token",
       },
       expectedTransportSource: { appTokenSource: "config" },
     },
@@ -1647,8 +1647,8 @@ describe("slackPlugin config", () => {
       slack: {
         identity: "user" as const,
         mode: "http" as const,
-        userToken: `ltfx.n.19bbb7d9c45e18a41bce.v1`,
-        signingSecret: `ltfx.n.f0da581c64135cb6a8b8.v1`,
+        userToken: "test-user-token",
+        signingSecret: "test-signing-secret",
       },
       expectedTransportSource: { signingSecretSource: "config" },
     },
@@ -1675,8 +1675,8 @@ describe("slackPlugin config", () => {
       channels: {
         slack: {
           mode: "http",
-          botToken: `ltfx.n.1ba9286e571243d3f589.v1`,
-          signingSecret: `ltfx.n.8bb278267defb4d92b93.v1`, // pragma: allowlist secret
+          botToken: "xoxb-http",
+          signingSecret: "secret-http", // pragma: allowlist secret
         },
       },
     };
@@ -1692,7 +1692,7 @@ describe("slackPlugin config", () => {
       channels: {
         slack: {
           mode: "socket",
-          botToken: `ltfx.n.31148807e9e197c42ee9.v1`,
+          botToken: "xoxb-socket",
         },
       },
     };
@@ -1739,7 +1739,7 @@ describe("slackPlugin config", () => {
         signingSecretSource: "config", // pragma: allowlist secret
         config: {
           mode: "http",
-          botToken: `ltfx.n.1ba9286e571243d3f589.v1`,
+          botToken: "xoxb-http",
           signingSecret: { source: "env", provider: "default", id: "SLACK_SIGNING_SECRET" },
         },
       } as never,

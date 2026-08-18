@@ -179,7 +179,7 @@ afterEach(async () => {
 
 describe("dev tooling safety helpers", () => {
   it("redacts secrets before truncating script log previews", () => {
-    const token = `ltfx.n.503fc4fc9f4742e4019d.v1`; // pragma: allowlist secret
+    const token = "sk-test1234567890abcdefghijklmnop"; // pragma: allowlist secret
     const preview = previewForDevToolLog(`prefix OPENAI_API_KEY=${token} suffix`, 80);
 
     expect(preview).not.toContain(token);
@@ -187,7 +187,7 @@ describe("dev tooling safety helpers", () => {
   });
 
   it("recursively redacts JSON-ish detail values before printing smoke results", () => {
-    const token = `ltfx.n.503fc4fc9f4742e4019d.v1`; // pragma: allowlist secret
+    const token = "sk-test1234567890abcdefghijklmnop"; // pragma: allowlist secret
     const redacted = redactJsonValueForDevToolLog({
       nested: [{ message: `Authorization: Bearer ${token}` }],
     }) as { nested: Array<{ message: string }> };
@@ -264,7 +264,7 @@ describe("script-specific dev tooling hardening", () => {
   });
 
   it("redacts Discord webhook tokens from API paths", () => {
-    const token = `ltfx.n.9305bd55783d1586f1e8.v1`; // pragma: allowlist secret
+    const token = "webhook-secret-token-abcdef123456"; // pragma: allowlist secret
     const apiPath = `/webhooks/123/${token}?wait=true`;
 
     expect(discordSmokeTesting.redactDiscordApiPath(apiPath)).not.toContain(token);
@@ -730,7 +730,7 @@ describe("script-specific dev tooling hardening", () => {
     const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-prompt-probe-log-"));
     tempDirs.push(tempRoot);
     const logPath = path.join(tempRoot, "gateway.log");
-    const token = `ltfx.n.503fc4fc9f4742e4019d.v1`; // pragma: allowlist secret
+    const token = "sk-test1234567890abcdefghijklmnop"; // pragma: allowlist secret
     await fs.writeFile(
       logPath,
       [

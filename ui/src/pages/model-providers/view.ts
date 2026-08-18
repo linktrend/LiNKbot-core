@@ -78,7 +78,7 @@ const AUTH_KIND_I18N: Record<ModelProviderAuthKind, string> = {
   expiring: "modelProviders.status.expiring",
   expired: "modelProviders.status.expired",
   missing: "modelProviders.status.missing",
-  "api-key": `ltfx.n.b3f62dcfbef77db69f8b.v1`,
+  "api-key": "modelProviders.status.apiKey",
 };
 
 const AUTH_KIND_STATUS: Record<ModelProviderAuthKind, "ok" | "warn" | "danger" | "muted"> = {

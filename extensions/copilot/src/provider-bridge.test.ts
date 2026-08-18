@@ -36,7 +36,7 @@ describe("resolveCopilotProvider", () => {
         maxTokens: 512,
         headers: { "X-Trace": "test" },
       },
-      resolvedApiKey: `ltfx.n.85dbe15d75ef9308c7ae.v1`,
+      resolvedApiKey: "secret-key",
       authProfileId: "local-proxy:main",
     });
 
@@ -49,7 +49,7 @@ describe("resolveCopilotProvider", () => {
       baseUrl: "https://proxy.example/v1",
       modelId: "proxy-model",
       wireModel: "proxy-model",
-      bearerToken: `ltfx.n.85dbe15d75ef9308c7ae.v1`,
+      bearerToken: "secret-key",
       headers: { "X-Trace": "test" },
       maxPromptTokens: 12_000,
       maxOutputTokens: 512,
@@ -63,7 +63,7 @@ describe("resolveCopilotProvider", () => {
         id: "proxy-model",
         baseUrl: "https://proxy.example/v1",
       },
-      resolvedApiKey: `ltfx.n.85dbe15d75ef9308c7ae.v1`,
+      resolvedApiKey: "secret-key",
     });
 
     expect(result.provider).toMatchObject({
@@ -83,7 +83,7 @@ describe("resolveCopilotProvider", () => {
         baseUrl: "https://tokenplan.example/v1",
         authHeader: true,
       },
-      resolvedApiKey: `ltfx.n.85dbe15d75ef9308c7ae.v1`,
+      resolvedApiKey: "secret-key",
     });
 
     expect(result.provider).toMatchObject({
@@ -92,7 +92,7 @@ describe("resolveCopilotProvider", () => {
       baseUrl: "https://tokenplan.example/v1",
       modelId: "hy3",
       wireModel: "hy3",
-      bearerToken: `ltfx.n.85dbe15d75ef9308c7ae.v1`,
+      bearerToken: "secret-key",
     });
   });
 
@@ -106,11 +106,11 @@ describe("resolveCopilotProvider", () => {
 
     const small = resolveCopilotProvider({
       model: { ...base, contextTokens: 8_000, maxTokens: 512 },
-      resolvedApiKey: `ltfx.n.85dbe15d75ef9308c7ae.v1`,
+      resolvedApiKey: "secret-key",
     });
     const large = resolveCopilotProvider({
       model: { ...base, contextTokens: 16_000, maxTokens: 1024 },
-      resolvedApiKey: `ltfx.n.85dbe15d75ef9308c7ae.v1`,
+      resolvedApiKey: "secret-key",
     });
 
     expect(small.authProfileVersion).not.toBe(large.authProfileVersion);
@@ -149,7 +149,7 @@ describe("resolveCopilotProvider", () => {
         baseUrl: "https://example.openai.azure.com/openai/v1",
         azureApiVersion: "2025-01-01-preview",
       },
-      resolvedApiKey: `ltfx.n.d832c76cffcd05970d49.v1`,
+      resolvedApiKey: "azure-key",
     });
 
     expect(result.provider).toEqual({
@@ -158,7 +158,7 @@ describe("resolveCopilotProvider", () => {
       baseUrl: "https://example.openai.azure.com",
       modelId: "deployment-gpt",
       wireModel: "deployment-gpt",
-      apiKey: `ltfx.n.d832c76cffcd05970d49.v1`,
+      apiKey: "azure-key",
       azure: { apiVersion: "2025-01-01-preview" },
     });
     expect(
@@ -192,7 +192,7 @@ describe("resolveCopilotProvider", () => {
           id: "deployment-gpt",
           baseUrl: "https://project.services.ai.azure.com/api/projects/demo/openai/v1",
         },
-        resolvedApiKey: `ltfx.n.d832c76cffcd05970d49.v1`,
+        resolvedApiKey: "azure-key",
       }).provider,
     ).toEqual({
       type: "openai",
@@ -200,7 +200,7 @@ describe("resolveCopilotProvider", () => {
       baseUrl: "https://project.services.ai.azure.com/api/projects/demo/openai/v1",
       modelId: "deployment-gpt",
       wireModel: "deployment-gpt",
-      apiKey: `ltfx.n.d832c76cffcd05970d49.v1`,
+      apiKey: "azure-key",
     });
   });
 
@@ -217,7 +217,7 @@ describe("resolveCopilotProvider", () => {
           "X-Local": "true",
         },
       },
-      resolvedApiKey: `ltfx.n.6c5ce305f887c4201c35.v1`,
+      resolvedApiKey: "custom-local",
     });
 
     expect(result.provider).toEqual({
@@ -237,10 +237,10 @@ describe("resolveCopilotProvider", () => {
         api: "openai-responses",
         id: "proxy-model",
         baseUrl: "https://proxy.example/v1",
-        headers: { "x-api-key": `ltfx.n.33d77b8677ea0231b9dc.v1` },
+        headers: { "x-api-key": "header-secret" },
         requestAuthMode: "header",
       },
-      resolvedApiKey: `ltfx.n.33d77b8677ea0231b9dc.v1`,
+      resolvedApiKey: "header-secret",
     });
 
     expect(result.provider).toEqual({
@@ -249,7 +249,7 @@ describe("resolveCopilotProvider", () => {
       baseUrl: "https://proxy.example/v1",
       modelId: "proxy-model",
       wireModel: "proxy-model",
-      headers: { "x-api-key": `ltfx.n.33d77b8677ea0231b9dc.v1` },
+      headers: { "x-api-key": "header-secret" },
     });
   });
 

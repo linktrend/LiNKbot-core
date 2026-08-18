@@ -539,7 +539,7 @@ describe("applySystemAgentSetup transaction boundaries", () => {
       gateway: {
         port: 18789,
         bind: "loopback",
-        auth: { mode: "token", token: `ltfx.n.ed49274ca88ccff09d7a.v1` },
+        auth: { mode: "token", token: "initial-token" },
       },
     } satisfies OpenClawConfig;
     const concurrent = {
@@ -548,7 +548,7 @@ describe("applySystemAgentSetup transaction boundaries", () => {
         ...initial.gateway,
         port: 19000,
         bind: "lan",
-        auth: { mode: "token" as const, token: `ltfx.n.9d571220f2847f68082f.v1` },
+        auth: { mode: "token" as const, token: "concurrent-token" },
       },
     } satisfies OpenClawConfig;
     const initialSnapshot = snapshot("hash-1", initial);
@@ -612,7 +612,7 @@ describe("applySystemAgentSetup transaction boundaries", () => {
         settings: expect.objectContaining({
           port: 19000,
           bind: "lan",
-          gatewayToken: `ltfx.n.9d571220f2847f68082f.v1`,
+          gatewayToken: "concurrent-token",
         }),
       }),
     );

@@ -104,19 +104,19 @@ describe("deleteTelegramUpdateOffset", () => {
       await writeTelegramUpdateOffset({
         accountId: "default",
         updateId: 321,
-        botToken: `ltfx.n.c80ae5092a7396709cea.v1`,
+        botToken: "111111:token-a",
       });
 
       expect(
         await readTelegramUpdateOffset({
           accountId: "default",
-          botToken: `ltfx.n.de4d18542964f0072c4d.v1`,
+          botToken: "222222:token-b",
         }),
       ).toBeNull();
       expect(
         await readTelegramUpdateOffset({
           accountId: "default",
-          botToken: `ltfx.n.c80ae5092a7396709cea.v1`,
+          botToken: "111111:token-a",
         }),
       ).toBe(321);
     });
@@ -127,13 +127,13 @@ describe("deleteTelegramUpdateOffset", () => {
       await writeTelegramUpdateOffset({
         accountId: "default",
         updateId: 1500,
-        botToken: `ltfx.n.c80ae5092a7396709cea.v1`,
+        botToken: "111111:token-a",
       });
 
       const rotations: Array<Record<string, unknown>> = [];
       const offset = await readTelegramUpdateOffset({
         accountId: "default",
-        botToken: `ltfx.n.de4d18542964f0072c4d.v1`,
+        botToken: "222222:token-b",
         onRotationDetected: (info) => {
           rotations.push({ ...info });
         },
@@ -161,7 +161,7 @@ describe("deleteTelegramUpdateOffset", () => {
       const rotations: Array<Record<string, unknown>> = [];
       const offset = await readTelegramUpdateOffset({
         accountId: "default",
-        botToken: `ltfx.n.d39562f99ea9d041f059.v1`,
+        botToken: "333333:token-c",
         onRotationDetected: (info) => {
           rotations.push({ ...info });
         },
@@ -196,7 +196,7 @@ describe("deleteTelegramUpdateOffset", () => {
   });
 
   it("lets migration replace stale plugin-state with a higher compatible imported offset", () => {
-    const token = `ltfx.n.441528ba26583b57b4a7.v1`;
+    const token = "111111:current";
     expect(
       shouldReplaceTelegramUpdateOffsetEntry({
         botToken: token,
@@ -217,7 +217,7 @@ describe("deleteTelegramUpdateOffset", () => {
   });
 
   it("keeps plugin-state when the imported offset belongs to another bot", () => {
-    const token = `ltfx.n.441528ba26583b57b4a7.v1`;
+    const token = "111111:current";
     expect(
       shouldReplaceTelegramUpdateOffsetEntry({
         botToken: token,
@@ -306,7 +306,7 @@ describe("deleteTelegramUpdateOffset", () => {
       const rotations: Array<Record<string, unknown>> = [];
       const offset = await readTelegramUpdateOffset({
         accountId: "default",
-        botToken: `ltfx.n.679ef643b5a9225cb99a.v1`,
+        botToken: "111111:any-secret",
         onRotationDetected: (info) => {
           rotations.push({ ...info });
         },
@@ -329,13 +329,13 @@ describe("deleteTelegramUpdateOffset", () => {
       await writeTelegramUpdateOffset({
         accountId: "default",
         updateId: 42,
-        botToken: `ltfx.n.d3c68ce06691817ff257.v1`,
+        botToken: "111111:original",
       });
 
       let cleaned = false;
       const offset = await readTelegramUpdateOffset({
         accountId: "default",
-        botToken: `ltfx.n.b82605daaf10a44001d7.v1`,
+        botToken: "111111:rotated",
         onRotationDetected: async () => {
           await new Promise<void>((resolve) => {
             setImmediate(resolve);
@@ -359,7 +359,7 @@ describe("deleteTelegramUpdateOffset", () => {
       expect(
         await readTelegramUpdateOffset({
           accountId: "default",
-          botToken: `ltfx.n.d39562f99ea9d041f059.v1`,
+          botToken: "333333:token-c",
         }),
       ).toBeNull();
     });

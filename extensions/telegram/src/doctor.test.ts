@@ -732,7 +732,7 @@ describe("telegram doctor", () => {
         telegram: {
           accounts: {
             work: {
-              botToken: `ltfx.n.7acc6d84efa7e200f35e.v1`,
+              botToken: "123:work",
             },
           },
         },

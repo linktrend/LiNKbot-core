@@ -459,7 +459,7 @@ function buildWebchatCanvasSection(params: {
     params.sourceMessageToolOnly
       ? "- Files: message attachment fields. Web rich render: `[embed ...]`."
       : "- Attachments: `MEDIA:`. Web rich render: `[embed ...]`.",
-    '- Hosted doc: `[embed ref="cv_123" title="Status" height="320" /]`; URL form: `[embed url=`ltfx.n.cd8d77aa9789fd62a7b3.v1` title="Status" height="320" /]`.',
+    '- Hosted doc: `[embed ref="cv_123" title="Status" height="320" /]`; URL form: `[embed url="/__openclaw__/canvas/documents/cv_123/index.html" title="Status" height="320" /]`.',
     "- Never local/file:// or arbitrary URL. URL must start `/__openclaw__/canvas/`; else use `ref`.",
     "- Hosted root is profile-, not workspace-scoped; stage there.",
     "- Quote attributes. Prefer `ref`; use `url` only with full hosted URL.",

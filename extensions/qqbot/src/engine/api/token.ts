@@ -93,7 +93,7 @@ export class TokenManager {
    * When multiple callers request a token for the same appId concurrently,
    * only one actual HTTP request is made — the others await the same promise.
    */
-  async getAccessToken(appId: string, clientSecret: (string)): Promise<string> {
+  async getAccessToken(appId: string, clientSecret: string): Promise<string> {
     const normalizedId = appId.trim();
     const cached = this.cache.get(normalizedId);
 
@@ -242,7 +242,7 @@ export class TokenManager {
 
   // ---- Internal ----
 
-  private async doFetchToken(appId: string, clientSecret: (string)): Promise<string> {
+  private async doFetchToken(appId: string, clientSecret: string): Promise<string> {
     this.logger?.debug?.(`[qqbot:token:${appId}] >>> POST ${TOKEN_URL}`);
 
     let response: Response;

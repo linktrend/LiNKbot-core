@@ -46,7 +46,7 @@ async function freePort(): Promise<number> {
   });
 }
 
-async function waitForProbeFailure(url: (string)): Promise<void> {
+async function waitForProbeFailure(url: string): Promise<void> {
   // Idle-stop assertions wait until the local service no longer responds.
   try {
     await expect
@@ -903,10 +903,10 @@ describe("provider local service", () => {
   it("reports only bounded redacted startup diagnostics", async () => {
     const port = await freePort();
     const healthUrl = `http://127.0.0.1:${port}/v1/models`;
-    const diagnosticSecret = `ltfx.n.24ca9ab445cc2d76cc34.v1`;
-    const inheritedDiagnosticSecret = `ltfx.n.00a29b09992ed9abf220.v1`;
-    const headerDiagnosticSecret = `ltfx.n.a279ebf11e15df47af36.v1`;
-    const argumentDiagnosticSecret = `ltfx.n.cdec0524a6faad0f6021.v1`;
+    const diagnosticSecret = "local-service-diagnostic-secret";
+    const inheritedDiagnosticSecret = "inherited-local-service-diagnostic-secret";
+    const headerDiagnosticSecret = "header-local-service-diagnostic-secret";
+    const argumentDiagnosticSecret = "argument-local-service-diagnostic-secret";
     let startupError: Error | undefined;
     vi.stubEnv("INHERITED_DIAGNOSTIC_TOKEN", inheritedDiagnosticSecret);
 

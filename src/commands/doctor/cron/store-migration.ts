@@ -100,7 +100,7 @@ type NormalizeCronStoreJobsResult = {
   removedJobs: Array<{ job: Record<string, unknown>; reason: string; sourceIndex: number }>;
 };
 
-function incrementIssue(issues: CronStoreIssues, key: (CronStoreIssueKey) {)
+function incrementIssue(issues: CronStoreIssues, key: CronStoreIssueKey) {
   issues[key] = (issues[key] ?? 0) + 1;
 }
 
@@ -317,7 +317,7 @@ export function normalizeStoredCronJobs(
 
   for (const [sourceIndex, raw] of jobs.entries()) {
     const jobIssues = new Set<CronStoreIssueKey>();
-    const trackIssue = (key: (CronStoreIssueKey) => {)
+    const trackIssue = (key: CronStoreIssueKey) => {
       if (jobIssues.has(key)) {
         return;
       }

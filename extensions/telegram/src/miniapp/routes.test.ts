@@ -122,7 +122,7 @@ describe("registerTelegramMiniAppRoutes", () => {
     const res = await callRoute({
       route,
       method: "GET",
-      url: `ltfx.n.2afdfe1dca22a6ccbda0.v1`,
+      url: "/__openclaw_tg_miniapp/?accountId=ops",
     });
 
     expect(res.statusCode).toBe(200);
@@ -136,7 +136,7 @@ describe("registerTelegramMiniAppRoutes", () => {
     const res = await callRoute({
       route,
       method: "POST",
-      url: `ltfx.n.00db6f694bac8088b1b5.v1`,
+      url: "/__openclaw_tg_miniapp/auth",
       contentType: "application/json; charset=utf-8",
       body: JSON.stringify({
         initData: signedInitData("123456", "success"),
@@ -171,7 +171,7 @@ describe("registerTelegramMiniAppRoutes", () => {
     await callRoute({
       route,
       method: "POST",
-      url: `ltfx.n.00db6f694bac8088b1b5.v1`,
+      url: "/__openclaw_tg_miniapp/auth",
       contentType: "application/json",
       body: JSON.stringify({ initData }),
       ip: "203.0.113.20",
@@ -179,7 +179,7 @@ describe("registerTelegramMiniAppRoutes", () => {
     const replay = await callRoute({
       route,
       method: "POST",
-      url: `ltfx.n.00db6f694bac8088b1b5.v1`,
+      url: "/__openclaw_tg_miniapp/auth",
       contentType: "application/json",
       body: JSON.stringify({ initData }),
       ip: "203.0.113.20",
@@ -198,7 +198,7 @@ describe("registerTelegramMiniAppRoutes", () => {
       callRoute({
         route,
         method: "POST",
-        url: `ltfx.n.00db6f694bac8088b1b5.v1`,
+        url: "/__openclaw_tg_miniapp/auth",
         contentType: "application/json",
         body: JSON.stringify({ initData }),
         ip: "203.0.113.21",
@@ -206,7 +206,7 @@ describe("registerTelegramMiniAppRoutes", () => {
       callRoute({
         route,
         method: "POST",
-        url: `ltfx.n.00db6f694bac8088b1b5.v1`,
+        url: "/__openclaw_tg_miniapp/auth",
         contentType: "application/json",
         body: JSON.stringify({ initData }),
         ip: "203.0.113.22",
@@ -222,7 +222,7 @@ describe("registerTelegramMiniAppRoutes", () => {
     const res = await callRoute({
       route,
       method: "POST",
-      url: `ltfx.n.00db6f694bac8088b1b5.v1`,
+      url: "/__openclaw_tg_miniapp/auth",
       contentType: "application/json",
       body: JSON.stringify({ initData: signedInitData("123456", "non-owner") }),
       ip: "203.0.113.30",
@@ -239,7 +239,7 @@ describe("registerTelegramMiniAppRoutes", () => {
       last = await callRoute({
         route,
         method: "POST",
-        url: `ltfx.n.00db6f694bac8088b1b5.v1`,
+        url: "/__openclaw_tg_miniapp/auth",
         contentType: "application/json",
         body: JSON.stringify({ initData: signedInitData("123456", `rate-${i}`) }),
         ip: "203.0.113.40",

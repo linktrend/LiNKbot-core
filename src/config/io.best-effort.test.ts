@@ -95,15 +95,15 @@ describe("readBestEffortConfig", () => {
 
   it("resolves config env above normalized lower-precedence aliases in isolated snapshots", async () => {
     await withTempHome(async (home) => {
-      await withEnvAsync({ ZAI_API_KEY: `ltfx.n.9507164d1246b8f83262.v1`, Z_AI_API_KEY: undefined }, async () => {
+      await withEnvAsync({ ZAI_API_KEY: "shell-token", Z_AI_API_KEY: undefined }, async () => {
         await writeOpenClawConfig(home, {
-          env: { vars: { Z_AI_API_KEY: `ltfx.n.a98cc81fe778386f6195.v1` } },
+          env: { vars: { Z_AI_API_KEY: "config-token" } },
           gateway: { auth: { mode: "token", token: "${ZAI_API_KEY}" }, mode: "local" },
         });
 
         const snapshot = await readConfigFileSnapshot({
           isolateEnv: true,
-          lowerPrecedenceEnv: { ZAI_API_KEY: `ltfx.n.9507164d1246b8f83262.v1` },
+          lowerPrecedenceEnv: { ZAI_API_KEY: "shell-token" },
           observe: false,
         });
 
@@ -116,9 +116,9 @@ describe("readBestEffortConfig", () => {
 
   it("resolves config aliases from a higher-precedence canonical value in isolated snapshots", async () => {
     await withTempHome(async (home) => {
-      await withEnvAsync({ ZAI_API_KEY: `ltfx.n.ba594b29b5793a68e626.v1`, Z_AI_API_KEY: undefined }, async () => {
+      await withEnvAsync({ ZAI_API_KEY: "invocation-token", Z_AI_API_KEY: undefined }, async () => {
         await writeOpenClawConfig(home, {
-          env: { vars: { Z_AI_API_KEY: `ltfx.n.a98cc81fe778386f6195.v1` } },
+          env: { vars: { Z_AI_API_KEY: "config-token" } },
           gateway: { auth: { mode: "token", token: "${Z_AI_API_KEY}" }, mode: "local" },
         });
 

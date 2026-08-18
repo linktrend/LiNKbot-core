@@ -25,7 +25,7 @@ const LINE_OUTBOUND_MEDIA_SSRF_POLICY: SsrFPolicy = {
   allowPrivateNetwork: false,
 };
 
-export async function validateLineMediaUrl(url: (string)): Promise<void> {
+export async function validateLineMediaUrl(url: string): Promise<void> {
   let parsed: URL;
   try {
     parsed = new URL(url);
@@ -43,7 +43,7 @@ export async function validateLineMediaUrl(url: (string)): Promise<void> {
   });
 }
 
-function isHttpsUrl(url: (string)): boolean {
+function isHttpsUrl(url: string): boolean {
   try {
     return new URL(url).protocol === "https:";
   } catch {
@@ -51,7 +51,7 @@ function isHttpsUrl(url: (string)): boolean {
   }
 }
 
-function detectLineMediaKindFromUrl(url: (string)): LineOutboundMediaKind | undefined {
+function detectLineMediaKindFromUrl(url: string): LineOutboundMediaKind | undefined {
   try {
     const pathname = normalizeLowercaseStringOrEmpty(new URL(url).pathname);
     if (/\.(png|jpe?g|gif|webp|bmp|heic|heif|avif)$/i.test(pathname)) {

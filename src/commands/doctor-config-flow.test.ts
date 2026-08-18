@@ -37,7 +37,7 @@ const legacyConfigMigrationForTest = vi.hoisted(() => {
       : null;
   }
 
-  function ensureRecord(parent: Record<string, unknown>, key: (string)): Record<string, unknown> {
+  function ensureRecord(parent: Record<string, unknown>, key: string): Record<string, unknown> {
     const current = asRecord(parent[key]);
     if (current) {
       return current;
@@ -1691,12 +1691,12 @@ describe("doctor config flow", () => {
       gateway: {
         auth: {
           mode: "token",
-          token: `ltfx.n.1c36b35cf138f5ec56a0.v1`,
+          token: "shared-gateway-token-1234567890",
         },
       },
       hooks: {
         enabled: true,
-        token: `ltfx.n.1c36b35cf138f5ec56a0.v1`,
+        token: "shared-gateway-token-1234567890",
       },
     };
     const previewNotes = resetTerminalNoteMock();
@@ -1791,7 +1791,7 @@ describe("doctor config flow", () => {
     const doctorWarnings = await collectDoctorWarnings({
       hooks: {
         enabled: true,
-        token: `ltfx.n.2efb43e02793b105c443.v1`,
+        token: "hook-secret",
         transformsDir: "/virtual/.openclaw/workspace/skills/linear-webhook",
         mappings: [
           {
@@ -2629,8 +2629,8 @@ describe("doctor config flow", () => {
         channels: {
           discord: {
             accounts: {
-              default: { token: `ltfx.n.e87d3a5481dee5ed2e40.v1`, allowFrom: ["123"] },
-              work: { token: `ltfx.n.9682d110bb2995ac6015.v1` },
+              default: { token: "discord-default-token", allowFrom: ["123"] },
+              work: { token: "discord-work-token" },
             },
           },
         },
@@ -2662,7 +2662,7 @@ describe("doctor config flow", () => {
       config: {
         channels: {
           discord: {
-            token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+            token: "test-token",
             dmPolicy: "open",
             groupPolicy: "open",
           },
@@ -2713,7 +2713,7 @@ describe("doctor config flow", () => {
             {
               channels: {
                 telegram: {
-                  botToken: `ltfx.n.e1466187c844c921b622.v1`,
+                  botToken: "fake-token",
                   dmPolicy: "allowlist",
                 },
               },
@@ -2928,7 +2928,7 @@ describe("doctor config flow", () => {
           tools: {
             web: {
               x_search: {
-                apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+                apiKey: "test-key",
               },
             },
           },
@@ -3091,7 +3091,7 @@ describe("doctor config flow", () => {
                 provider: providerId,
                 providers: {
                   [providerId]: {
-                    apiKey: `ltfx.n.85dbe15d75ef9308c7ae.v1`,
+                    apiKey: "secret-key",
                     voiceId: "voice-123",
                     modelId: "eleven_v3",
                   },

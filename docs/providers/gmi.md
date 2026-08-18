@@ -47,7 +47,7 @@ openclaw onboard --auth-choice gmi-api-key
 Non-interactive setups can pass `--gmi-api-key <key>`, or set:
 
 ```bash
-export GMI_API_KEY="${ltfx.n.45f0d5e6457f26add7d4.v1}" # pragma: allowlist secret
+export GMI_API_KEY="<your-gmi-api-key>" # pragma: allowlist secret
 ```
 
 ## When to choose GMI

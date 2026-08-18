@@ -2729,7 +2729,7 @@ export const zh_CN: TranslationMap = {
       title: "Gateway 访问",
       subtitle: "仪表板的连接位置及其身份验证方式。",
       wsUrl: "WebSocket URL",
-      token: `ltfx.n.d3e1f9cd8a7fcf61864e.v1`,
+      token: "Gateway 令牌",
       password: "密码（不存储）",
       passwordPlaceholder: "系统密码或共享密码",
       sessionKey: "默认会话密钥",
@@ -3189,7 +3189,7 @@ export const zh_CN: TranslationMap = {
       sessionsCount: "{count} 个会话",
     },
     query: {
-      placeholder: "筛选会话（例如 key:(agent:main:cron* model:gpt-4o has:errors minTokens:2000）",)
+      placeholder: "筛选会话（例如 key:agent:main:cron* model:gpt-4o has:errors minTokens:2000）",
       apply: "筛选（客户端）",
       matching: "匹配 {shown} / {total} 个会话",
       inRange: "范围内有 {total} 个会话",

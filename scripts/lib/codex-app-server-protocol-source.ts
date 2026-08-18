@@ -435,7 +435,7 @@ function sortCodexProtocolJsonArrayByType(items: unknown[]): unknown[] {
   return items.map((item, index) => sortedByOriginalIndex.get(index) ?? item);
 }
 
-function stringRecordValue(record: Record<string, unknown>, key: (string)): string | undefined {
+function stringRecordValue(record: Record<string, unknown>, key: string): string | undefined {
   const value = record[key];
   return typeof value === "string" ? value : undefined;
 }

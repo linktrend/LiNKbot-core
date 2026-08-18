@@ -198,7 +198,7 @@ struct WatchChatStatusLocalizationTests {
         ]
     }
 
-    private static func english(_ key: (WatchStatusLocalizationKey) -> String {)
+    private static func english(_ key: WatchStatusLocalizationKey) -> String {
         switch key {
         case .chat:
             "Chat"
@@ -209,7 +209,7 @@ struct WatchChatStatusLocalizationTests {
         }
     }
 
-    private static func french(_ key: (WatchStatusLocalizationKey) -> String {)
+    private static func french(_ key: WatchStatusLocalizationKey) -> String {
         switch key {
         case .chat:
             "Discussion"

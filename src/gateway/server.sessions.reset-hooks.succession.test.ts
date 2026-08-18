@@ -82,7 +82,7 @@ test("sessions.create rejects an explicit successor fork", async () => {
   await seedParent("sess-fork");
 
   const result = await directSessionReq("sessions.create", {
-    key: `ltfx.n.228555a92def0b66183f.v1`,
+    key: "forked-child",
     parentSessionKey: "main",
     emitCommandHooks: true,
     fork: true,
@@ -99,7 +99,7 @@ test("sessions.create requires a parent for either explicit disposition", async 
   await createSessionStoreDir();
 
   const result = await directSessionReq("sessions.create", {
-    key: `ltfx.n.af5a781a252a3cb93c41.v1`,
+    key: "parallel-child",
     emitCommandHooks: true,
     succeedsParent: false,
   });
@@ -113,7 +113,7 @@ test("sessions.create requires command hooks for either explicit disposition", a
   await seedParent("sess-no-hooks");
 
   const result = await directSessionReq("sessions.create", {
-    key: `ltfx.n.af5a781a252a3cb93c41.v1`,
+    key: "parallel-child",
     parentSessionKey: "main",
     succeedsParent: false,
   });

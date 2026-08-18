@@ -44,7 +44,7 @@ type ThreadBindingStoreEntry = ReturnType<
 const TELEGRAM_THREAD_BINDINGS_TEST_CFG = {
   channels: {
     telegram: {
-      token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+      token: "test-token",
     },
   },
 } as OpenClawConfig;

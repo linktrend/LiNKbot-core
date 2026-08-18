@@ -249,7 +249,7 @@ describe("resolveAgentAvatar", () => {
 
     expect(resolveAgentAvatar(cfg, "generic")).toMatchObject({
       kind: "data",
-      url: `ltfx.n.06f61f43d24c68612795.v1`,
+      url: "data:text/plain,avatar",
     });
     expect(resolveAgentAvatar(cfg, "oversized")).toMatchObject({
       kind: "data",

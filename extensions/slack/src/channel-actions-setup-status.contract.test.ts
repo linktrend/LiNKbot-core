@@ -35,8 +35,8 @@ describe("slack actions contract", () => {
         cfg: {
           channels: {
             slack: {
-              botToken: `ltfx.n.87894fe048938b686cfb.v1`,
-              appToken: `ltfx.n.424766b94c5b9f0f5861.v1`,
+              botToken: "xoxb-test",
+              appToken: "xapp-test",
             },
           },
         } as OpenClawConfig,
@@ -48,8 +48,8 @@ describe("slack actions contract", () => {
         cfg: {
           channels: {
             slack: {
-              botToken: `ltfx.n.87894fe048938b686cfb.v1`,
-              appToken: `ltfx.n.424766b94c5b9f0f5861.v1`,
+              botToken: "xoxb-test",
+              appToken: "xapp-test",
               capabilities: {
                 interactiveReplies: true,
               },
@@ -83,8 +83,8 @@ describe("slack setup contract", () => {
         name: "default account stores tokens and enables the channel",
         cfg: {} as OpenClawConfig,
         input: {
-          botToken: `ltfx.n.87894fe048938b686cfb.v1`,
-          appToken: `ltfx.n.424766b94c5b9f0f5861.v1`,
+          botToken: "xoxb-test",
+          appToken: "xapp-test",
         },
         expectedAccountId: "default",
         assertPatchedConfig: (cfg) => {
@@ -108,16 +108,16 @@ describe("slack setup contract", () => {
         cfg: {} as OpenClawConfig,
         input: {
           identity: "user",
-          userToken: `ltfx.n.19bbb7d9c45e18a41bce.v1`,
-          appToken: `ltfx.n.229a79260e17de2a406e.v1`,
+          userToken: "test-user-token",
+          appToken: "test-app-token",
         },
         expectedAccountId: "default",
         assertPatchedConfig: (cfg) => {
           expect(cfg.channels?.slack).toMatchObject({
             enabled: true,
             identity: "user",
-            userToken: `ltfx.n.19bbb7d9c45e18a41bce.v1`,
-            appToken: `ltfx.n.229a79260e17de2a406e.v1`,
+            userToken: "test-user-token",
+            appToken: "test-app-token",
           });
           expect(cfg.channels?.slack?.botToken).toBeUndefined();
         },
@@ -128,8 +128,8 @@ describe("slack setup contract", () => {
         input: {
           identity: "user",
           mode: "http",
-          userToken: `ltfx.n.19bbb7d9c45e18a41bce.v1`,
-          signingSecret: `ltfx.n.f0da581c64135cb6a8b8.v1`,
+          userToken: "test-user-token",
+          signingSecret: "test-signing-secret",
         },
         expectedAccountId: "default",
         assertPatchedConfig: (cfg) => {
@@ -137,8 +137,8 @@ describe("slack setup contract", () => {
             enabled: true,
             identity: "user",
             mode: "http",
-            userToken: `ltfx.n.19bbb7d9c45e18a41bce.v1`,
-            signingSecret: `ltfx.n.f0da581c64135cb6a8b8.v1`,
+            userToken: "test-user-token",
+            signingSecret: "test-signing-secret",
           });
           expect(cfg.channels?.slack?.botToken).toBeUndefined();
           expect(cfg.channels?.slack?.appToken).toBeUndefined();
@@ -150,15 +150,15 @@ describe("slack setup contract", () => {
           channels: {
             slack: {
               identity: "user",
-              userToken: `ltfx.n.b1347b3e544db0d0ef13.v1`,
-              appToken: `ltfx.n.bbcf181d9952ad98015f.v1`,
+              userToken: "test-old-user-token",
+              appToken: "test-old-app-token",
             },
           },
         } as OpenClawConfig,
         input: {
           mode: "http",
-          userToken: `ltfx.n.19bbb7d9c45e18a41bce.v1`,
-          signingSecret: `ltfx.n.f0da581c64135cb6a8b8.v1`,
+          userToken: "test-user-token",
+          signingSecret: "test-signing-secret",
         },
         expectedAccountId: "default",
         assertPatchedConfig: (cfg) => {
@@ -166,8 +166,8 @@ describe("slack setup contract", () => {
             enabled: true,
             identity: "user",
             mode: "http",
-            userToken: `ltfx.n.19bbb7d9c45e18a41bce.v1`,
-            signingSecret: `ltfx.n.f0da581c64135cb6a8b8.v1`,
+            userToken: "test-user-token",
+            signingSecret: "test-signing-secret",
           });
         },
       },
@@ -177,8 +177,8 @@ describe("slack setup contract", () => {
         input: {
           identity: "user",
           mode: "relay",
-          userToken: `ltfx.n.19bbb7d9c45e18a41bce.v1`,
-          appToken: `ltfx.n.229a79260e17de2a406e.v1`,
+          userToken: "test-user-token",
+          appToken: "test-app-token",
         },
         expectedAccountId: "default",
         expectedValidation:
@@ -201,16 +201,16 @@ describe("slack setup contract", () => {
         input: {
           identity: "bot",
           mode: "http",
-          botToken: `ltfx.n.19434281d9f1460bdb2b.v1`,
-          appToken: `ltfx.n.229a79260e17de2a406e.v1`,
+          botToken: "test-bot-token",
+          appToken: "test-app-token",
         },
         expectedAccountId: "default",
         assertPatchedConfig: (cfg) => {
           expect(cfg.channels?.slack).toMatchObject({
             enabled: true,
             identity: "bot",
-            botToken: `ltfx.n.19434281d9f1460bdb2b.v1`,
-            appToken: `ltfx.n.229a79260e17de2a406e.v1`,
+            botToken: "test-bot-token",
+            appToken: "test-app-token",
           });
           expect(cfg.channels?.slack?.mode).toBeUndefined();
         },
@@ -228,8 +228,8 @@ describe("slack status contract", () => {
         cfg: {
           channels: {
             slack: {
-              botToken: `ltfx.n.87894fe048938b686cfb.v1`,
-              appToken: `ltfx.n.424766b94c5b9f0f5861.v1`,
+              botToken: "xoxb-test",
+              appToken: "xapp-test",
             },
           },
         } as OpenClawConfig,

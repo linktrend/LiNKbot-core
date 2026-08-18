@@ -83,7 +83,7 @@ function objectArgAt(
 describe("deliverDiscordReply", () => {
   const runtime = {} as RuntimeEnv;
   const cfg = {
-    channels: { discord: { token: `ltfx.n.4c5dc9b7708905f77f5e.v1` } },
+    channels: { discord: { token: "test-token" } },
   } as OpenClawConfig;
 
   beforeAll(async () => {
@@ -441,11 +441,11 @@ describe("deliverDiscordReply", () => {
     const baseCfg = {
       channels: {
         discord: {
-          token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+          token: "test-token",
           markdown: { tables: "code" },
           accounts: {
             default: {
-              token: `ltfx.n.c29c9dda36050f48dda8.v1`,
+              token: "account-token",
               maxLinesPerMessage: 99,
               streaming: { chunkMode: "length" },
             },

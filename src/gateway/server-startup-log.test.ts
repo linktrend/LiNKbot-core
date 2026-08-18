@@ -100,7 +100,7 @@ describe("gateway startup log", () => {
         channels: {
           slack: {
             enabled: true,
-            botToken: `ltfx.n.20158224750041d653cd.v1`,
+            botToken: "configured",
           },
         },
       },
@@ -127,7 +127,7 @@ describe("gateway startup log", () => {
         channels: {
           "missing-chat": {
             enabled: true,
-            token: `ltfx.n.20158224750041d653cd.v1`,
+            token: "configured",
           },
         },
       },
@@ -166,7 +166,7 @@ describe("gateway startup log", () => {
         channels: {
           [unsafeChannelId]: {
             enabled: true,
-            botToken: `ltfx.n.20158224750041d653cd.v1`,
+            botToken: "configured",
           },
         },
       },
@@ -201,7 +201,7 @@ describe("gateway startup log", () => {
         channels: {
           "legacy-chat": {
             enabled: true,
-            token: `ltfx.n.20158224750041d653cd.v1`,
+            token: "configured",
           },
         },
       },

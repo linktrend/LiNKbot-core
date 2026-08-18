@@ -288,7 +288,7 @@ class AutoreviewHardeningTests(unittest.TestCase):
     def test_oversized_text_is_rejected_without_scanning_binary_tail(self) -> None:
         with tempfile.TemporaryDirectory() as tempdir:
             repo = init_repo(Path(tempdir))
-            tail_secret = ("\ntoken=" + "A" * 24 + "\n")
+            tail_secret = "\ntoken=" + "A" * 24 + "\n"
             content = "x" * (64_000 * 3 - 4) + tail_secret
 
             untracked = repo / "untracked.txt"
@@ -969,7 +969,7 @@ class AutoreviewHardeningTests(unittest.TestCase):
     def test_secret_detector_rejects_backtick_interpolation_with_literal_secret(
         self,
     ) -> None:
-        literal_secret = ("hardcoded" + "credential")
+        literal_secret = "hardcoded" + "credential"
         for content in (
             "to" + f"ken = `{literal_secret}-${{process.env.TOKEN}}`",
             "pass"
@@ -1553,7 +1553,7 @@ class AutoreviewHardeningTests(unittest.TestCase):
             "access_"
             + "to"
             + 'ken = credentials.get_token("https://api.example.test/?access_'
-            + 'token=(hardcoded-secret")',)
+            + 'token=hardcoded-secret")',
             "access_"
             + "to"
             + 'ken = credentials.get_token("https://example.test:not-a-port/.default")',
@@ -1818,28 +1818,28 @@ class AutoreviewHardeningTests(unittest.TestCase):
     def test_secret_detector_does_not_treat_code_expressions_as_values(self) -> None:
         for content in (
             "token = secrets.token_urlsafe(32)",
-            "token = (response",)
-            "password = (undefined",)
-            "token = (process.env.GITHUB_TOKEN",)
+            "token = response",
+            "password = undefined",
+            "token = process.env.GITHUB_TOKEN",
             'token = os.environ["GITHUB_TOKEN"]',
             'password = payload.get("password")',
-            "token = (auth_response.credentials.access_token",)
-            "token = (response.authentication.accessToken",)
-            "token = (request.headers.authorization",)
-            "password = (account.credentials.password",)
-            "password = (user.credentials.password",)
-            "password = (user?.credentials?.password",)
+            "token = auth_response.credentials.access_token",
+            "token = response.authentication.accessToken",
+            "token = request.headers.authorization",
+            "password = account.credentials.password",
+            "password = user.credentials.password",
+            "password = user?.credentials?.password",
             "password = `${process.env.PASSWORD}`",
             "{ password: process.env.PASSWORD, username }",
             "token = process.env.TOKEN as string",
-            "self.access_token = (self.authentication.access_token",)
-            "this.accessToken = (this.authentication.accessToken",)
-            "api_key = (client.settings.apiKey",)
-            'token = f"ltfx.n.db1b2a29581c034c77c0.v1"',
-            'token = f"ltfx.n.64c7b79cea7afdb0eb93.v1"',
+            "self.access_token = self.authentication.access_token",
+            "this.accessToken = this.authentication.accessToken",
+            "api_key = client.settings.apiKey",
+            'token = "$GITHUB_TOKEN"',
+            'token = "$env:GITHUB_TOKEN"',
             'token = "${{ secrets.GITHUB_TOKEN }}"',
-            'token = f"ltfx.n.24e393b1938c33124c93.v1"',
-            'token = f"ltfx.n.cd2fe3cfee6ae1a475c4.v1"',
+            'token = "op://Vault/Item/token"',
+            'token = "op://Development/AWS/Access Keys/access_key_id"',
             'token_endpoint = "https://accounts.example.com/oauth2/token"',
             'password_policy = "minimum-twelve-characters"',
         ):
@@ -2584,7 +2584,7 @@ class AutoreviewHardeningTests(unittest.TestCase):
             "to" + "ken: prod.A7f9K2m4Q8v6N3x5R1p0T9z8 (production)",
             "pass" + "word=correct.horse.battery.password",
             "pass" + "word=Correct.horse.battery.staple",
-            "access_" + "token=(abcDefGhijk" + "LmnoPqrst",)
+            "access_" + "token=abcDefGhijk" + "LmnoPqrst",
             "pass" + "word=\"${{ 'Correct.horse.battery.staple' }}\"",
             "pass" + "word=\"{{ 'Correct.horse.battery.staple' }}\"",
         ):
@@ -2617,18 +2617,18 @@ class AutoreviewHardeningTests(unittest.TestCase):
 
     def test_secret_detector_handles_credentialed_uris(self) -> None:
         for content in (
-            'url=f"ltfx.n.721319eaa94da8955bae.v1"user:pass@" + 'db.example/app"',
+            'url="postgres://' + "user:pass@" + 'db.example/app"',
             "DATABASE_URL=postgres://" + "user:pass@" + "db.example/app",
-            'url=f"ltfx.n.b2488cd9edf377de8381.v1":secret@" + 'db.example/app"',
-            'url=f"ltfx.n.721319eaa94da8955bae.v1"user:pa$$word@" + 'db.example/app"',
+            'url="redis://' + ":secret@" + 'db.example/app"',
+            'url="postgres://' + "user:pa$$word@" + 'db.example/app"',
             'url="postgres://'
             + "user:fixed-secret:${DB_PASSWORD}@"
             + 'db.example/app"',
-            'url=f"ltfx.n.721319eaa94da8955bae.v1"admin:$ecret123@" + 'db.example/app"',
-            'url=f"ltfx.n.721319eaa94da8955bae.v1"admin:${DB_PASSWORD}@" + 'db.example/app"',
-            'url=f"ltfx.n.721319eaa94da8955bae.v1"admin:{password}@" + 'db.example/app"',
-            'url=f"ltfx.n.721319eaa94da8955bae.v1"admin:%s@" + 'db.example/app"',
-            'url=f"ltfx.n.721319eaa94da8955bae.v1"admin:{}@" + 'db.example/app"',
+            'url="postgres://' + "admin:$ecret123@" + 'db.example/app"',
+            'url="postgres://' + "admin:${DB_PASSWORD}@" + 'db.example/app"',
+            'url="postgres://' + "admin:{password}@" + 'db.example/app"',
+            'url="postgres://' + "admin:%s@" + 'db.example/app"',
+            'url="postgres://' + "admin:{}@" + 'db.example/app"',
             'url="https://' + "alice@example.com:secret@" + 'host/app"',
             'url="https://admin:pass'
             + 'word@prod.example/private"',
@@ -2669,7 +2669,7 @@ class AutoreviewHardeningTests(unittest.TestCase):
             '"dsn": "postgresql:\\/\\/alice:'
             + "S3nsitiveValue99@"
             + 'db.example/app"',
-            "database_url: "${ltfx.n.2f7738c038a53c4f83f2.v1"}"
+            "database_url: postgres://svc:{"
             + "N0tActuallyInterpolation}@db/app",
             "const dsn = `https://user:password="
             + "real-hardcoded-secret-${TOKEN}@host`",
@@ -2723,8 +2723,8 @@ class AutoreviewHardeningTests(unittest.TestCase):
     def test_secret_detector_allows_referenced_uri_credentials(self) -> None:
         for content in (
             "postgres:" + "//user:password@localhost/db",
-            "url=(postgres:" + "//user:test-token-placeholder@host/db",)
-            "url=(postgres:" + "//user:placeholder@host/db",)
+            "url=postgres:" + "//user:test-token-placeholder@host/db",
+            "url=postgres:" + "//user:placeholder@host/db",
             "url=`postgres://" + "user:${DB_PASSWORD}@db.example/app`",
             'url=f"postgres://' + 'user:{password}@db.example/app"',
             'url=f"""postgres://' + 'user:{password}@db.example/app"""',
@@ -2752,10 +2752,10 @@ class AutoreviewHardeningTests(unittest.TestCase):
             + 'user:${DB_PASS}@db.example/app"',
             "DATABASE_URL: postgres://" + "user:${CRED}@db.example/app",
             'DATABASE_URL: "postgres://' + 'user:${AUTH}@db.example/app"',
-            "url: (postgres://" + "user:${CRED}@db.example/app",)
+            "url: postgres://" + "user:${CRED}@db.example/app",
             "- DATABASE_URL=postgres://"
             + "user:${DB_PASSWORD}@db.example/app",
-            "url: (postgres://" + "user:${DB_PASSWORD}@db.example/app",)
+            "url: postgres://" + "user:${DB_PASSWORD}@db.example/app",
             "uri: postgres://" + "user:${DB_PASSWORD}@db.example/app",
             "dsn: postgres://" + "user:${DB_PASSWORD}@db.example/app",
             "# DATABASE_URL: postgres://"
@@ -2851,7 +2851,7 @@ class AutoreviewHardeningTests(unittest.TestCase):
             + '//svc:$env:Sup3rSecret@db.example/app";',
             'var dsn = @"postgres:'
             + '//svc:{password}@db.example/app";',
-            "database_url: "${ltfx.n.2f7738c038a53c4f83f2.v1"}"
+            "database_url: postgres://svc:{"
             + "password}@db.example/app",
         ):
             with self.subTest(content=content):
@@ -2862,7 +2862,7 @@ class AutoreviewHardeningTests(unittest.TestCase):
             'assert "postgres:' + '//user:$ecret123@db/app"',
             'print "postgres:' + '//user:$ecret123@db/app"',
             'return "postgres:' + '//user:$ecret123@db/app"',
-            'const url = f"ltfx.n.fbab7e988696f7f0f987.v1"',
+            'const url = "postgres:' + '//user:$ecret123@db/app"',
         ):
             with self.subTest(content=content):
                 self.assertTrue(
@@ -2953,10 +2953,10 @@ class AutoreviewHardeningTests(unittest.TestCase):
 
     def test_secret_detector_allows_common_fixture_literals(self) -> None:
         for content in (
-            'token: f"ltfx.n.62697fda73073ae834ae.v1"',
-            'API_KEY = f"ltfx.n.bd8554c60451efa23b87.v1"',
-            'token: f"ltfx.n.4ce367e1fae6b9273c18.v1"',
-            'token: f"ltfx.n.a98cc81fe778386f6195.v1"',
+            'token: "token-oversized"',
+            'API_KEY = "clawrouter-e2e-secret"',
+            'token: "very-long-browser-token-0123456789"',
+            'token: "config-token"',
         ):
             with self.subTest(content=content):
                 self.assertFalse(self.helper["secret_text_risk"](content))
@@ -3086,7 +3086,7 @@ class AutoreviewHardeningTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tempdir:
             repo = init_repo(Path(tempdir))
             path = repo / "fixture.test.ts"
-            path.write_text('const request = { token: f"ltfx.n.4c5dc9b7708905f77f5e.v1" };\n', encoding="utf-8")
+            path.write_text('const request = { token: "test-token" };\n', encoding="utf-8")
             git(repo, "add", path.name)
             git(repo, "commit", "-q", "-m", "base")
 
@@ -3094,7 +3094,7 @@ class AutoreviewHardeningTests(unittest.TestCase):
 
             bundle, truncated = self.helper["local_bundle"](repo)
 
-            self.assertIn('-const request = { token: f"ltfx.n.4c5dc9b7708905f77f5e.v1" };', bundle)
+            self.assertIn('-const request = { token: "test-token" };', bundle)
             self.assertFalse(truncated)
 
     def test_pi_refuses_truncated_review_input(self) -> None:
@@ -3140,7 +3140,7 @@ class AutoreviewHardeningTests(unittest.TestCase):
                     "PATH": os.pathsep.join((str(repo_bin), str(trusted_bin))),
                     "SYSTEMROOT": "C:\\Windows",
                     "GIT_DIR": str(repo / ".git"),
-                    "OPENAI_API_KEY": f"ltfx.n.53d0c8c52c9abca1911c.v1",
+                    "OPENAI_API_KEY": "must-not-reach-git",
                 },
                 clear=False,
             ):
@@ -4626,7 +4626,7 @@ class AutoreviewHardeningTests(unittest.TestCase):
             source_home.mkdir(parents=True)
             source_auth = source_home / "auth.json"
             source_auth.write_text(
-                '{"token":f"ltfx.n.41dd96f1dccf65c2c9c7.v1"}',
+                '{"token":"test-token-placeholder"}',
                 encoding="utf-8",
             )
             (source_home / "config.toml").write_text(
@@ -4651,7 +4651,7 @@ class AutoreviewHardeningTests(unittest.TestCase):
                 )
 
                 (runtime_home / "auth.json").write_text(
-                    '{"token":f"ltfx.n.f35cd067d05752edf483.v1"}',
+                    '{"token":"test-auth-token"}',
                     encoding="utf-8",
                 )
                 self.assertEqual(
@@ -4670,7 +4670,7 @@ class AutoreviewHardeningTests(unittest.TestCase):
             source_home = root / "host-home" / ".codex"
             source_home.mkdir(parents=True)
             (source_home / "auth.json").write_text(
-                '{"token":f"ltfx.n.41dd96f1dccf65c2c9c7.v1"}',
+                '{"token":"test-token-placeholder"}',
                 encoding="utf-8",
             )
             (source_home / "config.toml").write_text(
@@ -4700,7 +4700,7 @@ class AutoreviewHardeningTests(unittest.TestCase):
             source_home.mkdir(parents=True)
             source_auth = source_home / "auth.json"
             source_auth.write_text(
-                '{"token":f"ltfx.n.41dd96f1dccf65c2c9c7.v1"}',
+                '{"token":"test-token-placeholder"}',
                 encoding="utf-8",
             )
             try:
@@ -4738,7 +4738,7 @@ class AutoreviewHardeningTests(unittest.TestCase):
             runtime_home = root / "runtime" / "codex-home"
             source_home.mkdir(parents=True)
             (source_home / "auth.json").write_text(
-                '{"token":f"ltfx.n.41dd96f1dccf65c2c9c7.v1"}',
+                '{"token":"test-token-placeholder"}',
                 encoding="utf-8",
             )
             (source_home / "config.toml").write_text(
@@ -5371,10 +5371,10 @@ class AutoreviewHardeningTests(unittest.TestCase):
             'function Run() { dsn=$@"https:'
             + '//user:{prodPasswordSecret12345}@host"; }',
             "cat <<'EOF'\n; class C {\nEOF\n"
-            + 'url=($@"https:')
+            + 'url=$@"https:'
             + '//user:{prodPasswordSecret12345}@host";',
             "cat <<EOF\n; class C {\nEOF\n"
-            + 'url=($@"https:')
+            + 'url=$@"https:'
             + '//user:{prodPasswordSecret12345}@host";',
             'void Run() { // dsn=$@"label ""prod"" https:'
             + '//u:{prodPasswordSecret12345}@h"',
@@ -5570,19 +5570,19 @@ class AutoreviewHardeningTests(unittest.TestCase):
         formatted_reference = "".join(("ActualToken", "1234567890"))
         self.assertFalse(
             self.helper["secret_text_risk"](
-                'url = ($@"https:')
+                'url = $@"https:'
                 + '//user:{password}@example.com";'
             )
         )
         self.assertTrue(
             self.helper["secret_text_risk"](
-                f'url = ($@"https://user:')
+                f'url = $@"https://user:'
                 f'{{{secret_shaped_reference}}}@example.com";'
             )
         )
         self.assertTrue(
             self.helper["secret_text_risk"](
-                f'url = ($@"https:')
+                f'url = $@"https:'
                 f'//user:{{{formatted_reference}:N}}@host/{{password}}";'
             )
         )
@@ -5612,22 +5612,22 @@ class AutoreviewHardeningTests(unittest.TestCase):
         for content in (
             "cred" + "ential = real-hardcoded-" + "secret",
             "cred" + "entials = real-hardcoded-" + "secret",
-            "private_" + "key = (real-hardcoded-" + "secret",)
+            "private_" + "key = real-hardcoded-" + "secret",
             "github_to" + "ken = ordinary-hardcoded-value-12345",
             "db_pass" + "word = ordinary-hardcoded-value-12345",
-            "stripe_api_" + "key = (ordinary-hardcoded-value-12345",)
+            "stripe_api_" + "key = ordinary-hardcoded-value-12345",
             "githubTo" + "ken = ordinary-hardcoded-value-12345",
             "dbPass" + "word = ordinary-hardcoded-value-12345",
             "awsCred" + "entials = ordinary-hardcoded-value-12345",
-            "githubAPI" + "Key = (ordinary-hardcoded-value-12345",)
+            "githubAPI" + "Key = ordinary-hardcoded-value-12345",
             "myAWSSecretAccess"
-            + "Key = (ordinary-hardcoded-value-12345",)
+            + "Key = ordinary-hardcoded-value-12345",
             "userIDTo" + "ken = ordinary-hardcoded-value-12345",
             "GITHUBTO" + "KEN = ordinary-hardcoded-value-12345",
             "DBPASS" + "WORD = ordinary-hardcoded-value-12345",
             "githubto" + "ken = ordinary-hardcoded-value-12345",
             "dbpass" + 'word = "Summer2026!"',
-            "stripeapi" + "key = (ordinary-hardcoded-value-12345",)
+            "stripeapi" + "key = ordinary-hardcoded-value-12345",
             "x" * 65
             + "_pass"
             + "word = ordinary-hardcoded-value-12345",

@@ -505,12 +505,12 @@ function buildProfileUsageMocks(baseTime: number) {
       endDate: daily[daily.length - 1]?.date,
       sessions: [
         {
-          key: `ltfx.n.b41178e2e9b9eaf5ca86.v1`,
+          key: "agent:openclaw-mock:marathon",
           label: "Release night marathon",
           usage: { ...usageCostTotals(4_000_000_000), durationMs: (59 * 60 + 4) * 60 * 1000 },
         },
         {
-          key: `ltfx.n.d0cae675075699f3b636.v1`,
+          key: "agent:openclaw-mock:daily",
           label: "Daily driver",
           usage: { ...usageCostTotals(900_000_000), durationMs: 3 * 60 * 60 * 1000 },
         },
@@ -781,8 +781,8 @@ async function createChatPickerScenario(): Promise<ControlUiMockGatewayScenario>
   const baseTime = Date.parse("2026-05-22T09:00:00.000Z");
   const devicePairSetupCode = Buffer.from(
     JSON.stringify({
-      url: `ltfx.n.549b0100f00588beb908.v1`,
-      bootstrapToken: `ltfx.n.0f7db791f89ffd3855ce.v1`,
+      url: "wss://gateway.example.test",
+      bootstrapToken: "mock-bootstrap-token",
     }),
     "utf8",
   ).toString("base64url");

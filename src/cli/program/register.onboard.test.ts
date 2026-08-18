@@ -207,13 +207,13 @@ describe("registerOnboardCommand", () => {
   });
 
   it("parses --mistral-api-key and forwards mistralApiKey", async () => {
-    await runCli(["onboard", "--mistral-api-key", "ltfx.n.a3990dba7f715de23c50.v1"]);
-    expect(setupWizardOptions().mistralApiKey).toBe("ltfx.n.a3990dba7f715de23c50.v1"); // pragma: allowlist secret
+    await runCli(["onboard", "--mistral-api-key", "sk-mistral-test"]);
+    expect(setupWizardOptions().mistralApiKey).toBe("sk-mistral-test"); // pragma: allowlist secret
   });
 
   it("dedupes provider auth flags before registering command options", async () => {
-    await runCli(["onboard", "--openai-api-key", "ltfx.n.35b0cf0dc927db76c75d.v1"]);
-    expect(setupWizardOptions().openaiApiKey).toBe("ltfx.n.35b0cf0dc927db76c75d.v1"); // pragma: allowlist secret
+    await runCli(["onboard", "--openai-api-key", "sk-openai-test"]);
+    expect(setupWizardOptions().openaiApiKey).toBe("sk-openai-test"); // pragma: allowlist secret
   });
 
   it("forwards --gateway-token-ref-env", async () => {

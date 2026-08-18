@@ -17,7 +17,7 @@ function isObjectWithStringId(value: unknown): value is Record<string, unknown> 
   return typeof value.id === "string" && value.id.length > 0;
 }
 
-function formatMergePatchPath(parentPath: string | undefined, key: (string)): string {
+function formatMergePatchPath(parentPath: string | undefined, key: string): string {
   return parentPath ? `${parentPath}.${key}` : key;
 }
 

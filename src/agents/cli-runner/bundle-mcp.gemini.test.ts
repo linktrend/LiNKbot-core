@@ -29,7 +29,7 @@ describe("prepareCliBundleMcpConfig gemini", () => {
         },
       },
       env: {
-        OPENCLAW_MCP_TOKEN: `ltfx.n.457ba8dffcc73382a449.v1`,
+        OPENCLAW_MCP_TOKEN: "lb-tk-123",
         OPENCLAW_MCP_CLIENT_CAPS: "tool-events,inline-widgets",
       },
     });
@@ -78,7 +78,7 @@ describe("prepareCliBundleMcpConfig gemini", () => {
         },
       },
       env: {
-        CONTEXT7_API_KEY: `ltfx.n.a17155561f6965d58841.v1`,
+        CONTEXT7_API_KEY: "ctx7-test",
       },
     });
 

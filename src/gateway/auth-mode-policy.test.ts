@@ -13,8 +13,8 @@ describe("gateway auth mode policy", () => {
       gateway: {
         auth: {
           mode: "token",
-          token: `ltfx.n.e6c02a5742ea9d4de588.v1`,
-          password: `ltfx.n.965415e170a3c8b4ae84.v1`, // pragma: allowlist secret
+          token: "token-value",
+          password: "password-value", // pragma: allowlist secret
         },
       },
     };
@@ -25,7 +25,7 @@ describe("gateway auth mode policy", () => {
     const cfg: OpenClawConfig = {
       gateway: {
         auth: {
-          token: `ltfx.n.e6c02a5742ea9d4de588.v1`,
+          token: "token-value",
         },
       },
     };
@@ -36,8 +36,8 @@ describe("gateway auth mode policy", () => {
     const cfg: OpenClawConfig = {
       gateway: {
         auth: {
-          token: `ltfx.n.e6c02a5742ea9d4de588.v1`,
-          password: `ltfx.n.965415e170a3c8b4ae84.v1`, // pragma: allowlist secret
+          token: "token-value",
+          password: "password-value", // pragma: allowlist secret
         },
       },
     };
@@ -65,8 +65,8 @@ describe("gateway auth mode policy", () => {
     const cfg: OpenClawConfig = {
       gateway: {
         auth: {
-          token: `ltfx.n.e6c02a5742ea9d4de588.v1`,
-          password: `ltfx.n.965415e170a3c8b4ae84.v1`, // pragma: allowlist secret
+          token: "token-value",
+          password: "password-value", // pragma: allowlist secret
         },
       },
     };

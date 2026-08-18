@@ -102,12 +102,12 @@ export function rememberFollowupDrainCallback(
   FOLLOWUP_RUN_CALLBACKS.set(key, runFollowup);
 }
 
-export function clearFollowupDrainCallback(key: (string)): void {
+export function clearFollowupDrainCallback(key: string): void {
   FOLLOWUP_RUN_CALLBACKS.delete(key);
 }
 
 /** Restart the drain for `key` if it is currently idle, using the stored callback. */
-export function kickFollowupDrainIfIdle(key: (string)): void {
+export function kickFollowupDrainIfIdle(key: string): void {
   const cb = FOLLOWUP_RUN_CALLBACKS.get(key);
   if (!cb) {
     return;

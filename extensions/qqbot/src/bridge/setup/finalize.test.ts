@@ -36,7 +36,7 @@ function createParams(beforePersistentEffect: () => Promise<void>): FinalizePara
 describe("QQ Bot setup persistent effects", () => {
   it("revalidates immediately before starting QR binding", async () => {
     qrConnect.mockReset();
-    qrConnect.mockResolvedValue([{ appId: "qq-app", appSecret: `ltfx.n.af7b485e84609e7754a5.v1` }]);
+    qrConnect.mockResolvedValue([{ appId: "qq-app", appSecret: "qq-secret" }]);
     expect(connectorModuleState.loaded).toBe(false);
     const beforePersistentEffect = vi.fn(async () => {
       expect(connectorModuleState.loaded).toBe(true);

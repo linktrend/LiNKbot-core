@@ -75,7 +75,7 @@ Minimal config:
     twitch: {
       enabled: true,
       username: "openclaw", // Bot's Twitch account (authenticates)
-      accessToken: "${ltfx.n.428277537ecf5f23d762.v1}", // OAuth access token (or use OPENCLAW_TWITCH_ACCESS_TOKEN env var)
+      accessToken: "oauth:abc123...", // OAuth access token (or use OPENCLAW_TWITCH_ACCESS_TOKEN env var)
       clientId: "xyz789...", // Client ID from Token Generator
       channel: "yourchannel", // Which Twitch channel's chat to join (required)
       allowFrom: ["123456789"], // (recommended) Your Twitch user ID only
@@ -108,8 +108,8 @@ For automatic refresh, create your own app at the [Twitch Developer Console](htt
 {
   channels: {
     twitch: {
-      clientSecret: "${ltfx.n.7a412f5e0b1cb5ad969e.v1}",
-      refreshToken: "${ltfx.n.07030c8156776d9a8a5b.v1}",
+      clientSecret: "your_client_secret",
+      refreshToken: "your_refresh_token",
     },
   },
 }
@@ -130,13 +130,13 @@ Example (one bot account in two channels):
       accounts: {
         channel1: {
           username: "openclaw",
-          accessToken: "${ltfx.n.428277537ecf5f23d762.v1}",
+          accessToken: "oauth:abc123...",
           clientId: "xyz789...",
           channel: "yourchannel",
         },
         channel2: {
           username: "openclaw",
-          accessToken: "${ltfx.n.69d0818028100ac5c999.v1}",
+          accessToken: "oauth:def456...",
           clientId: "uvw012...",
           channel: "secondchannel",
         },
@@ -313,16 +313,16 @@ Full example:
     twitch: {
       enabled: true,
       username: "openclaw",
-      accessToken: "${ltfx.n.428277537ecf5f23d762.v1}",
+      accessToken: "oauth:abc123...",
       clientId: "xyz789...",
       channel: "yourchannel",
-      clientSecret: "${ltfx.n.32f16dfa6d598f7266e7.v1}",
-      refreshToken: "${ltfx.n.1b5e02f1cab69846e47b.v1}",
+      clientSecret: "secret123...",
+      refreshToken: "refresh456...",
       allowFrom: ["123456789"],
       accounts: {
         second: {
           username: "mybot",
-          accessToken: "${ltfx.n.69d0818028100ac5c999.v1}",
+          accessToken: "oauth:def456...",
           clientId: "uvw012...",
           channel: "your_channel",
           enabled: true,

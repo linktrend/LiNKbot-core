@@ -14,7 +14,7 @@ describe("setupChannels post-write hooks", () => {
     const previousCfg = {} as OpenClawConfig;
     const cfg = {
       channels: {
-        telegram: { botToken: `ltfx.n.348e9df2a42bd6e3c635.v1` },
+        telegram: { botToken: "new-token" },
       },
     } as OpenClawConfig;
     const adapter = {

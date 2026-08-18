@@ -2260,7 +2260,7 @@ describe("/acp command", () => {
       command: "/acp permissions approve-all",
       effectiveOptions: { permissionProfile: "approve-all" },
       managerMock: hoisted.setConfigOptionMock,
-      managerInput: { key: `ltfx.n.e3ffbfbd94ca2fbf05b3.v1`, value: "approve-all" },
+      managerInput: { key: "approval_policy", value: "approve-all" },
       expectedText: `✅ Updated ACP permissions profile for ${defaultAcpSessionKey}: approve-all. Effective options: permissionProfile=approve-all`,
     },
     {

@@ -23,7 +23,7 @@ describe("TwitchConfigSchema JSON schema", () => {
       validateTwitchConfig({
         enabled: false,
         username: "openclaw",
-        accessToken: `ltfx.n.29aa029b131045450cbc.v1`,
+        accessToken: "oauth:test",
         clientId: "test-client-id",
         channel: "openclaw-test",
       }),
@@ -38,7 +38,7 @@ describe("TwitchConfigSchema JSON schema", () => {
         accounts: {
           stream: {
             username: "openclaw",
-            accessToken: `ltfx.n.29aa029b131045450cbc.v1`,
+            accessToken: "oauth:test",
             clientId: "test-client-id",
             channel: "openclaw-test",
           },

@@ -86,7 +86,7 @@ describe("matrix doctor contract state migrations", () => {
     const credentials = {
       homeserver: "https://matrix.example.org",
       userId: "@bot:example.org",
-      accessToken: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
+      accessToken: "secret-token",
       deviceId: "DEVICE123",
       createdAt: "2026-07-01T12:00:00.000Z",
       lastUsedAt: "2026-07-02T12:00:00.000Z",
@@ -129,7 +129,7 @@ describe("matrix doctor contract state migrations", () => {
       JSON.stringify({
         homeserver: "https://matrix.example.org",
         userId: "@bot:example.org",
-        accessToken: `ltfx.n.8b7d507cddc8d8950f28.v1`,
+        accessToken: "legacy-token",
         createdAt: "2026-07-01T12:00:00.000Z",
       }),
     );

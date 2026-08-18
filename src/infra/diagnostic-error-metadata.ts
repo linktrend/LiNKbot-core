@@ -27,7 +27,7 @@ function isObjectLike(value: unknown): value is object {
   return (typeof value === "object" || typeof value === "function") && value !== null;
 }
 
-function readOwnDataProperty(value: unknown, key: (string)): unknown {
+function readOwnDataProperty(value: unknown, key: string): unknown {
   if (!isObjectLike(value)) {
     return undefined;
   }

@@ -152,9 +152,9 @@ describe("createSynologyChatPlugin", () => {
       const result = plugin.config.listAccountIds({
         channels: {
           "synology-chat": {
-            token: `ltfx.n.e1501ed8b13353b142a7.v1`,
+            token: "base-token",
             accounts: {
-              office: { token: `ltfx.n.736335b7477b56e8c7e8.v1` },
+              office: { token: "office-token" },
             },
           },
         },
@@ -166,7 +166,7 @@ describe("createSynologyChatPlugin", () => {
       const cfg = {
         channels: {
           "synology-chat": {
-            token: `ltfx.n.e1501ed8b13353b142a7.v1`,
+            token: "base-token",
             incomingUrl: "https://nas/base",
             nasHost: "nas-base",
             allowedUserIds: ["base-user"],
@@ -174,7 +174,7 @@ describe("createSynologyChatPlugin", () => {
             botName: "Base Bot",
             accounts: {
               office: {
-                token: `ltfx.n.736335b7477b56e8c7e8.v1`,
+                token: "office-token",
                 allowInsecureSsl: true,
               },
             },
@@ -205,11 +205,11 @@ describe("createSynologyChatPlugin", () => {
             "synology-chat": {
               accounts: {
                 ops: {
-                  token: `ltfx.n.d9310c002af91822beb0.v1`,
+                  token: "ops-token",
                   incomingUrl: "https://nas/ops",
                 },
                 work: {
-                  token: `ltfx.n.488dc3c9ef1e2576bc04.v1`,
+                  token: "work-token",
                 },
               },
             },
@@ -305,11 +305,11 @@ describe("createSynologyChatPlugin", () => {
       return {
         channels: {
           "synology-chat": {
-            token: `ltfx.n.e1501ed8b13353b142a7.v1`,
+            token: "base-token",
             webhookPath: "/webhook/shared",
             accounts: {
               alerts: {
-                token: `ltfx.n.f86de021b56c190634de.v1`,
+                token: "alerts-token",
                 incomingUrl: "https://nas/alerts",
                 dmPolicy: "allowlist",
                 allowedUserIds: ["123"],
@@ -604,7 +604,7 @@ describe("createSynologyChatPlugin", () => {
             channels: {
               "synology-chat": {
                 enabled: true,
-                token: `ltfx.n.10851c1922ff849d81d7.v1`,
+                token: "default-token",
                 incomingUrl: "https://nas/default",
                 webhookPath: "/webhook/synology-shared",
                 dmPolicy: "allowlist",
@@ -612,7 +612,7 @@ describe("createSynologyChatPlugin", () => {
                 accounts: {
                   alerts: {
                     enabled: true,
-                    token: `ltfx.n.f86de021b56c190634de.v1`,
+                    token: "alerts-token",
                     incomingUrl: "https://nas/alerts",
                     ...accountOverrides,
                   },

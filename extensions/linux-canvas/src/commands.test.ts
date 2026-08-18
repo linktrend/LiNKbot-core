@@ -131,7 +131,7 @@ describe("Linux Canvas node commands", () => {
       sessionKey: "agent:main:canvas",
       thinking: "low",
       deliver: false,
-      key: `ltfx.n.bf0a9567032309b7baa0.v1`,
+      key: "action-1",
     });
     expect(sendActionResult).toHaveBeenCalledWith("action-1", { ok: true });
   });
@@ -170,7 +170,7 @@ describe("Linux Canvas node commands", () => {
     expect(rejectedOwner).toHaveBeenCalledWith(
       "agent.request",
       expect.objectContaining({
-        key: `ltfx.n.675ecf76598482d56b79.v1`,
+        key: "action-after-rejection",
         sessionKey: "agent:main:rejected",
       }),
     );
@@ -208,7 +208,7 @@ describe("Linux Canvas node commands", () => {
     expect(nextOwner).toHaveBeenCalledWith(
       "agent.request",
       expect.objectContaining({
-        key: `ltfx.n.afad6599e2ca7f5d4ff3.v1`,
+        key: "action-during-command",
         sessionKey: "agent:main:next",
       }),
     );
@@ -322,7 +322,7 @@ describe("Linux Canvas node commands", () => {
       sessionKey: "agent:main:canvas",
       thinking: "low",
       deliver: false,
-      key: `ltfx.n.5d13b9a9abb995742428.v1`,
+      key: "hostile-action",
     });
     expect(sendActionResult).toHaveBeenCalledWith("hostile-action", { ok: true });
   });

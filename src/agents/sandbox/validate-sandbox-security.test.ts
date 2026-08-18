@@ -149,7 +149,7 @@ describe("validateBindMounts", () => {
       },
       {
         name: "etc mount",
-        binds: ["/etc/passwd:(/mnt/passwd:ro"],)
+        binds: ["/etc/passwd:/mnt/passwd:ro"],
         expected: /blocked path "\/etc"/,
       },
       {
@@ -184,7 +184,7 @@ describe("validateBindMounts", () => {
       },
       {
         name: "double-slash normalization into /etc",
-        binds: ["//etc//passwd:(/mnt/passwd"],)
+        binds: ["//etc//passwd:/mnt/passwd"],
         expected: /blocked path "\/etc"/,
       },
     ] as const;
@@ -314,7 +314,7 @@ describe("validateBindMounts", () => {
   });
 
   it("rejects non-absolute source paths (relative or named volumes)", () => {
-    const cases = ["../etc/pass" + "wd:(/mnt/pass" + "wd", "etc/pass" + "wd:/mnt/pass" + "wd", "myvol:/mnt"] as const;
+    const cases = ["../etc/passwd:/mnt/passwd", "etc/passwd:/mnt/passwd", "myvol:/mnt"] as const;
     for (const source of cases) {
       expectBindMountsToThrow([source], /non-absolute/, source);
     }

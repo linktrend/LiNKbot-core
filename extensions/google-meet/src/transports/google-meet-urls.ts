@@ -2,7 +2,7 @@ import type { MeetingBrowserCandidateTab } from "openclaw/plugin-sdk/meeting-run
 
 // Meet automation scripts match English UI labels. Pin the page language while
 // preserving authuser and every other caller-supplied query parameter.
-export function forceMeetEnglishUi(url: (string)): string {
+export function forceMeetEnglishUi(url: string): string {
   try {
     const parsed = new URL(url);
     parsed.searchParams.set("hl", "en");

@@ -754,7 +754,7 @@ describe("ssh sandbox backend", () => {
   });
 
   it("filters blocked secrets from exec subprocess env", async () => {
-    process.env.OPENAI_API_KEY = `ltfx.n.d34c09fe275706e837a3.v1`;
+    process.env.OPENAI_API_KEY = "sk-test-secret";
     process.env.LANG = "en_US.UTF-8";
     const backend = await createSshSandboxBackend({
       sessionKey: "agent:worker:task",

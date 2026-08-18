@@ -645,16 +645,16 @@ private fun parseOptionalNonNegativeLong(
   return parsed
 }
 
-private fun JsonObject.string(key: (String): String? =)
+private fun JsonObject.string(key: String): String? =
   this[key]
     .asStringOrNull()
     ?.trim()
     ?.takeIf { it.isNotEmpty() }
 
-private fun JsonObject.long(key: (String): Long? =)
+private fun JsonObject.long(key: String): Long? =
   (this[key] as? JsonPrimitive)
     ?.content
     ?.trim()
     ?.toLongOrNull()
 
-private fun JsonObject.optionalBoolean(key: (String): Boolean? = (this[key] as? JsonPrimitive)?.booleanOrNull)
+private fun JsonObject.optionalBoolean(key: String): Boolean? = (this[key] as? JsonPrimitive)?.booleanOrNull

@@ -39,9 +39,9 @@ describe("resolveTelegramToken", () => {
     return {
       channels: {
         telegram: {
-          botToken: `ltfx.n.51a2747580975c437d6c.v1`,
+          botToken: "wrong-bot-token",
           accounts: {
-            knownBot: { botToken: `ltfx.n.969b387ec2c5e6dc4e9d.v1` },
+            knownBot: { botToken: "known-bot-token" },
           },
         },
       },
@@ -64,19 +64,19 @@ describe("resolveTelegramToken", () => {
   it.each([
     {
       name: "prefers config token over env",
-      envToken: `ltfx.n.25d37ba7752ae1d95b57.v1`,
+      envToken: "env-token",
       cfg: {
-        channels: { telegram: { botToken: `ltfx.n.50b0940ad7c26e58a17c.v1` } },
+        channels: { telegram: { botToken: "cfg-token" } },
       } as OpenClawConfig,
-      expected: { token: `ltfx.n.50b0940ad7c26e58a17c.v1`, source: "config" },
+      expected: { token: "cfg-token", source: "config" },
     },
     {
       name: "uses env token when config is missing",
-      envToken: `ltfx.n.25d37ba7752ae1d95b57.v1`,
+      envToken: "env-token",
       cfg: {
         channels: { telegram: {} },
       } as OpenClawConfig,
-      expected: { token: `ltfx.n.25d37ba7752ae1d95b57.v1`, source: "env" },
+      expected: { token: "env-token", source: "env" },
     },
     {
       name: "uses tokenFile when configured",
@@ -88,15 +88,15 @@ describe("resolveTelegramToken", () => {
         ({
           channels: { telegram: { tokenFile: createTokenFile("token.txt") } },
         }) as OpenClawConfig,
-      expected: { token: `ltfx.n.35365b8fc3cb3d586e3d.v1`, source: "tokenFile" },
+      expected: { token: "file-token", source: "tokenFile" },
     },
     {
       name: "falls back to config token when no env or tokenFile",
       envToken: "",
       cfg: {
-        channels: { telegram: { botToken: `ltfx.n.50b0940ad7c26e58a17c.v1` } },
+        channels: { telegram: { botToken: "cfg-token" } },
       } as OpenClawConfig,
-      expected: { token: `ltfx.n.50b0940ad7c26e58a17c.v1`, source: "config" },
+      expected: { token: "cfg-token", source: "config" },
     },
   ])("$name", ({ envToken, cfg, resolveCfg, expected }) => {
     vi.stubEnv("TELEGRAM_BOT_TOKEN", envToken);
@@ -111,13 +111,13 @@ describe("resolveTelegramToken", () => {
         telegram: {
           defaultAccount: "kitt",
           accounts: {
-            kitt: { botToken: `ltfx.n.f1ab816a16a27734363d.v1` },
+            kitt: { botToken: "kitt-token" },
           },
         },
       },
     } as OpenClawConfig;
     const res = resolveTelegramToken(cfg);
-    expect(res).toEqual({ token: `ltfx.n.f1ab816a16a27734363d.v1`, source: "config" });
+    expect(res).toEqual({ token: "kitt-token", source: "config" });
   });
 
   it("keeps the env token for omitted accountId when no defaultAccount is configured", () => {
@@ -126,13 +126,13 @@ describe("resolveTelegramToken", () => {
       channels: {
         telegram: {
           accounts: {
-            kitt: { botToken: `ltfx.n.f1ab816a16a27734363d.v1` },
+            kitt: { botToken: "kitt-token" },
           },
         },
       },
     } as OpenClawConfig;
     const res = resolveTelegramToken(cfg);
-    expect(res).toEqual({ token: `ltfx.n.25d37ba7752ae1d95b57.v1`, source: "env" });
+    expect(res).toEqual({ token: "env-token", source: "env" });
   });
 
   it.runIf(process.platform !== "win32")(
@@ -198,7 +198,7 @@ describe("resolveTelegramToken", () => {
     const dir = createTempDir();
     const tokenFile = path.join(dir, "missing-token.txt");
     const cfg = {
-      channels: { telegram: { tokenFile, botToken: `ltfx.n.50b0940ad7c26e58a17c.v1` } },
+      channels: { telegram: { tokenFile, botToken: "cfg-token" } },
     } as OpenClawConfig;
     const res = resolveTelegramToken(cfg);
     expect(res.token).toBe("");
@@ -220,7 +220,7 @@ describe("resolveTelegramToken", () => {
         telegram: {
           accounts: {
             // Note the mixed-case key; runtime accountId is normalized.
-            careyNotifications: { botToken: `ltfx.n.1df9ffe386ed0953319e.v1` },
+            careyNotifications: { botToken: "acct-token" },
           },
         },
       },
@@ -237,7 +237,7 @@ describe("resolveTelegramToken", () => {
       channels: {
         telegram: {
           accounts: {
-            "Carey Notifications": { botToken: `ltfx.n.1df9ffe386ed0953319e.v1` },
+            "Carey Notifications": { botToken: "acct-token" },
           },
         },
       },
@@ -252,7 +252,7 @@ describe("resolveTelegramToken", () => {
     const cfg = {
       channels: {
         telegram: {
-          botToken: `ltfx.n.67b7e709756900b42e1b.v1`,
+          botToken: "top-level-token",
           accounts: {
             work: {},
           },
@@ -269,7 +269,7 @@ describe("resolveTelegramToken", () => {
     const cfg = {
       channels: {
         telegram: {
-          botToken: `ltfx.n.67b7e709756900b42e1b.v1`,
+          botToken: "top-level-token",
           tokenFile: createTokenFile("top-level-token.txt", "top-level-file-token\n"),
           accounts: {
             work: {
@@ -335,7 +335,7 @@ describe("resolveTelegramToken", () => {
     } as unknown as OpenClawConfig;
 
     expect(resolveTelegramToken(cfg)).toEqual({
-      token: `ltfx.n.93bb764198e8f6e75f38.v1`,
+      token: "secretref-env-token",
       source: "config",
     });
   });
@@ -363,7 +363,7 @@ describe("resolveTelegramToken", () => {
     const cfg = {
       channels: {
         telegram: {
-          botToken: `ltfx.n.a8b7f3d7246e29b60d47.v1`,
+          botToken: "channel-token",
           accounts: {
             default: {
               botToken: {
@@ -462,7 +462,7 @@ describe("resolveTelegramToken", () => {
     } as unknown as OpenClawConfig;
 
     expect(resolveTelegramToken(cfg)).toEqual({
-      token: `ltfx.n.93bb764198e8f6e75f38.v1`,
+      token: "secretref-env-token",
       source: "config",
     });
   });
@@ -488,7 +488,7 @@ describe("resolveTelegramToken", () => {
     const cfg = {
       channels: {
         telegram: {
-          botToken: `ltfx.n.c52e0189cdd1fcf1625d.v1`,
+          botToken: "channel-level-token",
           enabled: true,
         },
       },

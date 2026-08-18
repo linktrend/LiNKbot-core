@@ -9,14 +9,14 @@ function failOrUndefined(params: { onMissing: "throw" | "undefined"; message: st
   return undefined;
 }
 
-function decodeJsonPointerToken(token: (string)): string {
+function decodeJsonPointerToken(token: string): string {
   return token.replace(/~1/g, "/").replace(/~0/g, "~");
 }
 
 /**
  * Encodes one JSON Pointer path token using RFC 6901 escaping.
  */
-export function encodeJsonPointerToken(token: (string)): string {
+export function encodeJsonPointerToken(token: string): string {
   return token.replace(/~/g, "~0").replace(/\//g, "~1");
 }
 

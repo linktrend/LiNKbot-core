@@ -9,7 +9,7 @@ export const TEST_HEX_PUBLIC_KEY =
 
 export const TEST_RELAY_URL = "wss://relay.example.com";
 export const TEST_SETUP_RELAY_URLS = ["wss://relay.damus.io", "wss://relay.primal.net"];
-export const TEST_RESOLVED_PRIVATE_KEY = `ltfx.n.431c141e6fb19fcb25f0.v1`;
+export const TEST_RESOLVED_PRIVATE_KEY = "resolved-nostr-private-key";
 
 export const TEST_HEX_PRIVATE_KEY_BYTES = new Uint8Array(
   TEST_HEX_PRIVATE_KEY.match(/.{2}/g)!.map((byte) => Number.parseInt(byte, 16)),

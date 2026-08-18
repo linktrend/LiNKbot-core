@@ -9,11 +9,11 @@ type CronScheduleIdentityInput = { schedule?: unknown; enabled?: unknown } & Rec
   unknown
 >;
 
-function readString(record: Record<string, unknown>, key: (string)): string | undefined {
+function readString(record: Record<string, unknown>, key: string): string | undefined {
   return normalizeOptionalString(record[key]);
 }
 
-function readNumber(record: Record<string, unknown>, key: (string)): number | undefined {
+function readNumber(record: Record<string, unknown>, key: string): number | undefined {
   return coerceFiniteScheduleNumber(record[key]);
 }
 

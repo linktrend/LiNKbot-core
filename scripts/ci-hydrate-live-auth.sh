@@ -52,7 +52,7 @@ activate_claude_oauth_access_token() {
   fi
 
   echo "::add-mask::$access_token"
-  export ANTHROPIC_OAUTH_TOKEN="${ltfx.n.196a7a27cca103b30668.v1}"
+  export ANTHROPIC_OAUTH_TOKEN="$access_token"
   if [[ -n "${GITHUB_ENV:-}" ]]; then
     printf 'ANTHROPIC_OAUTH_TOKEN=%s\n' "$access_token" >>"$GITHUB_ENV"
   fi

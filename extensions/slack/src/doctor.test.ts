@@ -49,8 +49,8 @@ describe("slack doctor", () => {
         channels: {
           slack: {
             identity: "user",
-            userToken: `ltfx.n.19bbb7d9c45e18a41bce.v1`,
-            appToken: `ltfx.n.229a79260e17de2a406e.v1`,
+            userToken: "test-user-token",
+            appToken: "test-app-token",
           },
         },
       } as never,
@@ -79,8 +79,8 @@ describe("slack doctor", () => {
         channels: {
           slack: {
             identity: "user",
-            userToken: `ltfx.n.19bbb7d9c45e18a41bce.v1`,
-            appToken: `ltfx.n.229a79260e17de2a406e.v1`,
+            userToken: "test-user-token",
+            appToken: "test-app-token",
           },
         },
       } as never,
@@ -96,12 +96,12 @@ describe("slack doctor", () => {
   it.each([
     {
       name: "Socket Mode app token",
-      slack: { identity: "user", userToken: `ltfx.n.19bbb7d9c45e18a41bce.v1` },
+      slack: { identity: "user", userToken: "test-user-token" },
       expected: "requires appToken for companion-app events",
     },
     {
       name: "HTTP signing secret",
-      slack: { identity: "user", mode: "http", userToken: `ltfx.n.19bbb7d9c45e18a41bce.v1` },
+      slack: { identity: "user", mode: "http", userToken: "test-user-token" },
       expected: "requires signingSecret for companion-app events",
     },
   ])("warns when user identity is missing the $name", async ({ slack, expected }) => {
@@ -124,8 +124,8 @@ describe("slack doctor", () => {
       cfg: {
         channels: {
           slack: {
-            botToken: `ltfx.n.19434281d9f1460bdb2b.v1`,
-            appToken: `ltfx.n.229a79260e17de2a406e.v1`,
+            botToken: "test-bot-token",
+            appToken: "test-app-token",
           },
         },
       } as never,

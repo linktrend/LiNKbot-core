@@ -15,7 +15,7 @@ Body text.
     expect(diagnostics).toEqual([]);
     expect(ast.frontmatter).toEqual([
       { key: "name", value: "github", line: 2 },
-      { key: `ltfx.n.c9046f7a37ad0ea7cee7.v1`, value: "gh CLI for issues, PRs, runs", line: 3 },
+      { key: "description", value: "gh CLI for issues, PRs, runs", line: 3 },
     ]);
   });
 

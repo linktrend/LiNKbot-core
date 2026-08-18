@@ -477,10 +477,10 @@ describe("gateway config methods", () => {
     try {
       await writeJsonFile(configPath, {
         browser: {
-          cdpUrl: "https://user:pass@chrome.browserless.io?token=(supersecret123",)
+          cdpUrl: "https://user:pass@chrome.browserless.io?token=supersecret123",
           profiles: {
             remote: {
-              cdpUrl: "https://alice:secret@chrome.remote.example.com?token=(profile-secret",)
+              cdpUrl: "https://alice:secret@chrome.remote.example.com?token=profile-secret",
             },
             local: {
               cdpUrl: "ws://127.0.0.1:9222",

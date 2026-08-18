@@ -32,8 +32,8 @@ describe("updateMatrixAccountConfig", () => {
             default: {
               homeserver: "https://matrix.example.org",
               userId: "@bot:example.org",
-              accessToken: `ltfx.n.9bdf10a691a1cfda89d9.v1`, // pragma: allowlist secret
-              password: `ltfx.n.ab600ad41f0ad78d3c8f.v1`, // pragma: allowlist secret
+              accessToken: "old-token", // pragma: allowlist secret
+              password: "old-password", // pragma: allowlist secret
               encryption: true,
             },
           },
@@ -42,7 +42,7 @@ describe("updateMatrixAccountConfig", () => {
     } as CoreConfig;
 
     const updated = updateMatrixAccountConfig(cfg, "default", {
-      accessToken: `ltfx.n.348e9df2a42bd6e3c635.v1`,
+      accessToken: "new-token",
       password: null,
       userId: null,
       encryption: false,
@@ -188,7 +188,7 @@ describe("updateMatrixAccountConfig", () => {
           accounts: {
             ops: {
               homeserver: "https://matrix.ops.example.org",
-              accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
+              accessToken: "ops-token",
               dm: {
                 enabled: true,
                 policy: "pairing",
@@ -235,7 +235,7 @@ describe("updateMatrixAccountConfig", () => {
           accounts: {
             Ops: {
               homeserver: "https://matrix.ops.example.org",
-              accessToken: `ltfx.n.d9310c002af91822beb0.v1`,
+              accessToken: "ops-token",
             },
           },
         },

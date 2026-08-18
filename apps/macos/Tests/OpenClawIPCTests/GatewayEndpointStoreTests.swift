@@ -148,7 +148,7 @@ struct GatewayEndpointStoreTests {
     private func makeLaunchAgentSnapshot(
         env: [String: String],
         token: String?,
-        password: (String?) -> LaunchAgentPlistSnapshot)
+        password: String?) -> LaunchAgentPlistSnapshot
     {
         LaunchAgentPlistSnapshot(
             programArguments: [],
@@ -158,7 +158,7 @@ struct GatewayEndpointStoreTests {
             port: nil,
             bind: nil,
             token: token,
-            password: (password))
+            password: password)
     }
 
     private func makeDefaults() -> UserDefaults {
@@ -203,14 +203,14 @@ struct GatewayEndpointStoreTests {
 
     @Test func `resolve gateway token prefers env and falls back to launchd`() {
         let snapshot = self.makeLaunchAgentSnapshot(
-            env: ["OPENCLAW_GATEWAY_TOKEN": "${ltfx.n.d17fdf0750d18e24724b.v1}"],
-            token: "${ltfx.n.d17fdf0750d18e24724b.v1}",
+            env: ["OPENCLAW_GATEWAY_TOKEN": "launchd-token"],
+            token: "launchd-token",
             password: nil)
 
         let envToken = GatewayEndpointStore._testResolveGatewayToken(
             isRemote: false,
             root: [:],
-            env: ["OPENCLAW_GATEWAY_TOKEN": "${ltfx.n.25d37ba7752ae1d95b57.v1}"],
+            env: ["OPENCLAW_GATEWAY_TOKEN": "env-token"],
             launchdSnapshot: snapshot)
         #expect(envToken == "env-token")
 
@@ -224,8 +224,8 @@ struct GatewayEndpointStoreTests {
 
     @Test func `resolve gateway token skips unresolved env template before launchd fallback`() throws {
         let snapshot = self.makeLaunchAgentSnapshot(
-            env: ["OPENCLAW_GATEWAY_TOKEN": "${ltfx.n.d17fdf0750d18e24724b.v1}"],
-            token: "${ltfx.n.d17fdf0750d18e24724b.v1}",
+            env: ["OPENCLAW_GATEWAY_TOKEN": "launchd-token"],
+            token: "launchd-token",
             password: nil)
         let root: [String: Any] = [
             "gateway": [
@@ -250,18 +250,18 @@ struct GatewayEndpointStoreTests {
             for: config,
             mode: .local,
             localBasePath: "/control")
-        #expect(url.absoluteString == "http://127.0.0.1:18789/control/#token=(launchd-token"))
+        #expect(url.absoluteString == "http://127.0.0.1:18789/control/#token=launchd-token")
     }
 
     @Test func `resolve gateway token skips unresolved env shorthand before launchd fallback`() {
         let snapshot = self.makeLaunchAgentSnapshot(
-            env: ["OPENCLAW_GATEWAY_TOKEN": "${ltfx.n.d17fdf0750d18e24724b.v1}"],
-            token: "${ltfx.n.d17fdf0750d18e24724b.v1}",
+            env: ["OPENCLAW_GATEWAY_TOKEN": "launchd-token"],
+            token: "launchd-token",
             password: nil)
         let root: [String: Any] = [
             "gateway": [
                 "auth": [
-                    "token": "${ltfx.n.1a40a51e1d29d71dfafb.v1}",
+                    "token": "$OPENCLAW_GATEWAY_TOKEN",
                 ],
             ],
         ]
@@ -277,10 +277,10 @@ struct GatewayEndpointStoreTests {
     @Test func `resolve gateway token resolves env template from app environment`() {
         let snapshot = self.makeLaunchAgentSnapshot(
             env: [
-                "CUSTOM_GATEWAY_TOKEN": "${ltfx.n.784c8e01994654a577f4.v1}",
-                "OPENCLAW_GATEWAY_TOKEN": "${ltfx.n.d17fdf0750d18e24724b.v1}",
+                "CUSTOM_GATEWAY_TOKEN": "service-token",
+                "OPENCLAW_GATEWAY_TOKEN": "launchd-token",
             ],
-            token: "${ltfx.n.d17fdf0750d18e24724b.v1}",
+            token: "launchd-token",
             password: nil)
         let root: [String: Any] = [
             "gateway": [
@@ -293,14 +293,14 @@ struct GatewayEndpointStoreTests {
         let token = GatewayEndpointStore._testResolveGatewayToken(
             isRemote: false,
             root: root,
-            env: ["CUSTOM_GATEWAY_TOKEN": "${ltfx.n.023896c28c0efc3b904b.v1}"],
+            env: ["CUSTOM_GATEWAY_TOKEN": "  custom-token  "],
             launchdSnapshot: snapshot)
         #expect(token == "custom-token")
     }
 
     @Test func `resolve gateway token resolves env template from gateway service environment`() {
         let snapshot = self.makeLaunchAgentSnapshot(
-            env: ["CUSTOM_GATEWAY_TOKEN": "${ltfx.n.9eada12cb02d75b5c75c.v1}"],
+            env: ["CUSTOM_GATEWAY_TOKEN": "  service-token  "],
             token: nil,
             password: nil)
         let root: [String: Any] = [
@@ -321,8 +321,8 @@ struct GatewayEndpointStoreTests {
 
     @Test func `resolve gateway token keeps invalid env template as plaintext`() {
         let snapshot = self.makeLaunchAgentSnapshot(
-            env: ["OPENCLAW_GATEWAY_TOKEN": "${ltfx.n.d17fdf0750d18e24724b.v1}"],
-            token: "${ltfx.n.d17fdf0750d18e24724b.v1}",
+            env: ["OPENCLAW_GATEWAY_TOKEN": "launchd-token"],
+            token: "launchd-token",
             password: nil)
         let root: [String: Any] = [
             "gateway": [
@@ -335,7 +335,7 @@ struct GatewayEndpointStoreTests {
         let token = GatewayEndpointStore._testResolveGatewayToken(
             isRemote: false,
             root: root,
-            env: ["custom_gateway_token": "${ltfx.n.f62d1843117a758f04ea.v1}"],
+            env: ["custom_gateway_token": "custom-token"],
             launchdSnapshot: snapshot)
         #expect(token == "${custom_gateway_token}")
     }
@@ -369,8 +369,8 @@ struct GatewayEndpointStoreTests {
 
     @Test func `resolve gateway token ignores launchd in remote mode`() {
         let snapshot = self.makeLaunchAgentSnapshot(
-            env: ["OPENCLAW_GATEWAY_TOKEN": "${ltfx.n.d17fdf0750d18e24724b.v1}"],
-            token: "${ltfx.n.d17fdf0750d18e24724b.v1}",
+            env: ["OPENCLAW_GATEWAY_TOKEN": "launchd-token"],
+            token: "launchd-token",
             password: nil)
 
         let token = GatewayEndpointStore._testResolveGatewayToken(
@@ -387,7 +387,7 @@ struct GatewayEndpointStoreTests {
             root: [
                 "gateway": [
                     "remote": [
-                        "token": "${ltfx.n.bb5b2fca0f08aa43c90b.v1}",
+                        "token": "  remote-token  ",
                     ],
                 ],
             ],
@@ -400,7 +400,7 @@ struct GatewayEndpointStoreTests {
         let root: [String: Any] = [
             "gateway": [
                 "remote": [
-                    "password": "${ltfx.n.f9f6c972b13ea9455ee2.v1}",
+                    "password": "  remote-pass  ",
                 ],
             ],
         ]
@@ -410,9 +410,9 @@ struct GatewayEndpointStoreTests {
 
     @Test func `resolve gateway password falls back to launchd`() {
         let snapshot = self.makeLaunchAgentSnapshot(
-            env: ["OPENCLAW_GATEWAY_PASSWORD": "${ltfx.n.22fee197904aa9f72e4e.v1}"],
+            env: ["OPENCLAW_GATEWAY_PASSWORD": "launchd-pass"],
             token: nil,
-            password: "${ltfx.n.22fee197904aa9f72e4e.v1}")
+            password: "launchd-pass")
 
         let password = GatewayEndpointStore._testResolveGatewayPassword(
             isRemote: false,
@@ -424,9 +424,9 @@ struct GatewayEndpointStoreTests {
 
     @Test func `resolve gateway password skips unresolved env template before launchd fallback`() {
         let snapshot = self.makeLaunchAgentSnapshot(
-            env: ["OPENCLAW_GATEWAY_PASSWORD": "${ltfx.n.22fee197904aa9f72e4e.v1}"],
+            env: ["OPENCLAW_GATEWAY_PASSWORD": "launchd-pass"],
             token: nil,
-            password: "${ltfx.n.22fee197904aa9f72e4e.v1}")
+            password: "launchd-pass")
         let root: [String: Any] = [
             "gateway": [
                 "auth": [
@@ -445,13 +445,13 @@ struct GatewayEndpointStoreTests {
 
     @Test func `resolve gateway password skips unresolved env shorthand before launchd fallback`() {
         let snapshot = self.makeLaunchAgentSnapshot(
-            env: ["OPENCLAW_GATEWAY_PASSWORD": "${ltfx.n.22fee197904aa9f72e4e.v1}"],
+            env: ["OPENCLAW_GATEWAY_PASSWORD": "launchd-pass"],
             token: nil,
-            password: "${ltfx.n.22fee197904aa9f72e4e.v1}")
+            password: "launchd-pass")
         let root: [String: Any] = [
             "gateway": [
                 "auth": [
-                    "password": "${ltfx.n.6dfa650de32f5bdc3ef6.v1}",
+                    "password": "$OPENCLAW_GATEWAY_PASSWORD",
                 ],
             ],
         ]
@@ -466,7 +466,7 @@ struct GatewayEndpointStoreTests {
 
     @Test func `resolve gateway password resolves env template from gateway service environment`() {
         let snapshot = self.makeLaunchAgentSnapshot(
-            env: ["CUSTOM_GATEWAY_PASSWORD": "${ltfx.n.fa5af60f6f2ea126833c.v1}"],
+            env: ["CUSTOM_GATEWAY_PASSWORD": "  service-pass  "],
             token: nil,
             password: nil)
         let root: [String: Any] = [
@@ -542,7 +542,7 @@ struct GatewayEndpointStoreTests {
         let root: [String: Any] = [
             "gateway": [
                 "remote": [
-                    "url": "${ltfx.n.873db876e28259281496.v1}",
+                    "url": " ws://umbrel:18789 ",
                 ],
             ],
         ]
@@ -584,7 +584,7 @@ extension GatewayEndpointStoreTests {
 
     @Test func `concurrent endpoint reads for the same selection both succeed`() async throws {
         try await TestIsolation.withUserDefaultsValues([connectionModeKey: "unconfigured"]) {
-            let source = self.source(mode: .local, token: "${ltfx.n.71b9fdb4cc45819404fb.v1}")
+            let source = self.source(mode: .local, token: "same-token")
             let sourceGate = GatewayEndpointSourceGate(source)
             await sourceGate.suspendNextRead()
             let store = GatewayEndpointStore(deps: .init(
@@ -618,7 +618,7 @@ extension GatewayEndpointStoreTests {
             let sourceB = self.source(
                 mode: .remote,
                 token: "token-b",
-                password: "${ltfx.n.36ff58ab75dabd4cff81.v1}",
+                password: "password-b",
                 transport: .direct,
                 directURL: remoteURL)
             let sourceGate = GatewayEndpointSourceGate(sourceA)
@@ -654,13 +654,13 @@ extension GatewayEndpointStoreTests {
             let remoteURL = try #require(URL(string: "ws://192.168.1.20:18789"))
             let sourceA = self.source(
                 mode: .remote,
-                token: "${ltfx.n.71b9fdb4cc45819404fb.v1}",
+                token: "same-token",
                 transport: .direct,
                 directURL: remoteURL,
                 routingGeneration: 1)
             let sourceB = self.source(
                 mode: .remote,
-                token: "${ltfx.n.71b9fdb4cc45819404fb.v1}",
+                token: "same-token",
                 transport: .direct,
                 directURL: remoteURL,
                 routingGeneration: 2)
@@ -725,13 +725,13 @@ extension GatewayEndpointStoreTests {
         try await TestIsolation.withUserDefaultsValues([connectionModeKey: "local"]) {
             let fallbackSource = self.source(
                 mode: .local,
-                token: "${ltfx.n.c7ec7c548f5992a239dc.v1}",
+                token: "local-token",
                 localHost: "100.64.1.8",
                 bindMode: "tailnet")
             let remoteURL = try #require(URL(string: "ws://192.168.1.20:18789"))
             let remoteSource = self.source(
                 mode: .remote,
-                token: "${ltfx.n.b79f8018a1bfa2040be5.v1}",
+                token: "remote-token",
                 transport: .direct,
                 directURL: remoteURL)
             let sourceGate = GatewayEndpointSourceGate(fallbackSource)
@@ -816,7 +816,7 @@ extension GatewayEndpointStoreTests {
         try await TestIsolation.withUserDefaultsValues([connectionModeKey: "unconfigured"]) {
             let source = self.source(
                 mode: .remote,
-                token: "${ltfx.n.b79f8018a1bfa2040be5.v1}",
+                token: "remote-token",
                 transport: .ssh)
             let remoteGate = GatewayEndpointRemoteEnsureGate(
                 route: .init(localPort: 28789, generation: 7))
@@ -856,7 +856,7 @@ extension GatewayEndpointStoreTests {
         try await TestIsolation.withUserDefaultsValues([connectionModeKey: "unconfigured"]) {
             let source = self.source(
                 mode: .remote,
-                token: "${ltfx.n.b79f8018a1bfa2040be5.v1}",
+                token: "remote-token",
                 transport: .ssh)
             let remoteGate = GatewayEndpointRemoteEnsureGate(
                 route: .init(localPort: 28789, generation: 9))
@@ -926,15 +926,15 @@ extension GatewayEndpointStoreTests {
     @Test func `local config uses local gateway auth and host resolution`() {
         let snapshot = self.makeLaunchAgentSnapshot(
             env: [:],
-            token: "${ltfx.n.d17fdf0750d18e24724b.v1}",
-            password: "${ltfx.n.22fee197904aa9f72e4e.v1}")
+            token: "launchd-token",
+            password: "launchd-pass")
         let root: [String: Any] = [
             "gateway": [
                 "bind": "tailnet",
                 "tls": ["enabled": true],
                 "remote": [
-                    "url": "${ltfx.n.378cde84bc0d65e3e0ba.v1}",
-                    "token": "${ltfx.n.b79f8018a1bfa2040be5.v1}",
+                    "url": "wss://remote.example:443",
+                    "token": "remote-token",
                 ],
             ],
         ]
@@ -999,7 +999,7 @@ extension GatewayEndpointStoreTests {
             for: config,
             mode: .local,
             localBasePath: "/control")
-        #expect(url.absoluteString == "http://127.0.0.1:18789/control/#token=(abc123"))
+        #expect(url.absoluteString == "http://127.0.0.1:18789/control/#token=abc123")
         #expect(url.query == nil)
     }
 
@@ -1013,8 +1013,8 @@ extension GatewayEndpointStoreTests {
             for: config,
             mode: .local,
             localBasePath: "/control",
-            authToken: "${ltfx.n.73fff793651a92729a85.v1}")
-        #expect(url.absoluteString == "http://127.0.0.1:18789/control/#token=(device-token"))
+            authToken: "device-token")
+        #expect(url.absoluteString == "http://127.0.0.1:18789/control/#token=device-token")
         #expect(url.query == nil)
     }
 
@@ -1038,7 +1038,7 @@ extension GatewayEndpointStoreTests {
         let root: [String: Any] = [
             "gateway": [
                 "remote": [
-                    "url": "${ltfx.n.246f3024bcc80f211320.v1}",
+                    "url": "ws://192.168.0.202:18789",
                 ],
             ],
         ]
@@ -1053,7 +1053,7 @@ extension GatewayEndpointStoreTests {
         let root: [String: Any] = [
             "gateway": [
                 "remote": [
-                    "url": "${ltfx.n.0edbee82f0824a1ed09b.v1}",
+                    "url": "ws://127.0.0.1:18789",
                     "sshTarget": "steipete@192.168.0.202",
                 ],
             ],
@@ -1070,7 +1070,7 @@ extension GatewayEndpointStoreTests {
             "gateway": [
                 "remote": [
                     "transport": "ssh",
-                    "url": "${ltfx.n.0edbee82f0824a1ed09b.v1}",
+                    "url": "ws://127.0.0.1:18789",
                     "sshTarget": "steipete@192.168.0.202",
                 ],
             ],

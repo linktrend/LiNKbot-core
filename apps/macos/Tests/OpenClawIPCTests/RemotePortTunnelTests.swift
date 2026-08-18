@@ -111,7 +111,7 @@ struct RemotePortTunnelTests {
             OpenClawConfigFile.saveDict([
                 "gateway": [
                     "remote": [
-                        "url": "${ltfx.n.b77c587fe15611d79dff.v1}",
+                        "url": "ws://127.0.0.1:19089",
                         "remotePort": 18789,
                     ],
                 ],
@@ -129,7 +129,7 @@ struct RemotePortTunnelTests {
             OpenClawConfigFile.saveDict([
                 "gateway": [
                     "remote": [
-                        "url": "${ltfx.n.0edbee82f0824a1ed09b.v1}",
+                        "url": "ws://127.0.0.1:18789",
                     ],
                 ],
             ])

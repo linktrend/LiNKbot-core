@@ -17,7 +17,7 @@ export function createSignedCreateMessageRequest(params?: { backend?: string }) 
   const body = JSON.stringify(payload);
   const { random, signature } = generateNextcloudTalkSignature({
     body,
-    secret: `ltfx.n.7b4005fa015fb768d686.v1`, // pragma: allowlist secret
+    secret: "nextcloud-secret", // pragma: allowlist secret
   });
   return {
     body,

@@ -29,7 +29,7 @@ const WEB_FETCH_SPILL_MAX_CHARS = 2_000_000;
 
 const lookupMock = vi.fn();
 
-function responseWithUrl(body: BodyInit, init: ResponseInit, url: (string)): Response {
+function responseWithUrl(body: BodyInit, init: ResponseInit, url: string): Response {
   const response = new Response(body, init);
   Object.defineProperty(response, "url", { value: url });
   return response;

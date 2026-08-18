@@ -23,7 +23,7 @@ import Testing
 
     @Test func `selected forward options use session delivery context`() {
         let entry = VoiceWakeForwarder.SessionRouteEntry(
-            key: "${ltfx.n.ddfe6947b315a62c1a41.v1}",
+            key: "agent:main:telegram:group:6812765697",
             channel: "telegram",
             lastChannel: "telegram",
             lastTo: "telegram:6812765697",

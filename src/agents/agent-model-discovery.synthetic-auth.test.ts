@@ -10,7 +10,7 @@ const resolveProviderSyntheticAuthWithPlugin = vi.hoisted(() =>
   vi.fn((params: { provider: string }) =>
     params.provider === "claude-cli"
       ? {
-          apiKey: `ltfx.n.6728800f43bdc7e8a5b0.v1`,
+          apiKey: "claude-cli-access-token",
           source: "Claude CLI native auth",
           mode: "oauth" as const,
         }
@@ -82,7 +82,7 @@ describe("agent model discovery synthetic auth", () => {
       });
       expect(credentials["claude-cli"]).toEqual({
         type: "api_key",
-        key: `ltfx.n.6728800f43bdc7e8a5b0.v1`,
+        key: "claude-cli-access-token",
       });
     });
   });

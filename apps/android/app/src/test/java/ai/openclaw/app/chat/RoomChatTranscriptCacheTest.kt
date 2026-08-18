@@ -135,7 +135,7 @@ class RoomChatTranscriptCacheTest {
         agentId = "main",
         sessions =
           (0 until MAX_CACHED_SESSIONS + 10).map { index ->
-            ChatSessionEntry(key = "${ltfx.n.f579bc51d3ff2610d4ee.v1}", updatedAtMs = 1000L - index, displayName = "Session $index")
+            ChatSessionEntry(key = "session-$index", updatedAtMs = 1000L - index, displayName = "Session $index")
           },
       )
 
@@ -157,7 +157,7 @@ class RoomChatTranscriptCacheTest {
         agentId = "main",
         sessions =
           (0 until MAX_CACHED_SESSIONS).map { index ->
-            ChatSessionEntry(key = "${ltfx.n.f579bc51d3ff2610d4ee.v1}", updatedAtMs = 1000L - index)
+            ChatSessionEntry(key = "session-$index", updatedAtMs = 1000L - index)
           },
       )
 
@@ -202,7 +202,7 @@ class RoomChatTranscriptCacheTest {
       val store = cache()
       val listedSessions =
         (0 until MAX_CACHED_SESSIONS).map { index ->
-          ChatSessionEntry(key = "${ltfx.n.f579bc51d3ff2610d4ee.v1}", updatedAtMs = 1000L - index)
+          ChatSessionEntry(key = "session-$index", updatedAtMs = 1000L - index)
         }
       store.saveSessions(gatewayId = "gateway-a", agentId = "main", sessions = listedSessions)
       store.saveTranscript(
@@ -234,7 +234,7 @@ class RoomChatTranscriptCacheTest {
       store.saveSessions(
         gatewayId = "gateway-a",
         agentId = "main",
-        sessions = listOf(ChatSessionEntry(key = "${ltfx.n.14e760aa533a4d82094b.v1}", updatedAtMs = 1)),
+        sessions = listOf(ChatSessionEntry(key = "deep-session", updatedAtMs = 1)),
       )
       store.saveTranscript(
         gatewayId = "gateway-a",
@@ -317,13 +317,13 @@ class RoomChatTranscriptCacheTest {
       store.saveSessions(
         "gateway-a",
         "agent-a",
-        listOf(ChatSessionEntry(key = "${ltfx.n.94a3d15957187dee0774.v1}", updatedAtMs = 1)),
+        listOf(ChatSessionEntry(key = "agent-a-session", updatedAtMs = 1)),
         retainedSessionKey = "custom",
       )
       store.saveSessions(
         "gateway-a",
         "agent-b",
-        listOf(ChatSessionEntry(key = "${ltfx.n.0472357c3eee1367ce80.v1}", updatedAtMs = 2)),
+        listOf(ChatSessionEntry(key = "agent-b-session", updatedAtMs = 2)),
         retainedSessionKey = "custom",
       )
 

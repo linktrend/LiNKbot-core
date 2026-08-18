@@ -156,7 +156,7 @@ describe("runDaemonInstall integration", () => {
     expect(serviceMock.install).toHaveBeenCalledTimes(1);
     const updated = await readJson(configPath);
     const gateway = (updated.gateway ?? {}) as { auth?: { token?: string } };
-    const persistedToken = (gateway.auth?.token;)
+    const persistedToken = gateway.auth?.token;
     expect(persistedToken).toEqual(expect.stringMatching(/^[0-9a-f]{48}$/));
 
     const installEnv = serviceMock.install.mock.calls[0]?.[0]?.environment;

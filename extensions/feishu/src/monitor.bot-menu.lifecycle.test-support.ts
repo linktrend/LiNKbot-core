@@ -36,7 +36,7 @@ const originalStateDir = process.env.OPENCLAW_STATE_DIR;
 const lifecycleConfig = createFeishuLifecycleConfig({
   accountId: "acct-menu",
   appId: "cli_test",
-  appSecret: `ltfx.n.e810d7b45867f6973b9e.v1`,
+  appSecret: "secret_test",
   channelConfig: {
     dmPolicy: "open",
     allowFrom: ["ou_user1"],
@@ -50,7 +50,7 @@ const lifecycleConfig = createFeishuLifecycleConfig({
 const lifecycleAccount = createResolvedFeishuLifecycleAccount({
   accountId: "acct-menu",
   appId: "cli_test",
-  appSecret: `ltfx.n.e810d7b45867f6973b9e.v1`,
+  appSecret: "secret_test",
   config: {
     dmPolicy: "open",
     allowFrom: ["ou_user1"],

@@ -425,9 +425,9 @@ describe("AcpxRuntime fresh reset wrapper", () => {
     {
       name: "adds the redacted Codex wrapper stderr tail to session initialization failures",
       stderr:
-        "noise\nUnhandled error during session/new: deployment missing token=[REDACTED] ltfx.n.4ac5c1dbbc7ee46be008.v1\n",
+        "noise\nUnhandled error during session/new: deployment missing token=[REDACTED] sk-testsecret1234567890\n",
       expectedFragment: "deployment missing",
-      forbiddenFragment: `ltfx.n.4ac5c1dbbc7ee46be008.v1`,
+      forbiddenFragment: "sk-testsecret1234567890",
     },
     {
       name: "keeps the 6,000-unit Codex wrapper stderr tail UTF-16 safe",
@@ -1485,7 +1485,7 @@ describe("AcpxRuntime fresh reset wrapper", () => {
     });
     expect(setConfigOption).toHaveBeenNthCalledWith(2, {
       handle,
-      key: `ltfx.n.a692e305fae85dbf68de.v1`,
+      key: "reasoning_effort",
       value: "high",
     });
   });
@@ -1522,8 +1522,8 @@ describe("AcpxRuntime fresh reset wrapper", () => {
   });
 
   it.each([
-    { key: `ltfx.n.6ee16429668c2d820770.v1`, value: "minimal", expected: "low" },
-    { key: `ltfx.n.a692e305fae85dbf68de.v1`, value: "x-high", expected: "xhigh" },
+    { key: "thinking", value: "minimal", expected: "low" },
+    { key: "reasoning_effort", value: "x-high", expected: "xhigh" },
   ])("normalizes Codex ACP $key=$value to reasoning effort", async ({ key, value, expected }) => {
     const baseStore: TestSessionStore = {
       load: vi.fn(async () => ({
@@ -1549,7 +1549,7 @@ describe("AcpxRuntime fresh reset wrapper", () => {
 
     expect(setConfigOption).toHaveBeenCalledWith({
       handle,
-      key: `ltfx.n.a692e305fae85dbf68de.v1`,
+      key: "reasoning_effort",
       value: expected,
     });
   });
@@ -1580,14 +1580,14 @@ describe("AcpxRuntime fresh reset wrapper", () => {
     await expect(
       runtime.setConfigOption({
         handle,
-        key: `ltfx.n.6ee16429668c2d820770.v1`,
+        key: "thinking",
         value: "high",
       }),
     ).rejects.toBe(unsupportedThinkingError);
 
     expect(setConfigOption).toHaveBeenCalledWith({
       handle,
-      key: `ltfx.n.6ee16429668c2d820770.v1`,
+      key: "thinking",
       value: "high",
     });
   });
@@ -1616,7 +1616,7 @@ describe("AcpxRuntime fresh reset wrapper", () => {
     });
     await runtime.setConfigOption({
       handle,
-      key: `ltfx.n.f4326efb73c50919949e.v1`,
+      key: "Timeout_Seconds",
       value: "60",
     });
 
@@ -1647,7 +1647,7 @@ describe("AcpxRuntime fresh reset wrapper", () => {
     });
     await runtime.setConfigOption({
       handle,
-      key: `ltfx.n.f4326efb73c50919949e.v1`,
+      key: "Timeout_Seconds",
       value: "60",
     });
 

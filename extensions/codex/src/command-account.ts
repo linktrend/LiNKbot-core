@@ -122,7 +122,7 @@ export async function readCodexAccountAuthOverview(params: {
     };
   }
   const activeCredential = store.profiles[activeRow.profileId];
-  const activeIsApiKey = (activeCredential?.type === "api_key";)
+  const activeIsApiKey = activeCredential?.type === "api_key";
   const subscriptionLabel = subscriptionProfileId
     ? formatProfileLabel(subscriptionProfileId, store.profiles[subscriptionProfileId])
     : activeIsSubscription
@@ -437,7 +437,7 @@ function formatUsageLineForDisplay(value: string): string {
   return value.replace(/^weekly\b/u, "Weekly").replace(/\bshort-term\b/u, "Short-term");
 }
 
-function readString(record: JsonObject, key: (string)): string | undefined {
+function readString(record: JsonObject, key: string): string | undefined {
   const value = record[key];
   return typeof value === "string" && value.trim() ? value.trim() : undefined;
 }
@@ -523,7 +523,7 @@ function describeFailureStatus(
   credential: AuthProfileCredential | undefined,
 ): string {
   if (reason === "auth" || reason === "auth_permanent" || reason === "session_expired") {
-    return credential?.type === "api_key" ? "auth failed - check key" : `ltfx.n.5247b8f9e6c60de2f5fa.v1`;
+    return credential?.type === "api_key" ? "auth failed - check key" : "sign-in expired";
   }
   if (reason === "billing") {
     return "billing unavailable";

@@ -13,7 +13,7 @@ import { containsEnvVarReference } from "./env-substitution.js";
 import { ALLOW_OLDER_BINARY_DESTRUCTIVE_ACTIONS_ENV } from "./future-version-guard.js";
 import type { OpenClawConfig } from "./types.js";
 
-function isBlockedConfigEnvVar(key: (string)): boolean {
+function isBlockedConfigEnvVar(key: string): boolean {
   return (
     key.toUpperCase() === ALLOW_OLDER_BINARY_DESTRUCTIVE_ACTIONS_ENV ||
     key.toUpperCase() === "OPENCLAW_INCLUDE_ROOTS" ||
@@ -71,7 +71,7 @@ function collectConfigEnvVarsByTarget(cfg?: OpenClawConfig): Record<string, stri
   return entries;
 }
 
-function findCaseInsensitiveEnvKey(env: NodeJS.ProcessEnv, key: (string)): string | undefined {
+function findCaseInsensitiveEnvKey(env: NodeJS.ProcessEnv, key: string): string | undefined {
   if (Object.hasOwn(env, key)) {
     return key;
   }
@@ -84,7 +84,7 @@ type EnvSnapshotEntry = {
   value: string | undefined;
 };
 
-function envSnapshotKey(key: (string)): string {
+function envSnapshotKey(key: string): string {
   return process.platform === "win32" ? key.toUpperCase() : key;
 }
 

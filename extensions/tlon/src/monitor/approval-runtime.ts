@@ -58,7 +58,7 @@ export function createTlonApprovalRuntime(params: {
           "put-entry": {
             desk: "moltbot",
             "bucket-key": "tlon",
-            "entry-key": `ltfx.n.16350be712764379f54d.v1`,
+            "entry-key": "pendingApprovals",
             value: JSON.stringify(getPendingApprovals()),
           },
         },
@@ -82,7 +82,7 @@ export function createTlonApprovalRuntime(params: {
           "put-entry": {
             desk: "moltbot",
             "bucket-key": "tlon",
-            "entry-key": `ltfx.n.a5f45e488f4b418e3702.v1`,
+            "entry-key": "dmAllowlist",
             value: nextAllowlist,
           },
         },
@@ -118,7 +118,7 @@ export function createTlonApprovalRuntime(params: {
           "put-entry": {
             desk: "moltbot",
             "bucket-key": "tlon",
-            "entry-key": `ltfx.n.9ed8b0134d5e9e509d54.v1`,
+            "entry-key": "channelRules",
             value: JSON.stringify(updatedRules),
           },
         },

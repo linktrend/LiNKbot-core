@@ -49,7 +49,7 @@ const buildGatewayConnectionDetails = vi.fn(
     url?: string;
     urlSource?: "cli" | "env";
   }) => ({
-    url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+    url: "ws://127.0.0.1:18789",
     urlSource: "local loopback",
     message: "",
   }),
@@ -386,7 +386,7 @@ describe("logs cli", () => {
         code: 1000,
         reason: "no close reason",
         connectionDetails: {
-          url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+          url: "ws://127.0.0.1:18789",
           urlSource: "local loopback",
           message: "",
         },
@@ -441,7 +441,7 @@ describe("logs cli", () => {
         code: 1006,
         reason: "abnormal closure",
         connectionDetails: {
-          url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+          url: "ws://127.0.0.1:18789",
           urlSource: "local loopback",
           message: "",
         },
@@ -451,7 +451,7 @@ describe("logs cli", () => {
       readSystemdServiceRuntime.mockResolvedValue({ status: "running", pid: 2557 });
       execFileUtf8Tail
         .mockResolvedValueOnce({
-          stdout: ["Authorization: Bearer ltfx.n.693f5072f49dad8d5fac.v1", "-- cursor: s=abc"].join(
+          stdout: ["Authorization: Bearer sk-abcdefghijklmnopqrstuvwxyz", "-- cursor: s=abc"].join(
             "\n",
           ),
           stderr: "",
@@ -496,7 +496,7 @@ describe("logs cli", () => {
       );
       expect(stdoutWrites.join("")).toContain("Service PID: 2557");
       expect(stdoutWrites.join("")).toContain("Service Unit: openclaw-gateway.service");
-      expect(stdoutWrites.join("")).not.toContain("ltfx.n.693f5072f49dad8d5fac.v1");
+      expect(stdoutWrites.join("")).not.toContain("sk-abcdefghijklmnopqrstuvwxyz");
       expect(stdoutWrites.join("")).toContain("Authorization: Bearer");
       expect(stdoutWrites.join("")).toContain("second journal line");
       expect(exitSpy).toHaveBeenCalledWith(1);
@@ -526,7 +526,7 @@ describe("logs cli", () => {
             code: 1006,
             reason: "abnormal closure",
             connectionDetails: {
-              url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+              url: "ws://127.0.0.1:18789",
               urlSource: "local loopback",
               message: "",
             },
@@ -588,7 +588,7 @@ describe("logs cli", () => {
         code: 1006,
         reason: "abnormal closure",
         connectionDetails: {
-          url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+          url: "ws://127.0.0.1:18789",
           urlSource: "local loopback",
           message: "",
         },
@@ -664,7 +664,7 @@ describe("logs cli", () => {
         code: 1006,
         reason: "abnormal closure",
         connectionDetails: {
-          url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+          url: "ws://127.0.0.1:18789",
           urlSource: "local loopback",
           message: "",
         },
@@ -735,7 +735,7 @@ describe("logs cli", () => {
         code: 1006,
         reason: "abnormal closure",
         connectionDetails: {
-          url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+          url: "ws://127.0.0.1:18789",
           urlSource: "local loopback",
           message: "",
         },
@@ -814,7 +814,7 @@ describe("logs cli", () => {
         code: 1006,
         reason: "abnormal closure",
         connectionDetails: {
-          url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+          url: "ws://127.0.0.1:18789",
           urlSource: "local loopback",
           message: "",
         },
@@ -898,7 +898,7 @@ describe("logs cli", () => {
         code: 1006,
         reason: "abnormal closure",
         connectionDetails: {
-          url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+          url: "ws://127.0.0.1:18789",
           urlSource: "local loopback",
           message: "",
         },
@@ -929,7 +929,7 @@ describe("logs cli", () => {
         code: 1006,
         reason: "abnormal closure",
         connectionDetails: {
-          url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+          url: "ws://127.0.0.1:18789",
           urlSource: "cli",
           message: "",
         },
@@ -957,7 +957,7 @@ describe("logs cli", () => {
             code: 1006,
             reason: "abnormal closure",
             connectionDetails: {
-              url: `ltfx.n.3b66113f8d45c25d52f9.v1`,
+              url: "ws://remote.example.com:18789",
               urlSource: "cli",
               message: "",
             },
@@ -998,7 +998,7 @@ describe("logs cli", () => {
             code: 1006,
             reason: "abnormal closure",
             connectionDetails: {
-              url: `ltfx.n.3b66113f8d45c25d52f9.v1`,
+              url: "ws://remote.example.com:18789",
               urlSource: "cli",
               message: "",
             },
@@ -1047,7 +1047,7 @@ describe("logs cli", () => {
           kind: "closed",
           code: 1008,
           reason: "pairing required",
-          connectionDetails: { url: `ltfx.n.0edbee82f0824a1ed09b.v1`, urlSource: "cli", message: "" },
+          connectionDetails: { url: "ws://127.0.0.1:18789", urlSource: "cli", message: "" },
           message: "gateway closed (1008 policy violation): pairing required",
         }),
       );
@@ -1068,7 +1068,7 @@ describe("logs cli", () => {
           kind: "closed",
           code: 4001,
           reason: "unauthorized",
-          connectionDetails: { url: `ltfx.n.0edbee82f0824a1ed09b.v1`, urlSource: "cli", message: "" },
+          connectionDetails: { url: "ws://127.0.0.1:18789", urlSource: "cli", message: "" },
           message: "gateway closed (4001 unauthorized): unauthorized",
         }),
       );
@@ -1089,7 +1089,7 @@ describe("logs cli", () => {
           kind: "closed",
           code: 4001,
           reason: "unauthorized",
-          connectionDetails: { url: `ltfx.n.0edbee82f0824a1ed09b.v1`, urlSource: "cli", message: "" },
+          connectionDetails: { url: "ws://127.0.0.1:18789", urlSource: "cli", message: "" },
           message: "gateway closed (4001 unauthorized): unauthorized",
         }),
       );
@@ -1135,7 +1135,7 @@ describe("logs cli", () => {
         code: 1000,
         reason: "no close reason",
         connectionDetails: {
-          url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+          url: "ws://127.0.0.1:18789",
           urlSource: "local loopback",
           message: "",
         },

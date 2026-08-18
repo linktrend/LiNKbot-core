@@ -228,7 +228,7 @@ function resolveAnthropicFastMode(extraParams: Record<string, unknown> | undefin
   return typeof extraParams?.fastMode === "boolean" ? extraParams.fastMode : undefined;
 }
 
-function isAnthropicOauthApiKey(apiKey: (unknown): boolean {)
+function isAnthropicOauthApiKey(apiKey: unknown): boolean {
   return typeof apiKey === "string" && apiKey.startsWith("sk-ant-oat");
 }
 
@@ -3010,7 +3010,7 @@ describe("applyExtraParamsToAgent", () => {
 
     // Simulate agent runtime passing apiKey in options (API key, not OAuth token)
     void agent.streamFn?.(model, context, {
-      apiKey: `ltfx.n.9ef01c8966f7f3defa6d.v1`, // pragma: allowlist secret
+      apiKey: "sk-ant-api03-test", // pragma: allowlist secret
       headers: { "X-Custom": "1" },
     });
 
@@ -3066,7 +3066,7 @@ describe("applyExtraParamsToAgent", () => {
 
     // Simulate agent runtime passing an OAuth token (sk-ant-oat-*) as apiKey
     void agent.streamFn?.(model, context, {
-      apiKey: `ltfx.n.c719f59909e2e823898b.v1`, // pragma: allowlist secret
+      apiKey: "sk-ant-oat01-test-oauth-token", // pragma: allowlist secret
       headers: { "X-Custom": "1" },
     });
 
@@ -3087,7 +3087,7 @@ describe("applyExtraParamsToAgent", () => {
       cfg,
       modelId: "claude-sonnet-4-5",
       options: {
-        apiKey: `ltfx.n.9ef01c8966f7f3defa6d.v1`, // pragma: allowlist secret
+        apiKey: "sk-ant-api03-test", // pragma: allowlist secret
         headers: { "anthropic-beta": "prompt-caching-2024-07-31" },
       },
     });
@@ -3776,7 +3776,7 @@ describe("applyExtraParamsToAgent", () => {
         baseUrl: "https://api.anthropic.com",
       } as unknown as Model<"anthropic-messages">,
       options: {
-        apiKey: `ltfx.n.01b91573a83af7e7cf50.v1`,
+        apiKey: "sk-ant-oat-test-token",
       },
       payload: {},
     });
@@ -3890,7 +3890,7 @@ describe("applyExtraParamsToAgent", () => {
         baseUrl: "https://api.anthropic.com",
       } as unknown as Model<"anthropic-messages">,
       options: {
-        apiKey: `ltfx.n.01b91573a83af7e7cf50.v1`,
+        apiKey: "sk-ant-oat-test-token",
       },
       payload: {},
     });
@@ -3909,7 +3909,7 @@ describe("applyExtraParamsToAgent", () => {
         baseUrl: "https://api.anthropic.com",
       } as unknown as Model<"anthropic-messages">,
       options: {
-        apiKey: `ltfx.n.01b91573a83af7e7cf50.v1`,
+        apiKey: "sk-ant-oat-test-token",
       },
       payload: {},
     });
@@ -3928,7 +3928,7 @@ describe("applyExtraParamsToAgent", () => {
         baseUrl: "https://api.anthropic.com",
       } as unknown as Model<"anthropic-messages">,
       options: {
-        apiKey: `ltfx.n.01b91573a83af7e7cf50.v1`,
+        apiKey: "sk-ant-oat-test-token",
       },
       payload: {},
     });

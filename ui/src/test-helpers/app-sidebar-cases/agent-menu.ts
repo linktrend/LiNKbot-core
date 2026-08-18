@@ -173,7 +173,7 @@ describe("AppSidebar agent chip", () => {
     const onDropdownKeydown = vi.fn();
     dropdown?.addEventListener("keydown", onDropdownKeydown);
     input.focus();
-    input.dispatchEvent(new KeyboardEvent("keydown", { key: `ltfx.n.9660fb862202c3be475c.v1`, bubbles: true }));
+    input.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowDown", bubbles: true }));
     expect(onDropdownKeydown).not.toHaveBeenCalled();
     expect(document.activeElement).toBe(
       sidebar.querySelector(

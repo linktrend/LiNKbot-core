@@ -96,7 +96,7 @@ beforeEach(() => {
   compactAuthMocks.resolveModelAsync.mockResolvedValue({
     model: { id: "gpt-5.5", provider: "openai" },
   });
-  compactAuthMocks.getApiKeyForModel.mockResolvedValue({ apiKey: `ltfx.n.62af8704764faf8ea82f.v1` });
+  compactAuthMocks.getApiKeyForModel.mockResolvedValue({ apiKey: "test-key" });
   providerOwnerMocks.resolveProviderRefOwnership.mockReset();
   providerOwnerMocks.resolveProviderRefOwnership.mockReturnValue({ status: "unowned" });
   cliBackendsTesting.setDepsForTest({
@@ -564,7 +564,7 @@ describe("runAgentHarnessAttempt", () => {
       },
       { ownerPluginId: "codex" },
     );
-    const secret = `ltfx.n.987c3b0769bf722b2882.v1`;
+    const secret = "plugin-provider-secret";
     const sentinel = mintSecretSentinel(secret, { label: "model-auth:codex" });
     const params = createAttemptParams(providerRuntimeConfig("codex", "codex"));
     params.resolvedApiKey = sentinel;
@@ -2122,7 +2122,7 @@ describe("selectAgentHarness", () => {
     await expect(
       maybeCompactAgentHarnessSession(
         createCompactionParams({
-          resolvedApiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+          resolvedApiKey: "test-key",
           runtimeAuthPlan: {
             providerForAuth: "openai",
             authProfileProviderForAuth: "openai",
@@ -2136,7 +2136,7 @@ describe("selectAgentHarness", () => {
 
     expect(compact).toHaveBeenCalledWith(
       expect.objectContaining({
-        resolvedApiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+        resolvedApiKey: "test-key",
         runtimeAuthPlan: expect.objectContaining({ modelRoute: OPENAI_PLATFORM_ROUTE }),
       }),
     );
@@ -2212,7 +2212,7 @@ describe("selectAgentHarness", () => {
         provider: "openai",
         model: "gpt-5.5",
         authProfileId: "main-profile",
-        resolvedApiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+        resolvedApiKey: "test-key",
         agentHarnessId: "codex",
         config: {
           agents: {
@@ -2230,7 +2230,7 @@ describe("selectAgentHarness", () => {
     expect(compact.mock.calls[0]?.[0]).toMatchObject({
       agentDir: "/tmp/main-agent",
       agentId: "main",
-      resolvedApiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+      resolvedApiKey: "test-key",
       runtimeModel: {
         id: "gpt-5.5",
         provider: "openai",
@@ -2404,7 +2404,7 @@ describe("selectAgentHarness", () => {
         workspaceDir: "/tmp/workspace",
         provider: "local-proxy",
         model: "proxy-model",
-        resolvedApiKey: `ltfx.n.f06dc36dd378c17b4d4d.v1`,
+        resolvedApiKey: "already-resolved",
         agentHarnessId: "copilot",
       }),
     ).resolves.toEqual({ ok: true, compacted: false });
@@ -2412,7 +2412,7 @@ describe("selectAgentHarness", () => {
     expect(compactAuthMocks.getApiKeyForModel).not.toHaveBeenCalled();
     expect(compact).toHaveBeenCalledWith(
       expect.objectContaining({
-        resolvedApiKey: `ltfx.n.f06dc36dd378c17b4d4d.v1`,
+        resolvedApiKey: "already-resolved",
       }),
     );
   });
@@ -2425,7 +2425,7 @@ describe("selectAgentHarness", () => {
       maybeCompactAgentHarnessSession(
         createCompactionParams({
           agentHarnessId: "codex",
-          resolvedApiKey: `ltfx.n.286723fe7751e8aa17c1.v1`,
+          resolvedApiKey: "must-not-reach-ambient-auth",
         }),
       ),
     ).rejects.toThrow("refusing harness-owned ambient auth");
@@ -2493,7 +2493,7 @@ describe("selectAgentHarness", () => {
     );
     expect(compact).toHaveBeenCalledWith(
       expect.objectContaining({
-        resolvedApiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+        resolvedApiKey: "test-key",
         runtimeModel: expect.objectContaining({
           baseUrl: "https://proxy.example/v1",
           id: "proxy-model",

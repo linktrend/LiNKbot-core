@@ -24,12 +24,12 @@ vi.mock("./send.runtime.js", () => ({
 const cfg: OpenClawConfig = {
   channels: {
     slack: {
-      botToken: `ltfx.n.87894fe048938b686cfb.v1`,
-      appToken: `ltfx.n.424766b94c5b9f0f5861.v1`,
+      botToken: "xoxb-test",
+      appToken: "xapp-test",
       accounts: {
         default: {
-          botToken: `ltfx.n.4f68dd56cdc3b48ad886.v1`,
-          appToken: `ltfx.n.f19ab51df9fdc80f5d51.v1`,
+          botToken: "xoxb-default",
+          appToken: "xapp-default",
         },
       },
     },

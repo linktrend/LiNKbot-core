@@ -19,7 +19,7 @@ scenario:
         defaultRoomKey: main
         rooms:
           - encrypted: true
-            key: "${ltfx.n.3542335f1fb8281806c8.v1}"
+            key: e2ee-thread-follow-up
             kind: group
             members:
               - driver

@@ -218,7 +218,7 @@ describe("release scenario assertions", () => {
         },
       });
 
-      const result = runAssertion(["assert-openai-env-ref", "ltfx.n.a0b3c12372cd56e4055a.v1"], {
+      const result = runAssertion(["assert-openai-env-ref", "sk-test-raw-key"], {
         HOME: home,
         OPENCLAW_CONFIG_PATH: configPath,
       });
@@ -252,7 +252,7 @@ describe("release scenario assertions", () => {
         },
       });
 
-      const result = runAssertion(["assert-openai-env-ref", "ltfx.n.a0b3c12372cd56e4055a.v1"], {
+      const result = runAssertion(["assert-openai-env-ref", "sk-test-raw-key"], {
         HOME: home,
         OPENCLAW_CONFIG_PATH: configPath,
       });
@@ -285,12 +285,12 @@ describe("release scenario assertions", () => {
           "openai:api-key": {
             type: "api_key",
             provider: "openai",
-            key: `ltfx.n.a0b3c12372cd56e4055a.v1`,
+            key: "sk-test-raw-key",
           },
         },
       });
 
-      const result = runAssertion(["assert-openai-env-ref", "ltfx.n.a0b3c12372cd56e4055a.v1"], {
+      const result = runAssertion(["assert-openai-env-ref", "sk-test-raw-key"], {
         HOME: home,
         OPENCLAW_CONFIG_PATH: configPath,
       });
@@ -318,7 +318,7 @@ describe("release scenario assertions", () => {
         },
         models: {
           providers: {
-            openai: { apiKey: `ltfx.n.a0b3c12372cd56e4055a.v1` },
+            openai: { apiKey: "sk-test-raw-key" },
           },
         },
       });
@@ -333,7 +333,7 @@ describe("release scenario assertions", () => {
         },
       });
 
-      const result = runAssertion(["assert-openai-env-ref", "ltfx.n.a0b3c12372cd56e4055a.v1"], {
+      const result = runAssertion(["assert-openai-env-ref", "sk-test-raw-key"], {
         HOME: home,
         OPENCLAW_CONFIG_PATH: configPath,
       });

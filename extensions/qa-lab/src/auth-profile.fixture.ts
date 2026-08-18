@@ -66,7 +66,7 @@ function buildOpenAiApiKeyProfile(): QaApiKeyAuthProfile {
   return {
     type: "api_key",
     provider: "openai",
-    key: `ltfx.n.ad63215d122b784deb0d.v1`,
+    key: "qa-openai-not-a-real-key",
     displayName: "QA OpenAI API-key profile",
   };
 }

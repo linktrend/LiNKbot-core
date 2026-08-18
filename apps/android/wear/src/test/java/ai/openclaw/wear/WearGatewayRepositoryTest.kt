@@ -36,7 +36,7 @@ class WearGatewayRepositoryTest {
           when (method) {
             WearRpcMethod.SessionsList ->
               json.parseToJsonElement(
-                """{"sessions":[{"key":"${ltfx.n.f331f052e4ed92dd414c.v1}","agentId":"main","displayName":"Main","updatedAt":7,"hasActiveRun":true,"modelRef":"openai/gpt-test"}],"activeAgentId":"main","selectedSessionValid":true}""",
+                """{"sessions":[{"key":"agent:main","agentId":"main","displayName":"Main","updatedAt":7,"hasActiveRun":true,"modelRef":"openai/gpt-test"}],"activeAgentId":"main","selectedSessionValid":true}""",
               )
             WearRpcMethod.ChatHistory ->
               json.parseToJsonElement(

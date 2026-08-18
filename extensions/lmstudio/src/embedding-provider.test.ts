@@ -148,7 +148,7 @@ describe("createLmstudioEmbeddingProvider preload context length", () => {
           providers: {
             "lmstudio-spark": {
               baseUrl: "http://spark.local:1234/v1",
-              apiKey: `ltfx.n.28c2e894e451fd1c06f4.v1`,
+              apiKey: "spark-key",
               localService: service,
               models: [{ id: EMBEDDING_MODEL }],
             },
@@ -165,7 +165,7 @@ describe("createLmstudioEmbeddingProvider preload context length", () => {
     await expect(provider.embedQuery("hello")).resolves.toEqual([1, 0]);
 
     expect(ensureLmstudioModelLoadedMock).toHaveBeenCalledWith(
-      expect.objectContaining({ apiKey: `ltfx.n.28c2e894e451fd1c06f4.v1` }),
+      expect.objectContaining({ apiKey: "spark-key" }),
     );
     expect(resolveLmstudioRuntimeApiKeyMock).not.toHaveBeenCalled();
     expect(acquireLocalService).toHaveBeenCalledTimes(2);

@@ -181,7 +181,7 @@ function throwCredentialPayloadError(message: string): never {
   throw new Error(message);
 }
 
-function requireTelegramUserPayloadString(payload: Record<string, unknown>, key: (string)): string {
+function requireTelegramUserPayloadString(payload: Record<string, unknown>, key: string): string {
   const raw = payload[key];
   if (typeof raw !== "string") {
     throwCredentialPayloadError(

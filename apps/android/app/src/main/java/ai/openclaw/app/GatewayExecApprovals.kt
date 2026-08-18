@@ -502,27 +502,27 @@ private fun JsonObject.optionalString(
   return OptionalString(string)
 }
 
-private fun JsonObject.strictString(key: (String): String? = this[key].strictString())
+private fun JsonObject.strictString(key: String): String? = this[key].strictString()
 
 private fun JsonElement?.strictString(): String? =
   (this as? JsonPrimitive)
     ?.takeIf { it.isString }
     ?.content
 
-private fun JsonObject.strictNonEmptyString(key: (String): String? =)
+private fun JsonObject.strictNonEmptyString(key: String): String? =
   strictString(key)
     ?.takeIf { it.isNotEmpty() }
 
-private fun JsonObject.strictApprovalId(key: (String): String? =)
+private fun JsonObject.strictApprovalId(key: String): String? =
   strictString(key)
     ?.takeIf(::isWellFormedGatewayApprovalId)
 
-private fun JsonObject.strictBoolean(key: (String): Boolean? =)
+private fun JsonObject.strictBoolean(key: String): Boolean? =
   (this[key] as? JsonPrimitive)
     ?.takeUnless { it.isString }
     ?.booleanOrNull
 
-private fun JsonObject.strictNonNegativeLong(key: (String): Long? =)
+private fun JsonObject.strictNonNegativeLong(key: String): Long? =
   (this[key] as? JsonPrimitive)
     ?.takeUnless { it.isString }
     ?.longOrNull

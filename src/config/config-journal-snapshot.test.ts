@@ -27,7 +27,7 @@ describe("config journal snapshots", () => {
     const stateDir = path.join(home, ".openclaw");
     const fingerprinted = fingerprintConfigSnapshotAuthoredConfig(
       {
-        gateway: { auth: { token: `ltfx.n.4c5dc9b7708905f77f5e.v1` }, port: 18789 },
+        gateway: { auth: { token: "test-token" }, port: 18789 },
       },
       {
         env: { OPENCLAW_STATE_DIR: stateDir } as NodeJS.ProcessEnv,
@@ -135,7 +135,7 @@ describe("config journal snapshots", () => {
 
     expect(
       fingerprintConfigSnapshotAuthoredConfig(
-        { gateway: { auth: { token: `ltfx.n.4c5dc9b7708905f77f5e.v1` } } },
+        { gateway: { auth: { token: "test-token" } } },
         { env: { OPENCLAW_STATE_DIR: statePath } as NodeJS.ProcessEnv, homedir: () => home },
       ),
     ).toEqual({ gateway: { auth: { token: "***" } } });

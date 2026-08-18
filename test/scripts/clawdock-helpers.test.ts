@@ -141,7 +141,7 @@ printf '%s\\n' '---' >> "$CLAWDOCK_DOCKER_ARGS_FILE"
 if [[ "$*" == *" port openclaw-gateway 18789" ]]; then
   printf '%s\\n' '0.0.0.0:19001'
 else
-  printf '%s\\n' 'Dashboard: http://127.0.0.1:18789/?token=(test-token')
+  printf '%s\\n' 'Dashboard: http://127.0.0.1:18789/?token=test-token'
 fi
 `,
       );
@@ -169,7 +169,7 @@ printf '%s\\n' "$1" > "$CLAWDOCK_OPENED_URL_FILE"
       );
 
       await expect(readFile(openedUrlFile, "utf8")).resolves.toBe(
-        "http://127.0.0.1:19001/?token=(test-token\n",)
+        "http://127.0.0.1:19001/?token=test-token\n",
       );
       await expect(readFile(argsFile, "utf8")).resolves.toBe(
         [

@@ -413,7 +413,7 @@ describe("chat page split layout host", () => {
       },
     };
     sessionsState.result = {
-      sessions: [{ key: `ltfx.n.4c65304d273644863034.v1`, displayName: "Main desk" }],
+      sessions: [{ key: "agent:dev:main", displayName: "Main desk" }],
     };
     notify();
     await page.updateComplete;

@@ -10,12 +10,12 @@ import { FeishuChannelConfigSchema, FeishuConfigSchema } from "./config-schema.j
 const topLevelWebhookBase = {
   connectionMode: "webhook",
   appId: "cli_top",
-  appSecret: `ltfx.n.67e8691c1b73e3768df4.v1`, // pragma: allowlist secret
+  appSecret: "secret_top", // pragma: allowlist secret
 };
 const accountWebhookBase = {
   connectionMode: "webhook",
   appId: "cli_main",
-  appSecret: `ltfx.n.621319254649d671cda1.v1`, // pragma: allowlist secret
+  appSecret: "secret_main", // pragma: allowlist secret
 };
 
 function expectSchemaIssue(
@@ -94,7 +94,7 @@ describe("FeishuConfigSchema webhook validation", () => {
     const result = FeishuConfigSchema.safeParse({
       connectionMode: "webhook",
       appId: "cli_top",
-      appSecret: `ltfx.n.67e8691c1b73e3768df4.v1`, // pragma: allowlist secret
+      appSecret: "secret_top", // pragma: allowlist secret
     });
 
     expectSchemaIssue(result, "verificationToken");
@@ -105,7 +105,7 @@ describe("FeishuConfigSchema webhook validation", () => {
     // from matching this negative fixture.
     const result = FeishuConfigSchema.safeParse({
       ...topLevelWebhookBase,
-      verificationToken: `ltfx.n.e8f6e01023864f234212.v1`,
+      verificationToken: "token_top",
     });
 
     expectSchemaIssue(result, "encryptKey");
@@ -114,10 +114,10 @@ describe("FeishuConfigSchema webhook validation", () => {
   it("accepts top-level webhook mode with verificationToken and encryptKey", () => {
     const result = FeishuConfigSchema.safeParse({
       connectionMode: "webhook",
-      verificationToken: `ltfx.n.e8f6e01023864f234212.v1`,
+      verificationToken: "token_top",
       encryptKey: "encrypt_top",
       appId: "cli_top",
-      appSecret: `ltfx.n.67e8691c1b73e3768df4.v1`, // pragma: allowlist secret
+      appSecret: "secret_top", // pragma: allowlist secret
     });
 
     expect(result.success).toBe(true);
@@ -129,7 +129,7 @@ describe("FeishuConfigSchema webhook validation", () => {
         main: {
           connectionMode: "webhook",
           appId: "cli_main",
-          appSecret: `ltfx.n.621319254649d671cda1.v1`, // pragma: allowlist secret
+          appSecret: "secret_main", // pragma: allowlist secret
         },
       },
     });
@@ -144,7 +144,7 @@ describe("FeishuConfigSchema webhook validation", () => {
       accounts: {
         main: {
           ...accountWebhookBase,
-          verificationToken: `ltfx.n.a2d7cc90a71e7aa25992.v1`,
+          verificationToken: "token_main",
         },
       },
     });
@@ -154,13 +154,13 @@ describe("FeishuConfigSchema webhook validation", () => {
 
   it("accepts account webhook mode inheriting top-level verificationToken and encryptKey", () => {
     const result = FeishuConfigSchema.safeParse({
-      verificationToken: `ltfx.n.e8f6e01023864f234212.v1`,
+      verificationToken: "token_top",
       encryptKey: "encrypt_top",
       accounts: {
         main: {
           connectionMode: "webhook",
           appId: "cli_main",
-          appSecret: `ltfx.n.621319254649d671cda1.v1`, // pragma: allowlist secret
+          appSecret: "secret_main", // pragma: allowlist secret
         },
       },
     });
@@ -385,7 +385,7 @@ describe("FeishuConfigSchema defaultAccount", () => {
     const result = FeishuConfigSchema.safeParse({
       defaultAccount: "router-d",
       accounts: {
-        "router-d": { appId: "cli_router", appSecret: `ltfx.n.66287fd25848a33b6fb2.v1` }, // pragma: allowlist secret
+        "router-d": { appId: "cli_router", appSecret: "secret_router" }, // pragma: allowlist secret
       },
     });
 
@@ -396,7 +396,7 @@ describe("FeishuConfigSchema defaultAccount", () => {
     const result = FeishuConfigSchema.safeParse({
       defaultAccount: "router-d",
       accounts: {
-        backup: { appId: "cli_backup", appSecret: `ltfx.n.5af7fb59a3b8ec3a40c1.v1` }, // pragma: allowlist secret
+        backup: { appId: "cli_backup", appSecret: "secret_backup" }, // pragma: allowlist secret
       },
     });
 

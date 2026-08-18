@@ -104,7 +104,7 @@ function parseSeedTtsFrames(text: string): VolcengineTtsResponse[] {
   return frames;
 }
 
-function hostnameAllowlist(url: (string)): string[] {
+function hostnameAllowlist(url: string): string[] {
   return [new URL(url).hostname];
 }
 

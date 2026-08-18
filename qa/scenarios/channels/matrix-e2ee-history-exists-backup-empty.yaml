@@ -19,7 +19,7 @@ scenario:
         defaultRoomKey: main
         rooms:
           - encrypted: true
-            key: "${ltfx.n.c4e4081bdba195af00a3.v1}"
+            key: e2ee-history-exists-backup-empty
             kind: group
             members:
               - driver

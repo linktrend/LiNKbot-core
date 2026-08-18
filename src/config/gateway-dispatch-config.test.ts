@@ -47,7 +47,7 @@ describe("readGatewayDispatchConfig", () => {
       }`,
       "openclaw.json5": `{
         $include: "./gateway-base.json5",
-        env: { vars: { OPENCLAW_GATEWAY_TOKEN: `ltfx.n.85d8815181082d02bde8.v1` } },
+        env: { vars: { OPENCLAW_GATEWAY_TOKEN: "inline-token" } },
         agents: {
           defaults: { timeoutSeconds: 42 },
           list: [{ id: "ops", default: true }],
@@ -65,7 +65,7 @@ describe("readGatewayDispatchConfig", () => {
     const config = readGatewayDispatchConfig({ env });
 
     expect(config.gateway?.port).toBe(18888);
-    expect(config.gateway?.auth).toMatchObject({ mode: "token", token: `ltfx.n.85d8815181082d02bde8.v1` });
+    expect(config.gateway?.auth).toMatchObject({ mode: "token", token: "inline-token" });
     expect(config.agents?.defaults?.timeoutSeconds).toBe(42);
     expect(config.agents?.list?.[0]?.id).toBe("ops");
     expect(config.plugins).toEqual({
@@ -87,7 +87,7 @@ describe("readGatewayDispatchConfig", () => {
     });
     const env: NodeJS.ProcessEnv = { OPENCLAW_CONFIG_PATH: configPath };
     shellEnvMocks.loadShellEnvFallback.mockImplementation(({ env: targetEnv }) => {
-      targetEnv.OPENCLAW_GATEWAY_TOKEN = `ltfx.n.9507164d1246b8f83262.v1`;
+      targetEnv.OPENCLAW_GATEWAY_TOKEN = "shell-token";
     });
 
     const config = await readGatewayDispatchConfigWithShellEnvFallback({ env });
@@ -99,6 +99,6 @@ describe("readGatewayDispatchConfig", () => {
       logger: console,
       timeoutMs: 123,
     });
-    expect(config.gateway?.auth).toMatchObject({ mode: "token", token: `ltfx.n.9507164d1246b8f83262.v1` });
+    expect(config.gateway?.auth).toMatchObject({ mode: "token", token: "shell-token" });
   });
 });

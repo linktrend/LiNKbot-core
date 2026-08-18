@@ -1207,7 +1207,7 @@ describe("gateway agent handler chat.abort integration", () => {
         opts.assertCurrent?.();
         return {
           ok: true,
-          key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+          key: "agent:main:main",
           entry: { sessionId: "reset-session-id" },
         };
       },
@@ -1254,13 +1254,13 @@ describe("gateway agent handler chat.abort integration", () => {
     mocks.performGatewaySessionReset.mockImplementation(
       async (opts: { onCommitted?: (commit: { key: string; sessionId: string }) => void }) => {
         opts.onCommitted?.({
-          key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+          key: "agent:main:main",
           sessionId: "reset-session-id",
         });
         mocks.lifecycleGeneration = "post-restart-generation";
         return {
           ok: true,
-          key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+          key: "agent:main:main",
           entry: { sessionId: "reset-session-id" },
         };
       },
@@ -1299,13 +1299,13 @@ describe("gateway agent handler chat.abort integration", () => {
     mocks.performGatewaySessionReset.mockImplementation(
       async (opts: { onCommitted?: (commit: { key: string; sessionId: string }) => void }) => {
         opts.onCommitted?.({
-          key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+          key: "agent:main:main",
           sessionId: "reset-session-id",
         });
         mocks.lifecycleGeneration = "post-restart-generation";
         return {
           ok: true,
-          key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+          key: "agent:main:main",
           entry: { sessionId: "reset-session-id" },
         };
       },
@@ -1343,7 +1343,7 @@ describe("gateway agent handler chat.abort integration", () => {
     mocks.performGatewaySessionReset.mockImplementation(
       async (opts: { onCommitted?: (commit: { key: string; sessionId: string }) => void }) => {
         opts.onCommitted?.({
-          key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+          key: "agent:main:main",
           sessionId: "reset-session-id",
         });
         mocks.lifecycleGeneration = "post-restart-generation";

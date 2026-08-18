@@ -293,7 +293,7 @@ describe("plugin registry runtime config scope", () => {
     });
     const createParams = {
       cfg: {},
-      key: `ltfx.n.f277b36dd51aafdc6451.v1`,
+      key: "agent:main:harness:codex:thread-1",
       initialEntry: { agentHarnessId: "codex" },
     };
 
@@ -310,7 +310,7 @@ describe("plugin registry runtime config scope", () => {
     await expect(
       otherApi.runtime.agent.session.createSessionEntry({
         cfg: {},
-        key: `ltfx.n.d366c10d05c9055cd305.v1`,
+        key: "agent:main:ordinary",
         initialEntry: { agentHarnessId: "codex", modelSelectionLocked: true },
       }),
     ).rejects.toThrow(
@@ -319,7 +319,7 @@ describe("plugin registry runtime config scope", () => {
     await expect(
       ownerApi.runtime.agent.session.createSessionEntry({
         cfg: {},
-        key: `ltfx.n.d366c10d05c9055cd305.v1`,
+        key: "agent:main:ordinary",
         initialEntry: { agentHarnessId: "codex", modelSelectionLocked: true },
       }),
     ).resolves.toEqual(expect.objectContaining({ sessionId: "session-1" }));
@@ -363,7 +363,7 @@ describe("plugin registry runtime config scope", () => {
     await expect(
       api.runtime.agent.session.createSessionEntry({
         cfg: {},
-        key: `ltfx.n.9dea6c6e877091f349d8.v1`,
+        key: "plugin:anthropic:catalog-adopt:claude:source",
         initialEntry,
       }),
     ).resolves.toEqual(expect.objectContaining({ sessionId: "session-1" }));
@@ -375,14 +375,14 @@ describe("plugin registry runtime config scope", () => {
     await expect(
       api.runtime.agent.session.createSessionEntry({
         cfg: {},
-        key: `ltfx.n.d366c10d05c9055cd305.v1`,
+        key: "agent:main:ordinary",
         initialEntry,
       }),
     ).rejects.toThrow('must start with "plugin:anthropic:"');
     await expect(
       api.runtime.agent.session.createSessionEntry({
         cfg: {},
-        key: `ltfx.n.d366c10d05c9055cd305.v1`,
+        key: "agent:main:ordinary",
         initialEntry: {
           ...initialEntry,
           agentHarnessId: "anthropic-harness",

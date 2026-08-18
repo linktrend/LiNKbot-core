@@ -363,7 +363,7 @@ function buildResponsesFailedEventSummary(
   return summary;
 }
 
-function isResponseFailedIdentifierKey(key: (string)): boolean {
+function isResponseFailedIdentifierKey(key: string): boolean {
   const normalized = key.replace(/[-_\s]/g, "").toLowerCase();
   return (
     normalized === "requestid" ||
@@ -1846,7 +1846,7 @@ export function createOpenAIResponsesTransportStreamFn(): StreamFn {
       };
       let firstEventAbort: ReturnType<typeof createFirstStreamEventAbortController> | undefined;
       try {
-        const apiKey = (options?.apiKey || getEnvApiKey(model.provider) || "";)
+        const apiKey = options?.apiKey || getEnvApiKey(model.provider) || "";
         const turnState = resolveProviderTransportTurnState(model, {
           sessionId: options?.sessionId,
           turnId: randomUUID(),
@@ -2246,7 +2246,7 @@ export function createAzureOpenAIResponsesTransportStreamFn(): StreamFn {
       };
       let firstEventAbort: ReturnType<typeof createFirstStreamEventAbortController> | undefined;
       try {
-        const apiKey = (options?.apiKey || getEnvApiKey(model.provider) || "";)
+        const apiKey = options?.apiKey || getEnvApiKey(model.provider) || "";
         const turnState = resolveProviderTransportTurnState(model, {
           sessionId: options?.sessionId,
           turnId: randomUUID(),

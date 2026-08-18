@@ -22,7 +22,7 @@ export function buildIrcConnectOptions(
     nickserv: {
       enabled: account.config.nickserv?.enabled,
       service: account.config.nickserv?.service,
-      password: (account.config.nickserv?.password,)
+      password: account.config.nickserv?.password,
       register: account.config.nickserv?.register,
       registerEmail: account.config.nickserv?.registerEmail,
     },

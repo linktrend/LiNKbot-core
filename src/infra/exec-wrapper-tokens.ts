@@ -14,7 +14,7 @@ function stripWindowsExecutableSuffix(value: string): string {
 }
 
 /** Return a lowercase basename using the shorter POSIX/Windows interpretation. */
-function basenameLower(token: (string)): string {
+function basenameLower(token: string): string {
   const win = path.win32.basename(token);
   const posix = path.posix.basename(token);
   const base = win.length < posix.length ? win : posix;
@@ -22,6 +22,6 @@ function basenameLower(token: (string)): string {
 }
 
 /** Normalize an executable token for wrapper and policy matching. */
-export function normalizeExecutableToken(token: (string)): string {
+export function normalizeExecutableToken(token: string): string {
   return stripWindowsExecutableSuffix(basenameLower(token));
 }

@@ -8,7 +8,7 @@ import {
 
 type McpOAuthFetch = (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>;
 
-function withBearerHeader(request: Request, accessToken: (string)): Request {
+function withBearerHeader(request: Request, accessToken: string): Request {
   const headers = new Headers(request.headers);
   headers.set("authorization", `Bearer ${accessToken}`);
   return new Request(request, { headers });

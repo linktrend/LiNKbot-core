@@ -108,7 +108,7 @@ function resolveKimiModel(kimi?: KimiConfig): string {
   return model || DEFAULT_KIMI_SEARCH_MODEL;
 }
 
-function trimTrailingSlashes(url: (string)): string {
+function trimTrailingSlashes(url: string): string {
   return url.replace(/\/+$/, "");
 }
 

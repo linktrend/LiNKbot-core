@@ -64,7 +64,7 @@ describe("Zalo pairing lifecycle", () => {
           const { first, replay } = await postWebhookReplay({
             baseUrl,
             path: "/hooks/zalo",
-            secret: `ltfx.n.f75778f7425be4db0369.v1`,
+            secret: "supersecret",
             payload: createTextUpdate({
               messageId: `zalo-pairing-${Date.now()}`,
               userId: "user-unauthorized",
@@ -126,7 +126,7 @@ describe("Zalo pairing lifecycle", () => {
           const { first, replay } = await postWebhookReplay({
             baseUrl,
             path: "/hooks/zalo",
-            secret: `ltfx.n.f75778f7425be4db0369.v1`,
+            secret: "supersecret",
             payload: createTextUpdate({
               messageId: `zalo-pairing-existing-${Date.now()}`,
               userId: "user-unauthorized",
@@ -175,7 +175,7 @@ describe("Zalo pairing lifecycle", () => {
           const { first, replay } = await postWebhookReplay({
             baseUrl,
             path: "/hooks/zalo",
-            secret: `ltfx.n.f75778f7425be4db0369.v1`,
+            secret: "supersecret",
             payload: createTextUpdate({
               messageId: `zalo-pairing-retry-${Date.now()}`,
               userId: "user-unauthorized",

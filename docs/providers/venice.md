@@ -45,7 +45,7 @@ Anonymized models are not fully private. Venice strips metadata before forwardin
       </Tab>
       <Tab title="Environment variable">
         ```bash
-        export VENICE_API_KEY="${ltfx.n.a393213d134db8c41925.v1}"
+        export VENICE_API_KEY="vapi_xxxxxxxxxxxx"
         ```
       </Tab>
       <Tab title="Non-interactive">
@@ -222,7 +222,7 @@ More help: [Troubleshooting](/help/troubleshooting) and [FAQ](/help/faq).
   <Accordion title="Config file example">
     ```json5
     {
-      env: { VENICE_API_KEY: "${ltfx.n.5d46c30f11d7d50491c6.v1}" },
+      env: { VENICE_API_KEY: "vapi_..." },
       agents: { defaults: { model: { primary: "venice/kimi-k2-5" } } },
       models: {
         mode: "merge",

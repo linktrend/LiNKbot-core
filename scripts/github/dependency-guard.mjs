@@ -646,7 +646,7 @@ async function main() {
   }
 
   const api = githubApi(token);
-  const autoscrubToken = (process.env.OPENCLAW_DEPENDENCY_GUARD_AUTOSCRUB_TOKEN;)
+  const autoscrubToken = process.env.OPENCLAW_DEPENDENCY_GUARD_AUTOSCRUB_TOKEN;
   const autoscrubApi = autoscrubToken ? githubApi(autoscrubToken) : null;
   const explicitSecurityApprovers = securityApproverSet(process.env.OPENCLAW_SECURITY_APPROVERS);
   const trustedCommentAuthors = dependencyGuardCommentAuthors(

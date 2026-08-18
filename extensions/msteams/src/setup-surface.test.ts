@@ -179,7 +179,7 @@ describe("msteams setup surface", () => {
           msteams: {
             enabled: true,
             appId: "app-id",
-            appPassword: `ltfx.n.c0741d74e1d41a97476c.v1`,
+            appPassword: "app-password",
             tenantId: "tenant-id",
           },
         },
@@ -189,15 +189,15 @@ describe("msteams setup surface", () => {
 
   it("revalidates before delegated OAuth and immediately before saving tokens", async () => {
     const tokens = {
-      accessToken: `ltfx.n.3f16bed7089f4653e5ef.v1`,
-      refreshToken: `ltfx.n.0eb17643d4e926116378.v1`,
+      accessToken: "access-token",
+      refreshToken: "refresh-token",
       expiresAt: Date.now() + 60_000,
       scopes: ["User.Read"],
     };
     resolveMSTeamsCredentials.mockReturnValue({
       type: "secret",
       appId: "app-id",
-      appPassword: `ltfx.n.c0741d74e1d41a97476c.v1`,
+      appPassword: "app-password",
       tenantId: "tenant-id",
     });
     hasConfiguredMSTeamsCredentials.mockReturnValue(true);
@@ -238,13 +238,13 @@ describe("msteams setup surface", () => {
     resolveMSTeamsCredentials.mockReturnValue({
       type: "secret",
       appId: "app-id",
-      appPassword: `ltfx.n.c0741d74e1d41a97476c.v1`,
+      appPassword: "app-password",
       tenantId: "tenant-id",
     });
     hasConfiguredMSTeamsCredentials.mockReturnValue(true);
     loginMSTeamsDelegated.mockResolvedValue({
-      accessToken: `ltfx.n.3f16bed7089f4653e5ef.v1`,
-      refreshToken: `ltfx.n.0eb17643d4e926116378.v1`,
+      accessToken: "access-token",
+      refreshToken: "refresh-token",
       expiresAt: Date.now() + 60_000,
       scopes: ["User.Read"],
     });

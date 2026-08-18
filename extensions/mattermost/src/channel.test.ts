@@ -622,7 +622,7 @@ describe("mattermostPlugin", () => {
             accounts: {
               alerts: {
                 replyToMode: "all",
-                botToken: `ltfx.n.f86de021b56c190634de.v1`,
+                botToken: "alerts-token",
                 baseUrl: "https://alerts.example.com",
               },
             },
@@ -668,7 +668,7 @@ describe("mattermostPlugin", () => {
         channels: {
           mattermost: {
             enabled: true,
-            botToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+            botToken: "test-token",
             baseUrl: "https://chat.example.com",
           },
         },
@@ -699,7 +699,7 @@ describe("mattermostPlugin", () => {
         channels: {
           mattermost: {
             enabled: true,
-            botToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+            botToken: "test-token",
             baseUrl: "https://chat.example.com",
           },
         },
@@ -715,7 +715,7 @@ describe("mattermostPlugin", () => {
         channels: {
           mattermost: {
             enabled: true,
-            botToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+            botToken: "test-token",
             baseUrl: "https://chat.example.com",
             actions: { reactions: false },
           },
@@ -736,7 +736,7 @@ describe("mattermostPlugin", () => {
             accounts: {
               default: {
                 enabled: true,
-                botToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+                botToken: "test-token",
                 baseUrl: "https://chat.example.com",
                 actions: { reactions: true },
               },
@@ -758,13 +758,13 @@ describe("mattermostPlugin", () => {
             accounts: {
               default: {
                 enabled: true,
-                botToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+                botToken: "test-token",
                 baseUrl: "https://chat.example.com",
                 actions: { reactions: false },
               },
               work: {
                 enabled: true,
-                botToken: `ltfx.n.488dc3c9ef1e2576bc04.v1`,
+                botToken: "work-token",
                 baseUrl: "https://chat.example.com",
                 actions: { reactions: true },
               },
@@ -786,7 +786,7 @@ describe("mattermostPlugin", () => {
             accounts: {
               default: {
                 enabled: true,
-                botToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+                botToken: "test-token",
                 baseUrl: "https://chat.example.com",
                 actions: { reactions: false },
               },
@@ -1663,7 +1663,7 @@ describe("mattermostPlugin", () => {
       const cfg = {
         channels: {
           mattermost: {
-            botToken: `ltfx.n.f05075935db91f07597f.v1`,
+            botToken: "resolved-bot-token",
             baseUrl: "https://chat.example.com",
           },
         },

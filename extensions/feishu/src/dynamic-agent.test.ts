@@ -403,7 +403,7 @@ describe("maybeCreateDynamicAgent", () => {
     const currentCfg = {
       channels: {
         feishu: {
-          appSecret: `ltfx.n.718eb06c3dfb841853f6.v1`,
+          appSecret: "resolved-secret",
           dynamicAgentCreation: createDynamicConfig(),
         },
       },

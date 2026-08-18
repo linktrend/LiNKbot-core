@@ -29,7 +29,7 @@ async function attemptForgedBootstrap(port: number, identityPath: string) {
   try {
     const res = await connectReq(ws, {
       skipDefaultAuth: true,
-      bootstrapToken: `ltfx.n.514f38bacf997580141d.v1`,
+      bootstrapToken: "forged-bootstrap-token",
       deviceIdentityPath: identityPath,
     });
     return res;

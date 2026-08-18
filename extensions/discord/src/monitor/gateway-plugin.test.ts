@@ -155,7 +155,7 @@ describe("createDiscordGatewayPlugin", () => {
         fetchImpl: async () =>
           new Response(
             JSON.stringify({
-              url: `ltfx.n.370813cfdc89da27d567.v1`,
+              url: "wss://gateway.discord.gg",
               shards: 1,
               session_start_limit: {
                 total: 1000,
@@ -167,7 +167,7 @@ describe("createDiscordGatewayPlugin", () => {
           ),
       }),
     ).resolves.toEqual({
-      url: `ltfx.n.370813cfdc89da27d567.v1`,
+      url: "wss://gateway.discord.gg",
       shards: 1,
       session_start_limit: {
         total: 1000,
@@ -185,7 +185,7 @@ describe("createDiscordGatewayPlugin", () => {
         fetchImpl: async () =>
           new Response(
             JSON.stringify({
-              url: `ltfx.n.370813cfdc89da27d567.v1`,
+              url: "wss://gateway.discord.gg",
               shards: 0,
               session_start_limit: {
                 total: 1000,

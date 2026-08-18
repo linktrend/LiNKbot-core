@@ -1131,7 +1131,7 @@ describe("loadOpenClawPlugins", () => {
               capabilities: { chatTypes: ["direct"] },
               config: {
                 listAccountIds: () => ["default"],
-                resolveAccount: () => ({ accountId: "default", token: `ltfx.n.20158224750041d653cd.v1` }),
+                resolveAccount: () => ({ accountId: "default", token: "configured" }),
               },
               outbound: { deliveryMode: "direct" },
             },
@@ -1149,7 +1149,7 @@ describe("loadOpenClawPlugins", () => {
         channels: {
           "nested-default-channel": {
             enabled: true,
-            token: `ltfx.n.20158224750041d653cd.v1`,
+            token: "configured",
           },
         },
         plugins: {

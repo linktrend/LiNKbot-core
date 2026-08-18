@@ -1,6 +1,6 @@
 {
   "tool": "brain_search",
-  "authToken": "${ltfx.n.aee2fbd3bbda68f5b3dc.v1}",
+  "authToken": "fake-valid-token",
   "arguments": {
     "query": "test finding",
     "limit": 3

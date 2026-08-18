@@ -57,7 +57,7 @@ type GatewayStartupStateEmitterMock = ReturnType<
   typeof vi.fn<(code: string, message: string, cfg: OpenClawConfig) => void>
 >;
 
-const RESOLVED_GATEWAY_TOKEN = `ltfx.n.d0220646691542e8f553.v1`;
+const RESOLVED_GATEWAY_TOKEN = "resolved-gateway-token";
 const autoCleanupTempDirs = useAutoCleanupTempDirTracker(afterEach);
 
 function activateSecretsRuntimeSnapshotForTest(snapshot: PreparedSecretsRuntimeSnapshot): void {
@@ -76,7 +76,7 @@ function gatewayTokenConfig(config: OpenClawConfig): OpenClawConfig {
       auth: {
         ...config.gateway?.auth,
         mode: config.gateway?.auth?.mode ?? "token",
-        token: (config.gateway?.auth?.token ?? "startup-test-token",)
+        token: config.gateway?.auth?.token ?? "startup-test-token",
       },
     },
   };
@@ -783,7 +783,7 @@ describe("gateway startup config secret preflight", () => {
 
   it("publishes prepared degradation only after the reload transaction commits", async () => {
     const initial = preparedSnapshot(gatewayTokenConfig({}));
-    const degradedSnapshot = (token: (string)): PreparedSecretsRuntimeSnapshot => ({
+    const degradedSnapshot = (token: string): PreparedSecretsRuntimeSnapshot => ({
       ...preparedSnapshotWithGatewayToken(initial.sourceConfig, token),
       warnings: [
         {
@@ -2020,7 +2020,7 @@ describe("gateway startup config secret preflight", () => {
       },
     });
     const activeSnapshot = preparedSnapshot(sourceConfig);
-    activeSnapshot.config.models!.providers!.openai!.apiKey = `ltfx.n.4c806362b613f7496abf.v1`;
+    activeSnapshot.config.models!.providers!.openai!.apiKey = "test-api-key";
     activateSecretsRuntimeSnapshotForTest(activeSnapshot);
     associateSecretResolutionErrorOwners(missingSecretError, [
       {
@@ -2502,7 +2502,7 @@ describe("gateway startup config secret preflight", () => {
       }),
       authOverride: {
         mode: "password",
-        password: `ltfx.n.ced1b27e1c49aed55891.v1`, // pragma: allowlist secret
+        password: "override-password", // pragma: allowlist secret
       },
       activateRuntimeSecrets: runtimeSecretsActivatorForTest({
         prepareRuntimeSecretsSnapshot,
@@ -2760,7 +2760,7 @@ describe("gateway startup config secret preflight", () => {
             "openai:default": {
               type: "api_key",
               provider: "openai",
-              key: `ltfx.n.20764750b6e95a3477ae.v1`,
+              key: "newer-context-key",
             },
           },
         }),
@@ -2774,7 +2774,7 @@ describe("gateway startup config secret preflight", () => {
       const active = secretsRuntime.getActiveSecretsRuntimeSnapshot();
       expect(active?.sourceConfig.gateway?.port).toBe(19_023);
       expect(active?.authStores[0]?.store.profiles["openai:default"]).toMatchObject({
-        key: `ltfx.n.20764750b6e95a3477ae.v1`,
+        key: "newer-context-key",
       });
     } finally {
       clearImportedSecretsRuntimeSnapshot?.();
@@ -2787,7 +2787,7 @@ describe("gateway startup config secret preflight", () => {
     const credential = {
       type: "api_key" as const,
       provider: "openai",
-      key: `ltfx.n.5a9666714600582601b6.v1`,
+      key: "live-auth-store-key",
     };
     setRuntimeAuthProfileStoreSnapshot(
       { version: 1, profiles: { "openai:default": credential } },

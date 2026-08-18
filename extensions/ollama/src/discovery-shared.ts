@@ -15,7 +15,7 @@ import { readProviderBaseUrl } from "./provider-base-url.js";
 import { resolveOllamaApiBase } from "./provider-models.js";
 
 export const OLLAMA_PROVIDER_ID = "ollama";
-export const OLLAMA_DEFAULT_API_KEY = `ltfx.n.18ab0c9c00ad3478e4db.v1`;
+export const OLLAMA_DEFAULT_API_KEY = "ollama-local";
 
 export type OllamaPluginConfig = {
   discovery?: {

@@ -1449,8 +1449,8 @@ describe("doctor legacy state migrations", () => {
         cleanupSource: "rename",
         readEntries: () => [
           { key: "old", value: { body: "old" } },
-          { key: `ltfx.n.afafb16ac47b9b3da982.v1`, value: { body: "stale" } },
-          { key: `ltfx.n.94fa3e5538d57f71937a.v1`, value: { body: "overflow" } },
+          { key: "existing", value: { body: "stale" } },
+          { key: "overflow", value: { body: "overflow" } },
         ],
       },
       {
@@ -1624,7 +1624,7 @@ describe("doctor legacy state migrations", () => {
         maxEntries: 4,
         scopeKey: "",
         cleanupSource: "rename",
-        readEntries: () => [{ key: `ltfx.n.afafb16ac47b9b3da982.v1`, value: { offset: 20 } }],
+        readEntries: () => [{ key: "existing", value: { offset: 20 } }],
         shouldReplaceExistingEntry: (params: { existingValue: unknown; incomingValue: unknown }) =>
           (params.incomingValue as { offset: number }).offset >
           (params.existingValue as { offset: number }).offset,
@@ -1756,8 +1756,8 @@ describe("doctor legacy state migrations", () => {
         scopeKey: "",
         cleanupSource: "rename",
         readEntries: () => [
-          { key: `ltfx.n.dc00bbb5b19bb14c2cd6.v1`, value: { body: "old" }, timestamp: 1_000 },
-          { key: `ltfx.n.c6183e03921709812735.v1`, value: { body: "new" }, timestamp: 2_000 },
+          { key: "legacy-old", value: { body: "old" }, timestamp: 1_000 },
+          { key: "legacy-new", value: { body: "new" }, timestamp: 2_000 },
         ],
       },
     ];
@@ -1813,8 +1813,8 @@ describe("doctor legacy state migrations", () => {
         scopeKey: "",
         cleanupSource: "rename",
         readEntries: () => [
-          { key: `ltfx.n.dc00bbb5b19bb14c2cd6.v1`, value: { body: "old" }, timestamp: 1_000 },
-          { key: `ltfx.n.c6183e03921709812735.v1`, value: { body: "new" }, timestamp: 2_000 },
+          { key: "legacy-old", value: { body: "old" }, timestamp: 1_000 },
+          { key: "legacy-new", value: { body: "new" }, timestamp: 2_000 },
         ],
       },
     ];
@@ -1868,8 +1868,8 @@ describe("doctor legacy state migrations", () => {
         scopeKey: "",
         cleanupSource: "rename",
         readEntries: () => [
-          { key: `ltfx.n.dc00bbb5b19bb14c2cd6.v1`, value: { body: "old" }, timestamp: 1_000 },
-          { key: `ltfx.n.c6183e03921709812735.v1`, value: { body: "new" }, timestamp: 2_000 },
+          { key: "legacy-old", value: { body: "old" }, timestamp: 1_000 },
+          { key: "legacy-new", value: { body: "new" }, timestamp: 2_000 },
         ],
       },
     ];
@@ -1939,7 +1939,7 @@ describe("doctor legacy state migrations", () => {
         maxEntries: 1,
         scopeKey: "",
         cleanupSource: "rename",
-        readEntries: () => [{ key: `ltfx.n.efe63502a5c7d721e395.v1`, value: { body: "legacy" }, timestamp: 1_000 }],
+        readEntries: () => [{ key: "legacy-only", value: { body: "legacy" }, timestamp: 1_000 }],
       },
     ];
 
@@ -3007,7 +3007,7 @@ describe("doctor legacy state migrations", () => {
     writeJson5(sourcePath, {
       version: 1,
       socket: {
-        token: `ltfx.n.8b7d507cddc8d8950f28.v1`,
+        token: "legacy-token",
       },
       defaults: {
         security: "deny",
@@ -3040,7 +3040,7 @@ describe("doctor legacy state migrations", () => {
     writeJson5(sourcePath, {
       version: 1,
       socket: {
-        token: `ltfx.n.8b7d507cddc8d8950f28.v1`,
+        token: "legacy-token",
       },
       defaults: {
         security: "deny",
@@ -3210,7 +3210,7 @@ describe("doctor legacy state migrations", () => {
         {
           pluginId: "discord",
           namespace: "components",
-          key: `ltfx.n.0b60af43f5fd62a7e195.v1`,
+          key: "interaction:1",
           value: { ok: false },
           createdAt: 3000,
           expiresAt: null,
@@ -3262,7 +3262,7 @@ describe("doctor legacy state migrations", () => {
         {
           pluginId: "discord",
           namespace: "components",
-          key: `ltfx.n.0b60af43f5fd62a7e195.v1`,
+          key: "interaction:1",
           value: { ok: false },
           createdAt: 1000,
           expiresAt: null,
@@ -3278,7 +3278,7 @@ describe("doctor legacy state migrations", () => {
     const result = await runLegacyStateMigrations({ detected });
 
     expect(result.warnings).toStrictEqual([
-      "Left plugin-state sidecar in place because 1 row differs from shared state without a newer canonical timestamp. First key: (discord/components/interaction:1",)
+      "Left plugin-state sidecar in place because 1 row differs from shared state without a newer canonical timestamp. First key: discord/components/interaction:1",
     ]);
     expect(fs.existsSync(sourcePath)).toBe(true);
     expect(fs.existsSync(`${sourcePath}.migrated`)).toBe(false);
@@ -3316,7 +3316,7 @@ describe("doctor legacy state migrations", () => {
         {
           pluginId: "discord",
           namespace: "components",
-          key: `ltfx.n.0b60af43f5fd62a7e195.v1`,
+          key: "interaction:1",
           value: { ok: false },
           createdAt: 1000,
           expiresAt: null,
@@ -3332,7 +3332,7 @@ describe("doctor legacy state migrations", () => {
     const result = await runLegacyStateMigrations({ detected });
 
     expect(result.warnings).toStrictEqual([
-      "Left plugin-state sidecar in place because 1 row differs from shared state without a newer canonical timestamp. First key: (discord/components/interaction:1",)
+      "Left plugin-state sidecar in place because 1 row differs from shared state without a newer canonical timestamp. First key: discord/components/interaction:1",
     ]);
     expect(fs.existsSync(sourcePath)).toBe(true);
     expect(fs.existsSync(`${sourcePath}.migrated`)).toBe(false);
@@ -3346,7 +3346,7 @@ describe("doctor legacy state migrations", () => {
         {
           pluginId: "discord",
           namespace: "components",
-          key: `ltfx.n.0b60af43f5fd62a7e195.v1`,
+          key: "interaction:1",
           value: { ok: true },
           createdAt: 1000,
           expiresAt: null,
@@ -3374,7 +3374,7 @@ describe("doctor legacy state migrations", () => {
         {
           pluginId: "discord",
           namespace: "components",
-          key: `ltfx.n.0b60af43f5fd62a7e195.v1`,
+          key: "interaction:1",
           value: { ok: false },
           expiresAt: 1,
         },

@@ -30,7 +30,7 @@ class DeviceAuthStoreTest {
       gatewayId = "gateway-a",
       deviceId = " Device-1 ",
       role = " Operator ",
-      token = "${ltfx.n.45d44dcc6ac8c25556d8.v1}",
+      token = " operator-token ",
       scopes = listOf("operator.write", "operator.read", "operator.write", " "),
     )
 

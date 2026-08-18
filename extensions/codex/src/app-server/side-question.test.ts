@@ -414,7 +414,7 @@ function sideParams(overrides: Partial<Parameters<typeof runCodexAppServerSideQu
               [authProfileId]: {
                 type: "token",
                 provider: "openai",
-                token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+                token: "test-token",
                 expires: Date.now() + 60_000,
               },
             }
@@ -562,7 +562,7 @@ describe("runCodexAppServerSideQuestion", () => {
     isCodexAppServerNativeAuthProfileMock.mockReturnValue(true);
     getSharedCodexAppServerClientMock.mockResolvedValue(createFakeClient());
     refreshCodexAppServerAuthTokensMock.mockResolvedValue({
-      accessToken: `ltfx.n.3f16bed7089f4653e5ef.v1`,
+      accessToken: "access-token",
       chatgptAccountId: "account-1",
       chatgptPlanType: "plus",
     });
@@ -833,7 +833,7 @@ describe("runCodexAppServerSideQuestion", () => {
     params.preparedRuntimeAuth.authProfileStore.profiles["openai:work"] = {
       type: "api_key",
       provider: "openai",
-      key: `ltfx.n.e75390981221aacccfa9.v1`,
+      key: "platform-key",
     };
 
     await expect(runCodexAppServerSideQuestion(params)).rejects.toThrow(
@@ -874,7 +874,7 @@ describe("runCodexAppServerSideQuestion", () => {
 
     expect(getSharedCodexAppServerClientMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        preparedAuth: { kind: "api-key", apiKey: `ltfx.n.e75390981221aacccfa9.v1` },
+        preparedAuth: { kind: "api-key", apiKey: "platform-key" },
       }),
     );
     expect(mockCall(getSharedCodexAppServerClientMock)[0]).not.toHaveProperty("authProfileId");

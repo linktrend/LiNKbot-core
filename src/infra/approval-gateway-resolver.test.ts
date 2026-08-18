@@ -50,7 +50,7 @@ describe("resolveApprovalOverGateway", () => {
 
   it("resolves an explicit exec kind through the canonical method", async () => {
     const result = await resolveApprovalOverGateway({
-      cfg: { gateway: { auth: { token: `ltfx.n.50b0940ad7c26e58a17c.v1` } } } as never,
+      cfg: { gateway: { auth: { token: "cfg-token" } } } as never,
       approvalId: "approval-1",
       approvalKind: "exec",
       decision: "allow-once",
@@ -64,7 +64,7 @@ describe("resolveApprovalOverGateway", () => {
       "gateway client",
     );
     expect(gatewayClientOptions).toEqual({
-      config: { gateway: { auth: { token: `ltfx.n.50b0940ad7c26e58a17c.v1` } } },
+      config: { gateway: { auth: { token: "cfg-token" } } },
       gatewayUrl: "ws://gateway.example.test",
       clientDisplayName: "QuietChat approval (default)",
     });

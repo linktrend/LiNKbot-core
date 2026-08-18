@@ -578,7 +578,7 @@ describe("external cli oauth resolution", () => {
     mocks.readClaudeCliCredentialsCached.mockReturnValue({
       type: "token",
       provider: "anthropic",
-      token: `ltfx.n.848731659c735aecf96d.v1`,
+      token: "claude-cli-token",
       expires: Date.now() + 5 * 24 * 60 * 60_000,
     });
 

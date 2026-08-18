@@ -73,11 +73,11 @@ struct PushBuildConfig {
     private init(readValue: (String) -> Any?) {
         self.mode = Self.readEnum(
             readValue: readValue,
-            key: "${ltfx.n.c43d5689cec134ff74cf.v1}",
+            key: "OpenClawPushMode",
             fallback: .localSandbox)
         let relayBaseURLOverride = Self.readURL(
             readValue: readValue,
-            key: "${ltfx.n.1797a5dd961212a2f2be.v1}")
+            key: "OpenClawPushRelayBaseURL")
         switch self.mode {
         case .localSandbox:
             self.transport = .direct

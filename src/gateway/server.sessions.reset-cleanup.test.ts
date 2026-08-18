@@ -969,7 +969,7 @@ test("sessions.reset does not emit lifecycle events when key does not exist", as
     key: string;
     entry: { sessionId: string };
   }>("sessions.reset", {
-    key: `ltfx.n.139697843dcb9e58753c.v1`,
+    key: "agent:main:subagent:missing",
   });
 
   expect(reset.ok).toBe(true);
@@ -991,7 +991,7 @@ test("sessions.reset emits subagent targetKind for subagent sessions", async () 
     key: string;
     entry: { sessionId: string };
   }>("sessions.reset", {
-    key: `ltfx.n.f3fd014fb107b4395e4c.v1`,
+    key: "agent:main:subagent:worker",
   });
   expect(reset.ok).toBe(true);
   expect(reset.payload?.key).toBe("agent:main:subagent:worker");

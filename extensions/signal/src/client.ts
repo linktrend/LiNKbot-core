@@ -48,7 +48,7 @@ function createSignalSseAbortError(): Error {
   return error;
 }
 
-function normalizeBaseUrl(url: (string)): string {
+function normalizeBaseUrl(url: string): string {
   const trimmed = url.trim();
   if (!trimmed) {
     throw new Error("Signal base URL is required");
@@ -59,7 +59,7 @@ function normalizeBaseUrl(url: (string)): string {
   return `http://${trimmed}`.replace(/\/+$/, "");
 }
 
-function parseSignalBaseUrl(url: (string)): URL {
+function parseSignalBaseUrl(url: string): URL {
   const parsed = new URL(normalizeBaseUrl(url));
   if (parsed.username || parsed.password) {
     throw new Error("Signal base URL must not include credentials");

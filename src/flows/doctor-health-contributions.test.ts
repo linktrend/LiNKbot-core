@@ -85,7 +85,7 @@ const mocks = vi.hoisted(() => ({
   note: vi.fn(),
   loadModelCatalog: vi.fn(async () => []),
   findModelCatalogEntry: vi.fn(() => ({ contextTokens: 200_000 })),
-  getModelRefStatus: vi.fn(() => ({ allowed: true, inCatalog: true, key: `ltfx.n.9a8f4a62b182ff6404e9.v1` })),
+  getModelRefStatus: vi.fn(() => ({ allowed: true, inCatalog: true, key: "openai/gpt-5.5" })),
   resolveConfiguredModelRef: vi.fn(() => ({ provider: "openai", model: "gpt-5.5" })),
   resolveDefaultModelForAgent: vi.fn(() => ({ provider: "openai", model: "gpt-5.5" })),
   resolveHooksGmailModel: vi.fn(() => ({ provider: "openai", model: "gpt-5.5" })),
@@ -631,7 +631,7 @@ describe("doctor health contributions", () => {
     mocks.getModelRefStatus.mockReturnValue({
       allowed: true,
       inCatalog: true,
-      key: `ltfx.n.9a8f4a62b182ff6404e9.v1`,
+      key: "openai/gpt-5.5",
     });
     mocks.resolveConfiguredModelRef.mockReset();
     mocks.resolveConfiguredModelRef.mockReturnValue({ provider: "openai", model: "gpt-5.5" });
@@ -821,7 +821,7 @@ describe("doctor health contributions", () => {
       gateway: {
         mode: "remote",
         remote: {
-          url: `ltfx.n.2ec8b0b0f4c7fc92b531.v1`,
+          url: "wss://gateway.example",
         },
         auth: {
           mode: "token",
@@ -1408,7 +1408,7 @@ describe("doctor health contributions", () => {
       cfg: {
         gateway: {
           mode: "local",
-          auth: { mode: "token", token: `ltfx.n.683e2dc7e0f0dc24fffa.v1` },
+          auth: { mode: "token", token: "exec-token" },
         },
       },
       sourceConfigValid: true,
@@ -1626,7 +1626,7 @@ describe("doctor health contributions", () => {
       cfg: {
         gateway: {
           mode: "local",
-          auth: { mode: "token", token: `ltfx.n.683e2dc7e0f0dc24fffa.v1` },
+          auth: { mode: "token", token: "exec-token" },
         },
       },
       sourceConfigValid: true,
@@ -3183,7 +3183,7 @@ describe("doctor health contributions", () => {
       gateway: {
         auth: {
           mode: "token",
-          token: `ltfx.n.857616fea76d4919d9cb.v1`,
+          token: "recovered-token",
         },
       },
     };

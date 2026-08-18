@@ -379,7 +379,7 @@ describe("handleQaInbound", () => {
                 id: "attachment-2",
                 kind: "file",
                 mimeType: "text/plain",
-                url: `ltfx.n.34f0bbf396ddbb09b050.v1`,
+                url: "data:text/plain;base64,SGVsbG8=",
               },
             ],
           },

@@ -215,7 +215,7 @@ describe("before_tool_call terminal block semantics", () => {
           pluginId: "failing",
           result: undefined,
           handler: () => {
-            throw new Error("boom\nforged\tsecret ltfx.n.aee01e3fb1b4c6a59129.v1");
+            throw new Error("boom\nforged\tsecret sk-test1234567890");
           },
         },
       ],
@@ -229,7 +229,7 @@ describe("before_tool_call terminal block semantics", () => {
       /^\[hooks\] message_received handler from failing failed: boom forged secret/,
     );
     expect(message).not.toContain("\n");
-    expect(message).not.toContain("ltfx.n.aee01e3fb1b4c6a59129.v1");
+    expect(message).not.toContain("sk-test1234567890");
   });
 });
 

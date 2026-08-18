@@ -444,7 +444,7 @@ describe("anthropic cli migration", () => {
       {
         type: "token",
         provider: "anthropic",
-        token: `ltfx.n.fea84c89725c7fdf3a72.v1`,
+        token: "bearer-token",
         expires: 123,
       },
     );
@@ -455,7 +455,7 @@ describe("anthropic cli migration", () => {
         credential: {
           type: "token",
           provider: "claude-cli",
-          token: `ltfx.n.fea84c89725c7fdf3a72.v1`,
+          token: "bearer-token",
           expires: 123,
         },
       },

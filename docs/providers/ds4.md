@@ -100,7 +100,7 @@ Use this config when ds4 is already running on `127.0.0.1:18000`.
     providers: {
       ds4: {
         baseUrl: "http://127.0.0.1:18000/v1",
-        apiKey: "${ltfx.n.59eca1c1929beea67684.v1}",
+        apiKey: "ds4-local",
         api: "openai-completions",
         timeoutSeconds: 300,
         models: [
@@ -143,7 +143,7 @@ OpenClaw can start ds4 only when a `ds4/...` model is selected. Add
     providers: {
       ds4: {
         baseUrl: "http://127.0.0.1:18000/v1",
-        apiKey: "${ltfx.n.59eca1c1929beea67684.v1}",
+        apiKey: "ds4-local",
         api: "openai-completions",
         timeoutSeconds: 300,
         localService: {

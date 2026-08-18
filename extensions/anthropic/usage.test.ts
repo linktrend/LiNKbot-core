@@ -72,7 +72,7 @@ describe("Anthropic provider usage", () => {
 
     const auth = await resolveAnthropicUsageAuth({
       config: {},
-      env: { ANTHROPIC_ADMIN_API_KEY: `ltfx.n.a7dc48f08d1e409744ba.v1` },
+      env: { ANTHROPIC_ADMIN_API_KEY: "sk-ant-admin-test" },
       provider: "anthropic",
       resolveApiKeyFromConfigAndStore: () => undefined,
       resolveOAuthToken: async () => null,
@@ -116,7 +116,7 @@ describe("Anthropic provider usage", () => {
       expect(url.searchParams.get("bucket_width")).toBe("1d");
       expect((init as RequestInit).headers).toMatchObject({
         "anthropic-version": "2023-06-01",
-        "x-api-key": `ltfx.n.a7dc48f08d1e409744ba.v1`,
+        "x-api-key": "sk-ant-admin-test",
       });
     }
   });
@@ -124,13 +124,13 @@ describe("Anthropic provider usage", () => {
   it("uses explicit Admin API credentials before Claude OAuth", async () => {
     const result = await resolveAnthropicUsageAuth({
       config: {},
-      env: { ANTHROPIC_ADMIN_API_KEY: `ltfx.n.9e8758ab110f3b8610f2.v1` },
+      env: { ANTHROPIC_ADMIN_API_KEY: "sk-ant-admin-explicit" },
       provider: "anthropic",
-      resolveApiKeyFromConfigAndStore: () => "ltfx.n.84f642c57b968bc448fc.v1",
-      resolveOAuthToken: async () => ({ token: `ltfx.n.3bbc3a9700a71c6a53a3.v1` }),
+      resolveApiKeyFromConfigAndStore: () => "sk-ant-oat01-fallback",
+      resolveOAuthToken: async () => ({ token: "oauth-token" }),
     });
     expect(result).toEqual({
-      token: `ltfx.n.842e3af52600974a00aa.v1`,
+      token: 'openclaw:anthropic-admin:v1:{"token":"sk-ant-admin-explicit"}',
     });
   });
 
@@ -139,11 +139,11 @@ describe("Anthropic provider usage", () => {
       config: {},
       env: {},
       provider: "anthropic",
-      resolveApiKeyFromConfigAndStore: () => "ltfx.n.bd7a695809283085d249.v1",
+      resolveApiKeyFromConfigAndStore: () => "sk-ant-admin-profile",
       resolveOAuthToken: async () => null,
     });
     expect(result).toEqual({
-      token: `ltfx.n.9aa30a701f5c4efb408b.v1`,
+      token: 'openclaw:anthropic-admin:v1:{"token":"sk-ant-admin-profile"}',
     });
   });
 
@@ -152,21 +152,21 @@ describe("Anthropic provider usage", () => {
       config: {},
       env: {},
       provider: "anthropic",
-      resolveApiKeyFromConfigAndStore: () => "ltfx.n.595387d937103cb02140.v1",
+      resolveApiKeyFromConfigAndStore: () => "sk-ant-api03-inference",
       resolveApiKeyCandidatesFromConfigAndStore: async () => [
-        "ltfx.n.595387d937103cb02140.v1",
-        "ltfx.n.a41c80ae0a2b0cde34de.v1",
+        "sk-ant-api03-inference",
+        "sk-ant-admin-billing",
       ],
-      resolveOAuthToken: async () => ({ token: `ltfx.n.3bbc3a9700a71c6a53a3.v1` }),
+      resolveOAuthToken: async () => ({ token: "oauth-token" }),
     });
     expect(result).toEqual({
-      token: `ltfx.n.37595e4d15ff12b93711.v1`,
+      token: 'openclaw:anthropic-admin:v1:{"token":"sk-ant-admin-billing"}',
     });
   });
 
   it("falls back to the synced claude-cli OAuth profile when anthropic has none", async () => {
     const resolveOAuthToken = vi.fn(async (params?: { provider?: string }) =>
-      params?.provider === "claude-cli" ? { token: `ltfx.n.848731659c735aecf96d.v1` } : null,
+      params?.provider === "claude-cli" ? { token: "claude-cli-token" } : null,
     );
     const result = await resolveAnthropicUsageAuth({
       config: {},
@@ -175,7 +175,7 @@ describe("Anthropic provider usage", () => {
       resolveApiKeyFromConfigAndStore: () => undefined,
       resolveOAuthToken,
     });
-    expect(result).toEqual({ token: `ltfx.n.848731659c735aecf96d.v1` });
+    expect(result).toEqual({ token: "claude-cli-token" });
     expect(resolveOAuthToken).toHaveBeenNthCalledWith(1);
     expect(resolveOAuthToken).toHaveBeenNthCalledWith(2, { provider: "claude-cli" });
   });
@@ -188,7 +188,7 @@ describe("Anthropic provider usage", () => {
       config: {},
       env: {},
       provider: "anthropic",
-      token: `ltfx.n.3bbc3a9700a71c6a53a3.v1`,
+      token: "oauth-token",
       subscriptionType: "pro",
       rateLimitTier: "default_pro",
       timeoutMs: 5000,
@@ -212,7 +212,7 @@ describe("Anthropic provider usage", () => {
       config: {},
       env: {},
       provider: "anthropic",
-      token: `ltfx.n.3bbc3a9700a71c6a53a3.v1`,
+      token: "oauth-token",
       timeoutMs: 5000,
       fetchFn,
     });
@@ -257,7 +257,7 @@ describe("Anthropic provider usage", () => {
       config: {},
       env: {},
       provider: "anthropic",
-      token: `ltfx.n.3bbc3a9700a71c6a53a3.v1`,
+      token: "oauth-token",
       timeoutMs: 5000,
       fetchFn,
     });

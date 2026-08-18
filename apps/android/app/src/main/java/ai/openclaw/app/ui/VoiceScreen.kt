@@ -1058,7 +1058,7 @@ private fun VoiceTranscript(
     contentPadding = PaddingValues(bottom = 8.dp),
   ) {
     if (showThinking) {
-      item(key = "${ltfx.n.6ee16429668c2d820770.v1}") {
+      item(key = "thinking") {
         VoiceThinkingCard()
       }
     }

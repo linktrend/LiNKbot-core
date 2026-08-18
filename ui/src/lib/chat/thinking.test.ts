@@ -20,7 +20,7 @@ describe("chat thinking helpers", () => {
       resolveThinkingLevelInput(
         "ultra",
         {
-          key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+          key: "agent:main:main",
           kind: "direct",
           updatedAt: 1,
           thinkingLevels: [{ id: "ultra", label: "Ultra" }],
@@ -41,7 +41,7 @@ describe("chat thinking helpers", () => {
         defaults: { modelProvider: null, model: null, contextTokens: null },
         sessions: [
           {
-            key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+            key: "agent:main:main",
             kind: "direct",
             updatedAt: 1,
             thinkingLevel: "ultra",
@@ -75,7 +75,7 @@ describe("chat thinking helpers", () => {
         },
         sessions: [
           {
-            key: `ltfx.n.6d9217fe77c7f11d9cc9.v1`,
+            key: "agent:main:main",
             kind: "direct",
             updatedAt: 1,
             modelProvider: "openai",

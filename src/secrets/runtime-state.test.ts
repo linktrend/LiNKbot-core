@@ -54,7 +54,7 @@ describe("secrets runtime state", () => {
   });
 
   it("includes env shorthand SecretRefs in the reload contract", () => {
-    const configWithRef = (apiKey: (string)): OpenClawConfig => ({
+    const configWithRef = (apiKey: string): OpenClawConfig => ({
       models: {
         providers: {
           openai: {
@@ -117,7 +117,7 @@ describe("secrets runtime state", () => {
     };
     const snapshot: PreparedSecretsRuntimeSnapshot = {
       sourceConfig: { gateway: { auth: { mode: "token", token: secretRef } } },
-      config: { gateway: { auth: { mode: "token", token: `ltfx.n.a467fb9525e891a3f38e.v1` } } },
+      config: { gateway: { auth: { mode: "token", token: "resolved-debug-token" } } },
       authStores: [],
       authStoreCredentialsRevision: getRuntimeAuthProfileStoreCredentialsRevision(),
       warnings: [],
@@ -263,7 +263,7 @@ describe("secrets runtime state", () => {
     const credential = {
       type: "api_key" as const,
       provider: "openai",
-      key: `ltfx.n.8d271bb311e9dc5ea52f.v1`,
+      key: "sk-current",
     };
     setRuntimeAuthProfileStoreSnapshot(
       {
@@ -351,7 +351,7 @@ describe("secrets runtime state", () => {
     candidate.authStores[0]!.store.profiles["anthropic:candidate"] = {
       type: "api_key",
       provider: "anthropic",
-      key: `ltfx.n.d0654cee944d080f7890.v1`,
+      key: "sk-rejected-candidate",
     };
     expect(previous).not.toBeNull();
     expect(
@@ -477,8 +477,8 @@ describe("secrets runtime state", () => {
     ).toBe(true);
     const restored = getRuntimeAuthProfileStoreSnapshot(agentDir)?.profiles;
     expect(restored?.["provider-a:default"]).toMatchObject({ key: "a-old" });
-    expect(restored?.["provider-b:default"]).toMatchObject({ key: `ltfx.n.39085906ca0d8f67bd70.v1` });
-    expect(restored?.["provider-q:login"]).toMatchObject({ key: `ltfx.n.c1606ba87901231cb1cb.v1` });
+    expect(restored?.["provider-b:default"]).toMatchObject({ key: "b-external" });
+    expect(restored?.["provider-q:login"]).toMatchObject({ key: "q-external" });
     expect(restored?.["provider-x:candidate"]).toBeUndefined();
     const restoredStore = getRuntimeAuthProfileStoreSnapshot(agentDir);
     expect(restoredStore?.order?.provider).toEqual(["provider-q:login", "provider-b:default"]);
@@ -529,7 +529,7 @@ describe("secrets runtime state", () => {
     candidate.authStores[0]!.store.profiles["anthropic:candidate"] = {
       type: "api_key",
       provider: "anthropic",
-      key: `ltfx.n.d0654cee944d080f7890.v1`,
+      key: "sk-rejected-candidate",
     };
     expect(
       activateSecretsRuntimeSnapshotStateIfCurrent({
@@ -676,7 +676,7 @@ describe("secrets runtime state", () => {
       } else {
         expect(restored?.["provider-a:default"]).toMatchObject({ key: expectedAKey });
       }
-      expect(restored?.["provider-b:default"]).toMatchObject({ key: `ltfx.n.39085906ca0d8f67bd70.v1` });
+      expect(restored?.["provider-b:default"]).toMatchObject({ key: "b-external" });
       if (currentAExternal) {
         expect(getRuntimeAuthProfileStoreSnapshot(agentDir)?.runtimeExternalProfileIds).toContain(
           "provider-a:default",
@@ -779,12 +779,12 @@ describe("secrets runtime state", () => {
     const profileX = {
       type: "api_key" as const,
       provider: "openai",
-      key: `ltfx.n.4c2b136076036ecd19a0.v1`,
+      key: "sk-external-x",
     };
     const profileY = {
       type: "api_key" as const,
       provider: "openai",
-      key: `ltfx.n.eef10cda08f3fcea179b.v1`,
+      key: "sk-external-y",
     };
     activateSecretsRuntimeSnapshotState({
       snapshot: snapshot(
@@ -862,7 +862,7 @@ describe("secrets runtime state", () => {
         },
       });
       activateSecretsRuntimeSnapshotState({
-        snapshot: snapshot("ltfx.n.e61ff055d63f79e9841f.v1", "external", 19_001),
+        snapshot: snapshot("sk-external-old", "external", 19_001),
         refreshContext: null,
         refreshHandler: null,
       });
@@ -887,7 +887,7 @@ describe("secrets runtime state", () => {
         );
       }
       setRuntimeAuthProfileStoreSnapshot(
-        snapshot(mutateCandidateOwner ? "sk-candidate" : `ltfx.n.ab180f667d366099e52d.v1`, candidateOwner, 19_002)
+        snapshot(mutateCandidateOwner ? "sk-candidate" : "sk-descendant", candidateOwner, 19_002)
           .authStores[0]!.store,
         agentDir,
       );
@@ -905,7 +905,7 @@ describe("secrets runtime state", () => {
         expect(getRuntimeAuthProfileStoreSnapshot(agentDir)).toBeUndefined();
       } else {
         const restored = getRuntimeAuthProfileStoreSnapshot(agentDir);
-        expect(restored?.profiles["openai:x"]).toMatchObject({ key: `ltfx.n.e61ff055d63f79e9841f.v1` });
+        expect(restored?.profiles["openai:x"]).toMatchObject({ key: "sk-external-old" });
         expect(restored?.runtimeExternalProfileIds).toContain("openai:x");
       }
     },
@@ -934,7 +934,7 @@ describe("secrets runtime state", () => {
                 "anthropic:stable": {
                   type: "api_key",
                   provider: "anthropic",
-                  key: `ltfx.n.ed20cccd87e98eada45c.v1`,
+                  key: "sk-stable",
                 },
               },
               runtimeExternalProfileIds: owner === "external" ? ["openai:x"] : [],
@@ -1018,7 +1018,7 @@ describe("secrets runtime state", () => {
                 "anthropic:stable": {
                   type: "api_key",
                   provider: "anthropic",
-                  key: `ltfx.n.ed20cccd87e98eada45c.v1`,
+                  key: "sk-stable",
                 },
               },
               runtimeExternalProfileIds: owner === "external" ? ["openai:x"] : [],
@@ -1058,7 +1058,7 @@ describe("secrets runtime state", () => {
         }),
       ).toBe(true);
       setRuntimeAuthProfileStoreSnapshot(
-        snapshot("ltfx.n.c8428cf3c3c1b5ce7c80.v1", "external", 19_002).authStores[0]!.store,
+        snapshot("sk-external-refresh", "external", 19_002).authStores[0]!.store,
         agentDir,
       );
 
@@ -1075,7 +1075,7 @@ describe("secrets runtime state", () => {
       if (baselineOwner === "absent") {
         expect(restored?.profiles["openai:x"]).toBeUndefined();
       } else {
-        expect(restored?.profiles["openai:x"]).toMatchObject({ key: `ltfx.n.0c208ce072fe7880b21f.v1` });
+        expect(restored?.profiles["openai:x"]).toMatchObject({ key: "sk-baseline" });
       }
       expect(restored?.runtimeExternalProfileIds ?? []).not.toContain("openai:x");
     },
@@ -1146,7 +1146,7 @@ describe("secrets runtime state", () => {
         }),
       ).toBe(true);
       const restored = getRuntimeAuthProfileStoreSnapshot(agentDir);
-      expect(restored?.profiles["openai:x"]).toMatchObject({ key: `ltfx.n.b6b66dfd95cd4cd3223a.v1` });
+      expect(restored?.profiles["openai:x"]).toMatchObject({ key: "sk-candidate" });
       if (currentOwner === "local") {
         expect(restored?.runtimeLocalProfileIds).toContain("openai:x");
         expect(restored?.runtimeExternalProfileIds ?? []).not.toContain("openai:x");
@@ -1273,13 +1273,13 @@ describe("secrets runtime state", () => {
       }),
     ).toBe(true);
     const restored = getRuntimeAuthProfileStoreSnapshot(agentDir);
-    expect(restored?.profiles["openai:x"]).toMatchObject({ key: `ltfx.n.8d271bb311e9dc5ea52f.v1` });
+    expect(restored?.profiles["openai:x"]).toMatchObject({ key: "sk-current" });
     expect(restored?.runtimeExternalProfileIdsAuthoritative).toBeUndefined();
   });
 
   it.each([
     { current: "sk-candidate", expected: "sk-old" },
-    { current: `ltfx.n.c8428cf3c3c1b5ce7c80.v1`, expected: `ltfx.n.c8428cf3c3c1b5ce7c80.v1` },
+    { current: "sk-external-refresh", expected: "sk-external-refresh" },
   ])("keeps external profile ownership separate from main mutations", ({ current, expected }) => {
     const agentDir = `/tmp/openclaw-auth-external-owner-${current}`;
     const snapshot = (key: string, port: number): PreparedSecretsRuntimeSnapshot => ({
@@ -1358,7 +1358,7 @@ describe("secrets runtime state", () => {
               "anthropic:stable": {
                 type: "api_key",
                 provider: "anthropic",
-                key: `ltfx.n.ed20cccd87e98eada45c.v1`,
+                key: "sk-stable",
               },
             },
             runtimeLocalProfileIds: ["anthropic:stable", "openai:default"],
@@ -1468,7 +1468,7 @@ describe("secrets runtime state", () => {
           }),
         ).toBe(true);
         setRuntimeAuthProfileStoreSnapshot(
-          snapshot("ltfx.n.ab180f667d366099e52d.v1", candidateRef, 19_002).authStores[0]!.store,
+          snapshot("sk-descendant", candidateRef, 19_002).authStores[0]!.store,
           agentDir,
         );
         for (let index = 0; index < 300; index += 1) {
@@ -1669,7 +1669,7 @@ describe("secrets runtime state", () => {
                   "openai:x": {
                     type: "api_key",
                     provider: "openai",
-                    key: `ltfx.n.1081bc4726698102cb33.v1`,
+                    key: "sk-external",
                   },
                 },
                 runtimeExternalProfileIds: ["openai:x"],
@@ -1996,7 +1996,7 @@ describe("secrets runtime state", () => {
     const candidate = snapshot({
       sourcePort: 19_022,
       runtimePort: 19_022,
-      apiKey: `ltfx.n.b6b66dfd95cd4cd3223a.v1`,
+      apiKey: "sk-candidate",
       keyRef: candidateKeyInput,
     });
     expect(
@@ -2011,7 +2011,7 @@ describe("secrets runtime state", () => {
     const providerRefresh = snapshot({
       sourcePort: 19_022,
       runtimePort: 19_022,
-      apiKey: `ltfx.n.a8e486fae69012f3f3e6.v1`,
+      apiKey: "sk-refreshed",
       keyRef: candidateKeyInput,
     });
     expect(
@@ -2155,7 +2155,7 @@ describe("secrets runtime state", () => {
       const previous = getActiveSecretsRuntimeSnapshot()!;
       const candidate = snapshot({
         sourceConfig: candidateSourceConfig,
-        apiKey: `ltfx.n.b6b66dfd95cd4cd3223a.v1`,
+        apiKey: "sk-candidate",
         port: 19_032,
       });
       expect(
@@ -2180,7 +2180,7 @@ describe("secrets runtime state", () => {
         activateSecretsRuntimeSnapshotStateIfCurrent({
           snapshot: snapshot({
             sourceConfig: candidateSourceConfig,
-            apiKey: `ltfx.n.a8e486fae69012f3f3e6.v1`,
+            apiKey: "sk-refreshed",
             port: 19_032,
           }),
           expectedRevision: candidateRevision,
@@ -2278,7 +2278,7 @@ describe("secrets runtime state", () => {
       });
       const previous = getActiveSecretsRuntimeSnapshot()!;
       const candidate = snapshot({
-        key: `ltfx.n.b6b66dfd95cd4cd3223a.v1`,
+        key: "sk-candidate",
         owner: capturedOwner,
         providerPath: "/tmp/rejected-secrets.json",
         port: 19_042,
@@ -2298,7 +2298,7 @@ describe("secrets runtime state", () => {
       });
       setRuntimeAuthProfileStoreSnapshot(
         snapshot({
-          key: `ltfx.n.9fbbfa38eb3bd905d25c.v1`,
+          key: "sk-durable",
           owner: currentOwner,
           providerPath: "/tmp/rejected-secrets.json",
           port: 19_042,
@@ -2397,7 +2397,7 @@ describe("secrets runtime state", () => {
       });
       const previous = getActiveSecretsRuntimeSnapshot()!;
       const candidate = snapshot({
-        key: `ltfx.n.b6b66dfd95cd4cd3223a.v1`,
+        key: "sk-candidate",
         keyRef: previousRef,
         port: 19_052,
         sourceConfig: candidateSourceConfig,
@@ -2417,7 +2417,7 @@ describe("secrets runtime state", () => {
       });
       setRuntimeAuthProfileStoreSnapshot(
         snapshot({
-          key: `ltfx.n.9fbbfa38eb3bd905d25c.v1`,
+          key: "sk-durable",
           keyRef: currentRef,
           port: 19_052,
           sourceConfig: candidateSourceConfig,
@@ -2439,7 +2439,7 @@ describe("secrets runtime state", () => {
       } else {
         expect(
           getRuntimeAuthProfileStoreSnapshot(agentDir)?.profiles["openai:default"],
-        ).toMatchObject({ key: `ltfx.n.9fbbfa38eb3bd905d25c.v1`, keyRef: currentRef });
+        ).toMatchObject({ key: "sk-durable", keyRef: currentRef });
       }
     },
   );
@@ -2469,14 +2469,14 @@ describe("secrets runtime state", () => {
                 "anthropic:stable": {
                   type: "api_key",
                   provider: "anthropic",
-                  key: `ltfx.n.ed20cccd87e98eada45c.v1`,
+                  key: "sk-stable",
                 },
                 ...(params.includeProfile
                   ? {
                       "openai:default": {
                         type: "api_key" as const,
                         provider: "openai",
-                        key: `ltfx.n.8d271bb311e9dc5ea52f.v1`,
+                        key: "sk-current",
                         keyRef: {
                           source: "file" as const,
                           provider: "vault",

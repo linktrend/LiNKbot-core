@@ -29,7 +29,7 @@ struct ConfigureRemoteCommandTests {
                     localPort: 19089,
                     remotePort: 18789,
                     sshHostKeyPolicy: "openssh",
-                    token: "${ltfx.n.4c5dc9b7708905f77f5e.v1}", // pragma: allowlist secret
+                    token: "test-token", // pragma: allowlist secret
                     password: nil,
                     identity: nil,
                     projectRoot: nil,
@@ -71,7 +71,7 @@ struct ConfigureRemoteCommandTests {
         let initial: [String: Any] = [
             "gateway": [
                 "remote": [
-                    "token": "${ltfx.n.2c35253c3fe5da6c1a67.v1}", // pragma: allowlist secret
+                    "token": "keep-token", // pragma: allowlist secret
                     "sshIdentity": "/tmp/id",
                     "sshHostKeyPolicy": "openssh",
                     "sshTarget": "alice@gateway.example",
@@ -174,7 +174,7 @@ struct ConfigureRemoteCommandTests {
             let output = try configureRemote(
                 .init(
                     directUrl: "ws://192.168.0.202:18789",
-                    token: "${ltfx.n.4c5dc9b7708905f77f5e.v1}"), // pragma: allowlist secret
+                    token: "test-token"), // pragma: allowlist secret
                 defaultsSuites: [])
 
             #expect(output.transport == "direct")

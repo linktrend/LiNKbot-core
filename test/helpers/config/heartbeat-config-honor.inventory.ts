@@ -45,7 +45,7 @@ export const HEARTBEAT_CONFIG_HONOR_INVENTORY: ConfigHonorInventoryRow[] = [
     testPaths: ["src/infra/heartbeat-runner.returns-default-unset.test.ts"],
   },
   {
-    key: `ltfx.n.a2c45c454e43ac532c8d.v1`,
+    key: "includeSystemPromptSection",
     schemaPaths: [
       "agents.defaults.heartbeat.includeSystemPromptSection",
       "agents.list.*.heartbeat.includeSystemPromptSection",
@@ -60,7 +60,7 @@ export const HEARTBEAT_CONFIG_HONOR_INVENTORY: ConfigHonorInventoryRow[] = [
     testPaths: ["src/agents/heartbeat-system-prompt.test.ts"],
   },
   {
-    key: `ltfx.n.bc4d5d549a6b7a228497.v1`,
+    key: "ackMaxChars",
     schemaPaths: ["agents.defaults.heartbeat.ackMaxChars", "agents.list.*.heartbeat.ackMaxChars"],
     typePaths: ["src/config/types.agent-defaults.ts", "src/config/zod-schema.agent-runtime.ts"],
     mergePaths: ["src/infra/heartbeat-runner.ts"],
@@ -69,7 +69,7 @@ export const HEARTBEAT_CONFIG_HONOR_INVENTORY: ConfigHonorInventoryRow[] = [
     testPaths: ["src/infra/heartbeat-runner.respects-ackmaxchars-heartbeat-acks.test.ts"],
   },
   {
-    key: `ltfx.n.d903c7a067a38b4849c1.v1`,
+    key: "suppressToolErrorWarnings",
     schemaPaths: [
       "agents.defaults.heartbeat.suppressToolErrorWarnings",
       "agents.list.*.heartbeat.suppressToolErrorWarnings",
@@ -81,7 +81,7 @@ export const HEARTBEAT_CONFIG_HONOR_INVENTORY: ConfigHonorInventoryRow[] = [
     testPaths: ["src/infra/heartbeat-runner.model-override.test.ts"],
   },
   {
-    key: `ltfx.n.5036d2af62d1c62c9650.v1`,
+    key: "timeoutSeconds",
     schemaPaths: [
       "agents.defaults.heartbeat.timeoutSeconds",
       "agents.list.*.heartbeat.timeoutSeconds",
@@ -96,7 +96,7 @@ export const HEARTBEAT_CONFIG_HONOR_INVENTORY: ConfigHonorInventoryRow[] = [
     ],
   },
   {
-    key: `ltfx.n.03f3a7e420acf1048b00.v1`,
+    key: "lightContext",
     schemaPaths: ["agents.defaults.heartbeat.lightContext", "agents.list.*.heartbeat.lightContext"],
     typePaths: ["src/config/types.agent-defaults.ts", "src/config/zod-schema.agent-runtime.ts"],
     mergePaths: ["src/infra/heartbeat-runner.ts"],
@@ -109,7 +109,7 @@ export const HEARTBEAT_CONFIG_HONOR_INVENTORY: ConfigHonorInventoryRow[] = [
     ],
   },
   {
-    key: `ltfx.n.d4e425276949bec7b1dd.v1`,
+    key: "isolatedSession",
     schemaPaths: [
       "agents.defaults.heartbeat.isolatedSession",
       "agents.list.*.heartbeat.isolatedSession",
@@ -142,7 +142,7 @@ export const HEARTBEAT_CONFIG_HONOR_INVENTORY: ConfigHonorInventoryRow[] = [
     testPaths: ["src/infra/heartbeat-runner.returns-default-unset.test.ts"],
   },
   {
-    key: `ltfx.n.e05f5218c40212bceb94.v1`,
+    key: "accountId",
     schemaPaths: ["agents.defaults.heartbeat.accountId", "agents.list.*.heartbeat.accountId"],
     typePaths: ["src/config/types.agent-defaults.ts", "src/config/zod-schema.agent-runtime.ts"],
     mergePaths: ["src/infra/heartbeat-runner.ts", "src/infra/outbound/targets.ts"],
@@ -154,7 +154,7 @@ export const HEARTBEAT_CONFIG_HONOR_INVENTORY: ConfigHonorInventoryRow[] = [
     ],
   },
   {
-    key: `ltfx.n.457eeef80f7045f5cd81.v1`,
+    key: "directPolicy",
     schemaPaths: ["agents.defaults.heartbeat.directPolicy", "agents.list.*.heartbeat.directPolicy"],
     typePaths: ["src/config/types.agent-defaults.ts", "src/config/zod-schema.agent-runtime.ts"],
     mergePaths: ["src/infra/heartbeat-runner.ts", "src/infra/outbound/targets.ts"],
@@ -163,7 +163,7 @@ export const HEARTBEAT_CONFIG_HONOR_INVENTORY: ConfigHonorInventoryRow[] = [
     testPaths: ["src/infra/heartbeat-runner.returns-default-unset.test.ts"],
   },
   {
-    key: `ltfx.n.71df4fb953096eedd3bd.v1`,
+    key: "includeReasoning",
     schemaPaths: [
       "agents.defaults.heartbeat.includeReasoning",
       "agents.list.*.heartbeat.includeReasoning",

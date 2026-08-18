@@ -35,7 +35,7 @@ const deviceIdentityState = vi.hoisted(() => ({
   value: { deviceId: "test-device-identity" } as Record<string, unknown>,
   throwOnLoad: false,
   cachedToken: {
-    token: `ltfx.n.8a1f103c815d81241020.v1`,
+    token: "cached-operator-token",
     role: "operator",
     scopes: ["operator.read"],
     updatedAtMs: 1,
@@ -233,7 +233,7 @@ function lastGatewayClientOptions(): Record<string, unknown> | null {
   return gatewayClientState.options;
 }
 
-async function runLightweightProbe(url: (string)): Promise<Awaited<ReturnType<typeof probeGateway>>> {
+async function runLightweightProbe(url: string): Promise<Awaited<ReturnType<typeof probeGateway>>> {
   return await probeGateway({
     url,
     timeoutMs: 1_000,
@@ -245,7 +245,7 @@ async function runTokenProbe(
   params: Partial<ProbeGatewayParams> = {},
 ): Promise<Awaited<ReturnType<typeof probeGateway>>> {
   return await probeGateway({
-    url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+    url: "ws://127.0.0.1:18789",
     auth: { token: "secret" },
     timeoutMs: 1_000,
     ...params,
@@ -267,7 +267,7 @@ function expectLightweightProbeResult(result: Awaited<ReturnType<typeof probeGat
   expect(gatewayClientState.requests).toStrictEqual([]);
 }
 
-async function primeDeviceRequiredProbeFailures(url: (string)): Promise<void> {
+async function primeDeviceRequiredProbeFailures(url: string): Promise<void> {
   for (let i = 0; i < 3; i += 1) {
     await runLightweightProbe(url);
   }
@@ -288,7 +288,7 @@ describe("probeGateway", () => {
   beforeEach(() => {
     deviceIdentityState.throwOnLoad = false;
     deviceIdentityState.cachedToken = {
-      token: `ltfx.n.8a1f103c815d81241020.v1`,
+      token: "cached-operator-token",
       role: "operator",
       scopes: ["operator.read"],
       updatedAtMs: 1,
@@ -334,7 +334,7 @@ describe("probeGateway", () => {
   });
   it("waits for event-loop readiness before connecting", async () => {
     await probeGateway({
-      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      url: "ws://127.0.0.1:18789",
       timeoutMs: 1_000,
       includeDetails: false,
     });
@@ -355,7 +355,7 @@ describe("probeGateway", () => {
     };
 
     const result = await probeGateway({
-      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      url: "ws://127.0.0.1:18789",
       timeoutMs: 1,
       includeDetails: false,
     });
@@ -447,7 +447,7 @@ describe("probeGateway", () => {
 
   it("keeps device identity enabled for remote probes", async () => {
     await runTokenProbe({
-      url: `ltfx.n.220960bbd8d741e2dfde.v1`,
+      url: "wss://gateway.example/ws",
     });
 
     expect(gatewayClientState.options?.deviceIdentity).toEqual(deviceIdentityState.value);
@@ -464,7 +464,7 @@ describe("probeGateway", () => {
 
   it("reuses cached device identity for unauthenticated loopback probes", async () => {
     await probeGateway({
-      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      url: "ws://127.0.0.1:18789",
       timeoutMs: 1_000,
     });
 
@@ -475,7 +475,7 @@ describe("probeGateway", () => {
     deviceIdentityState.cachedToken = null;
 
     await probeGateway({
-      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      url: "ws://127.0.0.1:18789",
       timeoutMs: 1_000,
     });
 
@@ -484,7 +484,7 @@ describe("probeGateway", () => {
 
   it("skips detail RPCs for lightweight reachability probes", async () => {
     const result = await probeGateway({
-      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      url: "ws://127.0.0.1:18789",
       timeoutMs: 1_000,
       includeDetails: false,
     });
@@ -515,7 +515,7 @@ describe("probeGateway", () => {
 
   it("fetches only presence for presence-only probes", async () => {
     const result = await probeGateway({
-      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      url: "ws://127.0.0.1:18789",
       timeoutMs: 1_000,
       detailLevel: "presence",
     });
@@ -529,7 +529,7 @@ describe("probeGateway", () => {
 
   it("fetches only config for config-only probes", async () => {
     const result = await probeGateway({
-      url: `ltfx.n.0edbee82f0824a1ed09b.v1`,
+      url: "ws://127.0.0.1:18789",
       timeoutMs: 1_000,
       detailLevel: "config",
     });
@@ -544,7 +544,7 @@ describe("probeGateway", () => {
 
   it("passes through tls fingerprints for secure daemon probes", async () => {
     await runTokenLightweightProbe({
-      url: `ltfx.n.220960bbd8d741e2dfde.v1`,
+      url: "wss://gateway.example/ws",
       tlsFingerprint: "sha256:abc",
     });
 
@@ -782,7 +782,7 @@ describe("probeGateway", () => {
     await primeDeviceRequiredProbeFailures(url);
 
     deviceIdentityState.cachedToken = {
-      token: `ltfx.n.8a1f103c815d81241020.v1`,
+      token: "cached-operator-token",
       role: "operator",
       scopes: ["operator.read"],
       updatedAtMs: 1,
@@ -817,7 +817,7 @@ describe("probeGateway", () => {
 
     const result = await runTokenLightweightProbe({
       url,
-      auth: { token: `ltfx.n.3f7a118b174381ebc867.v1` },
+      auth: { token: "explicit-token" },
     });
 
     expect(result.ok).toBe(true);

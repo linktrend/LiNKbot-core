@@ -64,7 +64,7 @@ describe("resolveMissingProviderApiKey — aws-sdk auth", () => {
 
   it("injects apiKey marker when AWS_ACCESS_KEY_ID + SECRET are present", () => {
     const envWithKeys: NodeJS.ProcessEnv = {
-      AWS_ACCESS_KEY_ID: `ltfx.n.1a5d44a2dca19669d72e.v1`,
+      AWS_ACCESS_KEY_ID: "AKIAIOSFODNN7EXAMPLE",
       AWS_SECRET_ACCESS_KEY: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY", // pragma: allowlist secret
     };
 
@@ -111,7 +111,7 @@ describe("resolveMissingProviderApiKey — aws-sdk auth", () => {
   it("skips injection when provider already has apiKey configured", () => {
     const providerWithKey: ProviderConfig = {
       ...baseProvider,
-      apiKey: `ltfx.n.711b566d4a1c301fd20c.v1`,
+      apiKey: "existing-key",
     };
 
     const result = resolveMissingProviderApiKey({

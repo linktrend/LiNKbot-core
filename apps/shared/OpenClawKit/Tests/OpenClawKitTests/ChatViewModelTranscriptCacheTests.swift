@@ -302,7 +302,7 @@ struct ChatViewModelTranscriptCacheTests {
         let sessionsGate = AsyncStream<Void> { releaseSessions = $0 }
         let release = try #require(releaseSessions)
         let cache = TestTranscriptCache(
-            sessions: [cachedSessionEntry(key: "${ltfx.n.729c541bbdfe320b6071.v1}", updatedAt: 1000)],
+            sessions: [cachedSessionEntry(key: "stale-session", updatedAt: 1000)],
             loadSessionsHook: {
                 var iterator = sessionsGate.makeAsyncIterator()
                 _ = await iterator.next()

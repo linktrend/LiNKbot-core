@@ -188,7 +188,7 @@ extension NodeServiceManager {
         fileManager: FileManager) -> [String]?
     {
         guard fileManager.fileExists(atPath: plistURL.path) else { return [] }
-        return LaunchAgentPlist.snapshot(url: (plistURL)?.programArguments)
+        return LaunchAgentPlist.snapshot(url: plistURL)?.programArguments
     }
 
     private static func runtimeIsRunning(in object: [String: Any]) -> Bool {

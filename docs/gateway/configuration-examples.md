@@ -66,7 +66,7 @@ Save to `~/.openclaw/openclaw.json` and you can DM the bot from that number.
 {
   // Environment + shell
   env: {
-    OPENROUTER_API_KEY: "${ltfx.n.51efae34cc35ebb820a0.v1}",
+    OPENROUTER_API_KEY: "sk-or-...",
     vars: {
       GROQ_API_KEY: "gsk-...",
     },
@@ -216,8 +216,8 @@ Save to `~/.openclaw/openclaw.json` and you can DM the bot from that number.
 
     slack: {
       enabled: true,
-      botToken: "${ltfx.n.4e009947312d15bc25be.v1}",
-      appToken: "${ltfx.n.b8fd528061c3ed186d98.v1}",
+      botToken: "xoxb-REPLACE_ME",
+      appToken: "xapp-REPLACE_ME",
       channels: {
         "#general": { enabled: true, requireMention: true },
       },
@@ -390,7 +390,7 @@ Save to `~/.openclaw/openclaw.json` and you can DM the bot from that number.
   hooks: {
     enabled: true,
     path: "/hooks",
-    token: "${ltfx.n.d3046ecc8dd3242adf62.v1}",
+    token: "shared-secret",
     presets: ["gmail"],
     transformsDir: "~/.openclaw/hooks/transforms",
     mappings: [
@@ -419,7 +419,7 @@ Save to `~/.openclaw/openclaw.json` and you can DM the bot from that number.
       label: "INBOX",
       topic: "projects/<project-id>/topics/gog-gmail-watch",
       subscription: "gog-gmail-watch-push",
-      pushToken: "${ltfx.n.93941992d1fc5737f768.v1}",
+      pushToken: "shared-push-token",
       hookUrl: "http://127.0.0.1:18789/hooks/gmail",
       includeBody: true,
       maxBytes: 20000,
@@ -437,11 +437,11 @@ Save to `~/.openclaw/openclaw.json` and you can DM the bot from that number.
     controlUi: { enabled: true, basePath: "/openclaw" },
     auth: {
       mode: "token",
-      token: "${ltfx.n.f15ae5b5899f8327f527.v1}",
+      token: "gateway-token",
       allowTailscale: true,
     },
     tailscale: { mode: "serve", resetOnExit: false },
-    remote: { url: "${ltfx.n.aa543077bff00fb18961.v1}", token: "${ltfx.n.b79f8018a1bfa2040be5.v1}" },
+    remote: { url: "ws://gateway-host.ts.net:18789", token: "remote-token" },
     reload: { mode: "hybrid", debounceMs: 300 },
   },
 
@@ -643,7 +643,7 @@ Only enable direct mutable name/email/nick matching with each channel's `dangero
   channels: {
     slack: {
       enabled: true,
-      botToken: "${ltfx.n.df964376e43280da1554.v1}",
+      botToken: "xoxb-...",
       channels: {
         "#engineering": { enabled: true, requireMention: true },
         "#general": { enabled: true, requireMention: true },
@@ -668,7 +668,7 @@ Only enable direct mutable name/email/nick matching with each channel's `dangero
     providers: {
       lmstudio: {
         baseUrl: "http://127.0.0.1:1234/v1",
-        apiKey: "${ltfx.n.c8c175e4fd9aacec1feb.v1}",
+        apiKey: "lmstudio",
         api: "openai-responses",
         models: [
           {

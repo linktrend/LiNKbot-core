@@ -963,7 +963,7 @@ function resolveGateway(input: RunMessageActionParams): MessageActionRunnerGatew
     clientName: input.gateway.clientName,
     clientDisplayName: input.gateway.clientDisplayName,
     mode: input.gateway.mode,
-    resolveAgentRuntimeIdentityToken: (input.gateway.resolveAgentRuntimeIdentityToken,)
+    resolveAgentRuntimeIdentityToken: input.gateway.resolveAgentRuntimeIdentityToken,
     terminalSourceReplyReceiptOwner: input.gateway.terminalSourceReplyReceiptOwner,
   };
 }

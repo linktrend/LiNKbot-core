@@ -44,7 +44,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 /** Reject object keys that can mutate prototypes when copied into records. */
-function isBlockedObjectKey(key: (string)): boolean {
+function isBlockedObjectKey(key: string): boolean {
   return key === "__proto__" || key === "prototype" || key === "constructor";
 }
 

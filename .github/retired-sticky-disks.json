@@ -1,21 +1,21 @@
 [
   {
-    "key": "${ltfx.n.0610c3f4e6e9ed52b309.v1}",
+    "key": "openclaw/openclaw-node-compile-v2-build-protected-Linux-X64-node-24.x",
     "architecture": "amd64",
     "region": "eu-west"
   },
   {
-    "key": "${ltfx.n.d04a49c1617f698a82d5.v1}",
+    "key": "openclaw/openclaw-node-compile-v2-test-protected-Linux-X64-node-24.x",
     "architecture": "amd64",
     "region": "eu-west"
   },
   {
-    "key": "${ltfx.n.826cba42c93e5e561f0b.v1}",
+    "key": "openclaw/openclaw-node-deps-bind-v4-24.x",
     "architecture": "amd64",
     "region": "eu-west"
   },
   {
-    "key": "${ltfx.n.895cf95d0b9ffd1f2c52.v1}",
+    "key": "openclaw/openclaw-vitest-fs-v2-protected-Linux-X64-node-24.x",
     "architecture": "amd64",
     "region": "eu-west"
   }

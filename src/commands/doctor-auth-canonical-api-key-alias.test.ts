@@ -69,7 +69,7 @@ describe("maybeRepairCanonicalApiKeyFieldAlias", () => {
         "my-key": {
           type: "api_key",
           provider: "my-provider",
-          api_key: `ltfx.n.fed62c5069edc7a5cad3.v1`,
+          api_key: "sk-snake-case-key",
         },
       },
       order: {
@@ -96,7 +96,7 @@ describe("maybeRepairCanonicalApiKeyFieldAlias", () => {
         "my-key": {
           type: "api_key",
           provider: "my-provider",
-          key: `ltfx.n.fed62c5069edc7a5cad3.v1`,
+          key: "sk-snake-case-key",
         },
       },
       order: {
@@ -159,7 +159,7 @@ describe("maybeRepairCanonicalApiKeyFieldAlias", () => {
         "my-key": {
           type: "api_key",
           provider: "my-provider",
-          api_key: `ltfx.n.fed62c5069edc7a5cad3.v1`,
+          api_key: "sk-snake-case-key",
         },
       },
     };
@@ -187,7 +187,7 @@ describe("maybeRepairCanonicalApiKeyFieldAlias", () => {
         "my-key": {
           type: "api_key",
           provider: "my-provider",
-          key: `ltfx.n.fed62c5069edc7a5cad3.v1`,
+          key: "sk-snake-case-key",
         },
       },
     });
@@ -203,7 +203,7 @@ describe("maybeRepairCanonicalApiKeyFieldAlias", () => {
         "my-key": {
           type: "api_key",
           provider: "my-provider",
-          api_key: `ltfx.n.fed62c5069edc7a5cad3.v1`,
+          api_key: "sk-snake-case-key",
         },
       },
     };
@@ -225,7 +225,7 @@ describe("maybeRepairCanonicalApiKeyFieldAlias", () => {
     expect(JSON.parse(fs.readFileSync(authPath, "utf8")).profiles["my-key"]).toEqual({
       type: "api_key",
       provider: "my-provider",
-      key: `ltfx.n.fed62c5069edc7a5cad3.v1`,
+      key: "sk-snake-case-key",
     });
   });
 
@@ -237,7 +237,7 @@ describe("maybeRepairCanonicalApiKeyFieldAlias", () => {
         "good-key": {
           type: "api_key",
           provider: "my-provider",
-          key: `ltfx.n.0b86808c3c6290e689fa.v1`,
+          key: "sk-already-canonical",
         },
       },
     };
@@ -264,7 +264,7 @@ describe("maybeRepairCanonicalApiKeyFieldAlias", () => {
           type: "api_key",
           provider: "my-provider",
           keyRef: { source: "env", provider: "default", id: "MY_PROVIDER_API_KEY" },
-          api_key: `ltfx.n.ffeea0b7394364e754a0.v1`,
+          api_key: "stale-inline-key",
         },
       },
     };
@@ -291,7 +291,7 @@ describe("maybeRepairCanonicalApiKeyFieldAlias", () => {
           type: "api_key",
           provider: "my-provider",
           key: { source: "env", provider: "default", id: "MY_PROVIDER_API_KEY" },
-          api_key: `ltfx.n.ffeea0b7394364e754a0.v1`,
+          api_key: "stale-inline-key",
         },
       },
     };
@@ -317,7 +317,7 @@ describe("maybeRepairCanonicalApiKeyFieldAlias", () => {
         "my-key": {
           type: "api_key",
           provider: "my-provider",
-          api_key: `ltfx.n.fed62c5069edc7a5cad3.v1`,
+          api_key: "sk-snake-case-key",
         },
       },
     };

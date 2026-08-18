@@ -18,12 +18,12 @@ type TwitchAccessControlResult = {
 type TwitchPolicyKind = "open" | "allowFrom" | "role";
 
 const twitchUserIdentity = defineStableChannelIngressIdentity({
-  key: `ltfx.n.9cfd0d7aebb137ed909a.v1`,
+  key: "sender-id",
   entryIdPrefix: "twitch-user-entry",
 });
 
 const twitchRoleIdentity = defineStableChannelIngressIdentity({
-  key: `ltfx.n.e6832fb26f767a593177.v1`,
+  key: "role-moderator",
   kind: "role",
   normalizeEntry: normalizeTwitchRole,
   normalizeSubject: normalizeTwitchRole,

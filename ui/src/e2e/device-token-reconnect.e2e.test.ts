@@ -33,8 +33,8 @@ const OPERATOR_SCOPES = [
 ];
 const ROSITA_GATEWAY_URL = "wss://gateway.example/rosita";
 const WILFRED_GATEWAY_URL = "wss://gateway.example/wilfred";
-const ROSITA_DEVICE_TOKEN = `ltfx.n.9632769a63347ca4589f.v1`;
-const WILFRED_DEVICE_TOKEN = `ltfx.n.aa10410efd13d7896af1.v1`;
+const ROSITA_DEVICE_TOKEN = "rosita-device-token";
+const WILFRED_DEVICE_TOKEN = "wilfred-device-token";
 
 function requireRecord(value: unknown): Record<string, unknown> {
   if (!value || typeof value !== "object" || Array.isArray(value)) {
@@ -152,7 +152,7 @@ describeControlUiE2e("Control UI device-token reconnect E2E", () => {
       context,
       deviceToken: ROSITA_DEVICE_TOKEN,
       gatewayUrl: ROSITA_GATEWAY_URL,
-      sharedToken: `ltfx.n.c3b29dc4ad7cff16057f.v1`,
+      sharedToken: "shared-rosita",
     });
     expect(requireConnectAuth(rositaSource.connect).token).toBe("shared-rosita");
 
@@ -161,7 +161,7 @@ describeControlUiE2e("Control UI device-token reconnect E2E", () => {
       context,
       deviceToken: WILFRED_DEVICE_TOKEN,
       gatewayUrl: WILFRED_GATEWAY_URL,
-      sharedToken: `ltfx.n.c1eab896718c033a8a10.v1`,
+      sharedToken: "shared-wilfred",
     });
     expect(requireConnectAuth(wilfredSource.connect).token).toBe("shared-wilfred");
 
@@ -204,7 +204,7 @@ describeControlUiE2e("Control UI device-token reconnect E2E", () => {
     const otherOrigin = await openGatewayPage({
       appBaseUrl: otherOriginBaseUrl,
       context,
-      deviceToken: `ltfx.n.0cc710b50497d96a41ae.v1`,
+      deviceToken: "other-origin-device-token",
       gatewayUrl: ROSITA_GATEWAY_URL,
     });
     expect(readConnectAuth(otherOrigin.connect)?.token).toBeUndefined();

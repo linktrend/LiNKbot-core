@@ -27,7 +27,7 @@ function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-function standaloneLinePattern(token: (string)): string {
+function standaloneLinePattern(token: string): string {
   return `(?:^|\\r?\\n)[ \\t]*${escapeRegExp(token)}[ \\t]*(?=\\r?\\n|$)`;
 }
 

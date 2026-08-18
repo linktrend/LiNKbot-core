@@ -45,7 +45,7 @@ describe("getReplyFromConfig configOverride", () => {
     vi.mocked(loadConfigMock).mockReturnValue({
       channels: {
         telegram: {
-          botToken: `ltfx.n.560610b177dd2e1590d9.v1`,
+          botToken: "resolved-telegram-token",
         },
       },
       agents: {
@@ -78,7 +78,7 @@ describe("getReplyFromConfig configOverride", () => {
       withFullRuntimeReplyConfig({
         channels: {
           telegram: {
-            botToken: `ltfx.n.560610b177dd2e1590d9.v1`,
+            botToken: "resolved-telegram-token",
           },
         },
         agents: {
@@ -97,7 +97,7 @@ describe("getReplyFromConfig configOverride", () => {
     const { withFullRuntimeReplyConfig } = await import("./get-reply-fast-path.js");
     const cfg = Object.freeze({
       agents: { defaults: { userTimezone: "America/New_York" } },
-      channels: { telegram: { botToken: `ltfx.n.560610b177dd2e1590d9.v1` } },
+      channels: { telegram: { botToken: "resolved-telegram-token" } },
     } satisfies OpenClawConfig);
     const ownKeys = Reflect.ownKeys(cfg);
     vi.mocked(loadConfigMock).mockImplementation(() => {

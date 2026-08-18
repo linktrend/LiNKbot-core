@@ -593,7 +593,7 @@ describe("doctor gateway runtime checks", () => {
 
   it("redacts sensitive remote gateway URLs from health finding targets", async () => {
     mocks.buildGatewayProbeConnectionDetails.mockResolvedValueOnce({
-      url: `ltfx.n.15da58d8816b5dafaefe.v1`,
+      url: "wss://user:pass@gateway.example.test/rpc?token=secret&safe=value",
     });
     mocks.probeGatewayStatus.mockResolvedValueOnce({
       ok: false,
@@ -601,7 +601,7 @@ describe("doctor gateway runtime checks", () => {
     });
 
     const findings = await collectGatewayHealthFindings({
-      cfg: { gateway: { mode: "remote", remote: { url: `ltfx.n.dccf932226e0858999dd.v1` } } },
+      cfg: { gateway: { mode: "remote", remote: { url: "wss://gateway.example.test/rpc" } } },
     });
 
     expect(findings).toContainEqual({
@@ -609,11 +609,11 @@ describe("doctor gateway runtime checks", () => {
       severity: "warning",
       message: "Gateway is not reachable: remote gateway did not answer",
       path: "gateway.remote.url",
-      target: "wss://***:***@gateway.example.test/rpc?token=(***&safe=value",)
+      target: "wss://***:***@gateway.example.test/rpc?token=***&safe=value",
       fixHint: "Verify the remote Gateway URL, network path, TLS settings, and credentials.",
     });
     expect(JSON.stringify(findings)).not.toContain("user:pass");
-    expect(JSON.stringify(findings)).not.toContain("token=(secret");)
+    expect(JSON.stringify(findings)).not.toContain("token=secret");
   });
 
   it("reports missing local gateway daemon service", async () => {

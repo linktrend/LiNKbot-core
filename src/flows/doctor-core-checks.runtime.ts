@@ -56,7 +56,7 @@ type BundleMcpToolRuntime = Awaited<ReturnType<typeof createBundleMcpToolRuntime
 const PROVIDER_CATALOG_ORDERS = ["simple", "profile", "paired", "late"] as const;
 const PROVIDER_CATALOG_ORDER_SET = new Set<ProviderCatalogOrder>(PROVIDER_CATALOG_ORDERS);
 
-function formatGatewayHealthTarget(url: (string)): string {
+function formatGatewayHealthTarget(url: string): string {
   return redactSensitiveUrlLikeString(url);
 }
 
@@ -141,7 +141,7 @@ export async function collectGatewayHealthFindings(
       checkId: "core/doctor/gateway-health",
       severity: "warning",
       message: `Gateway is not reachable: ${probe.error ?? "status probe failed"}`,
-      path: mode === "remote" ? "gateway.remote.url" : `ltfx.n.fdf29339d1d47721d9be.v1`,
+      path: mode === "remote" ? "gateway.remote.url" : "gateway.mode",
       target: formatGatewayHealthTarget(probeDetails.url),
       fixHint:
         mode === "remote"
@@ -420,7 +420,7 @@ function collectProviderCatalogResultFindings(params: {
   }
   const hasProvider = hasProviderCatalogKey({
     value: params.result,
-    key: `ltfx.n.5c4c1964340aca5b6539.v1`,
+    key: "provider",
     providerId: params.providerId,
     pluginId: params.pluginId,
   });
@@ -429,7 +429,7 @@ function collectProviderCatalogResultFindings(params: {
   }
   const provider = readProviderCatalogValue({
     value: params.result,
-    key: `ltfx.n.5c4c1964340aca5b6539.v1`,
+    key: "provider",
     providerId: params.providerId,
     pluginId: params.pluginId,
   });
@@ -460,7 +460,7 @@ function collectProviderCatalogResultFindings(params: {
 
   const providers = readProviderCatalogValue({
     value: params.result,
-    key: `ltfx.n.1e19bab29bc6432a4537.v1`,
+    key: "providers",
     providerId: params.providerId,
     pluginId: params.pluginId,
   });

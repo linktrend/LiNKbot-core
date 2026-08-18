@@ -18,7 +18,7 @@ describe("transcribeDeepgramAudio", () => {
     const result = await transcribeDeepgramAudio({
       buffer: Buffer.from("audio"),
       fileName: "note.mp3",
-      apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+      apiKey: "test-key",
       timeoutMs: 1000,
       headers: { authorization: "Token override" },
       fetchFn,
@@ -36,7 +36,7 @@ describe("transcribeDeepgramAudio", () => {
     const result = await transcribeDeepgramAudio({
       buffer: Buffer.from("audio-bytes"),
       fileName: "voice.wav",
-      apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+      apiKey: "test-key",
       timeoutMs: 1234,
       baseUrl: "https://api.example.com/v1/",
       model: " ",
@@ -78,7 +78,7 @@ describe("transcribeDeepgramAudio", () => {
       transcribeDeepgramAudio({
         buffer: Buffer.from("audio-bytes"),
         fileName: "voice.wav",
-        apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+        apiKey: "test-key",
         timeoutMs: 1234,
         fetchFn,
       }),
@@ -92,7 +92,7 @@ describe("transcribeDeepgramAudio", () => {
       transcribeDeepgramAudio({
         buffer: Buffer.from("audio-bytes"),
         fileName: "voice.wav",
-        apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+        apiKey: "test-key",
         timeoutMs: 1234,
         fetchFn,
       }),
@@ -106,7 +106,7 @@ describe("transcribeDeepgramAudio", () => {
       transcribeDeepgramAudio({
         buffer: Buffer.from("audio-bytes"),
         fileName: "voice.wav",
-        apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+        apiKey: "test-key",
         timeoutMs: 1234,
         fetchFn,
       }),
@@ -122,7 +122,7 @@ describe("transcribeDeepgramAudio", () => {
       transcribeDeepgramAudio({
         buffer: Buffer.from("audio-bytes"),
         fileName: "voice.wav",
-        apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+        apiKey: "test-key",
         timeoutMs: 1234,
         fetchFn,
       }),
@@ -138,7 +138,7 @@ describe("transcribeDeepgramAudio", () => {
       transcribeDeepgramAudio({
         buffer: Buffer.from("audio-bytes"),
         fileName: "voice.wav",
-        apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+        apiKey: "test-key",
         timeoutMs: 1234,
         fetchFn,
       }),

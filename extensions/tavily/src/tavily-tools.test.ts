@@ -234,7 +234,7 @@ describe("tavily tools", () => {
           tavily: {
             config: {
               webSearch: {
-                apiKey: `ltfx.n.b695c853fc672113967a.v1`,
+                apiKey: "resolved-key",
               },
             },
           },
@@ -418,7 +418,7 @@ describe("tavily tools", () => {
           tavily: {
             config: {
               webSearch: {
-                apiKey: `ltfx.n.63fd23d8d91d38a2f24e.v1`,
+                apiKey: "plugin-key",
                 baseUrl: "https://plugin.tavily.test",
               },
             },

@@ -281,7 +281,7 @@ function configureRuntime() {
   };
   config.channels = {
     ...config.channels,
-    "kitchen-sink-channel": { enabled: true, token: `ltfx.n.672f7f83aa5b10b37552.v1` },
+    "kitchen-sink-channel": { enabled: true, token: "kitchen-sink-ci" },
   };
   fs.mkdirSync(path.dirname(configPath), { recursive: true });
   fs.writeFileSync(configPath, `${JSON.stringify(config, null, 2)}\n`);

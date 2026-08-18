@@ -37,7 +37,7 @@ openclaw gateway restart
     Copy the credential from your Inworld dashboard (Workspace > API Keys) and set it as an env var. The value is sent verbatim as the HTTP Basic credential, so do not Base64-encode it again or convert it to a bearer token.
 
     ```bash
-    INWORLD_API_KEY="${ltfx.n.f5310d6660a0628dd453.v1}"
+    INWORLD_API_KEY=<base64-credential-from-dashboard>
     ```
 
   </Step>

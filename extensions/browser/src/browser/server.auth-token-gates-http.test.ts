@@ -15,7 +15,7 @@ describe("browser control HTTP auth", () => {
 
   beforeEach(async () => {
     server = createServer((req: IncomingMessage, res: ServerResponse) => {
-      if (!isAuthorizedBrowserRequest(req, { token: `ltfx.n.e5da4df8c8404bc32ac9.v1` })) {
+      if (!isAuthorizedBrowserRequest(req, { token: "browser-control-secret" })) {
         res.statusCode = 401;
         res.setHeader("Content-Type", "text/plain; charset=utf-8");
         res.end("Unauthorized");
@@ -75,7 +75,7 @@ describe("browser control HTTP auth", () => {
 
     server?.removeAllListeners("request");
     server?.on("request", (req: IncomingMessage, res: ServerResponse) => {
-      if (!isAuthorizedBrowserRequest(req, { password: `ltfx.n.1c95ae0a5b8ed8df652d.v1` })) {
+      if (!isAuthorizedBrowserRequest(req, { password: "browser-password" })) {
         res.statusCode = 401;
         res.end("Unauthorized");
         return;
@@ -93,7 +93,7 @@ describe("browser control HTTP auth", () => {
 
     const password = await realFetch(`${base}/`, {
       headers: {
-        "x-openclaw-password": `ltfx.n.1c95ae0a5b8ed8df652d.v1`,
+        "x-openclaw-password": "browser-password",
       },
     });
     expect(password.status).toBe(200);
@@ -104,7 +104,7 @@ describe("browser control HTTP auth", () => {
 
     const password = await realFetch(`${base}/`, {
       headers: {
-        "x-openclaw-password": `ltfx.n.e5da4df8c8404bc32ac9.v1`,
+        "x-openclaw-password": "browser-control-secret",
       },
     });
     expect(password.status).toBe(401);

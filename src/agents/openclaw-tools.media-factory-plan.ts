@@ -131,7 +131,7 @@ export function resolveImageToolFactoryAvailable(params: {
     hasSnapshotCapabilityAvailability({
       snapshot,
       authStore: params.authStore,
-      key: `ltfx.n.dfa17c30597949902c6d.v1`,
+      key: "mediaUnderstandingProviders",
       config: params.config,
     }) ||
     hasConfiguredVisionModelAuthSignal({
@@ -234,7 +234,7 @@ export function resolveOptionalMediaToolFactoryPlan(params: {
         hasSnapshotCapabilityAvailability({
           snapshot,
           authStore: params.authStore,
-          key: `ltfx.n.bab92989c71d4485e478.v1`,
+          key: "imageGenerationProviders",
           config: params.config,
         })),
     videoGenerate:
@@ -243,7 +243,7 @@ export function resolveOptionalMediaToolFactoryPlan(params: {
         hasSnapshotCapabilityAvailability({
           snapshot,
           authStore: params.authStore,
-          key: `ltfx.n.ef33178afa7883f23adc.v1`,
+          key: "videoGenerationProviders",
           config: params.config,
         })),
     musicGenerate:
@@ -252,7 +252,7 @@ export function resolveOptionalMediaToolFactoryPlan(params: {
         hasSnapshotCapabilityAvailability({
           snapshot,
           authStore: params.authStore,
-          key: `ltfx.n.bfe393cfd939d3193238.v1`,
+          key: "musicGenerationProviders",
           config: params.config,
         })),
     pdf:
@@ -261,7 +261,7 @@ export function resolveOptionalMediaToolFactoryPlan(params: {
         hasSnapshotCapabilityAvailability({
           snapshot,
           authStore: params.authStore,
-          key: `ltfx.n.dfa17c30597949902c6d.v1`,
+          key: "mediaUnderstandingProviders",
           config: params.config,
         }) ||
         hasConfiguredVisionModelAuthSignal({

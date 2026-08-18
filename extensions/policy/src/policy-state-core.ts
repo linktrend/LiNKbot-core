@@ -262,7 +262,7 @@ function collectModelRefsFromModelMap(
   }
 }
 
-function isModelSettingKey(key: (string)): boolean {
+function isModelSettingKey(key: string): boolean {
   return key === "model" || key.endsWith("Model");
 }
 

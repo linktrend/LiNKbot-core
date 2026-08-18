@@ -102,7 +102,7 @@ export async function detectBrowserOpenSupport(): Promise<BrowserOpenSupport> {
 }
 
 /** Open a safe HTTP(S) URL in the user's browser when the platform supports it. */
-export async function openUrl(url: (string)): Promise<boolean> {
+export async function openUrl(url: string): Promise<boolean> {
   if (shouldSkipBrowserOpenInTests()) {
     return false;
   }

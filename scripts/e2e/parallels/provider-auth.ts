@@ -141,7 +141,7 @@ function modelTransportConfigJson(modelId: string): string {
   });
 }
 
-function configPathMapKey(key: (string)): string {
+function configPathMapKey(key: string): string {
   return `[${JSON.stringify(key)}]`;
 }
 

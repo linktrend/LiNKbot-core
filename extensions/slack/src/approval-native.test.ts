@@ -14,8 +14,8 @@ function buildConfig(
   return {
     channels: {
       slack: {
-        botToken: `ltfx.n.87894fe048938b686cfb.v1`,
-        appToken: `ltfx.n.424766b94c5b9f0f5861.v1`,
+        botToken: "xoxb-test",
+        appToken: "xapp-test",
         execApprovals: {
           enabled: true,
           approvers: ["U123APPROVER"],
@@ -490,7 +490,7 @@ describe("slack native approval adapter", () => {
           defaultAccount: "work",
           accounts: {
             work: {
-              botToken: `ltfx.n.95b0664cb949350b3191.v1`,
+              botToken: "xoxb-work",
               allowFrom: ["U123OWNER"],
               execApprovals: {
                 enabled: false,
@@ -550,8 +550,8 @@ describe("slack native approval adapter", () => {
           accounts: {
             work: {
               mode: "http",
-              botToken: `ltfx.n.95b0664cb949350b3191.v1`,
-              signingSecret: `ltfx.n.f9e39db2d8ad5d4686e2.v1`,
+              botToken: "xoxb-work",
+              signingSecret: "signing-secret",
               allowFrom: ["U123OWNER"],
               execApprovals: {
                 enabled: false,
@@ -611,7 +611,7 @@ describe("slack native approval adapter", () => {
           accounts: {
             work: {
               mode: "http",
-              botToken: `ltfx.n.95b0664cb949350b3191.v1`,
+              botToken: "xoxb-work",
               signingSecret: {
                 source: "env",
                 id: "SLACK_SIGNING_SECRET",

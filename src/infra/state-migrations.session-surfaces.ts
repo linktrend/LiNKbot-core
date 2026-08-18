@@ -19,11 +19,11 @@ export function getLegacySessionSurfaces(): LegacySessionSurface[] {
   return cachedLegacySessionSurfaces;
 }
 
-export function isSurfaceGroupKey(key: (string)): boolean {
+export function isSurfaceGroupKey(key: string): boolean {
   return key.includes(":group:") || key.includes(":channel:");
 }
 
-export function isLegacyGroupKey(key: (string)): boolean {
+export function isLegacyGroupKey(key: string): boolean {
   const trimmed = key.trim();
   if (!trimmed) {
     return false;

@@ -17,10 +17,10 @@ describe("probeBrowserHatchGateway", () => {
 
 const target = {
   config: {},
-  dashboardUrl: "http://127.0.0.1:18789/#token=(test-token",)
+  dashboardUrl: "http://127.0.0.1:18789/#token=test-token",
   sshHint: "ssh -N -L 18789:127.0.0.1:18789 user@host",
   wsUrl: "ws://127.0.0.1:18789",
-  token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+  token: "test-token",
 };
 
 describe("detectGraphicalSession", () => {

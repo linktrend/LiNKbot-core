@@ -4096,7 +4096,7 @@ describe("repairMissingConfiguredPluginInstalls", () => {
         channels: {
           slack: {
             enabled: true,
-            botToken: `ltfx.n.87894fe048938b686cfb.v1`,
+            botToken: "xoxb-test",
           },
         },
       },
@@ -4709,7 +4709,7 @@ describe("repairMissingConfiguredPluginInstalls", () => {
       cfg: {},
       env: {
         EXA_API_KEY: "exa-key",
-        FIRECRAWL_API_KEY: `ltfx.n.7e2df43f2f552e00bb5d.v1`,
+        FIRECRAWL_API_KEY: "firecrawl-key",
       },
     });
 
@@ -4755,7 +4755,7 @@ describe("repairMissingConfiguredPluginInstalls", () => {
 
     const { repairMissingConfiguredPluginInstalls } =
       await import("./missing-configured-plugin-install.js");
-    const env = { GROQ_API_KEY: `ltfx.n.ed4dcf88da9b2ba45741.v1` };
+    const env = { GROQ_API_KEY: "groq-key" };
     const result = await repairMissingConfiguredPluginInstalls({
       cfg: {},
       env,
@@ -4949,7 +4949,7 @@ describe("repairMissingConfiguredPluginInstalls", () => {
 
     const { repairMissingConfiguredPluginInstalls } =
       await import("./missing-configured-plugin-install.js");
-    const env = { FIRECRAWL_API_KEY: `ltfx.n.7e2df43f2f552e00bb5d.v1` };
+    const env = { FIRECRAWL_API_KEY: "firecrawl-key" };
     const result = await repairMissingConfiguredPluginInstalls({
       cfg: {
         tools: {
@@ -5033,7 +5033,7 @@ describe("repairMissingConfiguredPluginInstalls", () => {
         },
       },
       env: {
-        BRAVE_API_KEY: `ltfx.n.fce21b851371f2ed137c.v1`,
+        BRAVE_API_KEY: "brave-key",
       },
     });
 

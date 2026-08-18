@@ -66,7 +66,7 @@ OpenAI-compatible, so OpenClaw talks to it over the same
 
 ```json5
 {
-  env: { OPENROUTER_API_KEY: "${ltfx.n.51efae34cc35ebb820a0.v1}" },
+  env: { OPENROUTER_API_KEY: "sk-or-..." },
   agents: {
     defaults: {
       model: { primary: "openrouter/auto" },
@@ -101,7 +101,7 @@ under `agents.defaults.imageGenerationModel`:
 
 ```json5
 {
-  env: { OPENROUTER_API_KEY: "${ltfx.n.51efae34cc35ebb820a0.v1}" },
+  env: { OPENROUTER_API_KEY: "sk-or-..." },
   agents: {
     defaults: {
       imageGenerationModel: {
@@ -127,7 +127,7 @@ OpenRouter can back the `video_generate` tool through its asynchronous
 
 ```json5
 {
-  env: { OPENROUTER_API_KEY: "${ltfx.n.51efae34cc35ebb820a0.v1}" },
+  env: { OPENROUTER_API_KEY: "sk-or-..." },
   agents: {
     defaults: {
       videoGenerationModel: {
@@ -155,7 +155,7 @@ output. Set an OpenRouter audio model under
 
 ```json5
 {
-  env: { OPENROUTER_API_KEY: "${ltfx.n.51efae34cc35ebb820a0.v1}" },
+  env: { OPENROUTER_API_KEY: "sk-or-..." },
   agents: {
     defaults: {
       musicGenerationModel: {
@@ -244,7 +244,7 @@ omit the `env.OPENROUTER_API_KEY` line below.
 
 ```json5
 {
-  env: { OPENROUTER_API_KEY: "${ltfx.n.51efae34cc35ebb820a0.v1}" },
+  env: { OPENROUTER_API_KEY: "sk-or-..." },
   agents: {
     defaults: {
       model: { primary: "openrouter/openrouter/fusion" },

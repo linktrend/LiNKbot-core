@@ -1870,7 +1870,7 @@ describe("scripts/openclaw-cross-os-release-checks", () => {
       await deleteDiscordMessage({
         channelId: "channel-123",
         messageId: "message-456",
-        token: `ltfx.n.0017ec88d6aa85df6bc5.v1`,
+        token: "discord-token",
       });
     } finally {
       globalThis.fetch = originalFetch;

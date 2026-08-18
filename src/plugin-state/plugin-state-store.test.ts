@@ -99,7 +99,7 @@ describe("plugin state keyed store", () => {
       expect(store.registerIfAbsent("interaction:1", { count: 1 })).toBe(true);
       expect(store.registerIfAbsent("interaction:1", { count: 2 })).toBe(false);
       expect(store.lookup("interaction:1")).toEqual({ count: 1 });
-      expect(store.entries()).toMatchObject([{ key: `ltfx.n.0b60af43f5fd62a7e195.v1`, value: { count: 1 } }]);
+      expect(store.entries()).toMatchObject([{ key: "interaction:1", value: { count: 1 } }]);
       expect(store.consume("interaction:1")).toEqual({ count: 1 });
       expect(store.lookup("interaction:1")).toBeUndefined();
     });
@@ -124,7 +124,7 @@ describe("plugin state keyed store", () => {
           limit: 1,
           order: "desc",
         }),
-      ).toMatchObject([{ key: `ltfx.n.6563a8dfaa1c28fe1257.v1`, value: { count: 2 } }]);
+      ).toMatchObject([{ key: "workspace:event:0002", value: { count: 2 } }]);
     });
   });
 
@@ -576,13 +576,13 @@ describe("plugin state keyed store", () => {
         {
           pluginId: "memory-core",
           namespace: "memory-host.event-migration-checkpoints",
-          key: `ltfx.n.e661f4c935e8a5a83349.v1`,
+          key: "generation",
           value: { kind: "raw-checkpoint" },
         },
         {
           pluginId: "memory-core",
           namespace: "memory-host.event-cursors",
-          key: `ltfx.n.21a3230e03772a58aff1.v1`,
+          key: "workspace",
           value: { kind: "cursor", lastSequence: 1 },
         },
         {

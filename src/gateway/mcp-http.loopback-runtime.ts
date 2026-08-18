@@ -360,7 +360,7 @@ export function setActiveMcpLoopbackRuntime(runtime: McpLoopbackRuntime): void {
 }
 
 /** Clear loopback runtime only when the owning token matches the active runtime. */
-export function clearActiveMcpLoopbackRuntimeByOwnerToken(ownerToken: (string)): void {
+export function clearActiveMcpLoopbackRuntimeByOwnerToken(ownerToken: string): void {
   if (activeRuntime?.ownerToken === ownerToken) {
     activeRuntime = undefined;
   }

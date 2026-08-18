@@ -20,7 +20,7 @@ describe("PlivoProvider", () => {
   it("parses answer callback into call.answered and returns keep-alive XML", () => {
     const provider = new PlivoProvider({
       authId: "MA000000000000000000",
-      authToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+      authToken: "test-token",
     });
 
     const result = provider.parseWebhookEvent({
@@ -45,7 +45,7 @@ describe("PlivoProvider", () => {
   it("uses verified request key when provided", () => {
     const provider = new PlivoProvider({
       authId: "MA000000000000000000",
-      authToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+      authToken: "test-token",
     });
 
     const result = provider.parseWebhookEvent(
@@ -70,7 +70,7 @@ describe("PlivoProvider", () => {
     const provider = new PlivoProvider(
       {
         authId: "MA000000000000000000",
-        authToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+        authToken: "test-token",
       },
       {
         publicUrl: "https://voice.openclaw.ai/voice/webhook?provider=plivo",
@@ -95,7 +95,7 @@ describe("PlivoProvider", () => {
   it("renders an auto-response as the prompt for the next speech input", async () => {
     const provider = new PlivoProvider({
       authId: "MA000000000000000000",
-      authToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+      authToken: "test-token",
     });
     const apiRequest = vi.fn(async (_params: unknown) => ({}));
     (

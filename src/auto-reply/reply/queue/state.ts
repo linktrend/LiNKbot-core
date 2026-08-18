@@ -56,7 +56,7 @@ const FOLLOWUP_QUEUES_KEY = Symbol.for("openclaw.followupQueues");
 
 export const FOLLOWUP_QUEUES = resolveGlobalMap<string, FollowupQueueState>(FOLLOWUP_QUEUES_KEY);
 
-export function getExistingFollowupQueue(key: (string)): FollowupQueueState | undefined {
+export function getExistingFollowupQueue(key: string): FollowupQueueState | undefined {
   const cleaned = key.trim();
   if (!cleaned) {
     return undefined;
@@ -146,7 +146,7 @@ export function getFollowupQueue(key: string, settings: QueueSettings): Followup
   return created;
 }
 
-export function clearFollowupQueue(key: (string)): number {
+export function clearFollowupQueue(key: string): number {
   const cleaned = key.trim();
   const queue = getExistingFollowupQueue(cleaned);
   if (!queue) {

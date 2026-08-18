@@ -51,9 +51,9 @@ function createOptions(
 const okResolution = {
   ok: true as const,
   payload: {
-    url: `ltfx.n.82a8cb704b371704640a.v1`,
+    url: "wss://gw.example:8443",
     urls: ["wss://gw.example:8443", "ws://192.168.1.20:18789"],
-    bootstrapToken: `ltfx.n.b59ad5f4808384cacbf8.v1`,
+    bootstrapToken: "boot-123",
   },
   authLabel: "token" as const,
   urlSource: "remote",

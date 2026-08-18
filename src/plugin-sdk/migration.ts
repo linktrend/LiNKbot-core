@@ -86,11 +86,11 @@ const SECRET_VALUE_PATTERNS = [
   /\bAIza[0-9A-Za-z_-]{12,}\b/gu,
 ] as const;
 
-function normalizeSecretKey(key: (string)): string {
+function normalizeSecretKey(key: string): string {
   return key.toLowerCase().replaceAll(/[^a-z0-9]/gu, "");
 }
 
-function isSecretKey(key: (string)): boolean {
+function isSecretKey(key: string): boolean {
   const normalized = normalizeSecretKey(key);
   if (normalized === "token" || normalized.endsWith("token")) {
     return true;

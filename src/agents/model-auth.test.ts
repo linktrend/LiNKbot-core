@@ -128,7 +128,7 @@ vi.mock("../plugins/provider-runtime.js", async () => {
       }
       if (params.provider === "native-cli") {
         return {
-          apiKey: `ltfx.n.791219c835891e5f7d6f.v1`,
+          apiKey: "native-cli-access-token",
           source: "Native CLI auth",
           mode: "oauth" as const,
         };
@@ -140,7 +140,7 @@ vi.mock("../plugins/provider-runtime.js", async () => {
           params.modelApi === "ollama")
       ) {
         return {
-          apiKey: `ltfx.n.18ab0c9c00ad3478e4db.v1`,
+          apiKey: "ollama-local",
           source: `models.providers.${params.provider} (synthetic local key)`,
           mode: "api-key" as const,
         };
@@ -366,7 +366,7 @@ describe("resolveModelAuthMode", () => {
         "openai:token": {
           type: "token",
           provider: "openai",
-          token: `ltfx.n.e6c02a5742ea9d4de588.v1`,
+          token: "token-value",
         },
         "openai:key": {
           type: "api_key",
@@ -452,7 +452,7 @@ describe("requireApiKey", () => {
   it("normalizes line breaks in resolved API keys", () => {
     const key = requireApiKey(
       {
-        apiKey: `ltfx.n.667f90547365a0bcae10.v1`,
+        apiKey: "\n sk-test-abc\r\n",
         source: "env: OPENAI_API_KEY",
         mode: "api-key",
       },
@@ -507,7 +507,7 @@ describe("resolveUsableCustomProviderApiKey", () => {
           providers: {
             custom: {
               baseUrl: "https://example.com/v1",
-              apiKey: `ltfx.n.97cbec0dce444406c830.v1`, // pragma: allowlist secret
+              apiKey: "sk-custom-runtime", // pragma: allowlist secret
               models: [],
             },
           },
@@ -516,7 +516,7 @@ describe("resolveUsableCustomProviderApiKey", () => {
       provider: "custom",
     });
     expect(resolved).toEqual({
-      apiKey: `ltfx.n.97cbec0dce444406c830.v1`,
+      apiKey: "sk-custom-runtime",
       source: "models.json",
     });
   });
@@ -559,7 +559,7 @@ describe("resolveUsableCustomProviderApiKey", () => {
 
   it("resolves known env marker names from process env for custom providers", () => {
     const previous = process.env.OPENAI_API_KEY;
-    process.env.OPENAI_API_KEY = `ltfx.n.eea492d981ce2f728c33.v1`; // pragma: allowlist secret
+    process.env.OPENAI_API_KEY = "sk-from-env"; // pragma: allowlist secret
     try {
       const resolved = resolveUsableCustomProviderApiKey({
         cfg: {
@@ -589,7 +589,7 @@ describe("resolveUsableCustomProviderApiKey", () => {
 
   it("resolves env SecretRefs from process env for custom providers", () => {
     const previous = process.env.OPENAI_API_KEY;
-    process.env.OPENAI_API_KEY = `ltfx.n.d91198870c7fea661e61.v1`; // pragma: allowlist secret
+    process.env.OPENAI_API_KEY = "sk-secretref-env"; // pragma: allowlist secret
     try {
       const resolved = resolveUsableCustomProviderApiKey({
         cfg: {
@@ -611,7 +611,7 @@ describe("resolveUsableCustomProviderApiKey", () => {
         secretSentinels: true,
       });
       expect(looksLikeSecretSentinel(resolved?.apiKey ?? "")).toBe(true);
-      expect(resolveSecretSentinel(resolved?.apiKey ?? "")).toBe("ltfx.n.d91198870c7fea661e61.v1");
+      expect(resolveSecretSentinel(resolved?.apiKey ?? "")).toBe("sk-secretref-env");
       expect(resolved?.source).toContain("OPENAI_API_KEY");
     } finally {
       if (previous === undefined) {
@@ -624,7 +624,7 @@ describe("resolveUsableCustomProviderApiKey", () => {
 
   it("sentinelizes config env SecretRefs on env-first provider resolution", async () => {
     const previous = process.env.OPENAI_API_KEY;
-    process.env.OPENAI_API_KEY = `ltfx.n.42a3b4e755473470455b.v1`; // pragma: allowlist secret
+    process.env.OPENAI_API_KEY = "sk-secretref-env-first"; // pragma: allowlist secret
     try {
       const resolved = await resolveApiKeyForProvider({
         cfg: {
@@ -649,7 +649,7 @@ describe("resolveUsableCustomProviderApiKey", () => {
       });
 
       expect(looksLikeSecretSentinel(resolved.apiKey ?? "")).toBe(true);
-      expect(resolveSecretSentinel(resolved.apiKey ?? "")).toBe("ltfx.n.42a3b4e755473470455b.v1");
+      expect(resolveSecretSentinel(resolved.apiKey ?? "")).toBe("sk-secretref-env-first");
     } finally {
       if (previous === undefined) {
         delete process.env.OPENAI_API_KEY;
@@ -661,7 +661,7 @@ describe("resolveUsableCustomProviderApiKey", () => {
 
   it("resolves env SecretRefs with unknown env IDs from process env for custom providers", () => {
     const previous = process.env.MY_CUSTOM_KEY;
-    process.env.MY_CUSTOM_KEY = `ltfx.n.a09f64bd3a7533515247.v1`; // pragma: allowlist secret
+    process.env.MY_CUSTOM_KEY = "sk-custom-secretref-env"; // pragma: allowlist secret
     try {
       const resolved = resolveUsableCustomProviderApiKey({
         cfg: {
@@ -683,7 +683,7 @@ describe("resolveUsableCustomProviderApiKey", () => {
         secretSentinels: true,
       });
       expect(looksLikeSecretSentinel(resolved?.apiKey ?? "")).toBe(true);
-      expect(resolveSecretSentinel(resolved?.apiKey ?? "")).toBe("ltfx.n.a09f64bd3a7533515247.v1");
+      expect(resolveSecretSentinel(resolved?.apiKey ?? "")).toBe("sk-custom-secretref-env");
       expect(resolved?.source).toContain("MY_CUSTOM_KEY");
     } finally {
       if (previous === undefined) {
@@ -696,7 +696,7 @@ describe("resolveUsableCustomProviderApiKey", () => {
 
   it("resolves legacy __env__ markers from process env for custom providers", () => {
     const previous = process.env.BAILIAN_API_KEY;
-    process.env.BAILIAN_API_KEY = `ltfx.n.0e5871eb5ef80f969c54.v1`; // pragma: allowlist secret
+    process.env.BAILIAN_API_KEY = "sk-bailian-env"; // pragma: allowlist secret
     try {
       const resolved = resolveUsableCustomProviderApiKey({
         cfg: {
@@ -705,7 +705,7 @@ describe("resolveUsableCustomProviderApiKey", () => {
               bailian: {
                 baseUrl: "https://coding.dashscope.aliyuncs.com/v1",
                 api: "openai-completions",
-                apiKey: `ltfx.n.c023c8dad5dc4289c8b8.v1`, // pragma: allowlist secret
+                apiKey: "__env__:BAILIAN_API_KEY", // pragma: allowlist secret
                 models: [],
               },
             },
@@ -715,7 +715,7 @@ describe("resolveUsableCustomProviderApiKey", () => {
         secretSentinels: true,
       });
       expect(looksLikeSecretSentinel(resolved?.apiKey ?? "")).toBe(true);
-      expect(resolveSecretSentinel(resolved?.apiKey ?? "")).toBe("ltfx.n.0e5871eb5ef80f969c54.v1");
+      expect(resolveSecretSentinel(resolved?.apiKey ?? "")).toBe("sk-bailian-env");
       expect(resolved?.source).toContain("BAILIAN_API_KEY");
     } finally {
       if (previous === undefined) {
@@ -728,7 +728,7 @@ describe("resolveUsableCustomProviderApiKey", () => {
 
   it("does not resolve env SecretRefs when provider allowlist excludes the env id", () => {
     const previous = process.env.MY_CUSTOM_KEY;
-    process.env.MY_CUSTOM_KEY = `ltfx.n.a09f64bd3a7533515247.v1`; // pragma: allowlist secret
+    process.env.MY_CUSTOM_KEY = "sk-custom-secretref-env"; // pragma: allowlist secret
     try {
       const resolved = resolveUsableCustomProviderApiKey({
         cfg: {
@@ -768,7 +768,7 @@ describe("resolveUsableCustomProviderApiKey", () => {
 
   it("does not resolve env SecretRefs when provider source is not env", () => {
     const previous = process.env.MY_CUSTOM_KEY;
-    process.env.MY_CUSTOM_KEY = `ltfx.n.a09f64bd3a7533515247.v1`; // pragma: allowlist secret
+    process.env.MY_CUSTOM_KEY = "sk-custom-secretref-env"; // pragma: allowlist secret
     try {
       const resolved = resolveUsableCustomProviderApiKey({
         cfg: {
@@ -927,7 +927,7 @@ describe("resolveApiKeyForProvider", () => {
               "openai:fallback": {
                 type: "api_key",
                 provider: "openai",
-                key: `ltfx.n.f1098c4b940965bdd0f2.v1`,
+                key: "must-not-be-used-profile",
               },
             },
           },
@@ -995,13 +995,13 @@ describe("resolveApiKeyForProvider", () => {
         [coldProfileId]: {
           type: "api_key" as const,
           provider: "openai",
-          key: `ltfx.n.d76862d3847705675718.v1`,
+          key: "stale-key-must-not-be-used",
           keyRef: { source: "env" as const, provider: "default", id: "MISSING_OPENAI_KEY" },
         },
         "openai:fallback": {
           type: "api_key" as const,
           provider: "openai",
-          key: `ltfx.n.1b1b39c08601e8d80314.v1`,
+          key: "fallback-profile-must-not-be-used",
         },
         [healthyProfileId]: {
           type: "api_key" as const,
@@ -1063,14 +1063,14 @@ describe("resolveApiKeyForProvider", () => {
   });
 
   it("keeps plain environment credentials as plaintext", async () => {
-    const resolved = await withEnv("OPENAI_API_KEY", "ltfx.n.34f280295bba99ec303a.v1", () =>
+    const resolved = await withEnv("OPENAI_API_KEY", "sk-plain-env-key", () =>
       resolveApiKeyForProvider({
         provider: "openai",
         store: { version: 1, profiles: {} },
       }),
     );
 
-    expect(resolved.apiKey).toBe("ltfx.n.34f280295bba99ec303a.v1");
+    expect(resolved.apiKey).toBe("sk-plain-env-key");
     expect(looksLikeSecretSentinel(resolved.apiKey ?? "")).toBe(false);
   });
 
@@ -1093,7 +1093,7 @@ describe("resolveApiKeyForProvider", () => {
         profiles: {
           [profileId]: {
             ...store.profiles[profileId],
-            key: `ltfx.n.8c4490611a8474b67367.v1`,
+            key: "test-profile-api-key",
           },
         },
       },
@@ -1133,7 +1133,7 @@ describe("resolveApiKeyForProvider", () => {
         profiles: {
           [profileId]: {
             ...store.profiles[profileId],
-            key: `ltfx.n.7f9c9efa212b05378a7a.v1`,
+            key: "test-non-model-api-key",
           },
         },
       },
@@ -1160,7 +1160,7 @@ describe("resolveApiKeyForProvider", () => {
               "plugin-web": {
                 config: {
                   webSearch: {
-                    apiKey: `ltfx.n.2f6cd235d1e3c1d2dea7.v1`, // pragma: allowlist secret
+                    apiKey: "plugin-web-fallback-key", // pragma: allowlist secret
                   },
                 },
               },
@@ -1172,7 +1172,7 @@ describe("resolveApiKeyForProvider", () => {
     );
 
     expectAuthFields(resolved, {
-      apiKey: `ltfx.n.2f6cd235d1e3c1d2dea7.v1`,
+      apiKey: "plugin-web-fallback-key",
       source: "plugins.entries.plugin-web.config.webSearch.apiKey",
       mode: "api-key",
     });
@@ -1198,7 +1198,7 @@ describe("resolveApiKeyForProvider", () => {
           "plugin-web": {
             config: {
               webSearch: {
-                apiKey: `ltfx.n.0ec529f83054f791d8b5.v1`, // pragma: allowlist secret
+                apiKey: "plugin-web-runtime-key", // pragma: allowlist secret
               },
             },
           },
@@ -1230,7 +1230,7 @@ describe("resolveApiKeyForProvider", () => {
     },
     {
       name: "legacy env marker",
-      apiKey: `ltfx.n.7a6b8caca5b803b3ed4b.v1`,
+      apiKey: "secretref-env:CLIPROXY_API_KEY",
     },
     {
       name: "file SecretRef",
@@ -1254,7 +1254,7 @@ describe("resolveApiKeyForProvider", () => {
         providers: {
           cliproxyapi: {
             ...sourceConfig.models.providers.cliproxyapi,
-            apiKey: `ltfx.n.6a53feb90f214c0575d8.v1`, // pragma: allowlist secret
+            apiKey: "sk-runtime-cliproxy", // pragma: allowlist secret
           },
         },
       },
@@ -1269,7 +1269,7 @@ describe("resolveApiKeyForProvider", () => {
     });
 
     expectSecretSentinelAuth(resolved, {
-      value: `ltfx.n.6a53feb90f214c0575d8.v1`,
+      value: "sk-runtime-cliproxy",
       source: "models.providers.cliproxyapi",
       mode: "api-key",
     });
@@ -1307,7 +1307,7 @@ describe("resolveApiKeyForProvider", () => {
         providers: {
           cliproxyapi: {
             ...sourceConfig.models.providers.cliproxyapi,
-            apiKey: `ltfx.n.bc66288fe2396173b988.v1`, // pragma: allowlist secret
+            apiKey: "sk-runtime-clone", // pragma: allowlist secret
           },
         },
       },
@@ -1322,7 +1322,7 @@ describe("resolveApiKeyForProvider", () => {
     });
 
     expectSecretSentinelAuth(resolved, {
-      value: `ltfx.n.bc66288fe2396173b988.v1`,
+      value: "sk-runtime-clone",
       source: "models.providers.cliproxyapi",
       mode: "api-key",
     });
@@ -1339,13 +1339,13 @@ describe("resolveApiKeyForProvider", () => {
           "cliproxyapi:preferred": {
             type: "api_key",
             provider: "cliproxyapi",
-            key: `ltfx.n.8fc5dc6aa082b0783b45.v1`, // pragma: allowlist secret
+            key: "sk-preferred-profile", // pragma: allowlist secret
           },
         },
       },
     });
     expectAuthFields(preferred, {
-      apiKey: `ltfx.n.8fc5dc6aa082b0783b45.v1`,
+      apiKey: "sk-preferred-profile",
       source: "profile:cliproxyapi:preferred",
       mode: "api-key",
     });
@@ -1400,7 +1400,7 @@ describe("resolveApiKeyForProvider", () => {
           providers: {
             cliproxyapi: {
               ...sourceConfig.models.providers.cliproxyapi,
-              apiKey: `ltfx.n.fcf58f0b9712cbecf1cb.v1`, // pragma: allowlist secret
+              apiKey: "sk-runtime-wrong-source", // pragma: allowlist secret
             },
           },
         },
@@ -1438,7 +1438,7 @@ describe("resolveApiKeyForProvider", () => {
                   enabled: false,
                   config: {
                     webSearch: {
-                      apiKey: `ltfx.n.2f6cd235d1e3c1d2dea7.v1`, // pragma: allowlist secret
+                      apiKey: "plugin-web-fallback-key", // pragma: allowlist secret
                     },
                   },
                 },
@@ -1467,7 +1467,7 @@ describe("resolveApiKeyForProvider", () => {
     });
 
     expect(resolved).toEqual({
-      apiKey: `ltfx.n.791219c835891e5f7d6f.v1`,
+      apiKey: "native-cli-access-token",
       source: "Native CLI auth",
       mode: "oauth",
     });
@@ -1483,7 +1483,7 @@ describe("resolveApiKeyForProvider", () => {
           "custom-auth:synthetic": {
             type: "api_key",
             provider: "custom-auth",
-            key: `ltfx.n.06d0a91b814169ff13d0.v1`, // pragma: allowlist secret
+            key: "synthetic-defer", // pragma: allowlist secret
           },
           "custom-auth:real": {
             type: "api_key",
@@ -1510,7 +1510,7 @@ describe("resolveApiKeyForProvider", () => {
             openai: {
               api: "openai-responses",
               auth: "api-key",
-              apiKey: `ltfx.n.0e927140a32bdf36fb40.v1`, // pragma: allowlist secret
+              apiKey: "sk-config-live", // pragma: allowlist secret
               baseUrl: "https://api.openai.com/v1",
               models: [],
             },
@@ -1523,14 +1523,14 @@ describe("resolveApiKeyForProvider", () => {
           "openai:default": {
             type: "api_key",
             provider: "openai",
-            key: `ltfx.n.fa372cf85bcda4de1577.v1`, // pragma: allowlist secret
+            key: "sk-profile-stale", // pragma: allowlist secret
           },
         },
       },
     });
 
     expectAuthFields(resolved, {
-      apiKey: `ltfx.n.0e927140a32bdf36fb40.v1`,
+      apiKey: "sk-config-live",
       source: "models.json",
       mode: "api-key",
     });
@@ -1550,7 +1550,7 @@ describe("resolveApiKeyForProvider", () => {
             providers: {
               [provider]: {
                 auth: mode,
-                apiKey: `ltfx.n.11af581124b82aa02e05.v1`,
+                apiKey: "configured-subscription-credential",
                 baseUrl: "https://subscription.example/v1",
                 models: [],
               },
@@ -1561,7 +1561,7 @@ describe("resolveApiKeyForProvider", () => {
       });
 
       expect(resolved).toMatchObject({
-        apiKey: `ltfx.n.11af581124b82aa02e05.v1`,
+        apiKey: "configured-subscription-credential",
         source: "models.json",
         mode,
       });
@@ -1581,7 +1581,7 @@ describe("resolveApiKeyForProvider", () => {
             providers: {
               openai: {
                 auth: "oauth",
-                apiKey: `ltfx.n.11af581124b82aa02e05.v1`,
+                apiKey: "configured-subscription-credential",
                 baseUrl: "https://api.openai.com/v1",
                 models: [],
               },
@@ -1624,7 +1624,7 @@ describe("resolveApiKeyForProvider", () => {
         });
 
         expect(resolved).toMatchObject({
-          apiKey: `ltfx.n.95b3bdf04472ed933158.v1`,
+          apiKey: "env-subscription-credential",
           mode: "token",
         });
         expect(resolved.source).toContain("OPENCLAW_TEST_PROVIDER_SUBSCRIPTION_TOKEN");
@@ -1652,7 +1652,7 @@ describe("resolveApiKeyForProvider", () => {
           providers: {
             cliproxyapi: {
               ...sourceConfig.models.providers.cliproxyapi,
-              apiKey: `ltfx.n.6a53feb90f214c0575d8.v1`, // pragma: allowlist secret
+              apiKey: "sk-runtime-cliproxy", // pragma: allowlist secret
             },
           },
         },
@@ -1670,14 +1670,14 @@ describe("resolveApiKeyForProvider", () => {
           "cliproxyapi:default": {
             type: "api_key",
             provider: "cliproxyapi",
-            key: `ltfx.n.fa372cf85bcda4de1577.v1`, // pragma: allowlist secret
+            key: "sk-profile-stale", // pragma: allowlist secret
           },
         },
       },
     });
 
     expectSecretSentinelAuth(resolved, {
-      value: `ltfx.n.6a53feb90f214c0575d8.v1`,
+      value: "sk-runtime-cliproxy",
       source: "models.providers.cliproxyapi",
       mode: "api-key",
     });
@@ -1703,7 +1703,7 @@ describe("resolveApiKeyForProvider", () => {
           providers: {
             "custom-oauth-ref": {
               ...sourceConfig.models.providers["custom-oauth-ref"],
-              apiKey: `ltfx.n.0c4e58e70f70ab360d80.v1`,
+              apiKey: "resolved-oauth-credential",
             },
           },
         },
@@ -1739,7 +1739,7 @@ describe("resolveApiKeyForProvider", () => {
             "ollama:default": {
               type: "api_key",
               provider: "ollama",
-              key: `ltfx.n.66dbf9f2eb835405a1ba.v1`, // pragma: allowlist secret
+              key: "ollama-cloud-profile", // pragma: allowlist secret
             },
           },
         },
@@ -1747,7 +1747,7 @@ describe("resolveApiKeyForProvider", () => {
     );
 
     expectAuthFields(resolved, {
-      apiKey: `ltfx.n.18ab0c9c00ad3478e4db.v1`,
+      apiKey: "ollama-local",
       mode: "api-key",
     });
     expect(resolved.source).toContain("OLLAMA_API_KEY");
@@ -1844,7 +1844,7 @@ describe("resolveApiKeyForProvider – synthetic local auth for custom providers
             "ollama-remote": {
               baseUrl: "http://192.168.178.122:11434",
               api: "ollama",
-              apiKey: `ltfx.n.18ab0c9c00ad3478e4db.v1`,
+              apiKey: "ollama-local",
               models: [
                 {
                   id: "qwen3.5:27b",
@@ -1864,7 +1864,7 @@ describe("resolveApiKeyForProvider – synthetic local auth for custom providers
     });
 
     expectAuthFields(auth, {
-      apiKey: `ltfx.n.18ab0c9c00ad3478e4db.v1`,
+      apiKey: "ollama-local",
       source: "models.json (local marker)",
       mode: "api-key",
     });
@@ -1898,7 +1898,7 @@ describe("resolveApiKeyForProvider – synthetic local auth for custom providers
     });
 
     expectAuthFields(auth, {
-      apiKey: `ltfx.n.18ab0c9c00ad3478e4db.v1`,
+      apiKey: "ollama-local",
       source: "models.providers.ollama-gpu1 (synthetic local key)",
       mode: "api-key",
     });
@@ -1923,7 +1923,7 @@ describe("resolveApiKeyForProvider – synthetic local auth for custom providers
           providers: {
             "ollama-gpu1": {
               ...providerConfig,
-              apiKey: `ltfx.n.0818ea691479f942af26.v1`, // pragma: allowlist secret
+              apiKey: "sk-runtime-ollama", // pragma: allowlist secret
             },
           },
         },
@@ -1939,7 +1939,7 @@ describe("resolveApiKeyForProvider – synthetic local auth for custom providers
     });
 
     expectSecretSentinelAuth(auth, {
-      value: `ltfx.n.0818ea691479f942af26.v1`,
+      value: "sk-runtime-ollama",
       source: "models.providers.ollama-gpu1",
       mode: "api-key",
     });
@@ -1986,7 +1986,7 @@ describe("resolveApiKeyForProvider – synthetic local auth for custom providers
     });
 
     expectAuthFields(auth, {
-      apiKey: `ltfx.n.18ab0c9c00ad3478e4db.v1`,
+      apiKey: "ollama-local",
       source: "models.providers.my-router (synthetic local key)",
       mode: "api-key",
     });
@@ -2001,7 +2001,7 @@ describe("resolveApiKeyForProvider – synthetic local auth for custom providers
             "custom-192-168-0-222-11434": {
               baseUrl: "http://192.168.0.222:11434/v1",
               api: "openai-completions",
-              apiKey: `ltfx.n.18ab0c9c00ad3478e4db.v1`,
+              apiKey: "ollama-local",
               models: [
                 {
                   id: "qwen3.5:9b",
@@ -2038,7 +2038,7 @@ describe("resolveApiKeyForProvider – synthetic local auth for custom providers
               ollama: {
                 baseUrl: `http://${hostname}:11434`,
                 api: "ollama",
-                apiKey: `ltfx.n.18ab0c9c00ad3478e4db.v1`,
+                apiKey: "ollama-local",
                 models: [
                   {
                     id: "qwen3.5:27b",
@@ -2058,7 +2058,7 @@ describe("resolveApiKeyForProvider – synthetic local auth for custom providers
       });
 
       expectAuthFields(auth, {
-        apiKey: `ltfx.n.18ab0c9c00ad3478e4db.v1`,
+        apiKey: "ollama-local",
         source: "models.json (local marker)",
         mode: "api-key",
       });
@@ -2075,7 +2075,7 @@ describe("resolveApiKeyForProvider – synthetic local auth for custom providers
               "custom-remote": {
                 baseUrl: "https://api.example.com/v1",
                 api: "openai-completions",
-                apiKey: `ltfx.n.18ab0c9c00ad3478e4db.v1`,
+                apiKey: "ollama-local",
                 models: [
                   {
                     id: "qwen3.5:9b",
@@ -2257,7 +2257,7 @@ describe("applyAuthHeaderOverride", () => {
   it("injects Authorization Bearer header when authHeader is true", () => {
     const result = applyAuthHeaderOverride(
       baseModel,
-      { apiKey: `ltfx.n.4c806362b613f7496abf.v1`, source: "env", mode: "api-key" },
+      { apiKey: "test-api-key", source: "env", mode: "api-key" },
       {
         models: {
           providers: {
@@ -2278,7 +2278,7 @@ describe("applyAuthHeaderOverride", () => {
   it("preserves existing model headers when injecting Authorization", () => {
     const result = applyAuthHeaderOverride(
       { ...baseModel, headers: { "X-Custom": "value" } },
-      { apiKey: `ltfx.n.4c806362b613f7496abf.v1`, source: "env", mode: "api-key" },
+      { apiKey: "test-api-key", source: "env", mode: "api-key" },
       {
         models: {
           providers: {
@@ -2365,7 +2365,7 @@ describe("applyAuthHeaderOverride", () => {
               headers: { "X-Managed": NON_ENV_SECRETREF_MARKER },
               auth: {
                 mode: "authorization-bearer" as const,
-                token: `ltfx.n.052af75239b9ee14511a.v1`,
+                token: "secretref-env:GOOGLE_BEARER_TOKEN",
               },
             },
             models: [],
@@ -2382,7 +2382,7 @@ describe("applyAuthHeaderOverride", () => {
               headers: { "X-Managed": "runtime-managed-secret" },
               auth: {
                 mode: "authorization-bearer" as const,
-                token: `ltfx.n.ab75162e7933af2a3367.v1`,
+                token: "runtime-bearer-secret",
               },
             },
           },
@@ -2425,7 +2425,7 @@ describe("applyAuthHeaderOverride", () => {
   it("returns model unchanged when authHeader is not set", () => {
     const result = applyAuthHeaderOverride(
       baseModel,
-      { apiKey: `ltfx.n.4c806362b613f7496abf.v1`, source: "env", mode: "api-key" },
+      { apiKey: "test-api-key", source: "env", mode: "api-key" },
       {
         models: {
           providers: {
@@ -2445,7 +2445,7 @@ describe("applyAuthHeaderOverride", () => {
   it("returns model unchanged when authHeader is false", () => {
     const result = applyAuthHeaderOverride(
       baseModel,
-      { apiKey: `ltfx.n.4c806362b613f7496abf.v1`, source: "env", mode: "api-key" },
+      { apiKey: "test-api-key", source: "env", mode: "api-key" },
       {
         models: {
           providers: {
@@ -2483,7 +2483,7 @@ describe("applyAuthHeaderOverride", () => {
   it("returns model unchanged when provider config is missing", () => {
     const result = applyAuthHeaderOverride(
       baseModel,
-      { apiKey: `ltfx.n.4c806362b613f7496abf.v1`, source: "env", mode: "api-key" },
+      { apiKey: "test-api-key", source: "env", mode: "api-key" },
       undefined,
     );
 
@@ -2514,7 +2514,7 @@ describe("applyAuthHeaderOverride", () => {
   it("strips existing authorization header case-insensitively before injection", () => {
     const result = applyAuthHeaderOverride(
       { ...baseModel, headers: { authorization: "old-value", "X-Custom": "keep" } },
-      { apiKey: `ltfx.n.4c806362b613f7496abf.v1`, source: "env", mode: "api-key" },
+      { apiKey: "test-api-key", source: "env", mode: "api-key" },
       {
         models: {
           providers: {

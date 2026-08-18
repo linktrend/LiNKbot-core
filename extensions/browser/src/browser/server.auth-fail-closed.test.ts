@@ -118,7 +118,7 @@ describe("browser control auth bootstrap failures", () => {
 
   it("fails closed when password mode drops an inactive token but has no password", async () => {
     mocks.gatewayAuthMode = "password";
-    mocks.gatewayAuthToken = `ltfx.n.33a8964c41f858e7d794.v1`;
+    mocks.gatewayAuthToken = "inactive-token";
     mocks.ensureBrowserControlAuth.mockResolvedValueOnce({ auth: {} });
     mocks.resolveBrowserControlAuth.mockReturnValueOnce({});
     mocks.shouldAutoGenerateBrowserAuth.mockReturnValueOnce(true);

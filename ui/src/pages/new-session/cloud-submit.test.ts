@@ -40,7 +40,7 @@ describe("cloud draft advancement", () => {
     await expect(
       advanceCloudDraftSession({
         client: clientWith(request),
-        key: `ltfx.n.42eb3224ff54064d3802.v1`,
+        key: "agent:cloud:recovered",
         agentId: "cloud",
         profileId: "aws",
         message: "resume remotely",
@@ -83,7 +83,7 @@ describe("cloud draft advancement", () => {
     await expect(
       advanceCloudDraftSession({
         client: clientWith(request),
-        key: `ltfx.n.3e69de1ef3090c1aac49.v1`,
+        key: "agent:cloud:stale",
         agentId: "cloud",
         profileId: "aws",
         message: "stale task",
@@ -115,7 +115,7 @@ describe("cloud draft advancement", () => {
     await expect(
       advanceCloudDraftSession({
         client: clientWith(request),
-        key: `ltfx.n.4c98b9d7ae8ed29c2a08.v1`,
+        key: "agent:cloud:cancelled",
         agentId: "cloud",
         profileId: "aws",
         message: "cancelled task",
@@ -168,7 +168,7 @@ describe("cloud draft advancement", () => {
     await expect(
       advanceCloudDraftSession({
         client: clientWith(request),
-        key: `ltfx.n.42eb3224ff54064d3802.v1`,
+        key: "agent:cloud:recovered",
         agentId: "cloud",
         profileId: "aws",
         message: "possibly accepted task",
@@ -188,7 +188,7 @@ describe("cloud draft advancement", () => {
       messageId: "message-recovered",
     });
     expect(request).toHaveBeenNthCalledWith(2, "sessions.dispatch", {
-      key: `ltfx.n.42eb3224ff54064d3802.v1`,
+      key: "agent:cloud:recovered",
       agentId: "cloud",
       profileId: "aws",
     });
@@ -231,7 +231,7 @@ describe("cloud draft advancement", () => {
     await expect(
       advanceCloudDraftSession({
         client: clientWith(request),
-        key: `ltfx.n.42eb3224ff54064d3802.v1`,
+        key: "agent:cloud:recovered",
         agentId: "cloud",
         profileId: "aws",
         message: "retry this task",
@@ -247,7 +247,7 @@ describe("cloud draft advancement", () => {
       }),
     ).resolves.toEqual({ status: "dispatch-rejected", error: "cloud profile was removed" });
     expect(request).toHaveBeenNthCalledWith(3, "sessions.delete", {
-      key: `ltfx.n.42eb3224ff54064d3802.v1`,
+      key: "agent:cloud:recovered",
       agentId: "cloud",
       deleteTranscript: true,
     });
@@ -274,7 +274,7 @@ describe("cloud draft advancement", () => {
     await expect(
       advanceCloudDraftSession({
         client: clientWith(request),
-        key: `ltfx.n.d0c0dbd2d52f0028f208.v1`,
+        key: "agent:cloud:missing",
         agentId: "cloud",
         profileId: "aws",
         message: "missing task",
@@ -319,7 +319,7 @@ describe("cloud draft advancement", () => {
     await expect(
       advanceCloudDraftSession({
         client: clientWith(request),
-        key: `ltfx.n.a89c18d72966321aa0b0.v1`,
+        key: "agent:cloud:pre-send",
         agentId: "cloud",
         profileId: "aws",
         message: "not sent yet",
@@ -338,7 +338,7 @@ describe("cloud draft advancement", () => {
       error: "cloud worker placement became failed",
     });
     expect(request).toHaveBeenNthCalledWith(2, "sessions.delete", {
-      key: `ltfx.n.a89c18d72966321aa0b0.v1`,
+      key: "agent:cloud:pre-send",
       agentId: "cloud",
       deleteTranscript: true,
     });

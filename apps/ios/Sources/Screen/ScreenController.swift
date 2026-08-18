@@ -60,7 +60,7 @@ final class ScreenController {
         }
 
         guard let url = URL(string: trimmed) else {
-            self.errorText = "Invalid URL: (\(trimmed)")
+            self.errorText = "Invalid URL: \(trimmed)"
             return
         }
         self.errorText = nil

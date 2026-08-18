@@ -98,7 +98,7 @@ describe("ClawRouter plugin", () => {
         },
       } as never,
       {} as never,
-      { apiKey: `ltfx.n.af4b37dd7a311f282d12.v1`, requestId: "automatic-call-id" } as never,
+      { apiKey: "runtime-proxy-key", requestId: "automatic-call-id" } as never,
     );
 
     expect(calls[0]?.headers).toEqual({
@@ -136,7 +136,7 @@ describe("ClawRouter plugin", () => {
       } as never,
       {} as never,
       {
-        apiKey: `ltfx.n.af4b37dd7a311f282d12.v1`,
+        apiKey: "runtime-proxy-key",
         requestId: `${longRunId}:model:1`,
         sessionId: `session-${"x".repeat(300)}`,
       } as never,
@@ -310,7 +310,7 @@ describe("ClawRouter plugin", () => {
       } as never,
       {} as never,
       {
-        apiKey: `ltfx.n.af4b37dd7a311f282d12.v1`,
+        apiKey: "runtime-proxy-key",
         requestId: "bad\nrequest",
         sessionId: "bad\rsession",
       } as never,
@@ -324,7 +324,7 @@ describe("ClawRouter plugin", () => {
 
   it("resolves managed secret refs before scoped discovery", async () => {
     providerAuthRuntimeMocks.resolveApiKeyForProvider.mockResolvedValue({
-      apiKey: `ltfx.n.4950012927b9e7fe23c9.v1`,
+      apiKey: "resolved-proxy-key",
       mode: "api-key",
       source: "models.json secretref",
     });
@@ -338,14 +338,14 @@ describe("ClawRouter plugin", () => {
       workspaceDir: "/workspace",
       env: {},
       resolveProviderAuth: () => ({
-        apiKey: `ltfx.n.2d051e748fa1575537e2.v1`,
+        apiKey: "secretref-managed",
         discoveryApiKey: undefined,
         mode: "api_key",
         source: "profile",
         profileId: "clawrouter-profile",
       }),
       resolveProviderApiKey: () => ({
-        apiKey: `ltfx.n.2d051e748fa1575537e2.v1`,
+        apiKey: "secretref-managed",
         discoveryApiKey: undefined,
       }),
     });
@@ -379,16 +379,16 @@ describe("ClawRouter plugin", () => {
     await expect(
       provider?.catalog?.run({
         config: { models: {} },
-        env: { CLAWROUTER_API_KEY: `ltfx.n.8bfec0d7907840bb4683.v1` },
+        env: { CLAWROUTER_API_KEY: "invalid-proxy-key" },
         resolveProviderAuth: () => ({
-          apiKey: `ltfx.n.8bfec0d7907840bb4683.v1`,
-          discoveryApiKey: `ltfx.n.8bfec0d7907840bb4683.v1`,
+          apiKey: "invalid-proxy-key",
+          discoveryApiKey: "invalid-proxy-key",
           mode: "api_key",
           source: "env",
         }),
         resolveProviderApiKey: () => ({
-          apiKey: `ltfx.n.8bfec0d7907840bb4683.v1`,
-          discoveryApiKey: `ltfx.n.8bfec0d7907840bb4683.v1`,
+          apiKey: "invalid-proxy-key",
+          discoveryApiKey: "invalid-proxy-key",
         }),
       }),
     ).rejects.toThrow(/401/u);
@@ -396,7 +396,7 @@ describe("ClawRouter plugin", () => {
 
   it("resolves configured catalog models through a stored auth profile", async () => {
     providerAuthRuntimeMocks.resolveApiKeyForProvider.mockResolvedValue({
-      apiKey: `ltfx.n.4950012927b9e7fe23c9.v1`,
+      apiKey: "resolved-proxy-key",
       mode: "api-key",
       source: "auth profile",
     });
@@ -456,8 +456,8 @@ describe("ClawRouter plugin", () => {
 
   it("keeps the previous dynamic model snapshot while rebuilding", async () => {
     providerAuthRuntimeMocks.resolveApiKeyForProvider
-      .mockResolvedValueOnce({ apiKey: `ltfx.n.5095a09224a5ba7211d6.v1` })
-      .mockResolvedValueOnce({ apiKey: `ltfx.n.057ba03d6c44104863dc.v1` });
+      .mockResolvedValueOnce({ apiKey: "decoy-token" })
+      .mockResolvedValueOnce({ apiKey: "changeme" });
     let finishRefresh: ((response: Response) => void) | undefined;
     const refreshResponse = new Promise<Response>((resolve) => {
       finishRefresh = resolve;
@@ -494,8 +494,8 @@ describe("ClawRouter plugin", () => {
 
   it("keeps the previous dynamic model snapshot when catalog refresh fails", async () => {
     providerAuthRuntimeMocks.resolveApiKeyForProvider
-      .mockResolvedValueOnce({ apiKey: `ltfx.n.5095a09224a5ba7211d6.v1` })
-      .mockResolvedValueOnce({ apiKey: `ltfx.n.057ba03d6c44104863dc.v1` });
+      .mockResolvedValueOnce({ apiKey: "decoy-token" })
+      .mockResolvedValueOnce({ apiKey: "changeme" });
     vi.stubGlobal(
       "fetch",
       vi

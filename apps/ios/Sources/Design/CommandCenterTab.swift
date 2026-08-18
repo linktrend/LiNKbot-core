@@ -644,7 +644,7 @@ struct CommandCenterTab: View {
 
     private func deleteSession(_ session: OpenClawChatSessionEntry) {
         self.performSessionMutation(resetActiveSessionKey: session.key) { transport in
-            try await transport.deleteSession(key: (session.key))
+            try await transport.deleteSession(key: session.key)
         }
     }
 
@@ -1315,7 +1315,7 @@ struct CommandSessionsScreen: View {
 
     private func deleteSession(_ session: OpenClawChatSessionEntry) {
         self.performMutation(resetActiveSessionKey: session.key) { transport in
-            try await transport.deleteSession(key: (session.key))
+            try await transport.deleteSession(key: session.key)
         }
     }
 

@@ -57,7 +57,7 @@ describe("sessions tools visibility", () => {
     };
     mockGatewayWithHistory((req) => {
       if (req.method === "sessions.list" && req.params?.spawnedBy === "main") {
-        return { sessions: [{ key: `ltfx.n.9f1dbca1aef8170e4d40.v1` }] };
+        return { sessions: [{ key: "subagent:child-1" }] };
       }
       if (req.method === "sessions.resolve") {
         const key = typeof req.params?.key === "string" ? req.params.key : "";

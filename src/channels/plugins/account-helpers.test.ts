@@ -133,7 +133,7 @@ describe("createAccountListHelpers", () => {
         helpers.listAccountIds({
           channels: {
             testchannel: {
-              token: `ltfx.n.2cff60a244379d429c18.v1`,
+              token: "root-token",
               accounts: { work: {} },
             },
           },
@@ -143,7 +143,7 @@ describe("createAccountListHelpers", () => {
 
     it("keeps an implicit default account when root env credentials coexist with named accounts", () => {
       const previous = process.env.TESTCHANNEL_TOKEN;
-      process.env.TESTCHANNEL_TOKEN = `ltfx.n.25d37ba7752ae1d95b57.v1`;
+      process.env.TESTCHANNEL_TOKEN = "env-token";
       try {
         const helpers = createAccountListHelpers("testchannel", {
           implicitDefaultAccount: { envVars: ["TESTCHANNEL_TOKEN"] },

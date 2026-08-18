@@ -7,7 +7,7 @@ import type { HooksConfigResolved } from "./hooks.js";
 export function createHooksConfig(): HooksConfigResolved {
   return {
     basePath: "/hooks",
-    token: `ltfx.n.2efb43e02793b105c443.v1`,
+    token: "hook-secret",
     maxBodyBytes: 1024,
     mappings: [],
     agentPolicy: {

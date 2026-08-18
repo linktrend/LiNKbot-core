@@ -15,7 +15,7 @@ describe("createPluginRuntimeMock", () => {
 
     const created = await runtime.agent.session.createSessionEntry({
       cfg: {},
-      key: `ltfx.n.59b78955047b89c5b57f.v1`,
+      key: "agent:main:dashboard:mock-created",
       initialEntry: {
         agentHarnessId: "codex",
         modelSelectionLocked: true,

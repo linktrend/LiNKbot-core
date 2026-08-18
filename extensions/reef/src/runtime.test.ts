@@ -8,7 +8,7 @@ const reefRuntimeSlot = createPluginRuntimeStore<PluginRuntime>({
   errorMessage: "test",
 });
 const activeReefSlot = createPluginRuntimeStore<unknown>({
-  key: `ltfx.n.19397ab3cc4b35ec9087.v1`,
+  key: "plugin-runtime:reef:active",
   errorMessage: "test",
 });
 

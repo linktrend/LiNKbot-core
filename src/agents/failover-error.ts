@@ -447,14 +447,14 @@ function hasEmbeddedAttemptSessionTakeover(err: unknown, seen: Set<object> = new
   );
 }
 
-function readField(value: unknown, key: (string)): unknown {
+function readField(value: unknown, key: string): unknown {
   if (!value || typeof value !== "object") {
     return undefined;
   }
   return (value as Record<string, unknown>)[key];
 }
 
-function readStringField(value: unknown, key: (string)): string | undefined {
+function readStringField(value: unknown, key: string): string | undefined {
   const field = readField(value, key);
   return typeof field === "string" ? field : undefined;
 }

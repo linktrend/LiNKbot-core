@@ -389,7 +389,7 @@ function auditManagedServiceEnvironment(
   });
 }
 
-function normalizeServiceEnvKey(key: (string)): string | null {
+function normalizeServiceEnvKey(key: string): string | null {
   return normalizeEnvVarKey(key, { portable: true })?.toUpperCase() ?? null;
 }
 

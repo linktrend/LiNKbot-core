@@ -3,7 +3,7 @@ import crypto from "node:crypto";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { validateLineSignature } from "./signature.js";
 
-function sign(body: string, secret: (string)): string {
+function sign(body: string, secret: string): string {
   return crypto.createHmac("SHA256", secret).update(body).digest("base64");
 }
 
@@ -14,14 +14,14 @@ describe("validateLineSignature", () => {
 
   it("accepts a valid signature", () => {
     const body = JSON.stringify({ events: [{ type: "message" }] });
-    const secret = `ltfx.n.190aec7389a3b0b5b6c6.v1`;
+    const secret = "top-secret";
 
     expect(validateLineSignature(body, sign(body, secret), secret)).toBe(true);
   });
 
   it("still performs timing-safe comparison when signature length mismatches", () => {
     const body = JSON.stringify({ events: [{ type: "message" }] });
-    const secret = `ltfx.n.190aec7389a3b0b5b6c6.v1`;
+    const secret = "top-secret";
     const spy = vi.spyOn(crypto, "timingSafeEqual");
 
     expect(validateLineSignature(body, "short", secret)).toBe(false);

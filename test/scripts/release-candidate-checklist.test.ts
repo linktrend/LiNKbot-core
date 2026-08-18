@@ -900,7 +900,7 @@ describe("release candidate checklist", () => {
       validateWindowsSourceRelease("v0.6.3", {
         fetchImpl,
         timeoutMs: 1234,
-        token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+        token: "test-token",
       }),
     ).resolves.toEqual({
       tag: "v0.6.3",
@@ -970,7 +970,7 @@ describe("release candidate checklist", () => {
       validateWindowsSourceRelease("v0.6.3", {
         fetchImpl,
         timeoutMs: 1234,
-        token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+        token: "test-token",
       }),
     ).rejects.toThrow(message);
   });
@@ -1087,7 +1087,7 @@ describe("release candidate checklist", () => {
       githubApi("repos/openclaw/openclaw/actions/runs", {
         fetchImpl,
         timeoutMs: 1234,
-        token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+        token: "test-token",
       }),
     ).resolves.toEqual({ workflow_runs: [] });
     expect(fetchImpl).toHaveBeenCalledWith(
@@ -1108,7 +1108,7 @@ describe("release candidate checklist", () => {
       await expect(
         githubApi("repos/openclaw/openclaw/actions/runs", {
           fetchImpl,
-          token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+          token: "test-token",
         }),
       ).resolves.toEqual({ workflow_runs: [] });
     });
@@ -1124,7 +1124,7 @@ describe("release candidate checklist", () => {
         await expect(
           githubApi("repos/openclaw/openclaw/actions/runs", {
             fetchImpl,
-            token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+            token: "test-token",
           }),
         ).rejects.toThrow(
           "OPENCLAW_RELEASE_CANDIDATE_GITHUB_API_TIMEOUT_MS must be a positive integer",
@@ -1147,7 +1147,7 @@ describe("release candidate checklist", () => {
         fetchImpl,
         maxBodyBytes: 64,
         timeoutMs: 1234,
-        token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+        token: "test-token",
       }),
     ).rejects.toThrow(
       "GitHub API repos/openclaw/openclaw/actions/runs response body exceeded 64 bytes",
@@ -1165,7 +1165,7 @@ describe("release candidate checklist", () => {
       githubApi("repos/openclaw/openclaw/actions/runs", {
         fetchImpl,
         timeoutMs: 25,
-        token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+        token: "test-token",
       }),
     ).rejects.toThrow("GitHub API repos/openclaw/openclaw/actions/runs timed out after 25ms");
   });
@@ -1179,7 +1179,7 @@ describe("release candidate checklist", () => {
       githubApi("repos/openclaw/openclaw/actions/runs/123/jobs", {
         fetchImpl,
         timeoutMs: 5,
-        token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+        token: "test-token",
       }),
     ).rejects.toThrow(
       "GitHub API repos/openclaw/openclaw/actions/runs/123/jobs timed out after 5ms",

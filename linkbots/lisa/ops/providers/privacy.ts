@@ -144,7 +144,7 @@ function inspectPayload(payload: unknown): LisaPolicyDenied | LisaPolicyInvalid 
   return prohibited;
 }
 
-function reasonForProhibitedKey(key: (string)): string {
+function reasonForProhibitedKey(key: string): string {
   if (
     key === "privateHealth" ||
     key === "selfie" ||

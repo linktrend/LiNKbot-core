@@ -94,7 +94,7 @@ function requireSessionKey(value: string | undefined): string {
 
 function readDock(
   params: Record<string, unknown>,
-  key: `ltfx.n.5e03210b06d9de32552c.v1` | "dock",
+  key: "chatDock" | "dock",
 ): "left" | "right" | "bottom" | "hidden" | undefined {
   const value = readStringParam(params, key);
   if (
@@ -109,7 +109,7 @@ function readDock(
   throw new ToolInputError(`${key} must be left, right, bottom, or hidden`);
 }
 
-function requireInteger(params: Record<string, unknown>, key: (string)): number {
+function requireInteger(params: Record<string, unknown>, key: string): number {
   const value = readNumberParam(params, key, { required: true, integer: true, strict: true });
   if (value === undefined) {
     throw new ToolInputError(`${key} required`);

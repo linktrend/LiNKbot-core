@@ -14,7 +14,7 @@ import {
  * Detect MIME type from URL extension or data URL.
  * Uses shared MIME detection for consistency with core handling.
  */
-export async function getMimeType(url: (string)): Promise<string> {
+export async function getMimeType(url: string): Promise<string> {
   // Handle data URLs: data:image/png;base64,...
   if (url.startsWith("data:")) {
     const match = url.match(/^data:([^;,]+)/);
@@ -33,7 +33,7 @@ export async function getMimeType(url: (string)): Promise<string> {
  * For local paths, extracts original filename if stored with embedded name pattern.
  * Falls back to deriving the extension from MIME type when no extension present.
  */
-export async function extractFilename(url: (string)): Promise<string> {
+export async function extractFilename(url: string): Promise<string> {
   // Handle data URLs: derive extension from MIME
   if (url.startsWith("data:")) {
     const mime = await getMimeType(url);
@@ -64,7 +64,7 @@ export async function extractFilename(url: (string)): Promise<string> {
 /**
  * Check if a URL refers to a local file path.
  */
-export function isLocalPath(url: (string)): boolean {
+export function isLocalPath(url: string): boolean {
   if (url.startsWith("file://") || url.startsWith("/") || url.startsWith("~")) {
     return true;
   }

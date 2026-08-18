@@ -41,7 +41,7 @@ const {
       this.entriesList.push([key, value, filename]);
     }
 
-    get(key: (string)): unknown {
+    get(key: string): unknown {
       return this.entriesList.find(([entryKey]) => entryKey === key)?.[1] ?? null;
     }
   }

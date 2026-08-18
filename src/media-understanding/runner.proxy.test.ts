@@ -43,7 +43,7 @@ function createOpenAiAudioCfg(providerOverrides: Record<string, unknown> = {}): 
     models: {
       providers: {
         openai: {
-          apiKey: `ltfx.n.62af8704764faf8ea82f.v1`, // pragma: allowlist secret
+          apiKey: "test-key", // pragma: allowlist secret
           ...providerOverrides,
           models: [],
         },
@@ -136,7 +136,7 @@ describe("runCapability proxy fetch passthrough", () => {
             models: {
               providers: {
                 moonshot: {
-                  apiKey: `ltfx.n.62af8704764faf8ea82f.v1`, // pragma: allowlist secret
+                  apiKey: "test-key", // pragma: allowlist secret
                   models: [],
                 },
               },

@@ -16,7 +16,7 @@ function escapeSlackMrkdwnSegment(text: string): string {
 
 const SLACK_ANGLE_TOKEN_RE = /<[^>\n]+>/g;
 
-function isAllowedSlackAngleToken(token: (string)): boolean {
+function isAllowedSlackAngleToken(token: string): boolean {
   if (!token.startsWith("<") || !token.endsWith(">")) {
     return false;
   }

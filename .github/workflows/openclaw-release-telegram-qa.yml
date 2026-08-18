@@ -108,7 +108,7 @@ jobs:
               "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=openclaw-release-telegram-qa"
           )"
           oidc_token="$(jq -er '.value' <<<"$oidc_json")"
-          EXPECTED_WORKFLOW_REF="$expected_ref" OIDC_TOKEN="${ltfx.n.aa61e58e8aee20b02629.v1}" \
+          EXPECTED_WORKFLOW_REF="$expected_ref" OIDC_TOKEN="$oidc_token" \
             node --input-type=module <<'NODE'
           import { appendFileSync } from "node:fs";
 

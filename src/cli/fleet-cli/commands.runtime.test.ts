@@ -64,7 +64,7 @@ describe("fleet command output", () => {
     const restore = {
       tenant: "acme",
       archivePath: "/tmp/a.tgz",
-      token: `ltfx.n.348e9df2a42bd6e3c635.v1`,
+      token: "new-token",
       tokenNote: "Shown once.",
       started: false,
       url: "http://127.0.0.1:19100",
@@ -111,7 +111,7 @@ describe("fleet command output", () => {
       image: "ghcr.io/openclaw/openclaw:latest",
       runtime: "docker" as const,
       started: true,
-      token: `ltfx.n.46ce721ddea7bcd13a0d.v1`,
+      token: "gw-token",
       tokenNote: "Shown once. Store this Gateway token securely.",
       url: "http://127.0.0.1:19100",
       nextStep:
@@ -132,7 +132,7 @@ describe("fleet command output", () => {
       image: "image",
       runtime: "docker",
       started: true,
-      token: `ltfx.n.4c135fb168d8874ad2ef.v1`,
+      token: "one-token",
       tokenNote: "Shown once. Store this Gateway token securely.",
       url: "http://127.0.0.1:19100",
       nextStep: "Open the cell.",

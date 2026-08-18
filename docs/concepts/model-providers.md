@@ -603,7 +603,7 @@ vLLM ships as a bundled provider plugin for local/self-hosted OpenAI-compatible 
 To opt in to auto-discovery locally (any value works if your server doesn't enforce auth):
 
 ```bash
-export VLLM_API_KEY="${ltfx.n.2bad35cb7a81633dcf7c.v1}"
+export VLLM_API_KEY="vllm-local"
 ```
 
 Then set a model (replace with one of the IDs returned by `/v1/models`):
@@ -629,7 +629,7 @@ SGLang ships as a bundled provider plugin for fast self-hosted OpenAI-compatible
 To opt in to auto-discovery locally (any value works if your server does not enforce auth):
 
 ```bash
-export SGLANG_API_KEY="${ltfx.n.47e0f90e88a3d8f49447.v1}"
+export SGLANG_API_KEY="sglang-local"
 ```
 
 Then set a model (replace with one of the IDs returned by `/v1/models`):

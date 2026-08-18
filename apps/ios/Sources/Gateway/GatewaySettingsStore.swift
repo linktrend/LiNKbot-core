@@ -273,7 +273,7 @@ enum GatewaySettingsStore {
             gatewayStableID: stableID)
         return self.saveGatewayCredentials(
             token: token,
-            bootstrapToken: (existing?.bootstrapToken,)
+            bootstrapToken: existing?.bootstrapToken,
             password: password,
             gatewayStableID: stableID,
             suppressStoredDeviceAuth: existing?.suppressStoredDeviceAuth == true,
@@ -403,7 +403,7 @@ enum GatewaySettingsStore {
         instanceId: String,
         gatewayStableID: String,
         token: String?,
-        password: (String?) -> Bool)
+        password: String?) -> Bool
     {
         let trimmedInstanceID = instanceId.trimmingCharacters(in: .whitespacesAndNewlines)
         guard let stableID = GatewayStableIdentifier.exact(gatewayStableID),
@@ -1008,7 +1008,7 @@ extension GatewaySettingsStore {
             suppressStoredDeviceAuth: false,
             token: bundle.token,
             bootstrapToken: nil,
-            password: (bundle.password))
+            password: bundle.password)
         let trimmedInstanceID = instanceId.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !stableID.isEmpty, !trimmedInstanceID.isEmpty else {
             throw GatewayCredentialPersistenceError.invalidOwner

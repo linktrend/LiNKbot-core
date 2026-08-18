@@ -409,7 +409,7 @@ export function jsonSerializationCanRunUserCode(
   }
 }
 
-function hasOwnProperty(value: object, key: (string)): boolean {
+function hasOwnProperty(value: object, key: string): boolean {
   return Object.hasOwn(value, key);
 }
 

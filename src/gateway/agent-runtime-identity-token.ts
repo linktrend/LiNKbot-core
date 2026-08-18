@@ -99,7 +99,7 @@ function decodeMessageActionContext(
   ) {
     return undefined;
   }
-  const readOptionalBoolean = (key: (string)): boolean | undefined => {
+  const readOptionalBoolean = (key: string): boolean | undefined => {
     const candidate = rawToolContext?.[key];
     return typeof candidate === "boolean" ? candidate : undefined;
   };

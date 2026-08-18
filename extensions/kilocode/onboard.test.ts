@@ -146,7 +146,7 @@ describe("Kilo Gateway provider config", () => {
       try {
         const result = resolveEnvApiKey("kilocode");
         expect(result).toEqual({
-          apiKey: `ltfx.n.b73de7a3b9315dca2b82.v1`,
+          apiKey: "test-kilo-key",
           source: "env: KILOCODE_API_KEY",
         });
       } finally {

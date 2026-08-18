@@ -29,7 +29,7 @@ const {
     async (_params?: {
       provider?: string;
     }): Promise<{ apiKey?: string; source?: string; mode?: string }> => ({
-      apiKey: `ltfx.n.97aba22fd3c830fb7840.v1`,
+      apiKey: "openai-key",
     }),
   ),
   postJsonRequestMock: vi.fn(),
@@ -162,7 +162,7 @@ function mockCodexRawStream(body: string) {
 function mockCodexAuthOnly() {
   resolveApiKeyForProviderMock.mockImplementation(async (params?: { provider?: string }) => {
     if (params?.provider === "openai") {
-      return { apiKey: `ltfx.n.1b409feb8ea58cbbc0a1.v1`, source: "profile:openai:default", mode: "oauth" };
+      return { apiKey: "codex-key", source: "profile:openai:default", mode: "oauth" };
     }
     return {};
   });
@@ -190,7 +190,7 @@ function createCodexApiKeyAuthStore() {
       "openai:manual": {
         type: "api_key" as const,
         provider: "openai",
-        key: `ltfx.n.3c2172e2c966ddf76478.v1`,
+        key: "codex-api-key",
       },
     },
   };
@@ -203,7 +203,7 @@ function createCodexTokenAuthStore() {
       "openai:token": {
         type: "token" as const,
         provider: "openai",
-        token: `ltfx.n.051759422436278d8d68.v1`,
+        token: "codex-token",
       },
     },
   };
@@ -233,7 +233,7 @@ function createMixedOpenAIAuthStore() {
       "openai:default": {
         type: "api_key" as const,
         provider: "openai",
-        key: `ltfx.n.97aba22fd3c830fb7840.v1`,
+        key: "openai-key",
       },
     },
   };
@@ -331,7 +331,7 @@ describe("openai image generation provider", () => {
     isProviderApiKeyConfiguredMock.mockReturnValue(false);
     listProfilesForProviderMock.mockClear();
     resolveApiKeyForProviderMock.mockReset();
-    resolveApiKeyForProviderMock.mockResolvedValue({ apiKey: `ltfx.n.97aba22fd3c830fb7840.v1` });
+    resolveApiKeyForProviderMock.mockResolvedValue({ apiKey: "openai-key" });
     postJsonRequestMock.mockReset();
     postMultipartRequestMock.mockReset();
     assertOkOrThrowHttpErrorMock.mockClear();
@@ -427,7 +427,7 @@ describe("openai image generation provider", () => {
             providers: {
               openai: {
                 baseUrl: "https://gateway.example.test/openai/v1",
-                apiKey: `ltfx.n.f15ae5b5899f8327f527.v1`,
+                apiKey: "gateway-token",
                 models: [],
               },
             },
@@ -606,7 +606,7 @@ describe("openai image generation provider", () => {
           providers: {
             openai: {
               baseUrl: "http://192.168.1.15:8082/v1",
-              apiKey: `ltfx.n.763c29315d7963740122.v1`,
+              apiKey: "local-noauth",
               models: [],
             },
           },
@@ -1167,7 +1167,7 @@ describe("openai image generation provider", () => {
     mockGeneratedPngResponse();
     resolveApiKeyForProviderMock.mockImplementation(async (params?: { provider?: string }) => {
       if (params?.provider === "openai") {
-        return { apiKey: `ltfx.n.97aba22fd3c830fb7840.v1`, source: "profile:openai", mode: "api-key" };
+        return { apiKey: "openai-key", source: "profile:openai", mode: "api-key" };
       }
       throw new Error(`Unexpected auth provider ${params?.provider ?? ""}`);
     });
@@ -1195,7 +1195,7 @@ describe("openai image generation provider", () => {
     resolveApiKeyForProviderMock.mockImplementation(async (params?: { provider?: string }) => {
       if (params?.provider === "openai") {
         return {
-          apiKey: `ltfx.n.3c2172e2c966ddf76478.v1`,
+          apiKey: "codex-api-key",
           source: "profile:openai:manual",
           mode: "api-key",
         };
@@ -1233,7 +1233,7 @@ describe("openai image generation provider", () => {
     resolveApiKeyForProviderMock.mockImplementation(async (params?: { provider?: string }) => {
       if (params?.provider === "openai") {
         return {
-          apiKey: `ltfx.n.3c2172e2c966ddf76478.v1`,
+          apiKey: "codex-api-key",
           source: "profile:openai:manual",
           mode: "api-key",
         };
@@ -1268,7 +1268,7 @@ describe("openai image generation provider", () => {
     resolveApiKeyForProviderMock.mockImplementation(async (params?: { provider?: string }) => {
       if (params?.provider === "openai") {
         return {
-          apiKey: `ltfx.n.051759422436278d8d68.v1`,
+          apiKey: "codex-token",
           source: "profile:openai:token",
           mode: "token",
         };
@@ -1300,7 +1300,7 @@ describe("openai image generation provider", () => {
     resolveApiKeyForProviderMock.mockImplementation(async (params?: { provider?: string }) => {
       if (params?.provider === "openai") {
         return {
-          apiKey: `ltfx.n.051759422436278d8d68.v1`,
+          apiKey: "codex-token",
           source: "profile:openai:token",
           mode: "token",
         };
@@ -1403,7 +1403,7 @@ describe("openai image generation provider", () => {
   it("uses configured Codex OAuth directly instead of probing an available OpenAI API key", async () => {
     resolveApiKeyForProviderMock.mockImplementation(async (params?: { provider?: string }) => {
       if (params?.provider === "openai") {
-        return { apiKey: `ltfx.n.1b409feb8ea58cbbc0a1.v1`, source: "profile:openai:default", mode: "oauth" };
+        return { apiKey: "codex-key", source: "profile:openai:default", mode: "oauth" };
       }
       return {};
     });
@@ -1432,9 +1432,9 @@ describe("openai image generation provider", () => {
   it("keeps explicit OpenAI API-key image config on native image requests", async () => {
     resolveApiKeyForProviderMock.mockImplementation(async (params?: AuthResolutionCall) => {
       if (params?.cfg?.models?.providers?.openai?.auth === "api-key") {
-        return { apiKey: `ltfx.n.23fa383900a973e587dc.v1`, source: "models.json", mode: "api-key" };
+        return { apiKey: "configured-openai-key", source: "models.json", mode: "api-key" };
       }
-      return { apiKey: `ltfx.n.334252fe7cbfeebee445.v1`, source: "profile:openai:chatgpt", mode: "oauth" };
+      return { apiKey: "chatgpt-oauth-token", source: "profile:openai:chatgpt", mode: "oauth" };
     });
     mockGeneratedPngResponse();
 
@@ -1448,7 +1448,7 @@ describe("openai image generation provider", () => {
         models: {
           providers: {
             openai: {
-              apiKey: `ltfx.n.99b3eefdd2facb668ce0.v1`,
+              apiKey: "sk-configured",
               baseUrl: "https://api.openai.com/v1",
               models: [],
             },
@@ -1555,7 +1555,7 @@ describe("openai image generation provider", () => {
     resolveApiKeyForProviderMock.mockImplementation(async (params?: { provider?: string }) => {
       if (params?.provider === "openai") {
         return {
-          apiKey: `ltfx.n.1b409feb8ea58cbbc0a1.v1`,
+          apiKey: "codex-key",
           source: "profile:openai:default",
           mode: "oauth\nfake\u202eignored",
         };
@@ -1778,10 +1778,10 @@ describe("openai image generation provider", () => {
     mockGeneratedPngResponse();
     resolveApiKeyForProviderMock.mockImplementation(async (params?: { provider?: string }) => {
       if (params?.provider === "openai") {
-        return { apiKey: `ltfx.n.97aba22fd3c830fb7840.v1`, source: "models.json", mode: "api-key" };
+        return { apiKey: "openai-key", source: "models.json", mode: "api-key" };
       }
       if (params?.provider === "openai") {
-        return { apiKey: `ltfx.n.1b409feb8ea58cbbc0a1.v1`, source: "profile:openai:default", mode: "oauth" };
+        return { apiKey: "codex-key", source: "profile:openai:default", mode: "oauth" };
       }
       return {};
     });
@@ -1816,10 +1816,10 @@ describe("openai image generation provider", () => {
     mockGeneratedPngResponse();
     resolveApiKeyForProviderMock.mockImplementation(async (params?: { provider?: string }) => {
       if (params?.provider === "openai") {
-        return { apiKey: `ltfx.n.97aba22fd3c830fb7840.v1`, source: "models.json", mode: "api-key" };
+        return { apiKey: "openai-key", source: "models.json", mode: "api-key" };
       }
       if (params?.provider === "openai") {
-        return { apiKey: `ltfx.n.1b409feb8ea58cbbc0a1.v1`, source: "profile:openai:default", mode: "oauth" };
+        return { apiKey: "codex-key", source: "profile:openai:default", mode: "oauth" };
       }
       return {};
     });
@@ -1857,7 +1857,7 @@ describe("openai image generation provider", () => {
   it("keeps mixed OpenAI OAuth/API-key image auth on the selected OAuth transport", async () => {
     mockCodexImageStream();
     resolveApiKeyForProviderMock.mockResolvedValue({
-      apiKey: `ltfx.n.1b409feb8ea58cbbc0a1.v1`,
+      apiKey: "codex-key",
       source: "profile:openai:chatgpt",
       mode: "oauth",
     });
@@ -2040,7 +2040,7 @@ describe("openai image generation provider", () => {
         },
       });
 
-      expect(httpConfigCall().defaultHeaders).toEqual({ "api-key": `ltfx.n.97aba22fd3c830fb7840.v1` });
+      expect(httpConfigCall().defaultHeaders).toEqual({ "api-key": "openai-key" });
       expect(jsonRequestCall().url).toBe(
         "https://myresource.openai.azure.com/openai/deployments/gpt-image-2/images/generations?api-version=2024-12-01-preview",
       );
@@ -2159,7 +2159,7 @@ describe("openai image generation provider", () => {
         },
       });
 
-      expect(httpConfigCall().defaultHeaders).toEqual({ "api-key": `ltfx.n.97aba22fd3c830fb7840.v1` });
+      expect(httpConfigCall().defaultHeaders).toEqual({ "api-key": "openai-key" });
       expect(jsonRequestCall().url).toBe(
         "https://myresource.cognitiveservices.azure.com/openai/deployments/gpt-image-2/images/generations?api-version=2024-12-01-preview",
       );
@@ -2185,7 +2185,7 @@ describe("openai image generation provider", () => {
         },
       });
 
-      expect(httpConfigCall().defaultHeaders).toEqual({ "api-key": `ltfx.n.97aba22fd3c830fb7840.v1` });
+      expect(httpConfigCall().defaultHeaders).toEqual({ "api-key": "openai-key" });
       expect(jsonRequestCall().url).toBe(
         "https://my-resource.services.ai.azure.com/openai/deployments/gpt-image-2/images/generations?api-version=2024-12-01-preview",
       );

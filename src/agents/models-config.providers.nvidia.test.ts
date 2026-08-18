@@ -85,7 +85,7 @@ function buildMinimaxPortalCatalog(params: {
   const apiKey =
     params.envApiKey ??
     params.explicitApiKey ??
-    (params.hasProfiles ? "MINIMAX_OAUTH_TOKEN" : (ltfx.n.81bd738e84e3ecba11c7.v1);
+    (params.hasProfiles ? "MINIMAX_OAUTH_TOKEN" : undefined);
   if (!apiKey) {
     return null;
   }
@@ -107,7 +107,7 @@ describe("NVIDIA provider", () => {
         api: "openai-completions",
         models: [createTestModel("nvidia/test-model")],
       },
-      env: { NVIDIA_API_KEY: `ltfx.n.62af8704764faf8ea82f.v1` } as NodeJS.ProcessEnv,
+      env: { NVIDIA_API_KEY: "test-key" } as NodeJS.ProcessEnv,
       profileApiKey: undefined,
     });
     expect(provider.apiKey).toBe("NVIDIA_API_KEY");
@@ -116,11 +116,11 @@ describe("NVIDIA provider", () => {
 
   it("resolves the nvidia api key value from env", () => {
     const auth = resolveEnvApiKey("nvidia", {
-      NVIDIA_API_KEY: `ltfx.n.b00cdb316d3f10006429.v1`,
+      NVIDIA_API_KEY: "nvidia-test-api-key",
     } as NodeJS.ProcessEnv);
 
     expect(auth).toEqual({
-      apiKey: `ltfx.n.b00cdb316d3f10006429.v1`,
+      apiKey: "nvidia-test-api-key",
       source: "env: NVIDIA_API_KEY",
     });
   });
@@ -136,7 +136,7 @@ describe("MiniMax implicit provider (#15275)", () => {
         authHeader: true,
         models: [createTestModel("MiniMax-M2.7")],
       },
-      env: { MINIMAX_API_KEY: `ltfx.n.62af8704764faf8ea82f.v1` } as NodeJS.ProcessEnv,
+      env: { MINIMAX_API_KEY: "test-key" } as NodeJS.ProcessEnv,
       profileApiKey: undefined,
     });
 
@@ -148,7 +148,7 @@ describe("MiniMax implicit provider (#15275)", () => {
 
   it("should respect MINIMAX_API_HOST env var for CN endpoint (#34487)", () => {
     const env = {
-      MINIMAX_API_KEY: `ltfx.n.62af8704764faf8ea82f.v1`,
+      MINIMAX_API_KEY: "test-key",
       MINIMAX_API_HOST: "https://api.minimaxi.com",
     } as NodeJS.ProcessEnv;
 
@@ -165,7 +165,7 @@ describe("MiniMax implicit provider (#15275)", () => {
   it("should include minimax portal provider when MINIMAX_OAUTH_TOKEN is configured", () => {
     expect(
       resolveEnvApiKeyVarName("minimax-portal", {
-        MINIMAX_OAUTH_TOKEN: `ltfx.n.0ba11c8c03cc892e40ca.v1`,
+        MINIMAX_OAUTH_TOKEN: "portal-token",
       } as NodeJS.ProcessEnv),
     ).toBe("MINIMAX_OAUTH_TOKEN");
     const provider = buildMinimaxPortalCatalog({ hasProfiles: true });
@@ -187,7 +187,7 @@ describe("vLLM provider", () => {
         api: "openai-completions",
         models: [createTestModel("meta-llama/Meta-Llama-3-8B-Instruct")],
       },
-      env: { VLLM_API_KEY: `ltfx.n.62af8704764faf8ea82f.v1` } as NodeJS.ProcessEnv,
+      env: { VLLM_API_KEY: "test-key" } as NodeJS.ProcessEnv,
       profileApiKey: undefined,
     });
 

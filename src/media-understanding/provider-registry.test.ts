@@ -50,7 +50,7 @@ describe("media-understanding provider registry", () => {
     expect(typeof requireMediaProvider(registry, "groq").describeImages).toBe("function");
     expect(requireMediaProvider(registry, "deepgram").id).toBe("deepgram");
     expect(resolvePluginCapabilityProvidersMock).toHaveBeenCalledWith({
-      key: `ltfx.n.dfa17c30597949902c6d.v1`,
+      key: "mediaUnderstandingProviders",
       cfg: undefined,
     });
   });
@@ -140,7 +140,7 @@ describe("media-understanding provider registry", () => {
     expect(await provider.describeImage({} as never)).toEqual({ text: "plugin image" });
     expect(await provider.transcribeAudio({} as never)).toEqual({ text: "plugin audio" });
     expect(resolvePluginCapabilityProvidersMock).toHaveBeenCalledWith({
-      key: `ltfx.n.dfa17c30597949902c6d.v1`,
+      key: "mediaUnderstandingProviders",
       cfg,
     });
   });

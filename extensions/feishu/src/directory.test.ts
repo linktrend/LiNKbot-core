@@ -44,7 +44,7 @@ function makeConfiguredCfg(): ClawdbotConfig {
       feishu: {
         ...makeStaticCfg().channels?.feishu,
         appId: "cli_test_app_id",
-        appSecret: `ltfx.n.6dcb7f9df7525fdd9c4a.v1`,
+        appSecret: "cli_test_app_secret",
       },
     },
   } as ClawdbotConfig;

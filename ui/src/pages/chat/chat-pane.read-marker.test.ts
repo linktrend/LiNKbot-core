@@ -14,7 +14,7 @@ describe("chat pane read markers", () => {
     });
 
     pane.markSessionRead({
-      key: `ltfx.n.6d1687d70ce721396561.v1`,
+      key: "agent:main:current",
       kind: "direct",
       label: "Failed run",
       updatedAt: 20,

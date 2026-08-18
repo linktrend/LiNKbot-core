@@ -28,13 +28,13 @@ const FEISHU_PROVIDER_PREFIX_RE = /^(feishu|lark):/i;
 const FEISHU_TYPED_PREFIX_RE = /^(chat|group|channel|user|dm|open_id):/i;
 const FEISHU_ID_KIND = "plugin:feishu-id" as const;
 const feishuIngressIdentity = defineStableChannelIngressIdentity({
-  key: `ltfx.n.009ac393814400e9d05e.v1`,
+  key: "feishu-id",
   kind: FEISHU_ID_KIND,
   normalize: normalizeFeishuAllowEntry,
   sensitivity: "pii",
   aliases: [
     {
-      key: `ltfx.n.f39dd4a7bde2f3eae62d.v1`,
+      key: "feishu-alt-id",
       kind: FEISHU_ID_KIND,
       normalizeEntry: () => null,
       normalizeSubject: normalizeFeishuAllowEntry,

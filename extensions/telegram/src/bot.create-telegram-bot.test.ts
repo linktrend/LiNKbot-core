@@ -148,7 +148,7 @@ function installPerKeySequentializer(): void {
   sequentializeSpy.mockImplementationOnce(() => {
     const lanes = new Map<string, Promise<void>>();
     return async (ctx: TelegramMiddlewareTestContext, next: () => Promise<void>) => {
-      const key = (harness.sequentializeKey?.(ctx) ?? "default";)
+      const key = harness.sequentializeKey?.(ctx) ?? "default";
       const previous = lanes.get(key) ?? Promise.resolve();
       const current = previous.then(async () => {
         await next();
@@ -722,7 +722,7 @@ describe("createTelegramBot", () => {
     sequentializeSpy.mockImplementationOnce(() => {
       const lanes = new Map<string, Promise<void>>();
       return async (ctx: Record<string, unknown>, next: () => Promise<void>) => {
-        const key = (harness.sequentializeKey?.(ctx) ?? "default";)
+        const key = harness.sequentializeKey?.(ctx) ?? "default";
         const previous = lanes.get(key) ?? Promise.resolve();
         const current = previous.then(async () => {
           await next();
@@ -3920,7 +3920,7 @@ describe("createTelegramBot", () => {
           allowFrom: ["*"],
           accounts: {
             opie: {
-              botToken: `ltfx.n.3caf900a70c36af7b008.v1`,
+              botToken: "tok-opie",
               dmPolicy: "open",
               allowFrom: ["*"],
             },
@@ -3965,12 +3965,12 @@ describe("createTelegramBot", () => {
           defaultAccount: "work",
           accounts: {
             work: {
-              botToken: `ltfx.n.8acd672e15296404be8c.v1`,
+              botToken: "tok-work",
               dmPolicy: "open",
               allowFrom: ["*"],
             },
             opie: {
-              botToken: `ltfx.n.3caf900a70c36af7b008.v1`,
+              botToken: "tok-opie",
               dmPolicy: "open",
               allowFrom: ["*"],
             },
@@ -4096,12 +4096,12 @@ describe("createTelegramBot", () => {
           defaultAccount: "work",
           accounts: {
             work: {
-              botToken: `ltfx.n.8acd672e15296404be8c.v1`,
+              botToken: "tok-work",
               dmPolicy: "open",
               allowFrom: ["*"],
             },
             opie: {
-              botToken: `ltfx.n.3caf900a70c36af7b008.v1`,
+              botToken: "tok-opie",
               dmPolicy: "open",
               allowFrom: ["*"],
             },

@@ -53,7 +53,7 @@ export function parseComfyJsonBody(
   return JSON.parse(body) as Record<string, unknown>;
 }
 
-export function mockComfyProviderApiKey(apiKey = `ltfx.n.b25c9de97189aec74f24.v1`) {
+export function mockComfyProviderApiKey(apiKey = "comfy-test-key") {
   return vi.spyOn(providerAuth, "resolveApiKeyForProvider").mockResolvedValue({
     apiKey,
     source: "env",

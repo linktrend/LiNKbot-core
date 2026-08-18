@@ -198,7 +198,7 @@ describe("importCodexThreadHistoryToTranscript", () => {
               type: "userMessage",
               content: [
                 { type: "text", text: "Review this image" },
-                { type: "image", url: `ltfx.n.363bd07af1b539e432dc.v1` },
+                { type: "image", url: "data:image/png;base64,private" },
               ],
             },
             {

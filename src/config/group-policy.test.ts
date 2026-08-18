@@ -180,7 +180,7 @@ describe("resolveChannelGroupPolicy", () => {
             "-100123": { requireMention: false },
           },
           accounts: {
-            default: { botToken: `ltfx.n.b91f13060b4bb6d5a0dd.v1`, groups: {} },
+            default: { botToken: "123:default", groups: {} },
           },
         },
       },
@@ -207,7 +207,7 @@ describe("resolveChannelGroupPolicy", () => {
           },
           accounts: {
             default: {
-              botToken: `ltfx.n.b91f13060b4bb6d5a0dd.v1`,
+              botToken: "123:default",
               groups: { "-100account": { requireMention: false } },
             },
           },

@@ -13,7 +13,7 @@ const {
   assertOkOrThrowHttpErrorMock: vi.fn(async () => {}),
   postJsonRequestMock: vi.fn(),
   resolveApiKeyForProviderMock: vi.fn(async () => ({
-    apiKey: `ltfx.n.a0bac695e2ae38a45866.v1`,
+    apiKey: "openrouter-key",
     source: "env",
     mode: "api-key",
   })),
@@ -140,7 +140,7 @@ function resetOpenRouterMusicMocks() {
   assertOkOrThrowHttpErrorMock.mockResolvedValue(undefined);
   postJsonRequestMock.mockReset();
   resolveApiKeyForProviderMock.mockResolvedValue({
-    apiKey: `ltfx.n.a0bac695e2ae38a45866.v1`,
+    apiKey: "openrouter-key",
     source: "env",
     mode: "api-key",
   });

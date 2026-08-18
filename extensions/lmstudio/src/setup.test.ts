@@ -96,12 +96,12 @@ function buildDiscoveryContext(params?: {
     config: params?.config ?? ({} as OpenClawConfig),
     env: params?.env ?? {},
     resolveProviderApiKey: () => ({
-      apiKey: (params?.apiKey,)
-      discoveryApiKey: (params?.discoveryApiKey,)
+      apiKey: params?.apiKey,
+      discoveryApiKey: params?.discoveryApiKey,
     }),
     resolveProviderAuth: () => ({
-      apiKey: (params?.apiKey,)
-      discoveryApiKey: (params?.discoveryApiKey,)
+      apiKey: params?.apiKey,
+      discoveryApiKey: params?.discoveryApiKey,
       mode: "none" as const,
       source: "none" as const,
     }),
@@ -122,7 +122,7 @@ function buildNonInteractiveContext(params?: {
     exit: ReturnType<typeof vi.fn>;
     log: ReturnType<typeof vi.fn>;
   };
-  resolveApiKey: (ReturnType<typeof vi.fn>;)
+  resolveApiKey: ReturnType<typeof vi.fn>;
   toApiKeyCredential: ReturnType<typeof vi.fn>;
 } {
   const error = vi.fn<(...args: unknown[]) => void>();
@@ -132,7 +132,7 @@ function buildNonInteractiveContext(params?: {
     params?.resolvedApiKey === null
       ? null
       : {
-          key: (params?.resolvedApiKey ?? "lmstudio-test-key",)
+          key: params?.resolvedApiKey ?? "lmstudio-test-key",
           source: params?.resolvedApiKeySource ?? "flag",
         },
   );
@@ -143,8 +143,8 @@ function buildNonInteractiveContext(params?: {
     baseConfig: params?.config ?? buildConfig(),
     opts: {
       customBaseUrl: params?.customBaseUrl,
-      customApiKey: (params?.customApiKey ?? "lmstudio-test-key",)
-      lmstudioApiKey: (params?.lmstudioApiKey,)
+      customApiKey: params?.customApiKey ?? "lmstudio-test-key",
+      lmstudioApiKey: params?.lmstudioApiKey,
       customModelId: params?.customModelId,
     } as ProviderAuthMethodNonInteractiveContext["opts"],
     runtime: { error, exit, log },
@@ -320,7 +320,7 @@ describe("lmstudio setup", () => {
       models: [
         {
           type: "llm",
-          key: `ltfx.n.0a77eaa77306086266b0.v1`,
+          key: "qwen3-8b-instruct",
         },
       ],
     });
@@ -353,11 +353,11 @@ describe("lmstudio setup", () => {
       reachable: true,
       status: 200,
       models: [
-        { type: "embedding", key: `ltfx.n.1a398a1125a13e89760d.v1` },
-        { type: "llm", key: `ltfx.n.557af1df53497a899370.v1`, display_name: "Chat only" },
+        { type: "embedding", key: "nomic-embed" },
+        { type: "llm", key: "chat-only", display_name: "Chat only" },
         {
           type: "llm",
-          key: `ltfx.n.0a77eaa77306086266b0.v1`,
+          key: "qwen3-8b-instruct",
           display_name: "Qwen3 8B",
           max_context_length: 65536,
           capabilities: { trained_for_tool_use: true },
@@ -412,17 +412,17 @@ describe("lmstudio setup", () => {
       models: [
         {
           type: "llm",
-          key: `ltfx.n.ff68c4810443c3d2f846.v1`,
+          key: "llama3.3-70b-instruct",
           capabilities: { trained_for_tool_use: true },
         },
         {
           type: "llm",
-          key: `ltfx.n.18912c3b3a3b7aa7e7e8.v1`,
+          key: "qwen3.5-4b-instruct",
           capabilities: { trained_for_tool_use: true },
         },
         {
           type: "llm",
-          key: `ltfx.n.a4134b0e39785810a459.v1`,
+          key: "nomic-embed-text",
           capabilities: { trained_for_tool_use: true },
         },
       ],
@@ -444,13 +444,13 @@ describe("lmstudio setup", () => {
       models: [
         {
           type: "llm",
-          key: `ltfx.n.0a77eaa77306086266b0.v1`,
+          key: "qwen3-8b-instruct",
           display_name: "Qwen3 8B",
           loaded_instances: [{ id: "inst-1", config: { context_length: 64000 } }],
         },
         {
           type: "embedding",
-          key: `ltfx.n.8856df03b0aaaff65661.v1`,
+          key: "text-embedding-nomic-embed-text-v1.5",
         },
       ],
     });
@@ -459,7 +459,7 @@ describe("lmstudio setup", () => {
 
     expect(fetchLmstudioModelsMock).toHaveBeenCalledWith({
       baseUrl: "http://localhost:1234/v1",
-      apiKey: `ltfx.n.51cb629c6c0192ed058d.v1`,
+      apiKey: "lmstudio-test-key",
       timeoutMs: 5000,
     });
     const provider = requireNonInteractiveLmstudioProvider(result);
@@ -530,7 +530,7 @@ describe("lmstudio setup", () => {
         },
         {
           type: "llm",
-          key: `ltfx.n.0a77eaa77306086266b0.v1`,
+          key: "qwen3-8b-instruct",
           display_name: "Qwen3 8B",
         },
       ],
@@ -605,7 +605,7 @@ describe("lmstudio setup", () => {
           providers: {
             lmstudio: {
               baseUrl: "http://localhost:1234/v1",
-              apiKey: `ltfx.n.8d9562c13cc8f95bc3e3.v1`,
+              apiKey: "stale-config-key",
               auth: "api-key",
               api: "openai-completions",
               headers: {
@@ -676,7 +676,7 @@ describe("lmstudio setup", () => {
           providers: {
             lmstudio: {
               baseUrl: "http://localhost:1234/v1",
-              apiKey: `ltfx.n.8d9562c13cc8f95bc3e3.v1`,
+              apiKey: "stale-config-key",
               auth: "api-key",
               api: "openai-completions",
               headers: {
@@ -690,7 +690,7 @@ describe("lmstudio setup", () => {
       customBaseUrl: "http://localhost:1234/api/v1/",
       customApiKey: "",
       customModelId: "qwen3-8b-instruct",
-      resolvedApiKey: `ltfx.n.0450199094151b82fdd8.v1`,
+      resolvedApiKey: "stale-profile-key",
       resolvedApiKeySource: "profile",
     });
 
@@ -750,7 +750,7 @@ describe("lmstudio setup", () => {
       customBaseUrl: "http://localhost:1234/api/v1/",
       customApiKey: "",
       customModelId: "qwen3-8b-instruct",
-      resolvedApiKey: `ltfx.n.2fc46a256ba7e28aa01e.v1`,
+      resolvedApiKey: "env-fallback-key",
       resolvedApiKeySource: "env",
     });
 
@@ -794,8 +794,8 @@ describe("lmstudio setup", () => {
     const ctx = buildNonInteractiveContext({
       customBaseUrl: "http://localhost:1234/api/v1/",
       customModelId: "qwen3-8b-instruct",
-      customApiKey: `ltfx.n.6f748f69a1423e841576.v1`,
-      lmstudioApiKey: `ltfx.n.977a4c2ec71f4b2e2c79.v1`,
+      customApiKey: "old-custom-key",
+      lmstudioApiKey: "new-lmstudio-key",
     });
 
     await configureLmstudioNonInteractive(ctx);
@@ -814,7 +814,7 @@ describe("lmstudio setup", () => {
             lmstudio: {
               baseUrl: "http://localhost:1234/v1",
               auth: "api-key",
-              apiKey: `ltfx.n.8d9562c13cc8f95bc3e3.v1`,
+              apiKey: "stale-config-key",
               api: "openai-completions",
               models: [],
             },
@@ -823,8 +823,8 @@ describe("lmstudio setup", () => {
       } as OpenClawConfig,
       customBaseUrl: "http://localhost:1234/api/v1/",
       customModelId: "qwen3-8b-instruct",
-      lmstudioApiKey: `ltfx.n.83d548be9baddb16bc1d.v1`,
-      resolvedApiKey: `ltfx.n.83d548be9baddb16bc1d.v1`,
+      lmstudioApiKey: "fresh-cli-key",
+      resolvedApiKey: "fresh-cli-key",
     });
 
     const result = await configureLmstudioNonInteractive(ctx);
@@ -883,7 +883,7 @@ describe("lmstudio setup", () => {
     expectProfileFields(result.profiles[0], {
       type: "api_key",
       provider: "lmstudio",
-      key: `ltfx.n.51cb629c6c0192ed058d.v1`,
+      key: "lmstudio-test-key",
     });
   });
 
@@ -900,7 +900,7 @@ describe("lmstudio setup", () => {
         },
         {
           type: "llm",
-          key: `ltfx.n.0a77eaa77306086266b0.v1`,
+          key: "qwen3-8b-instruct",
           display_name: "Qwen3 8B",
           max_context_length: 32768,
         },
@@ -1050,7 +1050,7 @@ describe("lmstudio setup", () => {
           lmstudio: {
             baseUrl: "http://localhost:1234/v1",
             api: "openai-completions",
-            apiKey: `ltfx.n.8d9562c13cc8f95bc3e3.v1`,
+            apiKey: "stale-config-key",
             auth: "api-key",
             headers: {
               Authorization: "Bearer proxy-token",
@@ -1136,7 +1136,7 @@ describe("lmstudio setup", () => {
           lmstudio: {
             baseUrl: "http://localhost:1234/v1",
             auth: "api-key",
-            apiKey: `ltfx.n.8d9562c13cc8f95bc3e3.v1`,
+            apiKey: "stale-config-key",
             api: "openai-completions",
             models: [],
           },
@@ -1161,7 +1161,7 @@ describe("lmstudio setup", () => {
     expectProfileFields(result.profiles[0], {
       type: "api_key",
       provider: "lmstudio",
-      key: `ltfx.n.7c5497d311e643c21ff1.v1`,
+      key: "fresh-prompt-key",
     });
   });
 
@@ -1261,7 +1261,7 @@ describe("lmstudio setup", () => {
         discovery: {
           reachable: true,
           status: 200,
-          models: [{ type: "embedding", key: `ltfx.n.8856df03b0aaaff65661.v1` }],
+          models: [{ type: "embedding", key: "text-embedding-nomic-embed-text-v1.5" }],
         },
         expectedError: "No LM Studio models found",
       },
@@ -1304,7 +1304,7 @@ describe("lmstudio setup", () => {
     {
       name: "does not inject api-key marker when Authorization header is configured",
       providerPatch: {
-        apiKey: `ltfx.n.71f9676824bdc192d066.v1`,
+        apiKey: "stale-legacy-key",
         headers: {
           Authorization: "Bearer custom-token",
         },
@@ -1406,15 +1406,15 @@ describe("lmstudio setup", () => {
           },
         } as OpenClawConfig,
         env: {
-          LMSTUDIO_DISCOVERY_TOKEN: `ltfx.n.9eabff0f644b970fb3bb.v1`,
-          LMSTUDIO_PROXY_TOKEN: `ltfx.n.27171a792e0fe36b9dd9.v1`,
+          LMSTUDIO_DISCOVERY_TOKEN: "secretref-lmstudio-key",
+          LMSTUDIO_PROXY_TOKEN: "proxy-token-from-env",
         },
       }),
     );
 
     expect(discoverLmstudioModelsMock).toHaveBeenCalledWith({
       baseUrl: "http://localhost:1234/v1",
-      apiKey: `ltfx.n.9eabff0f644b970fb3bb.v1`,
+      apiKey: "secretref-lmstudio-key",
       headers: {
         "X-Proxy-Auth": "proxy-token-from-env",
       },
@@ -1492,7 +1492,7 @@ describe("lmstudio setup", () => {
               lmstudio: {
                 baseUrl: "http://localhost:1234/v1",
                 api: "openai-completions",
-                apiKey: `ltfx.n.3d7bd84d98487b85ca0b.v1`,
+                apiKey: "configured-direct-key",
                 models: [],
               },
             },
@@ -1503,7 +1503,7 @@ describe("lmstudio setup", () => {
 
     expect(discoverLmstudioModelsMock).toHaveBeenCalledWith({
       baseUrl: "http://localhost:1234/v1",
-      apiKey: `ltfx.n.3d7bd84d98487b85ca0b.v1`,
+      apiKey: "configured-direct-key",
       headers: undefined,
       quiet: false,
     });
@@ -1516,14 +1516,14 @@ describe("lmstudio setup", () => {
 
     await discoverLmstudioProvider(
       buildDiscoveryContext({
-        discoveryApiKey: `ltfx.n.618ece262d540f2af919.v1`,
+        discoveryApiKey: "resolved-discovery-key",
         config: {
           models: {
             providers: {
               lmstudio: {
                 baseUrl: "http://localhost:1234/v1",
                 api: "openai-completions",
-                apiKey: `ltfx.n.3d7bd84d98487b85ca0b.v1`,
+                apiKey: "configured-direct-key",
                 models: [],
               },
             },
@@ -1534,7 +1534,7 @@ describe("lmstudio setup", () => {
 
     expect(discoverLmstudioModelsMock).toHaveBeenCalledWith({
       baseUrl: "http://localhost:1234/v1",
-      apiKey: `ltfx.n.618ece262d540f2af919.v1`,
+      apiKey: "resolved-discovery-key",
       headers: undefined,
       quiet: false,
     });
@@ -1547,7 +1547,7 @@ describe("lmstudio setup", () => {
 
     await discoverLmstudioProvider(
       buildDiscoveryContext({
-        discoveryApiKey: `ltfx.n.618ece262d540f2af919.v1`,
+        discoveryApiKey: "resolved-discovery-key",
         config: {
           models: {
             providers: {
@@ -1566,7 +1566,7 @@ describe("lmstudio setup", () => {
 
     expect(discoverLmstudioModelsMock).toHaveBeenCalledWith({
       baseUrl: "http://localhost:1234/v1",
-      apiKey: `ltfx.n.618ece262d540f2af919.v1`,
+      apiKey: "resolved-discovery-key",
       headers: undefined,
       quiet: false,
     });
@@ -1579,14 +1579,14 @@ describe("lmstudio setup", () => {
 
     await discoverLmstudioProvider(
       buildDiscoveryContext({
-        discoveryApiKey: `ltfx.n.192d8e807ac892c92349.v1`,
+        discoveryApiKey: "resolved-stale-key",
         config: {
           models: {
             providers: {
               lmstudio: {
                 baseUrl: "http://localhost:1234/v1",
                 api: "openai-completions",
-                apiKey: `ltfx.n.3d7bd84d98487b85ca0b.v1`,
+                apiKey: "configured-direct-key",
                 headers: {
                   Authorization: "Bearer custom-token",
                 },
@@ -1646,7 +1646,7 @@ describe("lmstudio setup", () => {
               lmstudio: {
                 baseUrl: "http://localhost:1234/v1",
                 api: "openai-completions",
-                apiKey: `ltfx.n.71f9676824bdc192d066.v1`,
+                apiKey: "stale-legacy-key",
                 headers: {
                   Authorization: "Bearer custom-token",
                 },

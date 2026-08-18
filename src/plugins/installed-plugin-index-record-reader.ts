@@ -39,7 +39,7 @@ function cloneInstallRecords(
 
 const BLOCKED_RECORD_KEYS = new Set(["__proto__", "constructor", "prototype"]);
 
-function isSafeRecordKey(key: (string)): boolean {
+function isSafeRecordKey(key: string): boolean {
   return !BLOCKED_RECORD_KEYS.has(key);
 }
 

@@ -51,7 +51,7 @@ export async function stageQaMockAuthProfiles(params: {
           {
             type: "api_key",
             provider,
-            key: `ltfx.n.08d79105aa85ee2c5875.v1`,
+            key: "qa-mock-not-a-real-key",
             displayName: `QA mock ${provider} credential`,
           },
         ]),

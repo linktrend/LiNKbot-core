@@ -776,7 +776,7 @@ describe("runCodexAppServerAttempt hooks and model diagnostics", () => {
       pluginConfig: {
         appServer: {
           transport: "websocket",
-          url: `ltfx.n.17e45b7cfa0d4cc3d493.v1`,
+          url: "ws://127.0.0.1:39175",
         },
       },
       turnTerminalIdleTimeoutMs: 60_000,

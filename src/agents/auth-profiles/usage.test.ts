@@ -57,7 +57,7 @@ function makeStore(usageStats: AuthProfileStore["usageStats"]): AuthProfileStore
     version: 1,
     profiles: {
       "anthropic:default": { type: "api_key", provider: "anthropic", key: "sk-test" },
-      "openai:api-key": { type: "api_key", provider: "openai", key: `ltfx.n.fb9488d16e346f6914b6.v1` },
+      "openai:api-key": { type: "api_key", provider: "openai", key: "sk-test-2" },
       "openai:default": {
         type: "oauth",
         provider: "openai",
@@ -66,8 +66,8 @@ function makeStore(usageStats: AuthProfileStore["usageStats"]): AuthProfileStore
         expires: 4_102_444_800_000,
         accountId: "acct_test_123",
       },
-      "openrouter:default": { type: "api_key", provider: "openrouter", key: `ltfx.n.0610a0635a6fb4029973.v1` },
-      "kilocode:default": { type: "api_key", provider: "kilocode", key: `ltfx.n.fbb099b498143f526016.v1` },
+      "openrouter:default": { type: "api_key", provider: "openrouter", key: "sk-or-test" },
+      "kilocode:default": { type: "api_key", provider: "kilocode", key: "sk-kc-test" },
     },
     usageStats,
   };
@@ -1087,7 +1087,7 @@ describe("markAuthProfileFailure — detail-less provider failures", () => {
     store.profiles["azure-foundry:default"] = {
       type: "api_key",
       provider: "azure-foundry",
-      key: `ltfx.n.adf8c702d5db6942cfa0.v1`,
+      key: "azure-foundry-test-key",
     };
 
     for (const profileId of ["azure-foundry:default", "openai:api-key"]) {
@@ -1431,7 +1431,7 @@ describe("markAuthProfileFailure — WHAM-aware Codex cooldowns", () => {
         freshStore.profiles["openai:default"] = {
           type: "api_key",
           provider: "openai",
-          key: `ltfx.n.8b2ee6974f6d463c493f.v1`,
+          key: "rotated-api-key",
         };
         lockParams.updater(freshStore);
         return freshStore;
@@ -1597,7 +1597,7 @@ describe("markAuthProfileFailure — per-model cooldown metadata", () => {
     store.profiles["github-copilot:github"] = {
       type: "api_key",
       provider: "github-copilot",
-      key: `ltfx.n.e3703a33d45b99a7faa5.v1`,
+      key: "ghu_test",
     };
     return store;
   }

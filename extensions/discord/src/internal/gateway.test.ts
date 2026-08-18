@@ -79,7 +79,7 @@ class TestGatewayPlugin extends GatewayPlugin {
     super.connect(resume);
   }
 
-  protected override createWebSocket(url: (string)): never {
+  protected override createWebSocket(url: string): never {
     const socket = new FakeSocket();
     this.urls.push(url);
     this.sockets.push(socket);
@@ -164,7 +164,7 @@ describe("GatewayPlugin", () => {
     await sharedGatewayIdentifyLimiter.wait({ shardId: 0, maxConcurrency: 1 });
     const gateway = new TestGatewayPlugin({
       autoInteractions: false,
-      url: `ltfx.n.549b0100f00588beb908.v1`,
+      url: "wss://gateway.example.test",
     });
     const errorSpy = vi.fn();
     gateway.emitter.on("error", errorSpy);
@@ -198,7 +198,7 @@ describe("GatewayPlugin", () => {
     await sharedGatewayIdentifyLimiter.wait({ shardId: 0, maxConcurrency: 1 });
     const gateway = new TestGatewayPlugin({
       autoInteractions: false,
-      url: `ltfx.n.549b0100f00588beb908.v1`,
+      url: "wss://gateway.example.test",
     });
 
     gateway.connect(false);
@@ -598,7 +598,7 @@ describe("GatewayPlugin", () => {
   it("ignores stale socket close events after reconnecting", () => {
     const gateway = new TestGatewayPlugin({
       autoInteractions: false,
-      url: `ltfx.n.549b0100f00588beb908.v1`,
+      url: "wss://gateway.example.test",
     });
 
     gateway.connect(false);
@@ -620,7 +620,7 @@ describe("GatewayPlugin", () => {
     vi.useFakeTimers();
     const gateway = new TestGatewayPlugin({
       autoInteractions: false,
-      url: `ltfx.n.549b0100f00588beb908.v1`,
+      url: "wss://gateway.example.test",
     });
     const debugSpy = vi.fn();
     gateway.emitter.on("debug", debugSpy);
@@ -659,7 +659,7 @@ describe("GatewayPlugin", () => {
     vi.setSystemTime(0);
     const gateway = new TestGatewayPlugin({
       autoInteractions: false,
-      url: `ltfx.n.549b0100f00588beb908.v1`,
+      url: "wss://gateway.example.test",
     });
     const debugSpy = vi.fn();
     gateway.emitter.on("debug", debugSpy);
@@ -751,7 +751,7 @@ describe("GatewayPlugin", () => {
       vi.useFakeTimers();
       const gateway = new TestGatewayPlugin({
         autoInteractions: false,
-        url: `ltfx.n.549b0100f00588beb908.v1`,
+        url: "wss://gateway.example.test",
       });
 
       gateway.connect(false);
@@ -769,7 +769,7 @@ describe("GatewayPlugin", () => {
     vi.spyOn(Math, "random").mockReturnValue(0);
     const gateway = new TestGatewayPlugin({
       autoInteractions: false,
-      url: `ltfx.n.549b0100f00588beb908.v1`,
+      url: "wss://gateway.example.test",
     });
     const sessionState = gatewaySessionState(gateway);
     sessionState.sessionId = "session1";
@@ -796,7 +796,7 @@ describe("GatewayPlugin", () => {
     vi.spyOn(Math, "random").mockReturnValue(0.75);
     const gateway = new TestGatewayPlugin({
       autoInteractions: false,
-      url: `ltfx.n.549b0100f00588beb908.v1`,
+      url: "wss://gateway.example.test",
     });
 
     gateway.connect(false);
@@ -819,7 +819,7 @@ describe("GatewayPlugin", () => {
     const gateway = new TestGatewayPlugin({
       autoInteractions: false,
       reconnect: { maxAttempts: 0 },
-      url: `ltfx.n.549b0100f00588beb908.v1`,
+      url: "wss://gateway.example.test",
     });
     const errorSpy = vi.fn();
     gateway.emitter.on("error", errorSpy);
@@ -840,7 +840,7 @@ describe("GatewayPlugin", () => {
     vi.useFakeTimers();
     const gateway = new TestGatewayPlugin({
       autoInteractions: false,
-      url: `ltfx.n.549b0100f00588beb908.v1`,
+      url: "wss://gateway.example.test",
     });
     const errorSpy = vi.fn();
     gateway.emitter.on("error", errorSpy);
@@ -859,7 +859,7 @@ describe("GatewayPlugin", () => {
     vi.useFakeTimers();
     const gateway = new GatewayPlugin({
       autoInteractions: false,
-      url: `ltfx.n.549b0100f00588beb908.v1`,
+      url: "wss://gateway.example.test",
     });
     const send = vi.fn();
     const close = vi.fn();
@@ -911,7 +911,7 @@ describe("GatewayPlugin", () => {
     vi.useFakeTimers();
     const gateway = new GatewayPlugin({
       autoInteractions: false,
-      url: `ltfx.n.549b0100f00588beb908.v1`,
+      url: "wss://gateway.example.test",
     });
     (gateway as unknown as { isConnecting: boolean }).isConnecting = true;
     gateway.heartbeatInterval = setInterval(() => {}, 1_000);
@@ -929,7 +929,7 @@ describe("GatewayPlugin", () => {
     const first = new GatewayPlugin(
       { autoInteractions: false, shard: [0, 2] },
       {
-        url: `ltfx.n.b7b58bd68a04eb6b9c90.v1`,
+        url: "wss://gateway.discord.gg/",
         shards: 2,
         session_start_limit: { total: 1000, remaining: 1000, reset_after: 0, max_concurrency: 1 },
       },
@@ -937,7 +937,7 @@ describe("GatewayPlugin", () => {
     const second = new GatewayPlugin(
       { autoInteractions: false, shard: [1, 2] },
       {
-        url: `ltfx.n.b7b58bd68a04eb6b9c90.v1`,
+        url: "wss://gateway.discord.gg/",
         shards: 2,
         session_start_limit: { total: 1000, remaining: 1000, reset_after: 0, max_concurrency: 1 },
       },

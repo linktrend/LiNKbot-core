@@ -16,7 +16,7 @@ describe("isChannelConfigured", () => {
   });
 
   it("detects Slack env configuration through the package metadata seam", () => {
-    expect(isChannelConfigured({}, "slack", { SLACK_BOT_TOKEN: `ltfx.n.87894fe048938b686cfb.v1` })).toBe(true);
+    expect(isChannelConfigured({}, "slack", { SLACK_BOT_TOKEN: "xoxb-test" })).toBe(true);
   });
 
   it("requires both IRC host and nick env vars through the package metadata seam", () => {

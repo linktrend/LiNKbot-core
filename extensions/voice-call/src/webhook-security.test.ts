@@ -293,7 +293,7 @@ const verifiedReplayRequestCases: Array<{
   {
     name: "Twilio",
     verifyPair: () => {
-      const authToken = `ltfx.n.f35cd067d05752edf483.v1`;
+      const authToken = "test-auth-token";
       const publicUrl = "https://example.com/voice/webhook";
       const urlWithQuery = `${publicUrl}?callId=abc`;
       const postBody = "CallSid=CS777&CallStatus=completed&From=%2B15550000000";
@@ -302,7 +302,7 @@ const verifiedReplayRequestCases: Array<{
         host: "example.com",
         "x-forwarded-proto": "https",
         "x-twilio-signature": signature,
-        "i-twilio-idempotency-token": `ltfx.n.2507384c5c6c4165b2a7.v1`,
+        "i-twilio-idempotency-token": "idem-replay-1",
       };
 
       return [
@@ -325,7 +325,7 @@ describe("verified webhook replay detection", () => {
 
 describe("verifyPlivoWebhook", () => {
   it("accepts valid V2 signature", () => {
-    const authToken = `ltfx.n.f35cd067d05752edf483.v1`;
+    const authToken = "test-auth-token";
     const nonce = "nonce-123";
 
     const ctxUrl = "http://local/voice/webhook?flow=answer&callId=abc";
@@ -356,7 +356,7 @@ describe("verifyPlivoWebhook", () => {
   });
 
   it("accepts valid V3 signature (including multi-signature header)", () => {
-    const authToken = `ltfx.n.f35cd067d05752edf483.v1`;
+    const authToken = "test-auth-token";
     const nonce = "nonce-456";
 
     const urlWithQuery = "https://example.com/voice/webhook?flow=answer&callId=abc";
@@ -389,7 +389,7 @@ describe("verifyPlivoWebhook", () => {
   });
 
   it("matches trusted proxies for Plivo when Node reports an IPv4-mapped remote address", () => {
-    const authToken = `ltfx.n.f35cd067d05752edf483.v1`;
+    const authToken = "test-auth-token";
     const nonce = "nonce-ipv4-mapped-plivo";
     const postBody = "CallUUID=uuid&CallStatus=in-progress&From=%2B15550000000";
     const webhookUrl = "https://proxy.example.com/voice/webhook?flow=answer&callId=abc";
@@ -440,7 +440,7 @@ describe("verifyPlivoWebhook", () => {
   });
 
   it("marks replayed valid V3 requests as replay without failing auth", () => {
-    const authToken = `ltfx.n.f35cd067d05752edf483.v1`;
+    const authToken = "test-auth-token";
     const nonce = "nonce-replay-v3";
     const urlWithQuery = "https://example.com/voice/webhook?flow=answer&callId=abc";
     const postBody = "CallUUID=uuid&CallStatus=in-progress&From=%2B15550000000";
@@ -471,7 +471,7 @@ describe("verifyPlivoWebhook", () => {
   });
 
   it("treats query-only V2 variants as the same verified request", () => {
-    const authToken = `ltfx.n.f35cd067d05752edf483.v1`;
+    const authToken = "test-auth-token";
     const nonce = "nonce-replay-v2";
     const verificationUrl = "https://example.com/voice/webhook";
     const signature = plivoV2Signature({
@@ -518,7 +518,7 @@ describe("verifyPlivoWebhook", () => {
   });
 
   it("detects V3 replay when query parameters are reordered", () => {
-    const authToken = `ltfx.n.f35cd067d05752edf483.v1`;
+    const authToken = "test-auth-token";
     const nonce = "nonce-v3-reorder";
     const postBody = "CallUUID=uuid&CallStatus=in-progress";
 
@@ -581,7 +581,7 @@ describe("verifyTelnyxWebhook", () => {
 
 describe("verifyTwilioWebhook", () => {
   it("uses request query when publicUrl omits it", () => {
-    const authToken = `ltfx.n.f35cd067d05752edf483.v1`;
+    const authToken = "test-auth-token";
     const publicUrl = "https://example.com/voice/webhook";
     const urlWithQuery = `${publicUrl}?callId=abc&turnToken=secret-turn-token`;
     const postBody = "CallSid=CS123&CallStatus=completed&From=%2B15550000000";
@@ -600,9 +600,9 @@ describe("verifyTwilioWebhook", () => {
           "x-twilio-signature": signature,
         },
         rawBody: postBody,
-        url: "http://local/voice/webhook?callId=abc&turnToken=(secret-turn-token",)
+        url: "http://local/voice/webhook?callId=abc&turnToken=secret-turn-token",
         method: "POST",
-        query: { callId: "abc", turnToken: `ltfx.n.ffcdf662dce362de0ada.v1` },
+        query: { callId: "abc", turnToken: "secret-turn-token" },
       },
       authToken,
       { publicUrl },
@@ -620,9 +620,9 @@ describe("verifyTwilioWebhook", () => {
           "x-twilio-signature": "invalid",
         },
         rawBody: "CallSid=CS123&CallStatus=completed&From=%2B15550000000",
-        url: "https://example.com/voice/webhook?callId=call-1&turnToken=(secret-turn-token",)
+        url: "https://example.com/voice/webhook?callId=call-1&turnToken=secret-turn-token",
         method: "POST",
-        query: { callId: "call-1", turnToken: `ltfx.n.ffcdf662dce362de0ada.v1` },
+        query: { callId: "call-1", turnToken: "secret-turn-token" },
       },
       "test-auth-token",
       { publicUrl: "https://user:pass@example.com/callback#fragment-secret" },
@@ -646,18 +646,18 @@ describe("verifyTwilioWebhook", () => {
         method: "POST",
       },
       "test-auth-token",
-      { publicUrl: "not a url?turnToken=(secret-turn-token" },)
+      { publicUrl: "not a url?turnToken=secret-turn-token" },
     );
 
     expect(result).toMatchObject({
       ok: false,
-      reason: "Invalid signature for URL: (<invalid verification URL>",)
+      reason: "Invalid signature for URL: <invalid verification URL>",
     });
     expect(result.reason).not.toContain("secret-turn-token");
   });
 
   it("treats changed idempotency header as replay for identical signed requests", () => {
-    const authToken = `ltfx.n.f35cd067d05752edf483.v1`;
+    const authToken = "test-auth-token";
     const publicUrl = "https://example.com/voice/webhook";
     const urlWithQuery = `${publicUrl}?callId=abc`;
     const postBody = "CallSid=CS778&CallStatus=completed&From=%2B15550000000";
@@ -668,7 +668,7 @@ describe("verifyTwilioWebhook", () => {
         host: "example.com",
         "x-forwarded-proto": "https",
         "x-twilio-signature": signature,
-        "i-twilio-idempotency-token": `ltfx.n.9757cc70a9f521c015a6.v1`,
+        "i-twilio-idempotency-token": "idem-replay-a",
       },
       rawBody: postBody,
       authToken,
@@ -679,7 +679,7 @@ describe("verifyTwilioWebhook", () => {
         host: "example.com",
         "x-forwarded-proto": "https",
         "x-twilio-signature": signature,
-        "i-twilio-idempotency-token": `ltfx.n.aa1325a35b5157e1d801.v1`,
+        "i-twilio-idempotency-token": "idem-replay-b",
       },
       rawBody: postBody,
       authToken,
@@ -690,7 +690,7 @@ describe("verifyTwilioWebhook", () => {
   });
 
   it("rejects invalid signatures even when attacker injects forwarded host", () => {
-    const authToken = `ltfx.n.f35cd067d05752edf483.v1`;
+    const authToken = "test-auth-token";
     const postBody = "CallSid=CS123&CallStatus=completed&From=%2B15550000000";
 
     const result = verifyTwilioWebhook(
@@ -718,7 +718,7 @@ describe("verifyTwilioWebhook", () => {
     const webhookUrl = "https://local.ngrok-free.app/voice/webhook";
 
     const signature = twilioSignature({
-      authToken: `ltfx.n.f35cd067d05752edf483.v1`,
+      authToken: "test-auth-token",
       url: webhookUrl,
       postBody: "CallSid=CS123&CallStatus=completed&From=%2B15550000000",
     });
@@ -738,7 +738,7 @@ describe("verifyTwilioWebhook", () => {
   });
 
   it("ignores attacker X-Forwarded-Host without allowedHosts or trustForwardingHeaders", () => {
-    const authToken = `ltfx.n.f35cd067d05752edf483.v1`;
+    const authToken = "test-auth-token";
     const postBody = "CallSid=CS123&CallStatus=completed&From=%2B15550000000";
 
     // Attacker tries to inject their host - should be ignored
@@ -763,7 +763,7 @@ describe("verifyTwilioWebhook", () => {
   });
 
   it("uses X-Forwarded-Host when allowedHosts whitelist is provided", () => {
-    const authToken = `ltfx.n.f35cd067d05752edf483.v1`;
+    const authToken = "test-auth-token";
     const postBody = "CallSid=CS123&CallStatus=completed&From=%2B15550000000";
     const webhookUrl = "https://myapp.ngrok.io/voice/webhook";
 
@@ -790,7 +790,7 @@ describe("verifyTwilioWebhook", () => {
   });
 
   it("verifies Twilio signatures for Cloudflare Tunnel publicUrl requests", () => {
-    const authToken = `ltfx.n.f35cd067d05752edf483.v1`;
+    const authToken = "test-auth-token";
     const postBody = "CallSid=CA123&CallStatus=ringing&Direction=inbound&From=%2B15550000000";
     const webhookUrl = "https://oc1.example.com/voice/webhook";
     const signature = twilioSignature({ authToken, url: webhookUrl, postBody });
@@ -821,7 +821,7 @@ describe("verifyTwilioWebhook", () => {
   });
 
   it("rejects X-Forwarded-Host not in allowedHosts whitelist", () => {
-    const authToken = `ltfx.n.f35cd067d05752edf483.v1`;
+    const authToken = "test-auth-token";
     const postBody = "CallSid=CS123&CallStatus=completed&From=%2B15550000000";
 
     const result = verifyTwilioWebhook(
@@ -846,7 +846,7 @@ describe("verifyTwilioWebhook", () => {
   });
 
   it("trusts forwarding headers only from trusted proxy IPs", () => {
-    const authToken = `ltfx.n.f35cd067d05752edf483.v1`;
+    const authToken = "test-auth-token";
     const postBody = "CallSid=CS123&CallStatus=completed&From=%2B15550000000";
     const webhookUrl = "https://proxy.example.com/voice/webhook";
 
@@ -874,7 +874,7 @@ describe("verifyTwilioWebhook", () => {
   });
 
   it("matches trusted proxies when Node reports an IPv4-mapped remote address", () => {
-    const authToken = `ltfx.n.f35cd067d05752edf483.v1`;
+    const authToken = "test-auth-token";
     const postBody = "CallSid=CS123&CallStatus=completed&From=%2B15550000000";
     const webhookUrl = "https://proxy.example.com/voice/webhook";
 
@@ -902,7 +902,7 @@ describe("verifyTwilioWebhook", () => {
   });
 
   it("ignores forwarding headers when trustedProxyIPs are set but remote IP is missing", () => {
-    const authToken = `ltfx.n.f35cd067d05752edf483.v1`;
+    const authToken = "test-auth-token";
     const postBody = "CallSid=CS123&CallStatus=completed&From=%2B15550000000";
 
     const result = verifyTwilioWebhook(
@@ -926,7 +926,7 @@ describe("verifyTwilioWebhook", () => {
     expect(result.verificationUrl).toBeUndefined();
   });
   it("succeeds when Twilio signs URL without port but server URL has port", () => {
-    const authToken = `ltfx.n.f35cd067d05752edf483.v1`;
+    const authToken = "test-auth-token";
     const postBody = "CallSid=CS123&CallStatus=completed&From=%2B15550000000";
     // Twilio signs using URL without port.
     const urlWithPort = "https://example.com:8443/voice/webhook";

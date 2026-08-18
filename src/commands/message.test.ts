@@ -144,7 +144,7 @@ function createTelegramSecretRawConfig() {
   return {
     channels: {
       telegram: {
-        token: { $secret: `ltfx.n.56da8086caccdf2ba452.v1` }, // pragma: allowlist secret
+        token: { $secret: "vault://telegram/token" }, // pragma: allowlist secret
       },
     },
   };
@@ -266,7 +266,7 @@ describe("messageCommand", () => {
     const autoEnabledConfig = {
       channels: {
         telegram: {
-          token: `ltfx.n.72fa550c368d866a80fd.v1`,
+          token: "12345:auto-enabled-token",
         },
       },
       plugins: { allow: ["telegram"] },

@@ -67,7 +67,7 @@ Supported keys: `voice` / `voice_id` / `voiceId`, `model` / `model_id` / `modelI
         voiceId: "elevenlabs_voice_id",
         modelId: "eleven_v3",
         outputFormat: "mp3_44100_128",
-        apiKey: "${ltfx.n.b72eac9614efb1b10376.v1}",
+        apiKey: "elevenlabs_api_key",
       },
       mlx: {
         modelId: "mlx-community/Soprano-80M-bf16",
@@ -81,7 +81,7 @@ Supported keys: `voice` / `voice_id` / `voiceId`, `model` / `model_id` / `modelI
       provider: "openai",
       providers: {
         openai: {
-          apiKey: "${ltfx.n.6ce439cbbd21adf9a686.v1}",
+          apiKey: "openai_api_key",
           model: "gpt-realtime-2.1",
           speakerVoice: "cedar",
         },

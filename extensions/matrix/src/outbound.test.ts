@@ -67,7 +67,7 @@ describe("matrixOutbound cfg threading", () => {
     const cfg = {
       channels: {
         matrix: {
-          accessToken: `ltfx.n.cad2ed06900405ac7d61.v1`,
+          accessToken: "resolved-token",
         },
       },
     } as OpenClawConfig;
@@ -95,7 +95,7 @@ describe("matrixOutbound cfg threading", () => {
     const cfg = {
       channels: {
         matrix: {
-          accessToken: `ltfx.n.cad2ed06900405ac7d61.v1`,
+          accessToken: "resolved-token",
         },
       },
     } as OpenClawConfig;
@@ -124,7 +124,7 @@ describe("matrixOutbound cfg threading", () => {
     const cfg = {
       channels: {
         matrix: {
-          accessToken: `ltfx.n.cad2ed06900405ac7d61.v1`,
+          accessToken: "resolved-token",
         },
       },
     } as OpenClawConfig;
@@ -157,7 +157,7 @@ describe("matrixOutbound cfg threading", () => {
     const cfg = {
       channels: {
         matrix: {
-          accessToken: `ltfx.n.cad2ed06900405ac7d61.v1`,
+          accessToken: "resolved-token",
         },
       },
     } as OpenClawConfig;
@@ -245,7 +245,7 @@ describe("matrixOutbound cfg threading", () => {
     const cfg = {
       channels: {
         matrix: {
-          accessToken: `ltfx.n.cad2ed06900405ac7d61.v1`,
+          accessToken: "resolved-token",
         },
       },
     } as OpenClawConfig;
@@ -299,7 +299,7 @@ describe("matrixOutbound cfg threading", () => {
     const cfg = {
       channels: {
         matrix: {
-          accessToken: `ltfx.n.cad2ed06900405ac7d61.v1`,
+          accessToken: "resolved-token",
         },
       },
     } as OpenClawConfig;
@@ -339,7 +339,7 @@ describe("matrixOutbound cfg threading", () => {
     const cfg = {
       channels: {
         matrix: {
-          accessToken: `ltfx.n.cad2ed06900405ac7d61.v1`,
+          accessToken: "resolved-token",
         },
       },
     } as OpenClawConfig;
@@ -383,7 +383,7 @@ describe("matrixOutbound cfg threading", () => {
     const cfg = {
       channels: {
         matrix: {
-          accessToken: `ltfx.n.cad2ed06900405ac7d61.v1`,
+          accessToken: "resolved-token",
         },
       },
     } as OpenClawConfig;
@@ -421,7 +421,7 @@ describe("matrixOutbound cfg threading", () => {
     const cfg = {
       channels: {
         matrix: {
-          accessToken: `ltfx.n.cad2ed06900405ac7d61.v1`,
+          accessToken: "resolved-token",
         },
       },
     } as OpenClawConfig;
@@ -470,7 +470,7 @@ describe("matrixOutbound cfg threading", () => {
     const cfg = {
       channels: {
         matrix: {
-          accessToken: `ltfx.n.597480d4b62ca612193f.v1`,
+          accessToken: "test-access-token",
         },
       },
     } as OpenClawConfig;
@@ -513,7 +513,7 @@ describe("matrixOutbound cfg threading", () => {
     const cfg = {
       channels: {
         matrix: {
-          accessToken: `ltfx.n.597480d4b62ca612193f.v1`,
+          accessToken: "test-access-token",
         },
       },
     } as OpenClawConfig;
@@ -544,7 +544,7 @@ describe("matrixOutbound cfg threading", () => {
     const cfg = {
       channels: {
         matrix: {
-          accessToken: `ltfx.n.143ffa154ba1e4eea1c8.v1`,
+          accessToken: "regression-token",
         },
       },
     } as OpenClawConfig;

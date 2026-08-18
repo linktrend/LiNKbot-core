@@ -21,7 +21,7 @@ import type {
 
 const CLICKCLACK_EVENT_PAGE_LIMIT = 500;
 
-function payloadString(event: ClickClackEvent, key: (string)): string {
+function payloadString(event: ClickClackEvent, key: string): string {
   const value = event.payload?.[key];
   return typeof value === "string" ? value : "";
 }

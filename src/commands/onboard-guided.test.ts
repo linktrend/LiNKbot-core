@@ -957,7 +957,7 @@ describe("runGuidedOnboarding", () => {
       },
       gateway: {
         mode: "remote",
-        remote: { url: `ltfx.n.7248a0efc514704d4e1a.v1`, token: `ltfx.n.81e61c0285659b608bb9.v1` },
+        remote: { url: "wss://configured.example/ws", token: "configured-token" },
       },
     } satisfies OpenClawConfig;
     const localConfigBefore = structuredClone(localConfig);
@@ -1043,13 +1043,13 @@ describe("runGuidedOnboarding", () => {
       expect(options).toEqual({
         config: expect.objectContaining({
           gateway: expect.objectContaining({
-            remote: expect.objectContaining({ url: `ltfx.n.9a6a902a509bb50819fa.v1` }),
+            remote: expect.objectContaining({ url: "wss://selected.example/ws" }),
           }),
         }),
         deliver: false,
         boundGateway: {
-          url: `ltfx.n.9a6a902a509bb50819fa.v1`,
-          token: `ltfx.n.28601ccd8e3ef5bf1179.v1`,
+          url: "wss://selected.example/ws",
+          token: "selected-token",
           tlsFingerprint: "sha256:selected",
         },
       });
@@ -1063,7 +1063,7 @@ describe("runGuidedOnboarding", () => {
       {
         config: localConfig,
         gatewayUrl: "wss://selected.example/ws",
-        token: `ltfx.n.28601ccd8e3ef5bf1179.v1`,
+        token: "selected-token",
         tlsFingerprint: "sha256:selected",
       },
       runtime,

@@ -150,14 +150,14 @@ describe("ClickClack discussion service contracts", () => {
         first: {
           enabled: true,
           baseUrl: "https://clickclack-one.example",
-          token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
+          token: "test-token-placeholder",
           workspace: "team",
           discussions: { enabled: true },
         },
         second: {
           enabled: true,
           baseUrl: "https://clickclack-two.example",
-          token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
+          token: "test-token-placeholder",
           workspace: "team",
           discussions: { enabled: true },
         },
@@ -179,14 +179,14 @@ describe("ClickClack discussion service contracts", () => {
         first: {
           enabled: true,
           baseUrl: "https://clickclack-one.example",
-          token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
+          token: "test-token-placeholder",
           workspace: "team",
           discussions: { enabled: true },
         },
         second: {
           enabled: true,
           baseUrl: "https://clickclack-two.example",
-          token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
+          token: "test-token-placeholder",
           workspace: "team",
           discussions: { enabled: true },
         },
@@ -212,7 +212,7 @@ describe("ClickClack discussion service contracts", () => {
         replacement: {
           enabled: true,
           baseUrl: "https://clickclack-replacement.example",
-          token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
+          token: "test-token-placeholder",
           workspace: "team",
           discussions: { enabled: true },
         },
@@ -233,7 +233,7 @@ describe("ClickClack discussion service contracts", () => {
         replacement: {
           enabled: true,
           baseUrl: "https://clickclack.example",
-          token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
+          token: "test-token-placeholder",
           workspace: "team",
           discussions: { enabled: true },
         },
@@ -269,7 +269,7 @@ describe("ClickClack discussion service contracts", () => {
     const harness = createHarness({ label: "Workspace token move" });
     const sessionKey = "agent:main:workspace-token-move";
     await harness.service.open(sessionKey);
-    harness.config.channels!.clickclack!.token = `ltfx.n.41dd96f1dccf65c2c9c7.v1`;
+    harness.config.channels!.clickclack!.token = "test-token-placeholder";
     harness.config.channels!.clickclack!.workspace = "other-team";
     harness.config.channels!.clickclack!.discussions!.workspace = "other-team";
 
@@ -294,7 +294,7 @@ describe("ClickClack discussion service contracts", () => {
         replacement: {
           enabled: true,
           baseUrl: "https://clickclack.example",
-          token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
+          token: "test-token-placeholder",
           workspace: "team",
           discussions: { enabled: true },
         },

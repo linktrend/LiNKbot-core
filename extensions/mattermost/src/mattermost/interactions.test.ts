@@ -298,7 +298,7 @@ describe("resolveInteractionCallbackUrl", () => {
         mattermost: {
           accounts: {
             acct: {
-              botToken: `ltfx.n.df27f9beb68b7766af3a.v1`,
+              botToken: "bot-token",
               baseUrl: "https://chat.example.com",
               interactions: {
                 callbackBaseUrl: "https://gateway.example.com/root",
@@ -516,7 +516,7 @@ describe("createMattermostInteractionHandler", () => {
     return {
       baseUrl: "https://chat.example.com",
       apiBaseUrl: "https://chat.example.com/api/v4",
-      token: `ltfx.n.df27f9beb68b7766af3a.v1`,
+      token: "bot-token",
       request: async <T>(path: string, init?: RequestInit) => (await requestImpl(path, init)) as T,
       fetchImpl: vi.fn<typeof fetch>(),
     };
@@ -814,7 +814,7 @@ describe("createMattermostInteractionHandler", () => {
         user_id: "user-1",
         channel_id: "chan-1",
         post_id: "post-1",
-        context: { action_id: "approve", _token: `ltfx.n.2baf1f40105d9501fe31.v1` },
+        context: { action_id: "approve", _token: "deadbeef" },
       },
     });
     expectForbiddenResponse(res, "Invalid token");

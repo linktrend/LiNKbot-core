@@ -30,7 +30,7 @@ installGatewayTestHooks({ scope: "suite" });
 
 let server: Awaited<ReturnType<typeof startGatewayServer>>;
 let gatewayPort: number;
-const gatewayToken = `ltfx.n.57553aa6e72928276259.v1`;
+const gatewayToken = "test-gateway-token-1234567890";
 let envSnapshot: ReturnType<typeof captureEnv>;
 
 type SessionSendTool = ReturnType<typeof createOpenClawTools>[number];
@@ -503,7 +503,7 @@ describe("sessions_send label lookup", () => {
       const { callGateway } = await import("./call.js");
       await callGateway({
         method: "sessions.patch",
-        params: { key: `ltfx.n.90d8f797f64d1c2a89ef.v1`, label: "my-test-worker" },
+        params: { key: "test-labeled-session", label: "my-test-worker" },
         timeoutMs: 5000,
       });
 

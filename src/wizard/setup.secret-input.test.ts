@@ -20,7 +20,7 @@ describe("resolveSetupSecretInputString", () => {
       value: "${OPENCLAW_GATEWAY_PASSWORD}",
       path: "gateway.auth.password",
       env: {
-        OPENCLAW_GATEWAY_PASSWORD: `ltfx.n.1e0baae50a6e2006d894.v1`, // pragma: allowlist secret
+        OPENCLAW_GATEWAY_PASSWORD: "gateway-secret", // pragma: allowlist secret
       },
     });
 

@@ -69,7 +69,7 @@ describe("nextcloud talk room info", () => {
           apiPassword: "secret",
         },
       } as never,
-      roomToken: `ltfx.n.7deb395216179074fc53.v1`,
+      roomToken: "room-direct",
     });
 
     expect(kind).toBe("direct");
@@ -145,7 +145,7 @@ describe("nextcloud talk room info", () => {
             apiPassword: "secret",
           },
         } as never,
-        roomToken: `ltfx.n.1c2e3e9c22c7d7e3ada6.v1`,
+        roomToken: "room-direct-string",
       }),
     ).resolves.toBe("direct");
   });
@@ -172,7 +172,7 @@ describe("nextcloud talk room info", () => {
             apiPassword: "secret",
           },
         } as never,
-        roomToken: `ltfx.n.69c1f08d5b0082a9c98b.v1`,
+        roomToken: "room-partial",
       }),
     ).resolves.toBeUndefined();
   });
@@ -199,7 +199,7 @@ describe("nextcloud talk room info", () => {
             apiPassword: "secret",
           },
         } as never,
-        roomToken: `ltfx.n.93d2380f23a918b3aa04.v1`,
+        roomToken: "room-negative",
       }),
     ).resolves.toBeUndefined();
   });
@@ -231,7 +231,7 @@ describe("nextcloud talk room info", () => {
           apiPasswordFile: passwordFile,
         },
       } as never,
-      roomToken: `ltfx.n.5b148311d8330fd69298.v1`,
+      roomToken: "room-group",
       runtime: { log, error, exit },
     });
 
@@ -239,7 +239,7 @@ describe("nextcloud talk room info", () => {
     expect(requireFirstFetchParams().init?.headers?.Authorization).toBe(
       "Basic Ym90OmZpbGUtc2VjcmV0",
     );
-    expect(log).toHaveBeenCalledWith("nextcloud-talk: room lookup failed (403) token=(room-group");)
+    expect(log).toHaveBeenCalledWith("nextcloud-talk: room lookup failed (403) token=room-group");
     expect(release).toHaveBeenCalledTimes(1);
   });
 
@@ -293,7 +293,7 @@ describe("nextcloud talk room info", () => {
           apiPassword: "secret",
         },
       } as never,
-      roomToken: `ltfx.n.7bf44cc666d15f82b8f3.v1`,
+      roomToken: "room-malformed",
       runtime: { log, error, exit },
     });
 
@@ -312,7 +312,7 @@ describe("nextcloud talk room info", () => {
           baseUrl: "",
           config: {},
         } as never,
-        roomToken: `ltfx.n.e7d18ec61de6a430be6b.v1`,
+        roomToken: "room-missing",
       }),
     ).resolves.toBeUndefined();
 

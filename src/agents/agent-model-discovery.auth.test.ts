@@ -40,7 +40,7 @@ vi.mock("./model-auth-env.js", () => ({
     }
     if (provider === "workspace-cloud" && options?.workspaceDir === "/tmp/workspace") {
       return {
-        apiKey: `ltfx.n.1511b97b2133bdf7c34a.v1`,
+        apiKey: "workspace-cloud-local-credentials",
         source: "workspace cloud credentials",
       };
     }
@@ -73,12 +73,12 @@ describe("discoverAuthStorage", () => {
         "openrouter:default": {
           type: "api_key",
           provider: "openrouter",
-          key: `ltfx.n.37e8a8555e4fd04be400.v1`,
+          key: "sk-or-v1-runtime",
         },
         "anthropic:default": {
           type: "token",
           provider: "anthropic",
-          token: `ltfx.n.59fe86af30841db10482.v1`,
+          token: "sk-ant-runtime",
         },
         "openai:default": {
           type: "oauth",
@@ -92,11 +92,11 @@ describe("discoverAuthStorage", () => {
 
     expect(credentials.openrouter).toEqual({
       type: "api_key",
-      key: `ltfx.n.37e8a8555e4fd04be400.v1`,
+      key: "sk-or-v1-runtime",
     });
     expect(credentials.anthropic).toEqual({
       type: "api_key",
-      key: `ltfx.n.59fe86af30841db10482.v1`,
+      key: "sk-ant-runtime",
     });
     const codexCredential = credentials["openai"] as
       | { type?: string; access?: string; refresh?: string }
@@ -113,7 +113,7 @@ describe("discoverAuthStorage", () => {
         "anthropic:bad-token-expiry": {
           type: "token",
           provider: "anthropic",
-          token: `ltfx.n.59fe86af30841db10482.v1`,
+          token: "sk-ant-runtime",
           expires: MAX_DATE_TIMESTAMP_MS + 1,
         },
         "openai:bad-oauth-expiry": {
@@ -159,7 +159,7 @@ describe("discoverAuthStorage", () => {
         "openai:key": {
           type: "api_key",
           provider: "openai",
-          key: `ltfx.n.62af8704764faf8ea82f.v1`,
+          key: "test-key",
         },
         "openai:expired": {
           type: "oauth",
@@ -201,7 +201,7 @@ describe("discoverAuthStorage", () => {
           "openai:key": {
             type: "api_key",
             provider: "openai",
-            key: `ltfx.n.62af8704764faf8ea82f.v1`,
+            key: "test-key",
           },
         },
       });
@@ -215,7 +215,7 @@ describe("discoverAuthStorage", () => {
 
       expect(authStorage.get("openai")).toEqual({
         type: "api_key",
-        key: `ltfx.n.62af8704764faf8ea82f.v1`,
+        key: "test-key",
       });
     });
   });
@@ -311,12 +311,12 @@ describe("discoverAuthStorage", () => {
             "inherited-provider:default": {
               type: "api_key",
               provider: "inherited-provider",
-              key: `ltfx.n.ce28d93a0e77b67def29.v1`,
+              key: "inherited-key",
             },
             "shared-provider:inherited": {
               type: "api_key",
               provider: "shared-provider",
-              key: `ltfx.n.addf918770e8e7821a91.v1`,
+              key: "inherited-shared-key",
             },
           },
         });
@@ -326,7 +326,7 @@ describe("discoverAuthStorage", () => {
             "shared-provider:local": {
               type: "api_key",
               provider: "shared-provider",
-              key: `ltfx.n.6e6b9b0f9915e8d958b9.v1`,
+              key: "local-shared-key",
             },
           },
         });
@@ -339,11 +339,11 @@ describe("discoverAuthStorage", () => {
 
         expect(storage.get("inherited-provider")).toEqual({
           type: "api_key",
-          key: `ltfx.n.ce28d93a0e77b67def29.v1`,
+          key: "inherited-key",
         });
         expect(storage.get("shared-provider")).toEqual({
           type: "api_key",
-          key: `ltfx.n.6e6b9b0f9915e8d958b9.v1`,
+          key: "local-shared-key",
         });
       });
     });
@@ -353,7 +353,7 @@ describe("discoverAuthStorage", () => {
     const previousMistral = process.env.MISTRAL_API_KEY;
     const previousBundledPluginsDir = process.env.OPENCLAW_BUNDLED_PLUGINS_DIR;
     const previousDisableBundledPlugins = process.env.OPENCLAW_DISABLE_BUNDLED_PLUGINS;
-    process.env.MISTRAL_API_KEY = `ltfx.n.3e727517ee2e2b1d2a9c.v1`;
+    process.env.MISTRAL_API_KEY = "mistral-env-test-key";
     delete process.env.OPENCLAW_BUNDLED_PLUGINS_DIR;
     delete process.env.OPENCLAW_DISABLE_BUNDLED_PLUGINS;
     try {
@@ -361,7 +361,7 @@ describe("discoverAuthStorage", () => {
 
       expect(credentials.mistral).toEqual({
         type: "api_key",
-        key: `ltfx.n.3e727517ee2e2b1d2a9c.v1`,
+        key: "mistral-env-test-key",
       });
     } finally {
       if (previousMistral === undefined) {
@@ -393,7 +393,7 @@ describe("discoverAuthStorage", () => {
 
     expect(credentials["workspace-cloud"]).toEqual({
       type: "api_key",
-      key: `ltfx.n.1511b97b2133bdf7c34a.v1`,
+      key: "workspace-cloud-local-credentials",
     });
   });
 });

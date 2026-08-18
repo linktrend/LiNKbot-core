@@ -168,7 +168,7 @@ describe("linkbrain Phase 1 fake runtime", () => {
         idempotencyKey: "cap:bad:reasoning",
         batch: reasoning.batch,
       },
-      { authToken: `ltfx.n.aee2fbd3bbda68f5b3dc.v1` },
+      { authToken: "fake-valid-token" },
     );
     expect(rejected.ok).toBe(false);
     expect(rejected.error?.code).toBe("validation_error");
@@ -192,7 +192,7 @@ describe("linkbrain Phase 1 fake runtime", () => {
         finding: { title: "x" },
         ...cross.payload,
       },
-      { authToken: `ltfx.n.aee2fbd3bbda68f5b3dc.v1` },
+      { authToken: "fake-valid-token" },
     );
     expect(rejected.ok).toBe(false);
     expect(rejected.error?.code).toBe("validation_error");
@@ -206,10 +206,10 @@ describe("linkbrain Phase 1 fake runtime", () => {
       summary: "First write.",
     };
     const first = fake.callTool("brain_checkpoint_write", args, {
-      authToken: `ltfx.n.aee2fbd3bbda68f5b3dc.v1`,
+      authToken: "fake-valid-token",
     });
     const second = fake.callTool("brain_checkpoint_write", args, {
-      authToken: `ltfx.n.aee2fbd3bbda68f5b3dc.v1`,
+      authToken: "fake-valid-token",
     });
     expect(first.ok).toBe(true);
     expect(first.replayed).toBe(false);
@@ -244,7 +244,7 @@ describe("linkbrain Phase 1 fake runtime", () => {
     const ok = fake.callTool(
       "brain_browse",
       { path: "/knowledge/test" },
-      { authToken: `ltfx.n.aee2fbd3bbda68f5b3dc.v1` },
+      { authToken: "fake-valid-token" },
     );
     expect(ok.ok).toBe(true);
     expect(ok.contractVersion).toBe("1.0.0");

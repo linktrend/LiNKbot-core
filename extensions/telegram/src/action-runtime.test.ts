@@ -364,7 +364,7 @@ describe("handleTelegramAction", () => {
           reactionLevel: "minimal",
           defaultAccount: "kitt",
           accounts: {
-            kitt: { botToken: `ltfx.n.32d4bea62442341e2b0c.v1` },
+            kitt: { botToken: "tok-kitt" },
           },
         },
       },
@@ -661,7 +661,7 @@ describe("handleTelegramAction", () => {
       to: "@testchannel",
       durability: "required",
       gatewayClientScopes: ["operator.write"],
-      session: { key: `ltfx.n.37479220112ec34d6844.v1`, agentId: "main" },
+      session: { key: "agent:main:telegram:direct:123", agentId: "main" },
       payloads: [{ text: "Hello, Telegram!" }],
     });
     expect(result.content).toStrictEqual([
@@ -700,7 +700,7 @@ describe("handleTelegramAction", () => {
               delivery: { pin: { enabled: true, required: true } },
             },
           ],
-          session: { key: `ltfx.n.d139a0ca172175a1d1e6.v1`, agentId: "main" },
+          session: { key: "agent:main:telegram:direct:12345", agentId: "main" },
           gatewayClientScopes: ["operator.write"],
           retryCount: 0,
         });
@@ -2069,7 +2069,7 @@ describe("handleTelegramAction per-account gating", () => {
   it("allows sticker when account config enables it", async () => {
     const cfg = accountTelegramConfig({
       accounts: {
-        media: { botToken: `ltfx.n.359afa74d4ed46495816.v1`, actions: { sticker: true } },
+        media: { botToken: "tok-media", actions: { sticker: true } },
       },
     });
     await expectAccountStickerSend(cfg);
@@ -2080,7 +2080,7 @@ describe("handleTelegramAction per-account gating", () => {
       channels: {
         telegram: {
           accounts: {
-            chat: { botToken: `ltfx.n.df59b6bd8d5ab89b2825.v1` },
+            chat: { botToken: "tok-chat" },
           },
         },
       },
@@ -2097,9 +2097,9 @@ describe("handleTelegramAction per-account gating", () => {
   it("uses account-merged config, not top-level config", async () => {
     // Top-level has no sticker enabled, but the account does
     const cfg = accountTelegramConfig({
-      topLevelBotToken: `ltfx.n.2cd110b5aa36745434e9.v1`,
+      topLevelBotToken: "tok-base",
       accounts: {
-        media: { botToken: `ltfx.n.359afa74d4ed46495816.v1`, actions: { sticker: true } },
+        media: { botToken: "tok-media", actions: { sticker: true } },
       },
     });
     await expectAccountStickerSend(cfg);
@@ -2109,7 +2109,7 @@ describe("handleTelegramAction per-account gating", () => {
     const cfg = accountTelegramConfig({
       topLevelActions: { reactions: false },
       accounts: {
-        media: { botToken: `ltfx.n.359afa74d4ed46495816.v1`, actions: { sticker: true } },
+        media: { botToken: "tok-media", actions: { sticker: true } },
       },
     });
 
@@ -2132,7 +2132,7 @@ describe("handleTelegramAction per-account gating", () => {
     const cfg = accountTelegramConfig({
       topLevelActions: { reactions: false },
       accounts: {
-        media: { botToken: `ltfx.n.359afa74d4ed46495816.v1`, actions: { sticker: true, reactions: true } },
+        media: { botToken: "tok-media", actions: { sticker: true, reactions: true } },
       },
     });
 

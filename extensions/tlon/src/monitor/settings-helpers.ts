@@ -22,42 +22,42 @@ export function buildTlonSettingsMigrations(
 ): Array<{ key: string; fileValue: unknown; settingsValue: unknown }> {
   return [
     {
-      key: `ltfx.n.a5f45e488f4b418e3702.v1`,
+      key: "dmAllowlist",
       fileValue: account.dmAllowlist,
       settingsValue: currentSettings.dmAllowlist,
     },
     {
-      key: `ltfx.n.88775b553fd46c37d8ef.v1`,
+      key: "groupInviteAllowlist",
       fileValue: account.groupInviteAllowlist,
       settingsValue: currentSettings.groupInviteAllowlist,
     },
     {
-      key: `ltfx.n.13396195743eb884c2c4.v1`,
+      key: "groupChannels",
       fileValue: account.groupChannels,
       settingsValue: currentSettings.groupChannels,
     },
     {
-      key: `ltfx.n.0bbe26b850a671bab176.v1`,
+      key: "defaultAuthorizedShips",
       fileValue: account.defaultAuthorizedShips,
       settingsValue: currentSettings.defaultAuthorizedShips,
     },
     {
-      key: `ltfx.n.c713ea2963ec90cf7532.v1`,
+      key: "autoDiscoverChannels",
       fileValue: account.autoDiscoverChannels,
       settingsValue: currentSettings.autoDiscoverChannels,
     },
     {
-      key: `ltfx.n.c78fe04182f5ccd5fdff.v1`,
+      key: "autoAcceptDmInvites",
       fileValue: account.autoAcceptDmInvites,
       settingsValue: currentSettings.autoAcceptDmInvites,
     },
     {
-      key: `ltfx.n.cb39f9e70ba2626c4caf.v1`,
+      key: "autoAcceptGroupInvites",
       fileValue: account.autoAcceptGroupInvites,
       settingsValue: currentSettings.autoAcceptGroupInvites,
     },
     {
-      key: `ltfx.n.7656afd9397c4848d6e5.v1`,
+      key: "showModelSig",
       fileValue: account.showModelSignature,
       settingsValue: currentSettings.showModelSig,
     },

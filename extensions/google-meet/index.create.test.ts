@@ -121,7 +121,7 @@ async function runCreateMeetBrowserScript(params: { buttonText: string }) {
               result: {
                 targetId: "create-script-tab",
                 title: "Meet",
-                url: (proxy.body?.url,)
+                url: proxy.body?.url,
               },
             },
           };
@@ -237,7 +237,7 @@ describe("google-meet create flow", () => {
       if (url.includes("oauth2.googleapis.com")) {
         return new Response(
           JSON.stringify({
-            access_token: `ltfx.n.25b416c373e247768cc1.v1`,
+            access_token: "new-access-token",
             expires_in: 3600,
             token_type: "Bearer",
           }),
@@ -259,7 +259,7 @@ describe("google-meet create flow", () => {
     registerGoogleMeetCli({
       program,
       config: resolveGoogleMeetConfig({
-        oauth: { clientId: "client-id", refreshToken: `ltfx.n.0eb17643d4e926116378.v1` },
+        oauth: { clientId: "client-id", refreshToken: "refresh-token" },
       }),
       ensureRuntime: async () => ({}) as GoogleMeetRuntime,
     });
@@ -312,7 +312,7 @@ describe("google-meet create flow", () => {
                 result: {
                   targetId: "tab-1",
                   title: "Meet",
-                  url: (proxy.body?.url,)
+                  url: proxy.body?.url,
                 },
               },
             };
@@ -408,7 +408,7 @@ describe("google-meet create flow", () => {
                 result: {
                   targetId: "login-tab",
                   title: "New Tab",
-                  url: (proxy.body?.url,)
+                  url: proxy.body?.url,
                 },
               },
             };
@@ -491,7 +491,7 @@ describe("google-meet create flow", () => {
                       ? "create-tab"
                       : "join-tab",
                   title: "Meet",
-                  url: (proxy.body?.url,)
+                  url: proxy.body?.url,
                 },
               },
             };
@@ -582,7 +582,7 @@ describe("google-meet create flow", () => {
                 result: {
                   targetId: "permission-tab",
                   title: "Meet",
-                  url: (proxy.body?.url,)
+                  url: proxy.body?.url,
                 },
               },
             };

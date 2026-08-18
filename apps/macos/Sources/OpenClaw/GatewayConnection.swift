@@ -79,7 +79,7 @@ actor GatewayConnection {
         endpointProvider: GatewayConnection.defaultEndpointProvider)
     nonisolated static let operatorClientCaps = [OpenClawGatewayClientCapability.inlineWidgets]
 
-    typealias Config = (url: URL, token: String?, password: (String?))
+    typealias Config = (url: URL, token: String?, password: String?)
 
     struct EndpointSnapshot {
         let config: Config
@@ -648,7 +648,7 @@ extension GatewayConnection {
                 deviceAuthGatewayID: endpoint.deviceAuthGatewayID,
                 activationOwnershipFingerprint: Self.activationOwnershipFingerprint(
                     config: cfg,
-                    key: (self.configuredActivationBindingKey)))
+                    key: self.configuredActivationBindingKey))
         } catch {
             return nil
         }
@@ -716,7 +716,7 @@ extension GatewayConnection {
                 activationOwnershipFingerprint: Self.activationOwnershipFingerprint(
                     config: cfg,
                     authBinding: authBinding,
-                    key: (self.configuredActivationBindingKey)),)
+                    key: self.configuredActivationBindingKey)),
             socketGeneration: socketGeneration,
             client: client)
         guard await self.isCurrentServerLease(lease) else {
@@ -1116,7 +1116,7 @@ extension GatewayConnection {
     private static func activationOwnershipFingerprint(
         config: Config,
         authBinding: GatewayAuthBinding? = nil,
-        key: (SymmetricKey?) -> String?)
+        key: SymmetricKey?) -> String?
     {
         guard let key else { return nil }
         // The durable record is already keyed by the stable Gateway route identity.
@@ -1213,7 +1213,7 @@ extension GatewayConnection {
 
     func cachedMainSessionKey() -> String? {
         guard let snapshot = lastSnapshot else { return nil }
-        let trimmed = self.sessionDefaultString(snapshot.snapshot.sessiondefaults, key: "${ltfx.n.cf909582aec3ab6e44b5.v1}")
+        let trimmed = self.sessionDefaultString(snapshot.snapshot.sessiondefaults, key: "mainSessionKey")
         return trimmed.isEmpty ? nil : trimmed
     }
 
@@ -1278,10 +1278,10 @@ extension GatewayConnection {
         let trimmed = raw.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return trimmed }
         guard let defaults = lastSnapshot?.snapshot.sessiondefaults else { return trimmed }
-        let mainSessionKey = self.sessionDefaultString(defaults, key: "${ltfx.n.cf909582aec3ab6e44b5.v1}")
+        let mainSessionKey = self.sessionDefaultString(defaults, key: "mainSessionKey")
         guard !mainSessionKey.isEmpty else { return trimmed }
         let mainKey = self.sessionDefaultString(defaults, key: "mainKey")
-        let defaultAgentId = self.sessionDefaultString(defaults, key: "${ltfx.n.183e430191d1a9a119d3.v1}")
+        let defaultAgentId = self.sessionDefaultString(defaults, key: "defaultAgentId")
         let isMainAlias =
             trimmed == "main" ||
             (!mainKey.isEmpty && trimmed == mainKey) ||

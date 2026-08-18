@@ -495,8 +495,8 @@ describe("auditGatewayServiceConfig", () => {
 
   it("flags gateway token mismatch when service token is stale", async () => {
     const audit = await createGatewayAudit({
-      expectedGatewayToken: `ltfx.n.348e9df2a42bd6e3c635.v1`,
-      serviceToken: `ltfx.n.9bdf10a691a1cfda89d9.v1`,
+      expectedGatewayToken: "new-token",
+      serviceToken: "old-token",
     });
     expectTokenAudit(audit, { embedded: true, mismatch: true });
   });
@@ -570,23 +570,23 @@ describe("auditGatewayServiceConfig", () => {
 
   it("flags embedded service token even when it matches config token", async () => {
     const audit = await createGatewayAudit({
-      expectedGatewayToken: `ltfx.n.348e9df2a42bd6e3c635.v1`,
-      serviceToken: `ltfx.n.348e9df2a42bd6e3c635.v1`,
+      expectedGatewayToken: "new-token",
+      serviceToken: "new-token",
     });
     expectTokenAudit(audit, { embedded: true, mismatch: false });
   });
 
   it("does not flag token issues when service token is not embedded", async () => {
     const audit = await createGatewayAudit({
-      expectedGatewayToken: `ltfx.n.348e9df2a42bd6e3c635.v1`,
+      expectedGatewayToken: "new-token",
     });
     expectTokenAudit(audit, { embedded: false, mismatch: false });
   });
 
   it("does not treat EnvironmentFile-backed tokens as embedded", async () => {
     const audit = await createGatewayAudit({
-      expectedGatewayToken: `ltfx.n.348e9df2a42bd6e3c635.v1`,
-      serviceToken: `ltfx.n.9bdf10a691a1cfda89d9.v1`,
+      expectedGatewayToken: "new-token",
+      serviceToken: "old-token",
       environmentValueSources: {
         OPENCLAW_GATEWAY_TOKEN: "file",
       },
@@ -596,10 +596,10 @@ describe("auditGatewayServiceConfig", () => {
 
   it("treats tokens present inline and in EnvironmentFile as embedded", async () => {
     const audit = await createGatewayAudit({
-      expectedGatewayToken: `ltfx.n.348e9df2a42bd6e3c635.v1`,
-      serviceToken: `ltfx.n.9bdf10a691a1cfda89d9.v1`,
+      expectedGatewayToken: "new-token",
+      serviceToken: "old-token",
       environmentValueSources: {
-        OPENCLAW_GATEWAY_TOKEN: `ltfx.n.c26b94fe6f14e4d59433.v1`,
+        OPENCLAW_GATEWAY_TOKEN: "inline-and-file",
       },
     });
     expectTokenAudit(audit, { embedded: true, mismatch: true });
@@ -609,7 +609,7 @@ describe("auditGatewayServiceConfig", () => {
     const audit = await createGatewayAudit({
       extraEnvironment: {
         OPENCLAW_SERVICE_MANAGED_ENV_KEYS: "TAVILY_API_KEY,OPENROUTER_API_KEY",
-        TAVILY_API_KEY: `ltfx.n.d75138c3f7d7aa1ca168.v1`,
+        TAVILY_API_KEY: "tvly-test",
         OPENROUTER_API_KEY: "or-test",
       },
     });
@@ -625,7 +625,7 @@ describe("auditGatewayServiceConfig", () => {
     const audit = await createGatewayAudit({
       expectedManagedServiceEnvKeys: ["TAVILY_API_KEY"],
       extraEnvironment: {
-        TAVILY_API_KEY: `ltfx.n.d75138c3f7d7aa1ca168.v1`,
+        TAVILY_API_KEY: "tvly-test",
       },
     });
 
@@ -636,7 +636,7 @@ describe("auditGatewayServiceConfig", () => {
     const audit = await createGatewayAudit({
       expectedManagedServiceEnvKeys: ["TAVILY_API_KEY"],
       extraEnvironment: {
-        TAVILY_API_KEY: `ltfx.n.d75138c3f7d7aa1ca168.v1`,
+        TAVILY_API_KEY: "tvly-test",
       },
       environmentValueSources: {
         TAVILY_API_KEY: "file",
@@ -650,10 +650,10 @@ describe("auditGatewayServiceConfig", () => {
     const audit = await createGatewayAudit({
       expectedManagedServiceEnvKeys: ["TAVILY_API_KEY"],
       extraEnvironment: {
-        TAVILY_API_KEY: `ltfx.n.d75138c3f7d7aa1ca168.v1`,
+        TAVILY_API_KEY: "tvly-test",
       },
       environmentValueSources: {
-        TAVILY_API_KEY: `ltfx.n.c26b94fe6f14e4d59433.v1`,
+        TAVILY_API_KEY: "inline-and-file",
       },
     });
 
@@ -729,30 +729,30 @@ describe("checkTokenDrift", () => {
   });
 
   it("returns null when tokens match", () => {
-    const result = checkTokenDrift({ serviceToken: `ltfx.n.71b9fdb4cc45819404fb.v1`, configToken: `ltfx.n.71b9fdb4cc45819404fb.v1` });
+    const result = checkTokenDrift({ serviceToken: "same-token", configToken: "same-token" });
     expect(result).toBeNull();
   });
 
   it("returns null when tokens match but service token has trailing newline", () => {
-    const result = checkTokenDrift({ serviceToken: `ltfx.n.384bb7a3c9cb01dfac56.v1`, configToken: `ltfx.n.71b9fdb4cc45819404fb.v1` });
+    const result = checkTokenDrift({ serviceToken: "same-token\n", configToken: "same-token" });
     expect(result).toBeNull();
   });
 
   it("returns null when tokens match but have surrounding whitespace", () => {
-    const result = checkTokenDrift({ serviceToken: `ltfx.n.12d4a410af8fa408f232.v1`, configToken: `ltfx.n.71b9fdb4cc45819404fb.v1` });
+    const result = checkTokenDrift({ serviceToken: "  same-token  ", configToken: "same-token" });
     expect(result).toBeNull();
   });
 
   it("returns null when both tokens have different whitespace padding", () => {
     const result = checkTokenDrift({
-      serviceToken: `ltfx.n.818ba49f8a0fbee318cd.v1`,
-      configToken: `ltfx.n.8174793de5baa20dea90.v1`,
+      serviceToken: "same-token\r\n",
+      configToken: " same-token ",
     });
     expect(result).toBeNull();
   });
 
   it("detects drift when config has token but service has different token", () => {
-    const result = checkTokenDrift({ serviceToken: `ltfx.n.9bdf10a691a1cfda89d9.v1`, configToken: `ltfx.n.348e9df2a42bd6e3c635.v1` });
+    const result = checkTokenDrift({ serviceToken: "old-token", configToken: "new-token" });
     expect(result).toStrictEqual({
       code: SERVICE_AUDIT_CODES.gatewayTokenDrift,
       message:
@@ -763,13 +763,13 @@ describe("checkTokenDrift", () => {
   });
 
   it("returns null when config has token but service has no token", () => {
-    const result = checkTokenDrift({ serviceToken: undefined, configToken: `ltfx.n.348e9df2a42bd6e3c635.v1` });
+    const result = checkTokenDrift({ serviceToken: undefined, configToken: "new-token" });
     expect(result).toBeNull();
   });
 
   it("returns null when service has token but config does not", () => {
     // This is not really drift - service will work, just config is incomplete
-    const result = checkTokenDrift({ serviceToken: `ltfx.n.784c8e01994654a577f4.v1`, configToken: undefined });
+    const result = checkTokenDrift({ serviceToken: "service-token", configToken: undefined });
     expect(result).toBeNull();
   });
 });

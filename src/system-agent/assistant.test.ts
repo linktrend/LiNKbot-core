@@ -25,7 +25,7 @@ function overview(overrides: Partial<SystemAgentOverview["tools"]> = {}): System
       ...overrides,
     },
     gateway: {
-      url: `ltfx.n.0123910dcf85dad5c67b.v1`,
+      url: "ws://127.0.0.1:14567",
       source: "local loopback",
       reachable: false,
     },

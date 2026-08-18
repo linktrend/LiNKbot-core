@@ -809,7 +809,7 @@ describe("MediaStreamHandler security hardening", () => {
         JSON.stringify({
           event: "start",
           streamSid: "MZ123",
-          start: { callSid: "CA123", customParameters: { token: `ltfx.n.034192845dc489deca29.v1` } },
+          start: { callSid: "CA123", customParameters: { token: "token-123" } },
         }),
       );
 
@@ -1072,7 +1072,7 @@ describe("MediaStreamHandler security hardening", () => {
           streamSid: "MZ-oversized",
           start: {
             callSid: "CA-oversized",
-            customParameters: { token: `ltfx.n.62697fda73073ae834ae.v1`, padding: "A".repeat(256 * 1024) },
+            customParameters: { token: "token-oversized", padding: "A".repeat(256 * 1024) },
           },
         }),
       );

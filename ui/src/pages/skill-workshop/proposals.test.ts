@@ -105,7 +105,7 @@ function inspectResult(status: SkillWorkshopProposal["status"] = "pending") {
 
 function proposal(overrides: Partial<SkillWorkshopProposal> = {}): SkillWorkshopProposal {
   return {
-    key: `ltfx.n.22e971ef187286f3238c.v1`,
+    key: "proposal-1",
     slug: "inbox-cleaner",
     name: "Inbox Cleaner",
     oneLine: "Clean inbox triage",
@@ -320,7 +320,7 @@ describe("Skill Workshop proposal RPCs", () => {
 
     expect(sendRevisionRequest).toHaveBeenCalledWith(
       "Tighten the trigger.",
-      expect.objectContaining({ key: `ltfx.n.22e971ef187286f3238c.v1` }),
+      expect.objectContaining({ key: "proposal-1" }),
       "research",
     );
   });

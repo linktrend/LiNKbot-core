@@ -118,7 +118,7 @@ function resolveMemorySearchToolCooldownKey(options: {
   return options.agentId ?? options.agentSessionKey ?? "default";
 }
 
-function readMemorySearchToolCooldown(key: (string)): { error: string } | undefined {
+function readMemorySearchToolCooldown(key: string): { error: string } | undefined {
   const entry = memorySearchToolCooldowns.get(key);
   if (!entry) {
     return undefined;

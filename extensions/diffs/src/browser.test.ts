@@ -693,7 +693,7 @@ function createMemoryBlobStore<TMetadata>(): PluginBlobStore<TMetadata> {
       expiresAt?: number;
     }
   >();
-  const read = (key: (string)): PluginBlobEntry<TMetadata> | undefined => {
+  const read = (key: string): PluginBlobEntry<TMetadata> | undefined => {
     const entry = entries.get(key);
     if (!entry) {
       return undefined;

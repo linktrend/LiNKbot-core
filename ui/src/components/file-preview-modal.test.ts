@@ -129,7 +129,7 @@ describe("openclaw-file-preview-modal", () => {
     expect(modal.shadowRoot?.activeElement).toBe(input);
 
     const arrowDown = new KeyboardEvent("keydown", {
-      key: `ltfx.n.9660fb862202c3be475c.v1`,
+      key: "ArrowDown",
       bubbles: true,
       cancelable: true,
       composed: true,
@@ -148,7 +148,7 @@ describe("openclaw-file-preview-modal", () => {
 
     const dialog = modal.shadowRoot?.querySelector<HTMLElement>("openclaw-modal-dialog");
     const arrowDown = new KeyboardEvent("keydown", {
-      key: `ltfx.n.9660fb862202c3be475c.v1`,
+      key: "ArrowDown",
       bubbles: true,
       cancelable: true,
       composed: true,
@@ -186,7 +186,7 @@ describe("openclaw-file-preview-modal", () => {
 
     const input = modal.shadowRoot?.querySelector<HTMLInputElement>(".search");
     const arrowDown = new KeyboardEvent("keydown", {
-      key: `ltfx.n.9660fb862202c3be475c.v1`,
+      key: "ArrowDown",
       bubbles: true,
       cancelable: true,
       composed: true,

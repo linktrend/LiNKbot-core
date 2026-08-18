@@ -12,7 +12,7 @@ import { resolveAgentTimeoutMs } from "./timeout.js";
 
 describe("getSubagentDepthFromSessionStore", () => {
   it("uses spawnDepth from the session store when available", () => {
-    const key = `ltfx.n.193980f0137de0ca874b.v1`;
+    const key = "agent:main:subagent:flat";
     const depth = getSubagentDepthFromSessionStore(key, {
       store: {
         [key]: { spawnDepth: 2 },
@@ -22,7 +22,7 @@ describe("getSubagentDepthFromSessionStore", () => {
   });
 
   it("normalizes signed decimal stored spawnDepth strings", () => {
-    const key = `ltfx.n.193980f0137de0ca874b.v1`;
+    const key = "agent:main:subagent:flat";
     const depth = getSubagentDepthFromSessionStore(key, {
       store: {
         [key]: { spawnDepth: "+02" },
@@ -32,7 +32,7 @@ describe("getSubagentDepthFromSessionStore", () => {
   });
 
   it("ignores non-decimal and unsafe stored spawnDepth strings", () => {
-    const key = `ltfx.n.193980f0137de0ca874b.v1`;
+    const key = "agent:main:subagent:flat";
     for (const spawnDepth of ["1e3", "0x10", "1.5", "9007199254740993"]) {
       const depth = getSubagentDepthFromSessionStore(key, {
         store: {
@@ -150,7 +150,7 @@ describe("getSubagentDepthFromSessionStore", () => {
   });
 
   it("falls back to session-key segment counting when metadata is missing", () => {
-    const key = `ltfx.n.193980f0137de0ca874b.v1`;
+    const key = "agent:main:subagent:flat";
     const depth = getSubagentDepthFromSessionStore(key, {
       store: {
         [key]: {},

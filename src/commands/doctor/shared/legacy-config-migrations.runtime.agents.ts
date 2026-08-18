@@ -676,7 +676,7 @@ function removeIgnoredAgentModelTimeout(
   changes.push(`Removed ${pathLabel}.timeoutMs; agent model config only selects models.`);
 }
 
-function hasOwnRecordProperty(value: unknown, key: (string)): boolean {
+function hasOwnRecordProperty(value: unknown, key: string): boolean {
   const record = getRecord(value);
   return Boolean(record && Object.hasOwn(record, key));
 }

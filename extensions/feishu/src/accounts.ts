@@ -323,7 +323,7 @@ function buildResolvedFeishuAccount(params: {
     configured: Boolean(baseCreds),
     name: typeof accountName === "string" ? accountName.trim() || undefined : undefined,
     appId: baseCreds?.appId,
-    appSecret: (baseCreds?.appSecret,)
+    appSecret: baseCreds?.appSecret,
     encryptKey: eventSecrets.encryptKey,
     verificationToken: eventSecrets.verificationToken,
     domain: baseCreds?.domain ?? "feishu",

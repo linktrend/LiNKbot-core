@@ -47,7 +47,7 @@ describe("resolveNestedAgentLaneForSession (#67502)", () => {
   });
 
   it("is deterministic for the same session key across calls", () => {
-    const key = `ltfx.n.e970f7bbc3cc42eee2f9.v1`;
+    const key = "agent:ebao:discord:channel:1";
     expect(resolveNestedAgentLaneForSession(key)).toBe(resolveNestedAgentLaneForSession(key));
   });
 

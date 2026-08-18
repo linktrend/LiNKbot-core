@@ -15,7 +15,7 @@ vi.mock("./graph.js", () => {
   };
 });
 
-const TOKEN = `ltfx.n.bd2c32b21cbdc1f49e78.v1`;
+const TOKEN = "test-graph-token";
 
 describe("getMemberInfoMSTeams", () => {
   beforeEach(() => {

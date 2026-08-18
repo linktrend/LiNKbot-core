@@ -171,7 +171,7 @@ describe("describeEmbeddedAgentStreamStrategy", () => {
           provider: "cloudflare-ai-gateway",
           id: "claude-sonnet-4-6",
         } as never,
-        resolvedApiKey: `ltfx.n.cd0ec0671f5569a1679b.v1`,
+        resolvedApiKey: "runtime-key",
       }),
     ).toBe("boundary-aware:anthropic-messages");
   });
@@ -179,7 +179,7 @@ describe("describeEmbeddedAgentStreamStrategy", () => {
 
 describe("resolveEmbeddedAgentStreamFn", () => {
   it("preserves sentinels for registered provider streams", async () => {
-    const secret = `ltfx.n.f0d8fe1220cb29a4941a.v1`;
+    const secret = "plugin-stream-secret";
     const sentinel = mintSecretSentinel(secret, { label: "model-auth:plugin" });
     const providerStreamFn = vi.fn(async (model, _context, options) => ({ model, options }));
     const model = {
@@ -219,7 +219,7 @@ describe("resolveEmbeddedAgentStreamFn", () => {
     await expect(
       resolveEmbeddedAgentApiKey({
         provider: "openai",
-        resolvedApiKey: `ltfx.n.b695c853fc672113967a.v1`,
+        resolvedApiKey: "resolved-key",
         authStorage,
       }),
     ).resolves.toBe("resolved-key");
@@ -253,7 +253,7 @@ describe("resolveEmbeddedAgentStreamFn", () => {
         provider: "openai",
         id: "codex-mini-latest",
       } as never,
-      resolvedApiKey: `ltfx.n.c81dc06a7c87a92aa64b.v1`,
+      resolvedApiKey: "oauth-bearer-token",
     });
 
     expect(streamFn).not.toBe(streamSimple);
@@ -340,7 +340,7 @@ describe("resolveEmbeddedAgentStreamFn", () => {
         provider: "llama",
         id: "qwen36-35b-a3b",
       } as never,
-      resolvedApiKey: `ltfx.n.c7ec7c548f5992a239dc.v1`,
+      resolvedApiKey: "local-token",
     });
 
     expect(streamFn).not.toBe(nativeStreamFn);
@@ -365,7 +365,7 @@ describe("resolveEmbeddedAgentStreamFn", () => {
         provider: "cloudflare-ai-gateway",
         id: "claude-sonnet-4-6",
       } as never,
-      resolvedApiKey: `ltfx.n.444cbbce5b955ec626f7.v1`,
+      resolvedApiKey: "anthropic-runtime-key",
     });
 
     expect(streamFn).not.toBe(currentStreamFn);
@@ -396,7 +396,7 @@ describe("resolveEmbeddedAgentStreamFn", () => {
         provider: "openai",
         id: "gpt-5.4",
       } as never,
-      resolvedApiKey: `ltfx.n.b695c853fc672113967a.v1`,
+      resolvedApiKey: "resolved-key",
       authStorage,
     });
 
@@ -501,7 +501,7 @@ describe("resolveEmbeddedAgentStreamFn", () => {
         provider: "github-copilot",
         id: "gpt-5.4",
       } as never,
-      resolvedApiKey: `ltfx.n.b695c853fc672113967a.v1`,
+      resolvedApiKey: "resolved-key",
     });
 
     const result = await expectStreamResultRecord(
@@ -547,7 +547,7 @@ describe("resolveEmbeddedAgentStreamFn", () => {
         provider: "openai",
         id: "gpt-5.5",
       } as never,
-      resolvedApiKey: `ltfx.n.c81dc06a7c87a92aa64b.v1`,
+      resolvedApiKey: "oauth-bearer-token",
     });
 
     const result = await expectStreamResultRecord(
@@ -596,7 +596,7 @@ describe("resolveEmbeddedAgentStreamFn", () => {
         provider: "openai",
         id: "gpt-5.5",
       } as never,
-      resolvedApiKey: `ltfx.n.c81dc06a7c87a92aa64b.v1`,
+      resolvedApiKey: "oauth-bearer-token",
     });
 
     const result = await expectStreamResultRecord(
@@ -621,7 +621,7 @@ describe("resolveEmbeddedAgentStreamFn", () => {
         provider: "openai",
         id: "gpt-5.5",
       } as never,
-      resolvedApiKey: `ltfx.n.c81dc06a7c87a92aa64b.v1`,
+      resolvedApiKey: "oauth-bearer-token",
     });
 
     const result = await expectStreamResultRecord(
@@ -666,7 +666,7 @@ describe("resolveEmbeddedAgentStreamFn", () => {
         provider: "openai",
         id: "gpt-5.5",
       } as never,
-      resolvedApiKey: `ltfx.n.c81dc06a7c87a92aa64b.v1`,
+      resolvedApiKey: "oauth-bearer-token",
     });
 
     const systemPrompt = `intro${SYSTEM_PROMPT_CACHE_BOUNDARY}tail`;

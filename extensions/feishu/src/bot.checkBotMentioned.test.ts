@@ -71,7 +71,7 @@ describe("parseFeishuMessageEvent – mentionedBot", () => {
 
   it("returns mentionedBot=true when bot is mentioned", () => {
     const event = makeEvent("group", [
-      { key: `ltfx.n.3eb605b0a653477ad302.v1`, name: "Bot", id: { open_id: BOT_OPEN_ID } },
+      { key: "@_user_1", name: "Bot", id: { open_id: BOT_OPEN_ID } },
     ]);
     const ctx = parseFeishuMessageEvent(event, BOT_OPEN_ID);
     expect(ctx.mentionedBot).toBe(true);
@@ -79,7 +79,7 @@ describe("parseFeishuMessageEvent – mentionedBot", () => {
 
   it("returns mentionedBot=true when bot mention name differs from configured botName", () => {
     const event = makeEvent("group", [
-      { key: `ltfx.n.3eb605b0a653477ad302.v1`, name: "OpenClaw Bot (Alias)", id: { open_id: BOT_OPEN_ID } },
+      { key: "@_user_1", name: "OpenClaw Bot (Alias)", id: { open_id: BOT_OPEN_ID } },
     ]);
     const ctx = parseFeishuMessageEvent(event, BOT_OPEN_ID, "OpenClaw Bot");
     expect(ctx.mentionedBot).toBe(true);
@@ -87,7 +87,7 @@ describe("parseFeishuMessageEvent – mentionedBot", () => {
 
   it("returns mentionedBot=false when only other users are mentioned", () => {
     const event = makeEvent("group", [
-      { key: `ltfx.n.3eb605b0a653477ad302.v1`, name: "Alice", id: { open_id: "ou_alice" } },
+      { key: "@_user_1", name: "Alice", id: { open_id: "ou_alice" } },
     ]);
     const ctx = parseFeishuMessageEvent(event, BOT_OPEN_ID);
     expect(ctx.mentionedBot).toBe(false);
@@ -125,16 +125,16 @@ describe("parseFeishuMessageEvent – mentionedBot", () => {
     const event = makeEvent("group", [
       { key: "@_all", name: "all", id: { open_id: "all" } },
       { key: "@_bot_1", name: "Bot", id: { open_id: BOT_OPEN_ID } },
-      { key: `ltfx.n.3eb605b0a653477ad302.v1`, name: "Alice", id: { open_id: "ou_alice" } },
+      { key: "@_user_1", name: "Alice", id: { open_id: "ou_alice" } },
     ]);
     const ctx = parseFeishuMessageEvent(event, BOT_OPEN_ID);
     expect(ctx.mentionedBot).toBe(true);
-    expect(ctx.mentionTargets).toEqual([{ openId: "ou_alice", name: "Alice", key: `ltfx.n.3eb605b0a653477ad302.v1` }]);
+    expect(ctx.mentionTargets).toEqual([{ openId: "ou_alice", name: "Alice", key: "@_user_1" }]);
   });
 
   it("returns mentionedBot=false when botOpenId is undefined (unknown bot)", () => {
     const event = makeEvent("group", [
-      { key: `ltfx.n.3eb605b0a653477ad302.v1`, name: "Alice", id: { open_id: "ou_alice" } },
+      { key: "@_user_1", name: "Alice", id: { open_id: "ou_alice" } },
     ]);
     const ctx = parseFeishuMessageEvent(event, undefined);
     expect(ctx.mentionedBot).toBe(false);
@@ -144,7 +144,7 @@ describe("parseFeishuMessageEvent – mentionedBot", () => {
     "does not create mention-forward targets when botOpenId is %j",
     (botOpenId) => {
       const event = makeEvent("p2p", [
-        { key: `ltfx.n.3eb605b0a653477ad302.v1`, name: "Alice", id: { open_id: "ou_alice" } },
+        { key: "@_user_1", name: "Alice", id: { open_id: "ou_alice" } },
       ]);
       const ctx = parseFeishuMessageEvent(event, botOpenId);
       expect(ctx.mentionTargets).toBeUndefined();
@@ -153,7 +153,7 @@ describe("parseFeishuMessageEvent – mentionedBot", () => {
 
   it("returns mentionedBot=false when botOpenId is empty string (probe failed)", () => {
     const event = makeEvent("group", [
-      { key: `ltfx.n.3eb605b0a653477ad302.v1`, name: "Alice", id: { open_id: "ou_alice" } },
+      { key: "@_user_1", name: "Alice", id: { open_id: "ou_alice" } },
     ]);
     const ctx = parseFeishuMessageEvent(event, "");
     expect(ctx.mentionedBot).toBe(false);

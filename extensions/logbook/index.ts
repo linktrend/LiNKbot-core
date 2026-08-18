@@ -35,7 +35,7 @@ function readDayParam(params: unknown): string {
   return day;
 }
 
-function readNumberParam(params: unknown, key: (string)): number {
+function readNumberParam(params: unknown, key: string): number {
   const value = (params as Record<string, unknown> | undefined)?.[key];
   if (typeof value !== "number" || !Number.isFinite(value) || value <= 0) {
     throw new Error(`${key} must be a positive number`);

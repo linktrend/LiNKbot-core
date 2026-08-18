@@ -49,7 +49,7 @@ export async function createOpenAIFileRuntimeFixture(home: string) {
   await fs.chmod(configDir, 0o700).catch(() => {});
   await fs.writeFile(
     secretFile,
-    `${JSON.stringify({ providers: { openai: { apiKey: `ltfx.n.2dccc6c41f216b910a20.v1` } } }, null, 2)}\n`,
+    `${JSON.stringify({ providers: { openai: { apiKey: "sk-file-runtime" } } }, null, 2)}\n`,
     { encoding: "utf8", mode: 0o600 },
   );
   await fs.writeFile(
@@ -103,13 +103,13 @@ export function createOpenAIFileRuntimeConfig(secretFile: string): OpenClawConfi
 }
 
 export function expectResolvedOpenAIRuntime(agentDir: string) {
-  expect(getRuntimeConfig().models?.providers?.openai?.apiKey).toBe("ltfx.n.2dccc6c41f216b910a20.v1");
+  expect(getRuntimeConfig().models?.providers?.openai?.apiKey).toBe("sk-file-runtime");
   const activeAuthStore = getActiveSecretsRuntimeSnapshot()?.authStores.find(
     (entry) => entry.agentDir === agentDir,
   )?.store;
   const openaiProfile = activeAuthStore?.profiles["openai:default"];
   expect(openaiProfile?.type).toBe("api_key");
   if (openaiProfile?.type === "api_key") {
-    expect(openaiProfile.key).toBe("ltfx.n.2dccc6c41f216b910a20.v1");
+    expect(openaiProfile.key).toBe("sk-file-runtime");
   }
 }

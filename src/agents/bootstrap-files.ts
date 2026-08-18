@@ -39,7 +39,7 @@ const BOOTSTRAP_WARNING_DEDUPE_LIMIT = 1024;
 const seenBootstrapWarnings = new Set<string>();
 const bootstrapWarningOrder: string[] = [];
 
-function rememberBootstrapWarning(key: (string)): boolean {
+function rememberBootstrapWarning(key: string): boolean {
   // Warning keys include workspace/session/message so repeated setup failures
   // stay quiet without hiding distinct bootstrap problems.
   if (seenBootstrapWarnings.has(key)) {

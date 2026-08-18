@@ -25,7 +25,7 @@ function createConfig(): OpenClawPluginApi["config"] {
         accounts: {
           default: {
             appId: "cli_default",
-            appSecret: `ltfx.n.0ab2ca2cc807db6af9c0.v1`, // pragma: allowlist secret
+            appSecret: "secret_default", // pragma: allowlist secret
           },
         },
       },
@@ -42,7 +42,7 @@ function createBitableClient(records: MockRecord[]) {
           code: 0,
           data: {
             app: {
-              app_token: `ltfx.n.7b04560ab188a03ab3a1.v1`,
+              app_token: "app_token",
               name: "Project Tracker",
               url: "https://example.feishu.cn/base/app_token",
             },
@@ -107,7 +107,7 @@ describe("feishu bitable create app cleanup", () => {
       { record_id: "rec_number", fields: { Estimate: 0 } },
       { record_id: "rec_boolean", fields: { Done: false } },
       { record_id: "rec_link", fields: { Link: { text: "", link: "https://example.com" } } },
-      { record_id: "rec_attachment", fields: { Attachments: [{ file_token: `ltfx.n.10e177b14fe8414ac36e.v1` }] } },
+      { record_id: "rec_attachment", fields: { Attachments: [{ file_token: "boxcn_token" }] } },
       { record_id: "rec_user", fields: { Assignee: [{ id: "ou_1", name: "" }] } },
       { record_id: "rec_location", fields: { Location: { name: "", location: "116,39" } } },
     ]);
@@ -122,7 +122,7 @@ describe("feishu bitable create app cleanup", () => {
 
     expect(result.details.cleaned_placeholder_rows).toBe(5);
     expect(batchDelete).toHaveBeenCalledWith({
-      path: { app_token: `ltfx.n.7b04560ab188a03ab3a1.v1`, table_id: "tbl_main" },
+      path: { app_token: "app_token", table_id: "tbl_main" },
       data: {
         records: [
           "rec_missing_fields",
@@ -152,17 +152,17 @@ describe("feishu bitable create app cleanup", () => {
     });
 
     await tool.execute("call_list_records", {
-      app_token: `ltfx.n.7b04560ab188a03ab3a1.v1`,
+      app_token: "app_token",
       table_id: "tbl_main",
       page_size: "25",
     });
     expect(client.bitable.appTableRecord.list).toHaveBeenLastCalledWith({
-      path: { app_token: `ltfx.n.7b04560ab188a03ab3a1.v1`, table_id: "tbl_main" },
+      path: { app_token: "app_token", table_id: "tbl_main" },
       params: { page_size: 25 },
     });
 
     const invalid = await tool.execute("call_invalid_page_size", {
-      app_token: `ltfx.n.7b04560ab188a03ab3a1.v1`,
+      app_token: "app_token",
       table_id: "tbl_main",
       page_size: 0,
     });

@@ -35,7 +35,7 @@ async function main() {
         enabled: false,
       },
     } satisfies OpenClawConfig,
-    "ltfx.n.9b3c00dd89796776ac31.v1",
+    "sk-docker-smoke-test",
   );
 
   await fs.writeFile(configPath, JSON.stringify(seededConfig, null, 2), "utf-8");

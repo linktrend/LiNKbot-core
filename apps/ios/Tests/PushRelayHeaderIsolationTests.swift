@@ -56,7 +56,7 @@ struct PushRelayHeaderIsolationTests {
         let gatewayID = "manual|proxied.example.com|443|\(UUID().uuidString)"
         defer { GatewaySettingsStore.saveGatewayCustomHeaders([:], gatewayStableID: gatewayID) }
         #expect(GatewaySettingsStore.saveGatewayCustomHeaders(
-            ["CF-Access-Client-Id": "client-id", "CF-Access-Client-Secret": "${ltfx.n.fdce8e4a65b70d186bd7.v1}"],
+            ["CF-Access-Client-Id": "client-id", "CF-Access-Client-Secret": "client-secret"],
             gatewayStableID: gatewayID))
 
         let configuration = URLSessionConfiguration.ephemeral

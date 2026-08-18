@@ -20,7 +20,7 @@ type BedrockStreamTestApi = {
   shouldUseExplicitBedrockEndpoint: (...args: unknown[]) => boolean;
 };
 
-function requireTestApi(key: (string)): object {
+function requireTestApi(key: string): object {
   const api = Reflect.get(globalThis, Symbol.for(key));
   if (!api) {
     throw new Error(`${key} is unavailable`);
@@ -28,7 +28,7 @@ function requireTestApi(key: (string)): object {
   return api as object;
 }
 
-function lazyTestApi(key: (string)): object {
+function lazyTestApi(key: string): object {
   return new Proxy(
     {},
     {

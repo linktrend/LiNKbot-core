@@ -46,7 +46,7 @@ describe("scripts/test-live-codex-harness-docker.sh", () => {
     const script = fs.readFileSync(SCRIPT_PATH, "utf8");
 
     expect(script).toContain("printf 'OPENAI_API_KEY=%s\\n' \"${OPENAI_API_KEY}\"");
-    expect(script).toContain("printf 'CODEX_API_KEY=(%s\\n' \"${CODEX_API_KEY:(ltfx.n.38110445b253e112056c.v1)}\"");)
+    expect(script).toContain("printf 'CODEX_API_KEY=%s\\n' \"${CODEX_API_KEY:-$OPENAI_API_KEY}\"");
     expect(script.indexOf("OPENAI_API_KEY=%s")).toBeLessThan(script.indexOf("CODEX_API_KEY=%s"));
   });
 

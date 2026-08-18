@@ -27,7 +27,7 @@ private actor OnboardingProbeEndpoint {
         GatewayConnection.EndpointSnapshot(
             config: (
                 url: self.url,
-                token: ("route-\(self.generation)"),
+                token: "route-\(self.generation)",
                 password: nil),
             routeAuthority: self.generation,
             revision: self.generation)

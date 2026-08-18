@@ -69,7 +69,7 @@ describe("runtime snapshot state", () => {
         providers: {
           openai: {
             baseUrl: "https://api.openai.com/v1",
-            apiKey: `ltfx.n.6ea73a34da270c875bba.v1`,
+            apiKey: "sk-runtime-resolved",
             models: [],
           },
         },
@@ -136,7 +136,7 @@ describe("runtime snapshot state", () => {
         providers: {
           openai: {
             baseUrl: "https://api.openai.com/v1",
-            apiKey: `ltfx.n.6ea73a34da270c875bba.v1`,
+            apiKey: "sk-runtime-resolved",
             models: [],
           },
         },
@@ -199,7 +199,7 @@ describe("runtime snapshot state", () => {
           providers: {
             openai: {
               baseUrl: "https://api.openai.com/v1",
-              apiKey: `ltfx.n.6ea73a34da270c875bba.v1`,
+              apiKey: "sk-runtime-resolved",
               models: [],
             },
           },
@@ -262,7 +262,7 @@ describe("runtime snapshot state", () => {
           providers: {
             openai: {
               baseUrl: "https://api.openai.com/v1",
-              apiKey: `ltfx.n.6ea73a34da270c875bba.v1`,
+              apiKey: "sk-runtime-resolved",
               models: [],
             },
           },

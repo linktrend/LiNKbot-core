@@ -174,9 +174,9 @@ describe("ensureGatewayStartupAuth", () => {
 
   it("does not generate when token already exists", async () => {
     await expectResolvedToken({
-      cfg: gatewayAuthConfig({ mode: "token", token: `ltfx.n.81e61c0285659b608bb9.v1` }),
+      cfg: gatewayAuthConfig({ mode: "token", token: "configured-token" }),
       env: emptyEnv(),
-      expectedToken: `ltfx.n.81e61c0285659b608bb9.v1`,
+      expectedToken: "configured-token",
     });
   });
 
@@ -192,7 +192,7 @@ describe("ensureGatewayStartupAuth", () => {
         password: configuredPassword,
       }),
       env: {
-        GW_PASSWORD: `ltfx.n.b1eb3909e2f829bebf9e.v1`, // pragma: allowlist secret
+        GW_PASSWORD: "resolved-password", // pragma: allowlist secret
       } as NodeJS.ProcessEnv,
       persist: true,
     });
@@ -209,9 +209,9 @@ describe("ensureGatewayStartupAuth", () => {
         token: configuredToken,
       }),
       env: {
-        GW_TOKEN: `ltfx.n.cad2ed06900405ac7d61.v1`,
+        GW_TOKEN: "resolved-token",
       } as NodeJS.ProcessEnv,
-      expectedToken: `ltfx.n.cad2ed06900405ac7d61.v1`,
+      expectedToken: "resolved-token",
       expectedConfiguredToken: configuredToken,
     });
   });
@@ -220,9 +220,9 @@ describe("ensureGatewayStartupAuth", () => {
     await expectResolvedToken({
       cfg: gatewayAuthConfig({ mode: "token", token: "${OPENCLAW_GATEWAY_TOKEN}" }),
       env: {
-        OPENCLAW_GATEWAY_TOKEN: `ltfx.n.cad2ed06900405ac7d61.v1`,
+        OPENCLAW_GATEWAY_TOKEN: "resolved-token",
       } as NodeJS.ProcessEnv,
-      expectedToken: `ltfx.n.cad2ed06900405ac7d61.v1`,
+      expectedToken: "resolved-token",
       expectedConfiguredToken: "${OPENCLAW_GATEWAY_TOKEN}",
     });
   });
@@ -231,9 +231,9 @@ describe("ensureGatewayStartupAuth", () => {
     await expectResolvedToken({
       cfg: createMissingGatewayTokenSecretRefConfig(),
       env: {
-        OPENCLAW_GATEWAY_TOKEN: `ltfx.n.62bee5457ffee6207e50.v1`,
+        OPENCLAW_GATEWAY_TOKEN: "token-from-env",
       } as NodeJS.ProcessEnv,
-      expectedToken: `ltfx.n.62bee5457ffee6207e50.v1`,
+      expectedToken: "token-from-env",
     });
   });
 
@@ -251,8 +251,8 @@ describe("ensureGatewayStartupAuth", () => {
     await expect(
       runStartupAuth({
         cfg: gatewayAuthConfig({
-          token: `ltfx.n.81e61c0285659b608bb9.v1`,
-          password: `ltfx.n.22e488acf9a186f29cef.v1`, // pragma: allowlist secret
+          token: "configured-token",
+          password: "configured-password", // pragma: allowlist secret
         }),
         persist: true,
       }),
@@ -267,7 +267,7 @@ describe("ensureGatewayStartupAuth", () => {
         password: gatewayEnvSecretRef("MISSING_GW_PASSWORD"),
       }),
       env: {
-        OPENCLAW_GATEWAY_PASSWORD: `ltfx.n.1c2f5e6225edcf121d43.v1`, // pragma: allowlist secret
+        OPENCLAW_GATEWAY_PASSWORD: "password-from-env", // pragma: allowlist secret
       } as NodeJS.ProcessEnv,
       persist: true,
     });
@@ -278,14 +278,14 @@ describe("ensureGatewayStartupAuth", () => {
   it("does not resolve gateway.auth.password SecretRef when token mode is explicit", async () => {
     const cfg = gatewayAuthConfigWithDefaultEnvProvider({
       mode: "token",
-      token: `ltfx.n.81e61c0285659b608bb9.v1`,
+      token: "configured-token",
       password: { source: "env", provider: "missing", id: "GW_PASSWORD" },
     });
 
     await expectResolvedToken({
       cfg,
       env: emptyEnv(),
-      expectedToken: `ltfx.n.81e61c0285659b608bb9.v1`,
+      expectedToken: "configured-token",
     });
   });
 
@@ -322,13 +322,13 @@ describe("ensureGatewayStartupAuth", () => {
         gateway: {
           auth: {
             mode: "token",
-            token: `ltfx.n.e7eb488c3d4e07f6b343.v1`,
+            token: "from-config",
           },
         },
       },
       env: emptyEnv(),
       authOverride: { mode: "token", token: undefined },
-      expectedToken: `ltfx.n.e7eb488c3d4e07f6b343.v1`,
+      expectedToken: "from-config",
     });
   });
 
@@ -356,7 +356,7 @@ describe("ensureGatewayStartupAuth", () => {
     await expectEphemeralGeneratedTokenWhenOverridden({
       gateway: {
         auth: {
-          password: `ltfx.n.22e488acf9a186f29cef.v1`, // pragma: allowlist secret
+          password: "configured-password", // pragma: allowlist secret
         },
       },
     });
@@ -368,11 +368,11 @@ describe("ensureGatewayStartupAuth", () => {
       cfg: {
         hooks: {
           enabled: true,
-          token: `ltfx.n.1c36b35cf138f5ec56a0.v1`,
+          token: "shared-gateway-token-1234567890",
         },
       },
       env: {
-        OPENCLAW_GATEWAY_TOKEN: `ltfx.n.1c36b35cf138f5ec56a0.v1`,
+        OPENCLAW_GATEWAY_TOKEN: "shared-gateway-token-1234567890",
       } as NodeJS.ProcessEnv,
       warn,
     });
@@ -390,12 +390,12 @@ describe("ensureGatewayStartupAuth", () => {
       cfg: {
         hooks: {
           enabled: true,
-          token: `ltfx.n.1db5107c2c4372d8159b.v1`,
+          token: "shared-gateway-password-1234567890",
         },
         gateway: {
           auth: {
             mode: "password",
-            password: `ltfx.n.1db5107c2c4372d8159b.v1`, // pragma: allowlist secret
+            password: "shared-gateway-password-1234567890", // pragma: allowlist secret
           },
         },
       },
@@ -412,12 +412,12 @@ describe("ensureGatewayStartupAuth", () => {
       cfg: {
         hooks: {
           enabled: true,
-          token: `ltfx.n.8a08720a0d909870f562.v1`,
+          token: "distinct-hooks-token-1234567890",
         },
         gateway: {
           auth: {
             mode: "password",
-            password: `ltfx.n.1db5107c2c4372d8159b.v1`, // pragma: allowlist secret
+            password: "shared-gateway-password-1234567890", // pragma: allowlist secret
           },
         },
       },
@@ -461,7 +461,7 @@ describe("ensureGatewayStartupAuth", () => {
       runStartupAuth({
         cfg: gatewayAuthConfig({
           mode: "password",
-          password: `ltfx.n.da7438354b7ce5068f4e.v1`, // pragma: allowlist secret
+          password: "change-me-to-a-strong-password", // pragma: allowlist secret
         }),
       }),
     ).rejects.toThrow(/example placeholder/i);
@@ -470,9 +470,9 @@ describe("ensureGatewayStartupAuth", () => {
 
   it("accepts any non-placeholder token (negative control)", async () => {
     await expectResolvedToken({
-      cfg: gatewayAuthConfig({ mode: "token", token: `ltfx.n.ea7db566f6e7f439a9a8.v1` }),
+      cfg: gatewayAuthConfig({ mode: "token", token: "a-legit-random-token-0123456789abcdef" }),
       env: emptyEnv(),
-      expectedToken: `ltfx.n.ea7db566f6e7f439a9a8.v1`,
+      expectedToken: "a-legit-random-token-0123456789abcdef",
     });
   });
 });
@@ -507,7 +507,7 @@ describe("assertGatewayAuthNotKnownWeak", () => {
     expectKnownWeakAuthRejected({
       mode: "password",
       modeSource: "config",
-      password: `ltfx.n.da7438354b7ce5068f4e.v1`, // pragma: allowlist secret
+      password: "change-me-to-a-strong-password", // pragma: allowlist secret
       allowTailscale: false,
     });
   });
@@ -537,7 +537,7 @@ describe("assertGatewayAuthNotKnownWeak", () => {
     expectGatewayAuthAllowed({
       mode: "token",
       modeSource: "config",
-      token: `ltfx.n.ea7db566f6e7f439a9a8.v1`,
+      token: "a-legit-random-token-0123456789abcdef",
       allowTailscale: false,
     });
   });

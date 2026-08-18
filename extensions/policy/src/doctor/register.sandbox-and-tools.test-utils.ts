@@ -1894,7 +1894,7 @@ describe("registerPolicyDoctorChecks", () => {
       gateway: {
         mode: "remote",
         remote: {
-          url: `ltfx.n.18ce752f9bbd6a020c64.v1`,
+          url: "wss://remote.example.test:18789",
         },
       },
     } as unknown as OpenClawConfig;
@@ -1936,7 +1936,7 @@ describe("registerPolicyDoctorChecks", () => {
       ...cfgWithPolicy(),
       gateway: {
         remote: {
-          url: `ltfx.n.18ce752f9bbd6a020c64.v1`,
+          url: "wss://remote.example.test:18789",
         },
       },
     } as unknown as OpenClawConfig;

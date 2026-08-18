@@ -80,7 +80,7 @@ describe("security audit gateway HTTP auth findings", () => {
       env: {} as NodeJS.ProcessEnv,
       gatewayAuthOverride: {
         mode: "password" as const,
-        password: `ltfx.n.be7c82ff77253c4647b2.v1`, // pragma: allowlist secret
+        password: "runtime-gateway-password-1234567890", // pragma: allowlist secret
       },
     },
     {

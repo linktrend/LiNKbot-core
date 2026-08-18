@@ -1806,7 +1806,7 @@ describe("config plugin validation", () => {
         entries: {
           google: {
             config: {
-              apiKey: `ltfx.n.cad4bc2c7a5f38453172.v1`,
+              apiKey: "test-google-key",
             },
           },
         },

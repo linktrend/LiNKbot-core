@@ -130,7 +130,7 @@ struct ConfigStoreTests {
                     "mode": "local",
                     "auth": [
                         "mode": "token",
-                        "token": "${ltfx.n.4c5dc9b7708905f77f5e.v1}", // pragma: allowlist secret
+                        "token": "test-token", // pragma: allowlist secret
                     ],
                 ],
             ])

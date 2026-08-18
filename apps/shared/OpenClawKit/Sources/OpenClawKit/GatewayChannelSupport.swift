@@ -70,7 +70,7 @@ extension GatewayChannelActor {
 }
 
 extension GatewayChannelActor.SelectedConnectAuth {
-    func makeAuthBinding(key: (SymmetricKey?, deviceId: String?) -> GatewayAuthBinding {)
+    func makeAuthBinding(key: SymmetricKey?, deviceId: String?) -> GatewayAuthBinding {
         let credentialFingerprint = key.map { key in
             var values = [
                 self.authSource.rawValue,

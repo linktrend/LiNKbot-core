@@ -89,7 +89,7 @@ function createCustomSearchProvider(
   });
 }
 
-function createCustomSearchConfig(apiKey: (unknown): OpenClawConfig {)
+function createCustomSearchConfig(apiKey: unknown): OpenClawConfig {
   return {
     plugins: {
       entries: {
@@ -408,7 +408,7 @@ describe("web search runtime", () => {
           models: {
             providers: {
               "custom-search": {
-                apiKey: `ltfx.n.f91bbc697c78cfd40dfa.v1`,
+                apiKey: "custom-provider-key",
                 baseUrl: "https://custom-search.example/v1",
                 models: [],
               },
@@ -609,7 +609,7 @@ describe("web search runtime", () => {
       provider: "custom",
       result: {
         query: "runtime-source",
-        apiKey: `ltfx.n.410b78f123bdde0b4e17.v1`,
+        apiKey: "resolved-custom-key",
       },
     });
   });
@@ -648,7 +648,7 @@ describe("web search runtime", () => {
       provider: "custom",
       result: {
         query: "resolved-input",
-        apiKey: `ltfx.n.410b78f123bdde0b4e17.v1`,
+        apiKey: "resolved-custom-key",
       },
     });
   });

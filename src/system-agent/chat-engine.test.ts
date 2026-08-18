@@ -86,7 +86,7 @@ const sharedVerifiedInferenceConfig = {
     providers: {
       openai: {
         baseUrl: "https://api.openai.com/v1",
-        apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+        apiKey: "test-key",
         auth: "api-key",
         models: [],
       },
@@ -151,7 +151,7 @@ async function createAmbientVerifiedBinding(config: OpenClawConfig) {
     throw new Error("missing test route");
   }
   const authFingerprint = fingerprintResolvedProviderAuth({
-    apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+    apiKey: "test-key",
     source: "models.json",
     mode: "api-key",
   });
@@ -560,7 +560,7 @@ describe("SystemAgentChatEngine", () => {
         providers: {
           openai: {
             baseUrl: "https://api.openai.com/v1",
-            apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+            apiKey: "test-key",
             auth: "api-key",
             models: [],
           },
@@ -722,7 +722,7 @@ describe("SystemAgentChatEngine", () => {
     const done = await engine.handle("Open");
     expect(done.text).toContain("telegram is configured");
     expect(done.question).toBeUndefined();
-    expect(wizardRuns).toEqual(["telegram", "token:(123:abc", "mode:open"]);)
+    expect(wizardRuns).toEqual(["telegram", "token:123:abc", "mode:open"]);
   });
 
   it("reports hosted channel setup success when audit persistence fails", async () => {
@@ -876,7 +876,7 @@ describe("SystemAgentChatEngine", () => {
         providers: {
           openai: {
             baseUrl: "https://api.openai.com/v1",
-            apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+            apiKey: "test-key",
             auth: "api-key",
             models: [],
           },
@@ -937,7 +937,7 @@ describe("SystemAgentChatEngine", () => {
         providers: {
           openai: {
             baseUrl: "https://api.openai.com/v1",
-            apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+            apiKey: "test-key",
             auth: "api-key",
             models: [],
           },
@@ -1371,7 +1371,7 @@ describe("SystemAgentChatEngine", () => {
         providers: {
           openai: {
             baseUrl: "https://api.openai.com/v1",
-            apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+            apiKey: "test-key",
             auth: "api-key",
             models: [],
           },
@@ -1702,7 +1702,7 @@ describe("SystemAgentChatEngine", () => {
 
   it("never injects exact sensitive config JSON into a follow-up model turn", async () => {
     let observedInput = "";
-    const secret = `ltfx.n.6c83d37330a6fdad7705.v1`;
+    const secret = "123:very-secret";
     const engine = new SystemAgentChatEngine({
       runAgentTurn: async (params) => {
         observedInput = params.input;
@@ -1832,7 +1832,7 @@ describe("SystemAgentChatEngine", () => {
         providers: {
           openai: {
             baseUrl: "https://api.openai.com/v1",
-            apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+            apiKey: "test-key",
             auth: "api-key",
             models: [],
           },
@@ -2235,7 +2235,7 @@ function fakeOverviewLoader(
         gemini: { command: "gemini", found: false },
         apiKeys: { openai: false, anthropic: false },
       },
-      gateway: { url: `ltfx.n.0edbee82f0824a1ed09b.v1`, source: "local", reachable: false },
+      gateway: { url: "ws://127.0.0.1:18789", source: "local", reachable: false },
       references: {
         docsUrl: "https://docs.openclaw.ai",
         sourceUrl: "https://github.com/openclaw/openclaw",

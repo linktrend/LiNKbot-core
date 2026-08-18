@@ -340,7 +340,7 @@ describe("channels list", () => {
 
     const output = stripAnsi(loggedText(runtime));
     expect(output).toContain("configured");
-    expect(output).toContain("token=(config-unavailable");)
+    expect(output).toContain("token=config-unavailable");
   });
 
   it("default output does NOT show installable catalog channels (only configured ones)", async () => {

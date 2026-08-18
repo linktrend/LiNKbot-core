@@ -15,8 +15,8 @@ describe("resolveDefaultMattermostAccountId", () => {
         mattermost: {
           defaultAccount: "alerts",
           accounts: {
-            default: { botToken: `ltfx.n.9c529707df4449bcf58c.v1`, baseUrl: "https://chat.example.com" },
-            alerts: { botToken: `ltfx.n.46eab3998fb0ae46d9c7.v1`, baseUrl: "https://alerts.example.com" },
+            default: { botToken: "tok-default", baseUrl: "https://chat.example.com" },
+            alerts: { botToken: "tok-alerts", baseUrl: "https://alerts.example.com" },
           },
         },
       },
@@ -46,8 +46,8 @@ describe("resolveDefaultMattermostAccountId", () => {
         mattermost: {
           defaultAccount: "missing",
           accounts: {
-            default: { botToken: `ltfx.n.9c529707df4449bcf58c.v1`, baseUrl: "https://chat.example.com" },
-            alerts: { botToken: `ltfx.n.46eab3998fb0ae46d9c7.v1`, baseUrl: "https://alerts.example.com" },
+            default: { botToken: "tok-default", baseUrl: "https://chat.example.com" },
+            alerts: { botToken: "tok-alerts", baseUrl: "https://alerts.example.com" },
           },
         },
       },
@@ -60,12 +60,12 @@ describe("resolveDefaultMattermostAccountId", () => {
     const cfg: OpenClawConfig = {
       channels: {
         mattermost: {
-          botToken: `ltfx.n.9c529707df4449bcf58c.v1`,
+          botToken: "tok-default",
           baseUrl: "https://chat.example.com",
           accounts: {
             work: {
               enabled: false,
-              botToken: `ltfx.n.8acd672e15296404be8c.v1`,
+              botToken: "tok-work",
               baseUrl: "https://work.example.com",
             },
           },
@@ -87,7 +87,7 @@ describe("resolveDefaultMattermostAccountId", () => {
           groupAllowFrom: ["*"],
           accounts: {
             tony: {
-              botToken: `ltfx.n.2d66b681c8210457901d.v1`,
+              botToken: "tok-tony",
               baseUrl: "https://chat.example.com",
             },
           },
@@ -112,7 +112,7 @@ describe("resolveMattermostReplyToMode", () => {
           defaultAccount: "alerts",
           accounts: {
             alerts: {
-              botToken: `ltfx.n.46eab3998fb0ae46d9c7.v1`,
+              botToken: "tok-alerts",
               baseUrl: "https://alerts.example.com",
               replyToMode: "all",
             },

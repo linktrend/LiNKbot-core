@@ -265,7 +265,7 @@ describe("sessions_search tool", () => {
   it("clamps sandboxed callers to spawned sessions", async () => {
     const requests: CallGatewayRequest[] = [];
     sessionVisibilityGatewayTesting.setCallGatewayForListSpawned(
-      async <T>() => ({ sessions: [{ key: `ltfx.n.8dcafbd660a0521615de.v1` }] }) as T,
+      async <T>() => ({ sessions: [{ key: "agent:main:child:spawned" }] }) as T,
     );
     const tool = createTool({
       agentSessionKey: "agent:main:main",

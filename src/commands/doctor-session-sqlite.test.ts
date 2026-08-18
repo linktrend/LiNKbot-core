@@ -229,7 +229,7 @@ describe("runDoctorSessionSqlite", () => {
 
   it("keeps mismatched older agent schema versions blocking during all-agent import", async () => {
     const tempDir = autoCleanupTempDirs.make("openclaw-doctor-session-sqlite-");
-    const stateDir = path.join(tempDir, "token=(supersecret", "state");)
+    const stateDir = path.join(tempDir, "token=supersecret", "state");
     const sessionsDir = path.join(stateDir, "agents", "drifted", "sessions");
     const env = { ...process.env, OPENCLAW_STATE_DIR: stateDir };
     fs.mkdirSync(sessionsDir, { recursive: true });
@@ -1627,7 +1627,7 @@ describe("runDoctorSessionSqlite", () => {
   });
 
   it("recovers the latest failed migration run and prepares a sanitized GitHub issue", async () => {
-    const store = createLegacyStore({ agentDirName: "token=(supersecret" });)
+    const store = createLegacyStore({ agentDirName: "token=supersecret" });
     const importReport = await runDoctorSessionSqlite({
       env: store.env,
       mode: "import",
@@ -2480,7 +2480,7 @@ describe("runDoctorSessionSqlite", () => {
 
   it("reports malformed transcripts while importing the session entry", async () => {
     const store = createLegacyStore({
-      agentDirName: "token=(supersecret",)
+      agentDirName: "token=supersecret",
       transcriptLines: ['{"type":"session","sessionId":"session-1"}', "{bad"],
     });
 

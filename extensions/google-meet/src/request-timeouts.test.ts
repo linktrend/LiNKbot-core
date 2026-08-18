@@ -12,19 +12,19 @@ afterEach(() => {
 const requests = [
   {
     name: "Meet v2",
-    run: () => fetchGoogleMeetSpace({ accessToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`, meeting: "abc-defg-hij" }),
+    run: () => fetchGoogleMeetSpace({ accessToken: "test-token", meeting: "abc-defg-hij" }),
   },
   {
     name: "Drive export",
     run: () =>
-      exportGoogleDriveDocumentText({ accessToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`, documentId: "document-id" }),
+      exportGoogleDriveDocumentText({ accessToken: "test-token", documentId: "document-id" }),
   },
   {
     name: "OAuth token",
     run: () =>
       resolveGoogleMeetAccessToken({
         clientId: "client-id",
-        refreshToken: `ltfx.n.0eb17643d4e926116378.v1`,
+        refreshToken: "refresh-token",
       }),
   },
 ] as const;

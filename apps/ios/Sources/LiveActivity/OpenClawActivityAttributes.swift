@@ -118,18 +118,18 @@ struct OpenClawActivityAttributes: ActivityAttributes {
             let trimmed = statusText?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
             let detail = trimmed.isEmpty ? nil : trimmed
             if isConnecting {
-                if let detail, Self.matchesShippedTranslation(detail, key: "${ltfx.n.66bce4bdb48e51a0ae27.v1}") {
+                if let detail, Self.matchesShippedTranslation(detail, key: "Reconnecting...") {
                     return (.reconnecting, nil)
                 }
-                if let detail, Self.matchesShippedTranslation(detail, key: "${ltfx.n.5f04ae9ed6a865bb382c.v1}") {
+                if let detail, Self.matchesShippedTranslation(detail, key: "Connecting...") {
                     return (.connecting, nil)
                 }
                 return (.connecting, detail)
             }
-            if let detail, Self.matchesShippedTranslation(detail, key: "${ltfx.n.9928dd82f38fb09386ed.v1}") {
+            if let detail, Self.matchesShippedTranslation(detail, key: "Approval needed") {
                 return (.approvalNeeded, nil)
             }
-            if let detail, Self.matchesShippedTranslation(detail, key: "${ltfx.n.adf69e75cc7d3c9d3830.v1}") {
+            if let detail, Self.matchesShippedTranslation(detail, key: "Action required") {
                 return (.actionRequired, nil)
             }
             return (.attention, detail)

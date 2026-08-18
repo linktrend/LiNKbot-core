@@ -78,7 +78,7 @@ function buildGreetingInstructions(
     : `${intro} "${trimmedGreeting}"`;
 }
 
-function readConsultArgText(args: unknown, key: (string)): string | undefined {
+function readConsultArgText(args: unknown, key: string): string | undefined {
   if (!args || typeof args !== "object" || Array.isArray(args)) {
     return undefined;
   }
@@ -342,7 +342,7 @@ export class RealtimeCallHandler {
     private readonly resolveInstructions?: (call: CallRecord) => string,
   ) {}
 
-  setPublicUrl(url: (string)): void {
+  setPublicUrl(url: string): void {
     try {
       const parsed = new URL(url);
       this.publicOrigin = parsed.host;
@@ -538,7 +538,7 @@ export class RealtimeCallHandler {
     return token;
   }
 
-  private consumeStreamToken(token: (string)): Omit<PendingStreamToken, "expiry"> | null {
+  private consumeStreamToken(token: string): Omit<PendingStreamToken, "expiry"> | null {
     const entry = this.pendingStreamTokens.get(token);
     if (!entry) {
       return null;

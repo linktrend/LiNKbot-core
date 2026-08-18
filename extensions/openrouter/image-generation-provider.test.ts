@@ -11,7 +11,7 @@ const {
   assertOkOrThrowHttpErrorMock: vi.fn(async () => {}),
   postJsonRequestMock: vi.fn(),
   resolveApiKeyForProviderMock: vi.fn(async (_params: unknown) => ({
-    apiKey: `ltfx.n.a0bac695e2ae38a45866.v1`,
+    apiKey: "openrouter-key",
   })),
   resolveProviderHttpRequestConfigMock: vi.fn((params: Record<string, unknown>) => ({
     baseUrl: params.baseUrl ?? params.defaultBaseUrl ?? "https://openrouter.ai/api/v1",

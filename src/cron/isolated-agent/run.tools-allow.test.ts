@@ -200,7 +200,7 @@ describe("runCronIsolatedAgentTurn toolsAllow passthrough", () => {
             brave: {
               enabled: true,
               config: {
-                webSearch: { apiKey: `ltfx.n.62697fda73073ae834ae.v1` },
+                webSearch: { apiKey: "token-oversized" },
               },
             },
           },

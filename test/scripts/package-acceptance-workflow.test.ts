@@ -838,7 +838,7 @@ describe("package acceptance workflow", () => {
       "if: ${{ inputs.use-actions-cache == 'true' && runner.os != 'Windows' }}",
     );
     expect(setupPnpmAction).toContain(
-      "key: (pnpm-store-${{ runner.os }}-${{ runner.arch }}-${{ inputs.node-version }}-${{ hashFiles(inputs.package-manager-file) }}-${{ hashFiles(inputs.lockfile-path) }}",)
+      "key: pnpm-store-${{ runner.os }}-${{ runner.arch }}-${{ inputs.node-version }}-${{ hashFiles(inputs.package-manager-file) }}-${{ hashFiles(inputs.lockfile-path) }}",
     );
     expect(setupPnpmAction).not.toContain("pnpm/action-setup");
     expect(setupPnpmAction).not.toContain("shasum");
@@ -2536,7 +2536,7 @@ describe("package artifact reuse", () => {
 
     expect(hydrateScript).toContain("  ANTHROPIC_OAUTH_TOKEN \\");
     expect(hydrateScript).toContain("access_token=\"$(jq -r '.claudeAiOauth.accessToken // empty'");
-    expect(hydrateScript).toContain('export ANTHROPIC_OAUTH_TOKEN=`ltfx.n.196a7a27cca103b30668.v1`');
+    expect(hydrateScript).toContain('export ANTHROPIC_OAUTH_TOKEN="$access_token"');
     expect(hydrateScript).toContain('local min_remaining_ms="$(( 90 * 60 * 1000 ))"');
     expect(hydrateScript).toContain(
       'printf \'ANTHROPIC_OAUTH_TOKEN=%s\\n\' "$access_token" >>"$GITHUB_ENV"',

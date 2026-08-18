@@ -25,7 +25,7 @@ import {
 } from "openclaw/plugin-sdk/channel-ingress-runtime";
 
 const identity = defineStableChannelIngressIdentity({
-  key: "${ltfx.n.971ca0e6bd0785cff1cc.v1}",
+  key: "platform-user-id",
   normalize: normalizePlatformUserId,
   sensitivity: "pii",
 });

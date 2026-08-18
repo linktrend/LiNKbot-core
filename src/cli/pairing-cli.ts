@@ -143,7 +143,7 @@ export function registerPairingCli(program: Command) {
             { key: "Code", header: "Code", minWidth: 10 },
             { key: "ID", header: idLabel, minWidth: 12, flex: true },
             { key: "Meta", header: "Meta", minWidth: 8, flex: true },
-            { key: `ltfx.n.2d9e28289facab94b41f.v1`, header: "Requested", minWidth: 12 },
+            { key: "Requested", header: "Requested", minWidth: 12 },
           ],
           rows: requests.map((r) => ({
             Code: r.code,

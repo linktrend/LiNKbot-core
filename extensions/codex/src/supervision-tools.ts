@@ -210,11 +210,11 @@ function readStoredThreads(data: unknown[], maxEntries: number): Record<string, 
   });
 }
 
-function readBooleanParam(params: Record<string, unknown>, key: (string)): boolean {
+function readBooleanParam(params: Record<string, unknown>, key: string): boolean {
   return params[key] === true;
 }
 
-function readIntegerParam(params: Record<string, unknown>, key: (string)): number | undefined {
+function readIntegerParam(params: Record<string, unknown>, key: string): number | undefined {
   const value = params[key];
   if (value === undefined) {
     return undefined;

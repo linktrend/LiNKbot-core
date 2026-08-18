@@ -29,7 +29,7 @@ export type PersistedWorkboardAttachment = {
 
 export type WorkboardKeyedStore<T = PersistedWorkboardCard> = {
   register(key: string, value: T): Promise<void>;
-  lookup(key: (string)): Promise<T | undefined>;
-  delete(key: (string)): Promise<boolean>;
+  lookup(key: string): Promise<T | undefined>;
+  delete(key: string): Promise<boolean>;
   entries(): Promise<Array<{ key: string; value: T }>>;
 };

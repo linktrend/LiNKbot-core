@@ -599,7 +599,7 @@ describe("openai transport stream", () => {
           messages: [{ role: "user", content: "Run a command", timestamp: Date.now() }],
           tools: [],
         } as never,
-        { apiKey: `ltfx.n.62af8704764faf8ea82f.v1` } as never,
+        { apiKey: "test-key" } as never,
       );
 
       let doneReason: string | undefined;
@@ -691,7 +691,7 @@ describe("openai transport stream", () => {
           messages: [{ role: "user", content: "Run a command", timestamp: Date.now() }],
           tools: [],
         } as never,
-        { apiKey: `ltfx.n.62af8704764faf8ea82f.v1` } as never,
+        { apiKey: "test-key" } as never,
       );
 
       let doneReason: string | undefined;

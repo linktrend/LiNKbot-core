@@ -319,7 +319,7 @@ async function getRootFolderToken(client: Lark.Client): Promise<string> {
   if (res.code !== 0) {
     throw new Error(res.msg ?? "Failed to get root folder");
   }
-  const token = (res.data?.token;)
+  const token = res.data?.token;
   if (!token) {
     throw new Error("Root folder token not found");
   }
@@ -363,7 +363,7 @@ async function listFolder(client: Lark.Client, params: Record<string, unknown> =
         modified_time: f.modified_time,
         owner_id: f.owner_id,
       })) ?? [],
-    next_page_token: (res.data?.next_page_token,)
+    next_page_token: res.data?.next_page_token,
   };
 }
 
@@ -465,8 +465,8 @@ async function createFolder(client: Lark.Client, name: string, folderToken?: str
   }
 
   return {
-    token: (res.data?.token,)
-    url: (res.data?.url,)
+    token: res.data?.token,
+    url: res.data?.url,
   };
 }
 
@@ -547,7 +547,7 @@ async function listComments(
   );
   return {
     has_more: response.data?.has_more ?? false,
-    page_token: (response.data?.page_token,)
+    page_token: response.data?.page_token,
     comments: (response.data?.items ?? []).map(normalizeCommentCard),
   };
 }
@@ -580,7 +580,7 @@ async function listCommentReplies(
   );
   return {
     has_more: response.data?.has_more ?? false,
-    page_token: (response.data?.page_token,)
+    page_token: response.data?.page_token,
     replies: (response.data?.items ?? []).map(normalizeCommentReply),
   };
 }

@@ -21,7 +21,7 @@ describe("mistralMediaUnderstandingProvider", () => {
     const result = await mistralMediaUnderstandingProvider.transcribeAudio!({
       buffer: Buffer.from("audio-bytes"),
       fileName: "voice.ogg",
-      apiKey: `ltfx.n.1474a937667222e619bb.v1`,
+      apiKey: "test-mistral-key",
       timeoutMs: 5000,
       fetchFn,
     });

@@ -37,7 +37,7 @@ extension OpenClawChatViewModel {
             acceptedPreferredThinkingLevelsByTarget[target] = preferredThinkingLevel
             let session = currentSessionEntry()
             acceptedSettingsPatchResultsByTarget[target] = OpenClawChatModelPatchResult(
-                key: (session?.key ?? target.canonicalSessionKey,)
+                key: session?.key ?? target.canonicalSessionKey,
                 modelProvider: session?.modelProvider,
                 model: session?.model,
                 thinkingLevel: acceptedBaseline,
@@ -173,7 +173,7 @@ extension OpenClawChatViewModel {
         let accepted = self.acceptedSettingsPatchResultsByTarget[target]
         let successful = self.lastSuccessfulSettingsPatchResultsByTarget[target]
         return OpenClawChatModelPatchResult(
-            key: (patchResult?.key ?? accepted?.key ?? successful?.key ?? target.canonicalSessionKey,)
+            key: patchResult?.key ?? accepted?.key ?? successful?.key ?? target.canonicalSessionKey,
             modelProvider: patchResult?.modelProvider ?? accepted?.modelProvider ?? successful?.modelProvider,
             model: patchResult?.model ?? accepted?.model ?? successful?.model,
             thinkingLevel: acceptedLevel,

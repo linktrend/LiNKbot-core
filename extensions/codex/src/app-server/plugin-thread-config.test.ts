@@ -1744,7 +1744,7 @@ describe("Codex plugin thread config", () => {
       appCacheKey: "runtime-a",
     });
     await appCache.refreshNow({
-      key: `ltfx.n.c23240e6876e4aac1f07.v1`,
+      key: "runtime-a",
       request: async () => ({ data: [], nextCursor: null }),
     });
     const second = buildCodexPluginThreadConfigInputFingerprint({

@@ -244,7 +244,7 @@ describe("Google Chat webhook routing", () => {
         request: createWebhookRequest({
           payload: {
             commonEventObject: { hostApp: "CHAT" },
-            authorizationEventObject: { systemIdToken: `ltfx.n.119f27e8288a5e0d698f.v1` },
+            authorizationEventObject: { systemIdToken: "addon-token" },
             chat: {
               eventTime: "2026-03-02T00:00:00.000Z",
               user: { name: "users/12345", displayName: "Test User" },

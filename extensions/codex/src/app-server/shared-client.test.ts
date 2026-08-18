@@ -28,20 +28,20 @@ const mocks = vi.hoisted(() => ({
   resolveCodexAppServerPreparedAuthProfileSnapshot: vi.fn(async () => ({
     loginParams: {
       type: "chatgptAuthTokens" as const,
-      accessToken: `ltfx.n.a366863b71d9cc466c8d.v1`,
+      accessToken: "prepared-token",
       chatgptAccountId: "prepared-account",
       chatgptPlanType: null,
     },
-    secretFreeCacheKey: "prepared-account:token:(sha256:prepared",)
+    secretFreeCacheKey: "prepared-account:token:sha256:prepared",
   })),
   refreshCodexAppServerAuthTokens: vi.fn(async () => ({
-    accessToken: `ltfx.n.6e63910c0a0c07daf73c.v1`,
+    accessToken: "refreshed-access",
     chatgptAccountId: "refreshed-account",
     chatgptPlanType: null,
   })),
   resolveCodexAppServerFallbackApiKeyCacheKey: vi.fn(() => undefined as string | undefined),
   resolveCodexAppServerPreparedApiKeyCacheKey: vi.fn(
-    (_apiKey: string) => "api_key:(sha256:prepared",)
+    (_apiKey: string) => "api_key:sha256:prepared",
   ),
   resolveManagedCodexAppServerStartOptions: vi.fn(async (startOptions) => startOptions),
   resolveManagedCodexNativeCommand: vi.fn((command: string) => `${command}.native`),
@@ -224,11 +224,11 @@ describe("shared Codex app-server client", () => {
     mocks.resolveCodexAppServerPreparedAuthProfileSnapshot.mockResolvedValue({
       loginParams: {
         type: "chatgptAuthTokens",
-        accessToken: `ltfx.n.a366863b71d9cc466c8d.v1`,
+        accessToken: "prepared-token",
         chatgptAccountId: "prepared-account",
         chatgptPlanType: null,
       },
-      secretFreeCacheKey: "prepared-account:token:(sha256:prepared",)
+      secretFreeCacheKey: "prepared-account:token:sha256:prepared",
     });
     mocks.refreshCodexAppServerAuthTokens.mockClear();
     mocks.resolveCodexAppServerFallbackApiKeyCacheKey.mockClear();
@@ -277,7 +277,7 @@ describe("shared Codex app-server client", () => {
       homeScope: "agent",
       command: "/usr/local/bin/codex",
       commandSource: "config",
-      args: ["-c", "provider.api_key=(super-secret-value", "app-server"],)
+      args: ["-c", "provider.api_key=super-secret-value", "app-server"],
       headers: {},
     });
 
@@ -519,7 +519,7 @@ describe("shared Codex app-server client", () => {
       command: "codex",
       commandSource: "config",
       args: ["app-server"],
-      url: `ltfx.n.59027a55228fb3686dfd.v1`,
+      url: "ws://127.0.0.1:1234",
       headers: {},
     };
 
@@ -861,7 +861,7 @@ describe("shared Codex app-server client", () => {
     const preparedAuthProfileStore = {
       version: 1,
       profiles: {
-        "openai:scoped": { type: "token", provider: "openai", token: `ltfx.n.a366863b71d9cc466c8d.v1` },
+        "openai:scoped": { type: "token", provider: "openai", token: "prepared-token" },
       },
     };
     mocks.resolveCodexAppServerAuthProfileIdForAgent.mockReturnValue("openai:scoped");
@@ -901,7 +901,7 @@ describe("shared Codex app-server client", () => {
     expect(JSON.parse(harness.writes.at(-1) ?? "{}")).toEqual({
       id: "refresh-1",
       result: {
-        accessToken: `ltfx.n.6e63910c0a0c07daf73c.v1`,
+        accessToken: "refreshed-access",
         chatgptAccountId: "refreshed-account",
         chatgptPlanType: null,
       },
@@ -917,7 +917,7 @@ describe("shared Codex app-server client", () => {
         "openai:scoped": {
           type: "token" as const,
           provider: "openai",
-          token: `ltfx.n.a366863b71d9cc466c8d.v1`,
+          token: "prepared-token",
         },
       },
       order: { openai: ["openai:scoped"] },
@@ -949,7 +949,7 @@ describe("shared Codex app-server client", () => {
         snapshot: {
           loginParams: {
             type: "chatgptAuthTokens",
-            accessToken: `ltfx.n.a366863b71d9cc466c8d.v1`,
+            accessToken: "prepared-token",
           },
         },
       },
@@ -984,7 +984,7 @@ describe("shared Codex app-server client", () => {
           profiles?: Record<string, { token?: string }>;
         };
       }) => {
-        const token = (params?.authProfileStore?.profiles?.["openai:scoped"]?.token;)
+        const token = params?.authProfileStore?.profiles?.["openai:scoped"]?.token;
         const key =
           token === "first-secret-token" ? "account:sha256:first" : "account:sha256:second";
         resolvedCacheKeys.push(key);
@@ -1005,7 +1005,7 @@ describe("shared Codex app-server client", () => {
         "openai:scoped": {
           type: "token" as const,
           provider: "openai",
-          token: `ltfx.n.6784d0f7f1cc18be4b1a.v1`,
+          token: "first-secret-token",
         },
       },
     };
@@ -1015,7 +1015,7 @@ describe("shared Codex app-server client", () => {
         "openai:scoped": {
           type: "token" as const,
           provider: "openai",
-          token: `ltfx.n.ab183d61dc6ea8a1393d.v1`,
+          token: "second-secret-token",
         },
       },
     };
@@ -1041,7 +1041,7 @@ describe("shared Codex app-server client", () => {
       expect.objectContaining({
         preparedAuth: expect.objectContaining({
           snapshot: expect.objectContaining({
-            loginParams: expect.objectContaining({ accessToken: `ltfx.n.6784d0f7f1cc18be4b1a.v1` }),
+            loginParams: expect.objectContaining({ accessToken: "first-secret-token" }),
           }),
         }),
       }),
@@ -1051,7 +1051,7 @@ describe("shared Codex app-server client", () => {
       expect.objectContaining({
         preparedAuth: expect.objectContaining({
           snapshot: expect.objectContaining({
-            loginParams: expect.objectContaining({ accessToken: `ltfx.n.ab183d61dc6ea8a1393d.v1` }),
+            loginParams: expect.objectContaining({ accessToken: "second-secret-token" }),
           }),
         }),
       }),
@@ -1066,7 +1066,7 @@ describe("shared Codex app-server client", () => {
 
     const clientPromise = getSharedCodexAppServerClient({
       timeoutMs: 1000,
-      preparedAuth: { kind: "api-key", apiKey: `ltfx.n.e75390981221aacccfa9.v1` },
+      preparedAuth: { kind: "api-key", apiKey: "platform-key" },
     });
     await sendInitializeResult(harness, "openclaw/0.143.0 (macOS; test)");
 
@@ -1076,11 +1076,11 @@ describe("shared Codex app-server client", () => {
     expect(bridgeStartOptionsCall().authProfileId).toBeNull();
     expect(bridgeStartOptionsCall().preparedAuth).toEqual({
       kind: "api-key",
-      apiKey: `ltfx.n.e75390981221aacccfa9.v1`,
+      apiKey: "platform-key",
     });
     expect(applyAuthProfileCall()).toMatchObject({
       authProfileId: null,
-      preparedAuth: { kind: "api-key", apiKey: `ltfx.n.e75390981221aacccfa9.v1` },
+      preparedAuth: { kind: "api-key", apiKey: "platform-key" },
     });
     expect(mocks.resolveCodexAppServerPreparedApiKeyCacheKey).toHaveBeenCalledWith("platform-key");
   });
@@ -1091,7 +1091,7 @@ describe("shared Codex app-server client", () => {
     await expect(
       getSharedCodexAppServerClient({
         authProfileId: "openai:legacy",
-        preparedAuth: { kind: "api-key", apiKey: `ltfx.n.e75390981221aacccfa9.v1` },
+        preparedAuth: { kind: "api-key", apiKey: "platform-key" },
       }),
     ).rejects.toThrow("Prepared Codex auth cannot also select a legacy auth profile");
 
@@ -1108,38 +1108,38 @@ describe("shared Codex app-server client", () => {
     const cacheKeys: string[] = [];
     mocks.resolveCodexAppServerPreparedApiKeyCacheKey.mockImplementation((apiKey: string) => {
       const cacheKey =
-        apiKey === "first-platform-key" ? "api_key:(ltfx.n.6580cae9c1b9d30df6fb.v1 : "api_key:(ltfx.n.6898dcb25ab0ada765f8.v1);)
+        apiKey === "first-platform-key" ? "api_key:sha256:first" : "api_key:sha256:second";
       cacheKeys.push(cacheKey);
       return cacheKey;
     });
 
     const firstPromise = getSharedCodexAppServerClient({
       timeoutMs: 1000,
-      preparedAuth: { kind: "api-key", apiKey: `ltfx.n.411ad98dccec8c97a689.v1` },
+      preparedAuth: { kind: "api-key", apiKey: "first-platform-key" },
     });
     await sendInitializeResult(firstHarness, "openclaw/0.143.0 (macOS; test)");
     await expect(firstPromise).resolves.toBe(firstHarness.client);
 
     const secondPromise = getSharedCodexAppServerClient({
       timeoutMs: 1000,
-      preparedAuth: { kind: "api-key", apiKey: `ltfx.n.3d23d4f7e1893113d345.v1` },
+      preparedAuth: { kind: "api-key", apiKey: "second-platform-key" },
     });
     await vi.waitFor(() => expect(startSpy).toHaveBeenCalledTimes(2));
     await sendInitializeResult(secondHarness, "openclaw/0.143.0 (macOS; test)");
     await expect(secondPromise).resolves.toBe(secondHarness.client);
 
-    expect(cacheKeys).toEqual(["api_key:(ltfx.n.6580cae9c1b9d30df6fb.v1, "api_key:(ltfx.n.6898dcb25ab0ada765f8.v1)]);)
+    expect(cacheKeys).toEqual(["api_key:sha256:first", "api_key:sha256:second"]);
     expect(cacheKeys.join("\n")).not.toContain("platform-key");
     expect(mocks.applyCodexAppServerAuthProfile).toHaveBeenNthCalledWith(
       1,
       expect.objectContaining({
-        preparedAuth: { kind: "api-key", apiKey: `ltfx.n.411ad98dccec8c97a689.v1` },
+        preparedAuth: { kind: "api-key", apiKey: "first-platform-key" },
       }),
     );
     expect(mocks.applyCodexAppServerAuthProfile).toHaveBeenNthCalledWith(
       2,
       expect.objectContaining({
-        preparedAuth: { kind: "api-key", apiKey: `ltfx.n.3d23d4f7e1893113d345.v1` },
+        preparedAuth: { kind: "api-key", apiKey: "second-platform-key" },
       }),
     );
   });
@@ -1172,7 +1172,7 @@ describe("shared Codex app-server client", () => {
     expect(JSON.parse(harness.writes.at(-1) ?? "{}")).toEqual({
       id: "refresh-persisted",
       result: {
-        accessToken: `ltfx.n.6e63910c0a0c07daf73c.v1`,
+        accessToken: "refreshed-access",
         chatgptAccountId: "refreshed-account",
         chatgptPlanType: null,
       },
@@ -1375,8 +1375,8 @@ describe("shared Codex app-server client", () => {
         transport: "websocket",
         command: "codex",
         args: [],
-        url: `ltfx.n.17e45b7cfa0d4cc3d493.v1`,
-        authToken: `ltfx.n.ad45dcd0edcd0d787156.v1`,
+        url: "ws://127.0.0.1:39175",
+        authToken: "tok-first",
         headers: {},
       },
     });
@@ -1390,8 +1390,8 @@ describe("shared Codex app-server client", () => {
         transport: "websocket",
         command: "codex",
         args: [],
-        url: `ltfx.n.17e45b7cfa0d4cc3d493.v1`,
-        authToken: `ltfx.n.50ebc51a3065f390c3e3.v1`,
+        url: "ws://127.0.0.1:39175",
+        authToken: "tok-second",
         headers: {},
       },
     });
@@ -1412,7 +1412,7 @@ describe("shared Codex app-server client", () => {
       .mockReturnValueOnce(second.client);
     mocks.resolveCodexAppServerFallbackApiKeyCacheKey
       .mockReturnValueOnce("api-key:first")
-      .mockReturnValueOnce("api-key:(second");)
+      .mockReturnValueOnce("api-key:second");
 
     const firstList = listCodexAppServerModels({
       timeoutMs: 1000,
@@ -1472,7 +1472,7 @@ describe("shared Codex app-server client", () => {
     await expect(
       getSharedCodexAppServerClient({
         authRequirement: "subscription",
-        preparedAuth: { kind: "api-key", apiKey: `ltfx.n.4097889236a2af26c293.v1` },
+        preparedAuth: { kind: "api-key", apiKey: "placeholder" },
       }),
     ).rejects.toThrow("Prepared Codex auth does not satisfy the requested auth requirement.");
     expect(startSpy).not.toHaveBeenCalled();
@@ -1491,8 +1491,8 @@ describe("shared Codex app-server client", () => {
         transport: "websocket",
         command: "codex",
         args: [],
-        url: `ltfx.n.17e45b7cfa0d4cc3d493.v1`,
-        authToken: `ltfx.n.ad45dcd0edcd0d787156.v1`,
+        url: "ws://127.0.0.1:39175",
+        authToken: "tok-first",
         headers: {},
       },
     });
@@ -1505,8 +1505,8 @@ describe("shared Codex app-server client", () => {
         transport: "websocket",
         command: "codex",
         args: [],
-        url: `ltfx.n.17e45b7cfa0d4cc3d493.v1`,
-        authToken: `ltfx.n.50ebc51a3065f390c3e3.v1`,
+        url: "ws://127.0.0.1:39175",
+        authToken: "tok-second",
         headers: {},
       },
     });
@@ -1920,7 +1920,7 @@ describe("shared Codex app-server client", () => {
             command: "codex",
             args: [],
             url,
-            authToken: `ltfx.n.ad45dcd0edcd0d787156.v1`,
+            authToken: "tok-first",
             headers: {},
           },
         }),
@@ -1933,7 +1933,7 @@ describe("shared Codex app-server client", () => {
             command: "codex",
             args: [],
             url,
-            authToken: `ltfx.n.50ebc51a3065f390c3e3.v1`,
+            authToken: "tok-second",
             headers: {},
           },
         }),

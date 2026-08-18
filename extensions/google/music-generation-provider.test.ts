@@ -87,7 +87,7 @@ function googleMusicAudioResponse(bytes = "mp3-bytes") {
 
 function mockGoogleAuth(): void {
   vi.spyOn(providerAuthRuntime, "resolveApiKeyForProvider").mockResolvedValue({
-    apiKey: `ltfx.n.5e175b4165620a09bb20.v1`,
+    apiKey: "google-key",
     source: "env",
     mode: "api-key",
   });

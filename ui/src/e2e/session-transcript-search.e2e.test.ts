@@ -116,7 +116,7 @@ describeControlUiE2e("Control UI session transcript search", () => {
           sessions: [
             {
               displayName: "Launch planning",
-              key: `ltfx.n.86fb4a046f4e4a5af91a.v1`,
+              key: "agent:main:launch",
               kind: "direct",
               label: "Launch planning",
               status: "done",
@@ -202,7 +202,7 @@ describeControlUiE2e("Control UI session transcript search", () => {
           path: "",
           sessions: [
             {
-              key: `ltfx.n.93ac2a693bdf688f29a3.v1`,
+              key: "agent:main:stale",
               kind: "direct",
               label: "Stale search fixture",
               status: "done",

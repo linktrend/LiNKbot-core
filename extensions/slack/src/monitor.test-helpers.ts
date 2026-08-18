@@ -227,8 +227,8 @@ export function startSlackMonitor(
 ) {
   const controller = new AbortController();
   const run = monitorSlackProvider({
-    botToken: (opts?.botToken ?? "bot-token",)
-    appToken: (opts?.appToken ?? "app-token",)
+    botToken: opts?.botToken ?? "bot-token",
+    appToken: opts?.appToken ?? "app-token",
     abortSignal: controller.signal,
     config: slackTestState.config,
     channelRuntime: opts?.channelRuntime,

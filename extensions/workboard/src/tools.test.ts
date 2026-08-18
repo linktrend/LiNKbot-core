@@ -295,7 +295,7 @@ describe("workboard tools", () => {
       }).map((tool) => [tool.name, tool]),
     );
     const parent = await store.create({ title: "Claimed parent" });
-    const claimed = await store.claim(parent.id, { ownerId: "main", token: `ltfx.n.cb75fcdd3245ad1c8b6e.v1` });
+    const claimed = await store.claim(parent.id, { ownerId: "main", token: "parent-token" });
 
     await expect(
       otherTools.get("workboard_create")?.execute("call-1", {
@@ -315,7 +315,7 @@ describe("workboard tools", () => {
       otherTools.get("workboard_create")?.execute("call-2b", {
         title: "Wrong token child",
         parents: [parent.id],
-        token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
+        token: "test-token-placeholder",
       }),
     ).rejects.toThrow(/claimed by main/);
     await otherTools.get("workboard_create")?.execute("call-2", {
@@ -324,7 +324,7 @@ describe("workboard tools", () => {
       token: claimed.token,
     });
     const child = await store.create({ title: "Claimed child" });
-    await store.claim(child.id, { ownerId: "main", token: `ltfx.n.c63474ca17448205c76c.v1` });
+    await store.claim(child.id, { ownerId: "main", token: "child-token" });
     await expect(
       otherTools.get("workboard_link")?.execute("call-3", {
         parentId: parent.id,
@@ -345,7 +345,7 @@ describe("workboard tools", () => {
       mainTools.get("workboard_link")?.execute("call-5", {
         parentId: parent.id,
         childId: child.id,
-        token: `ltfx.n.c63474ca17448205c76c.v1`,
+        token: "child-token",
       }),
     ).rejects.toThrow(/active child/);
   });
@@ -463,7 +463,7 @@ describe("workboard tools", () => {
         ...card.metadata,
         claim: {
           ownerId: "main",
-          token: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
+          token: "secret-token",
           claimedAt: 1,
           lastHeartbeatAt: 1,
           expiresAt: Date.now() + 60_000,
@@ -623,7 +623,7 @@ describe("workboard tools", () => {
     );
     expect(unclaimed.card).toMatchObject({ status: "ready" });
 
-    await store.claim(card.id, { ownerId: "agent-a", token: `ltfx.n.f35cd067d05752edf483.v1` });
+    await store.claim(card.id, { ownerId: "agent-a", token: "test-auth-token" });
     await expect(
       tools.get("workboard_move")?.execute("move-denied", {
         id: card.id,
@@ -635,7 +635,7 @@ describe("workboard tools", () => {
       await tools.get("workboard_move")?.execute("move-claimed", {
         id: card.id,
         status: "review",
-        token: `ltfx.n.f35cd067d05752edf483.v1`,
+        token: "test-auth-token",
       }),
     );
     expect(claimed.card).toMatchObject({ status: "review" });

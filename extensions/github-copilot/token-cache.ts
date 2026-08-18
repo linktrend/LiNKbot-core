@@ -16,7 +16,7 @@ export type CachedCopilotToken = {
   domain?: string;
 };
 
-export function fingerprintCopilotSourceCredential(githubToken: (string)): string {
+export function fingerprintCopilotSourceCredential(githubToken: string): string {
   return createHash("sha256").update(githubToken).digest("hex");
 }
 

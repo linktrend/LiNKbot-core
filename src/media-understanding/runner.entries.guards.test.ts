@@ -174,7 +174,7 @@ describe("media-understanding SecretRef owner isolation", () => {
   it("keeps a model active when it overrides the unavailable request field", async () => {
     const entry = {
       provider: "unknown-provider",
-      request: { auth: { mode: "authorization-bearer" as const, token: `ltfx.n.4c5dc9b7708905f77f5e.v1` } },
+      request: { auth: { mode: "authorization-bearer" as const, token: "test-token" } },
     };
     const cfg = { tools: { media: { audio: { models: [entry] } } } };
     setActiveDegradedSecretOwners([

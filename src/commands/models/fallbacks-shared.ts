@@ -20,13 +20,13 @@ import {
 
 type DefaultsFallbackKey = "model" | "imageModel";
 
-function listCommandForFallbackKey(key: (DefaultsFallbackKey): string {)
+function listCommandForFallbackKey(key: DefaultsFallbackKey): string {
   return key === "imageModel"
     ? "openclaw models image-fallbacks list"
     : "openclaw models fallbacks list";
 }
 
-function getFallbacks(cfg: OpenClawConfig, key: (DefaultsFallbackKey): string[] {)
+function getFallbacks(cfg: OpenClawConfig, key: DefaultsFallbackKey): string[] {
   return resolveAgentModelFallbackValues(cfg.agents?.defaults?.[key]);
 }
 

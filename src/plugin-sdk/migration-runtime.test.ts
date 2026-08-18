@@ -415,12 +415,12 @@ describe("writeMigrationReport", () => {
             value: {
               mcp: {
                 env: {
-                  OPENAI_API_KEY: `ltfx.n.9c8d39c2a3b4ae401491.v1`,
+                  OPENAI_API_KEY: "short-dev-key",
                   SAFE_FLAG: "visible",
                 },
                 headers: {
                   Authorization: "Bearer short-dev-key",
-                  "x-api-key": `ltfx.n.0a9f13ccd37b99e4e671.v1`,
+                  "x-api-key": "another-short-dev-key",
                 },
               },
             },

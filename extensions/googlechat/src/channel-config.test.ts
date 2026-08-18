@@ -85,7 +85,7 @@ describe("googlechatPlugin config adapter", () => {
           serviceAccount: {
             type: "service_account",
             client_email: "bot@example.com",
-            private_key: `ltfx.n.62af8704764faf8ea82f.v1`,
+            private_key: "test-key",
             token_uri: "https://oauth2.googleapis.com/token",
           },
           audienceType: "app-url",

@@ -21,7 +21,7 @@ describe("ClickClack account resolution", () => {
         clickclack: {
           baseUrl: "https://app.clickclack.chat",
           workspace: "wsp_1",
-          token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
+          token: "test-token-placeholder",
           accounts: {
             work: { enabled: false },
           },
@@ -38,7 +38,7 @@ describe("ClickClack account resolution", () => {
     const cfg = {
       channels: {
         clickclack: {
-          token: `ltfx.n.f35cd067d05752edf483.v1`,
+          token: "test-auth-token",
           accounts: {
             work: {
               baseUrl: "https://app.clickclack.chat",
@@ -64,7 +64,7 @@ describe("ClickClack account resolution", () => {
             work: {
               baseUrl: "https://app.clickclack.chat",
               workspace: "wsp_1",
-              token: `ltfx.n.f15ae5b5899f8327f527.v1`,
+              token: "gateway-token",
             },
           },
         },
@@ -95,7 +95,7 @@ describe("ClickClack account resolution", () => {
       resolveClickClackAccount({
         cfg,
         accountId: "service",
-        env: { CLICKCLACK_SERVICE_TOKEN: `ltfx.n.572fbf9bc90a04b79fd3.v1` },
+        env: { CLICKCLACK_SERVICE_TOKEN: "  test-token-placeholder  " },
       }),
     ).toEqual({
       allowFrom: ["*"],
@@ -125,7 +125,7 @@ describe("ClickClack account resolution", () => {
       reconnectMs: 1_500,
       replyMode: "agent",
       systemPrompt: undefined,
-      token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
+      token: "test-token-placeholder",
       toolsAllow: undefined,
       workspace: "wsp_1",
     });
@@ -144,7 +144,7 @@ describe("ClickClack account resolution", () => {
         },
       },
     } satisfies CoreConfig;
-    const env = { CLICKCLACK_BOT_TOKEN: `ltfx.n.75247a9e351e3f4e434c.v1` };
+    const env = { CLICKCLACK_BOT_TOKEN: "  default-env-token  " };
     vi.stubEnv("CLICKCLACK_BOT_TOKEN", env.CLICKCLACK_BOT_TOKEN);
 
     expect(listClickClackAccountIds(cfg)).toEqual(["default", "work"]);
@@ -165,7 +165,7 @@ describe("ClickClack account resolution", () => {
             tokenFile,
             accounts: {
               work: {
-                token: `ltfx.n.488dc3c9ef1e2576bc04.v1`,
+                token: "work-token",
               },
             },
           },
@@ -187,7 +187,7 @@ describe("ClickClack account resolution", () => {
           workspace: "wsp_1",
           accounts: {
             peter: {
-              token: `ltfx.n.62697fda73073ae834ae.v1`,
+              token: "token-oversized",
               agentId: "peter-bot",
               replyMode: "model",
               model: "openai/gpt-5.4-mini",
@@ -210,7 +210,7 @@ describe("ClickClack account resolution", () => {
         enabled: true,
         model: "openai/gpt-5.4-mini",
         replyMode: "model",
-        token: `ltfx.n.62697fda73073ae834ae.v1`,
+        token: "token-oversized",
         toolsAllow: ["web_search"],
         workspace: "wsp_1",
       },
@@ -230,7 +230,7 @@ describe("ClickClack account resolution", () => {
       reconnectMs: 1_500,
       replyMode: "model",
       systemPrompt: undefined,
-      token: `ltfx.n.62697fda73073ae834ae.v1`,
+      token: "token-oversized",
       toolsAllow: ["web_search"],
       workspace: "wsp_1",
     });
@@ -243,10 +243,10 @@ describe("ClickClack account resolution", () => {
           enabled: true,
           baseUrl: "https://app.clickclack.chat",
           workspace: "wsp_1",
-          token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
+          token: "test-token-placeholder",
           accounts: {
             bridge: {
-              token: `ltfx.n.bd8554c60451efa23b87.v1`,
+              token: "clawrouter-e2e-secret",
               agentActivity: true,
             },
           },
@@ -264,7 +264,7 @@ describe("ClickClack account resolution", () => {
         clickclack: {
           enabled: true,
           baseUrl: "https://app.clickclack.chat",
-          token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+          token: "test-token",
           workspace: "default",
           discussions: {
             enabled: true,
@@ -301,7 +301,7 @@ describe("ClickClack account resolution", () => {
           enabled: true,
           baseUrl: "https://app.clickclack.chat",
           workspace: "wsp_1",
-          token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
+          token: "test-token-placeholder",
           accounts: {
             disabled: {
               commandMenu: false,
@@ -325,7 +325,7 @@ describe("ClickClack account resolution", () => {
         clickclack: {
           enabled: true,
           baseUrl: "https://app.clickclack.chat",
-          token: `ltfx.n.4ce367e1fae6b9273c18.v1`,
+          token: "very-long-browser-token-0123456789",
           workspace: "wsp_1",
           reconnectMs: 1,
           accounts: {

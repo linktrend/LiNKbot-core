@@ -33,7 +33,7 @@ const SENDER_NAME_TTL_MS = 10 * 60 * 1000;
 const SENDER_NAME_CACHE_MAX_SIZE = 500;
 const senderNameCache = new Map<string, { name: string; expireAt: number }>();
 
-function correctFeishuScopeInUrl(url: (string)): string {
+function correctFeishuScopeInUrl(url: string): string {
   let corrected = url;
   for (const [wrong, right] of Object.entries(FEISHU_SCOPE_CORRECTIONS)) {
     corrected = corrected.replaceAll(encodeURIComponent(wrong), encodeURIComponent(right));

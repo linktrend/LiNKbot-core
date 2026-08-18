@@ -162,7 +162,7 @@ describe("handleStopCommand target fallback", () => {
       reply: { text: "⚙️ Agent was aborted." },
     });
     expect(abortSessionRunTargetWithOutcomeMock).toHaveBeenCalledWith({
-      key: `ltfx.n.715fc14ae722625b22dc.v1`,
+      key: "agent:target:telegram:direct:123",
       sessionId: undefined,
     });
     expect(abortEmbeddedAgentRunMock).not.toHaveBeenCalledWith("wrapper-session-id");

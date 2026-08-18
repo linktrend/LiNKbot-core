@@ -132,7 +132,7 @@ function expectSetOmitsAll(values: ReadonlySet<string>, expected: readonly strin
   }
 }
 
-function requireChatCommand(key: (string)): ChatCommandDefinition {
+function requireChatCommand(key: string): ChatCommandDefinition {
   const command = listChatCommands().find((candidate) => candidate.key === key);
   if (!command) {
     throw new Error(`Expected chat command "${key}"`);

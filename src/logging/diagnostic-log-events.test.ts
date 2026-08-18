@@ -112,7 +112,7 @@ describe("diagnostic log events", () => {
       }
     });
 
-    const secret = `ltfx.n.ae8754608195aafb8100.v1`; // pragma: allowlist secret
+    const secret = "ghp_abcdefghijklmnopqrstuvwxyz123456"; // pragma: allowlist secret
     const logger = getChildLogger({
       subsystem: "diagnostic",
       trace: { traceId: TRACE_ID, spanId: SPAN_ID },
@@ -178,7 +178,7 @@ describe("diagnostic log events", () => {
     structured[PROTO_KEY] = "pollute";
     structured["constructor"] = "pollute";
     structured["prototype"] = "pollute";
-    structured["ltfx.n.2dfacb4231b34bb49d21.v1"] = "secret-key"; // pragma: allowlist secret
+    structured["sk-1234567890abcdef1234567890abcdef"] = "secret-key"; // pragma: allowlist secret
     for (let index = 0; index < 1000; index += 1) {
       structured[`extra${index}`] = index;
     }
@@ -200,6 +200,6 @@ describe("diagnostic log events", () => {
     expect(Object.hasOwn(attributes, PROTO_KEY)).toBe(false);
     expect(Object.hasOwn(attributes, "constructor")).toBe(false);
     expect(Object.hasOwn(attributes, "prototype")).toBe(false);
-    expect(Object.hasOwn(attributes, "ltfx.n.2dfacb4231b34bb49d21.v1")).toBe(false); // pragma: allowlist secret
+    expect(Object.hasOwn(attributes, "sk-1234567890abcdef1234567890abcdef")).toBe(false); // pragma: allowlist secret
   });
 });

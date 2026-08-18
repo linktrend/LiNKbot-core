@@ -37,7 +37,7 @@ describe("cron command output summaries", () => {
 
   it("masks token assignments on action-required lines before external delivery", () => {
     const summary =
-      "action-required output preserved:\nLog in with token=(opaque-secret-value\n\nLog in with token=(ltfx.n.c9eb7b1fc351c9d20d66.v1);)
+      "action-required output preserved:\nLog in with token=opaque-secret-value\n\nLog in with token=opaque-secret-value";
 
     const redacted = redactCronCommandSummaryForExternalDelivery(summary);
 

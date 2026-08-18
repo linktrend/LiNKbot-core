@@ -346,7 +346,7 @@ describe("anthropic-vertex provider plugin", () => {
     } as never);
 
     expect(result).toEqual({
-      apiKey: `ltfx.n.8e9d25977f930dcab7d3.v1`,
+      apiKey: "gcp-vertex-credentials",
       source: "gcp-vertex-credentials (ADC)",
       mode: "api-key",
     });

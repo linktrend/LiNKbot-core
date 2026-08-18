@@ -56,7 +56,7 @@ type SandboxHttpRequest = {
   streamResponse: boolean;
 };
 
-function assertSandboxHttpRequestTargetAllowed(url: (string)): void {
+function assertSandboxHttpRequestTargetAllowed(url: string): void {
   let parsed: URL;
   try {
     parsed = new URL(url);

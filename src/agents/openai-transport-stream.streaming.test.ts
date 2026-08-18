@@ -150,7 +150,7 @@ describe("openai transport stream", () => {
           messages: [{ role: "user", content: "Reply OK", timestamp: Date.now() }],
           tools: [],
         } as never,
-        { apiKey: `ltfx.n.62af8704764faf8ea82f.v1` } as never,
+        { apiKey: "test-key" } as never,
       );
 
       let doneReason: string | undefined;
@@ -198,7 +198,7 @@ describe("openai transport stream", () => {
         messages: [],
         tools: [],
       } as never,
-      { apiKey: `ltfx.n.62af8704764faf8ea82f.v1` } as never,
+      { apiKey: "test-key" } as never,
     );
 
     let errorPayload: Record<string, unknown> | undefined;
@@ -267,7 +267,7 @@ describe("openai transport stream", () => {
           messages: [],
           tools: [],
         } as never,
-        { apiKey: `ltfx.n.62af8704764faf8ea82f.v1` } as never,
+        { apiKey: "test-key" } as never,
       );
 
       let doneReason: string | undefined;
@@ -347,7 +347,7 @@ describe("openai transport stream", () => {
           messages: [{ role: "user", content: "Reply live-ok", timestamp: Date.now() }],
           tools: [],
         } as never,
-        { apiKey: `ltfx.n.62af8704764faf8ea82f.v1`, reasoningEffort: "high" } as never,
+        { apiKey: "test-key", reasoningEffort: "high" } as never,
       );
 
       let doneReason: string | undefined;
@@ -440,7 +440,7 @@ describe("openai transport stream", () => {
           messages: [{ role: "user", content: "Reply qwen-ok", timestamp: Date.now() }],
           tools: [],
         } as never,
-        { apiKey: `ltfx.n.62af8704764faf8ea82f.v1`, reasoning: "medium" } as never,
+        { apiKey: "test-key", reasoning: "medium" } as never,
       );
 
       let thinking = "";
@@ -477,7 +477,7 @@ describe("openai transport stream", () => {
 
     expect(
       testing.shouldEmitOpenAICompletionsReasoningForModel(model, {
-        apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+        apiKey: "test-key",
         reasoning: "off",
       } as never),
     ).toBe(false);
@@ -494,7 +494,7 @@ describe("openai transport stream", () => {
 
     expect(
       testing.shouldEmitOpenAICompletionsReasoningForModel(model, {
-        apiKey: `ltfx.n.62af8704764faf8ea82f.v1`,
+        apiKey: "test-key",
         reasoning: "medium",
       } as never),
     ).toBe(true);
@@ -511,7 +511,7 @@ describe("openai transport stream", () => {
         res.end(
           JSON.stringify({
             error: {
-              message: "Quota exceeded for api_key=(ltfx.n.e5eef7cde57cdab3bef7.v1),
+              message: "Quota exceeded for api_key=sk-secret1234567890abcd",
               type: "rate_limit_error",
               code: "insufficient_quota",
             },
@@ -540,7 +540,7 @@ describe("openai transport stream", () => {
           messages: [{ role: "user", content: "Reply OK", timestamp: Date.now() }],
           tools: [],
         } as never,
-        { apiKey: `ltfx.n.62af8704764faf8ea82f.v1` } as never,
+        { apiKey: "test-key" } as never,
       );
 
       let errorPayload: Record<string, unknown> | undefined;
@@ -559,7 +559,7 @@ describe("openai transport stream", () => {
         errorType: "rate_limit_error",
       });
       expect(String(errorPayload?.errorBody)).toContain("Quota exceeded");
-      expect(String(errorPayload?.errorBody)).not.toContain("ltfx.n.cbd13c809c9162ca6976.v1");
+      expect(String(errorPayload?.errorBody)).not.toContain("sk-secret1234567890abcd");
     } finally {
       await new Promise<void>((resolve, reject) => {
         server.close((error) => (error ? reject(error) : resolve()));
@@ -607,7 +607,7 @@ describe("openai transport stream", () => {
           messages: [{ role: "user", content: "Reply OK", timestamp: Date.now() }],
           tools: [],
         } as never,
-        { apiKey: `ltfx.n.62af8704764faf8ea82f.v1` } as never,
+        { apiKey: "test-key" } as never,
       );
 
       let errorPayload: Record<string, unknown> | undefined;

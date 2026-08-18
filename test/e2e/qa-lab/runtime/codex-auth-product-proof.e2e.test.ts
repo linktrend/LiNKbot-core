@@ -243,7 +243,7 @@ describe("Codex auth product proof", () => {
               method: usageLoginRequest?.method,
               params: {
                 type: usageLoginParams.type,
-                accessToken: `ltfx.n.b68919aff001d8366249.v1`,
+                accessToken: "redacted",
                 chatgptAccountId: usageLoginParams.chatgptAccountId,
                 chatgptPlanType: usageLoginParams.chatgptPlanType,
               },

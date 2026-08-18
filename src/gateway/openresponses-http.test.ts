@@ -327,7 +327,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
         { model: "openclaw", input: "hi" },
         {
           "x-openclaw-agent-id": "beta",
-          "x-openclaw-session-key": `ltfx.n.c8f7587fe7eb38995c74.v1`,
+          "x-openclaw-session-key": "agent:beta:openresponses:custom",
         },
       );
       expect(resSessionOverride.status).toBe(200);
@@ -340,7 +340,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
       const resReservedSessionOverride = await postResponses(
         port,
         { model: "openclaw", input: "hi" },
-        { "x-openclaw-session-key": `ltfx.n.e2a17ee8594e76686d24.v1` },
+        { "x-openclaw-session-key": "agent:main:subagent:spoofed" },
       );
       expect(resReservedSessionOverride.status).toBe(400);
       const reservedSessionJson = (await resReservedSessionOverride.json()) as {
@@ -356,7 +356,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
         port,
         { model: "openclaw", input: "hi" },
         {
-          "x-openclaw-session-key": `ltfx.n.3a50c12f61b03278ef02.v1`,
+          "x-openclaw-session-key": "agent:main:harness:codex:supervision:spoofed-native-thread",
         },
       );
       expect(resHarnessSessionOverride.status).toBe(400);

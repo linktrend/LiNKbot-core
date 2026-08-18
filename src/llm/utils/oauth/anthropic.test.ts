@@ -18,7 +18,7 @@ afterEach(() => {
   vi.unstubAllEnvs();
 });
 
-async function getLocalCallback(url: (string)): Promise<void> {
+async function getLocalCallback(url: string): Promise<void> {
   await new Promise<void>((resolve, reject) => {
     const request = get(url, (response) => {
       response.resume();
@@ -62,7 +62,7 @@ describe("Anthropic OAuth token responses", () => {
       "fetch",
       vi.fn(
         async () =>
-          new Response('{"access_token":`ltfx.n.5964ad22c22eb5e8f08c.v1`,"refresh_token":`ltfx.n.6c2b02ce86b168b5afe4.v1`', {
+          new Response('{"access_token":"secret-access-token","refresh_token":"secret-refresh"', {
             status: 200,
           }),
       ),
@@ -91,7 +91,7 @@ describe("Anthropic OAuth token responses", () => {
       vi.fn(
         async () =>
           new Response(
-            '{"access_token":`ltfx.n.25b416c373e247768cc1.v1`,"refresh_token":`ltfx.n.c40dd1765d767caae258.v1`,"expires_in":1e309}',
+            '{"access_token":"new-access-token","refresh_token":"new-refresh-token","expires_in":1e309}',
             { status: 200 },
           ),
       ),
@@ -147,8 +147,8 @@ describe("Anthropic OAuth callback host", () => {
       expect(body.redirect_uri).toBe(ANTHROPIC_REDIRECT_URI);
       return new Response(
         JSON.stringify({
-          access_token: `ltfx.n.3f16bed7089f4653e5ef.v1`,
-          refresh_token: `ltfx.n.0eb17643d4e926116378.v1`,
+          access_token: "access-token",
+          refresh_token: "refresh-token",
           expires_in: 3600,
         }),
       );

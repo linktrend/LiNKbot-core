@@ -36,7 +36,7 @@ function bridgeRecord(
     pid: 100,
     hostname: "127.0.0.1",
     port: 18_789,
-    token: `ltfx.n.41dd96f1dccf65c2c9c7.v1`,
+    token: "test-token-placeholder",
     expiresAtMs: 20_000,
     ...overrides,
   };
@@ -48,7 +48,7 @@ describe("native hook relay store", () => {
     const replacement = bridgeRecord("relay-upsert", {
       pid: 101,
       port: 18_790,
-      token: `ltfx.n.f35cd067d05752edf483.v1`,
+      token: "test-auth-token",
       expiresAtMs: 30_000,
     });
 
@@ -93,7 +93,7 @@ describe("native hook relay store", () => {
     ).toBe(false);
     expect(
       renewOrRestoreNativeHookRelayBridgeRecord({
-        record: { ...record, token: `ltfx.n.5095a09224a5ba7211d6.v1`, expiresAtMs: 30_000 },
+        record: { ...record, token: "decoy-token", expiresAtMs: 30_000 },
         stateDbPath: primaryStateDbPath,
       }),
     ).toBe(false);
@@ -121,7 +121,7 @@ describe("native hook relay store", () => {
     expect(
       deleteNativeHookRelayBridgeRecordIfOwned({
         ...record,
-        token: `ltfx.n.5095a09224a5ba7211d6.v1`,
+        token: "decoy-token",
         stateDbPath: primaryStateDbPath,
       }),
     ).toBe(false);
@@ -157,7 +157,7 @@ describe("native hook relay store", () => {
 
     const otherOwner = bridgeRecord(record.relayId, {
       pid: record.pid + 1,
-      token: `ltfx.n.f35cd067d05752edf483.v1`,
+      token: "test-auth-token",
     });
     writeNativeHookRelayBridgeRecord({
       record: otherOwner,
@@ -182,12 +182,12 @@ describe("native hook relay store", () => {
   it("does not let an old owner delete its replacement", () => {
     const oldOwner = bridgeRecord("relay-replaced", {
       pid: 100,
-      token: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
+      token: "secret-token",
     });
     const replacement = bridgeRecord("relay-replaced", {
       pid: 101,
       port: 18_790,
-      token: `ltfx.n.f35cd067d05752edf483.v1`,
+      token: "test-auth-token",
       expiresAtMs: 30_000,
     });
     writeNativeHookRelayBridgeRecord({
@@ -275,12 +275,12 @@ describe("native hook relay store", () => {
   it("preserves a replacement published during dead-pid planning", () => {
     const stale = bridgeRecord("relay-prune-race", {
       pid: 201,
-      token: `ltfx.n.930bbdc51b6aed5c2a56.v1`,
+      token: "secret-token",
     });
     const replacement = bridgeRecord("relay-prune-race", {
       pid: 202,
       port: 18_790,
-      token: `ltfx.n.f35cd067d05752edf483.v1`,
+      token: "test-auth-token",
       expiresAtMs: 30_000,
     });
     writeNativeHookRelayBridgeRecord({
@@ -316,12 +316,12 @@ describe("native hook relay store", () => {
   it("isolates records by the exact state database path", () => {
     const primary = bridgeRecord("relay-isolated", {
       pid: 100,
-      token: `ltfx.n.a98cc81fe778386f6195.v1`,
+      token: "config-token",
     });
     const secondary = bridgeRecord("relay-isolated", {
       pid: 200,
       port: 18_790,
-      token: `ltfx.n.f15ae5b5899f8327f527.v1`,
+      token: "gateway-token",
     });
     writeNativeHookRelayBridgeRecord({
       record: primary,

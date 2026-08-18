@@ -503,7 +503,7 @@ describe("finalizeSetupWizard", () => {
 
   it("resolves gateway password SecretRef for probe but omits auth from TUI hatch", async () => {
     const previous = process.env.OPENCLAW_GATEWAY_PASSWORD;
-    process.env.OPENCLAW_GATEWAY_PASSWORD = `ltfx.n.1dd21f922e258d6c5213.v1`; // pragma: allowlist secret
+    process.env.OPENCLAW_GATEWAY_PASSWORD = "resolved-gateway-password"; // pragma: allowlist secret
     resolveSetupSecretInputString.mockResolvedValueOnce("resolved-gateway-password");
     const select = vi.fn(async (params: { message: string }) => {
       if (params.message === "How do you want to hatch your agent?") {
@@ -613,7 +613,7 @@ describe("finalizeSetupWizard", () => {
       expect.objectContaining({ bind: "lan", port: 18789 }),
     );
     expect(waitForGatewayReachable).toHaveBeenCalledWith(
-      expect.objectContaining({ url: `ltfx.n.0edbee82f0824a1ed09b.v1` }),
+      expect.objectContaining({ url: "ws://127.0.0.1:18789" }),
     );
     expectNoteContains(prompter, "http://10.211.55.3:18789/", "Control UI");
     expectNoteContains(prompter, "ws://10.211.55.3:18789", "Control UI");
@@ -986,7 +986,7 @@ describe("finalizeSetupWizard", () => {
           port: 18789,
           bind: "loopback",
           authMode: "token",
-          gatewayToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+          gatewayToken: "test-token",
           tailscaleMode: "off",
           tailscaleResetOnExit: false,
         },
@@ -1013,7 +1013,7 @@ describe("finalizeSetupWizard", () => {
       programArguments: [],
       workingDirectory: "/tmp",
       environment: {
-        DISCORD_BOT_TOKEN: `ltfx.n.c1ea6ba9606d2340ad46.v1`,
+        DISCORD_BOT_TOKEN: "discord-test-token",
       },
       environmentValueSources: {
         DISCORD_BOT_TOKEN: "file",
@@ -1047,7 +1047,7 @@ describe("finalizeSetupWizard", () => {
         port: 18789,
         bind: "loopback",
         authMode: "token",
-        gatewayToken: `ltfx.n.c101e911469c96917104.v1`,
+        gatewayToken: "session-token",
         tailscaleMode: "off",
         tailscaleResetOnExit: false,
       },
@@ -1139,7 +1139,7 @@ describe("finalizeSetupWizard", () => {
         port: 18789,
         bind: "loopback",
         authMode: "token",
-        gatewayToken: `ltfx.n.c101e911469c96917104.v1`,
+        gatewayToken: "session-token",
         tailscaleMode: "off",
         tailscaleResetOnExit: false,
       },
@@ -1424,7 +1424,7 @@ describe("finalizeSetupWizard", () => {
         gateway: {
           auth: {
             mode: "token",
-            token: `ltfx.n.a98cc81fe778386f6195.v1`,
+            token: "config-token",
           },
         },
       },
@@ -1433,7 +1433,7 @@ describe("finalizeSetupWizard", () => {
         port: 18789,
         bind: "loopback",
         authMode: "token",
-        gatewayToken: `ltfx.n.c101e911469c96917104.v1`,
+        gatewayToken: "session-token",
         tailscaleMode: "off",
         tailscaleResetOnExit: false,
       },
@@ -1497,7 +1497,7 @@ describe("finalizeSetupWizard", () => {
           gateway: {
             auth: {
               mode: "token",
-              token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+              token: "test-token",
             },
           },
         },
@@ -1506,7 +1506,7 @@ describe("finalizeSetupWizard", () => {
           port: 18789,
           bind: "loopback",
           authMode: "token",
-          gatewayToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+          gatewayToken: "test-token",
           tailscaleMode: "off",
           tailscaleResetOnExit: false,
         },
@@ -1520,7 +1520,7 @@ describe("finalizeSetupWizard", () => {
           bind: "loopback",
           auth: expect.objectContaining({
             mode: "token",
-            token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+            token: "test-token",
           }),
         }),
       );
@@ -1560,7 +1560,7 @@ describe("finalizeSetupWizard", () => {
             gateway: {
               auth: {
                 mode: "token",
-                token: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+                token: "test-token",
               },
             },
           },
@@ -1569,7 +1569,7 @@ describe("finalizeSetupWizard", () => {
             port: 18789,
             bind: "loopback",
             authMode: "token",
-            gatewayToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+            gatewayToken: "test-token",
             tailscaleMode: "off",
             tailscaleResetOnExit: false,
           },
@@ -1674,7 +1674,7 @@ describe("finalizeSetupWizard", () => {
         port: 18789,
         bind: "loopback",
         authMode: "token",
-        gatewayToken: `ltfx.n.4c5dc9b7708905f77f5e.v1`,
+        gatewayToken: "test-token",
         tailscaleMode: "off",
         tailscaleResetOnExit: false,
       },

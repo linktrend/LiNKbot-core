@@ -88,7 +88,7 @@ describe("ollama provider models", () => {
     vi.stubGlobal("fetch", fetchMock);
 
     const provider = await buildOllamaProvider("https://ollama.com", {
-      apiKey: `ltfx.n.6c91623c4fe9db7c8167.v1`,
+      apiKey: "cloud-key",
     });
 
     expect(provider.models).toEqual([
@@ -118,10 +118,10 @@ describe("ollama provider models", () => {
     vi.stubGlobal("fetch", fetchMock);
 
     const first = await buildOllamaProvider("https://ollama.example.com", {
-      apiKey: `ltfx.n.fc164f8250803ea8d418.v1`,
+      apiKey: "account-a",
     });
     const second = await buildOllamaProvider("https://ollama.example.com", {
-      apiKey: `ltfx.n.21c2f07264873c618805.v1`,
+      apiKey: "account-b",
     });
 
     expect(first.models?.[0]?.contextWindow).toBe(16_000);

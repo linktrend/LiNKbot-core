@@ -96,14 +96,14 @@ describe("detectIMessageLegacyStateMigrations", () => {
     const [catchupEntry] = await catchupPlan.readEntries();
     expect(
       await catchupPlan.shouldReplaceExistingEntry?.({
-        key: (catchupEntry?.key ?? "",)
+        key: catchupEntry?.key ?? "",
         existingValue: { lastSeenMs: 1_600_000_000_000, lastSeenRowid: 10, updatedAt: 0 },
         incomingValue: catchupEntry?.value,
       }),
     ).toBe(true);
     expect(
       await catchupPlan.shouldReplaceExistingEntry?.({
-        key: (catchupEntry?.key ?? "",)
+        key: catchupEntry?.key ?? "",
         existingValue: { lastSeenMs: 1_800_000_000_000, lastSeenRowid: 99, updatedAt: 0 },
         incomingValue: catchupEntry?.value,
       }),
@@ -116,14 +116,14 @@ describe("detectIMessageLegacyStateMigrations", () => {
     }
     expect(
       await counterPlan.shouldReplaceExistingEntry?.({
-        key: `ltfx.n.7c131ac8bec276059d64.v1`,
+        key: "short-id-counter",
         existingValue: { counter: 0 },
         incomingValue: { counter: 1 },
       }),
     ).toBe(true);
     expect(
       await counterPlan.shouldReplaceExistingEntry?.({
-        key: `ltfx.n.7c131ac8bec276059d64.v1`,
+        key: "short-id-counter",
         existingValue: { counter: 2 },
         incomingValue: { counter: 1 },
       }),

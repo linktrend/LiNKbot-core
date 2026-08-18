@@ -211,7 +211,7 @@ struct DebugSettings: View {
                     Button("Copy sample URL") {
                         let msg = "Hello from deep link"
                         let encoded = msg.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? msg
-                        let url = ("openclaw://agent?message=\(encoded)&ke" + "y=\(key)")
+                        let url = "openclaw://agent?message=\(encoded)&key=\(key)"
                         NSPasteboard.general.clearContents()
                         NSPasteboard.general.setString(url, forType: .string)
                     }

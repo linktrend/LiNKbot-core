@@ -54,7 +54,7 @@ describe("shared/frontmatter", () => {
         frontmatter: {
           pluginMeta: "{ openclaw: { foo: 2 } }",
         },
-        key: `ltfx.n.b5d191f357f9620584f7.v1`,
+        key: "pluginMeta",
       }),
     ).toEqual({ foo: 2 });
   });

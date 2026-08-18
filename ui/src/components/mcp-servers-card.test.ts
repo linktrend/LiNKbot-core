@@ -146,7 +146,7 @@ describe("openclaw-mcp-servers-card", () => {
         mcp: {
           servers: {
             docs: {
-              url: "https://mcp.example.com/mcp?keep=visible&token=(test-token",)
+              url: "https://mcp.example.com/mcp?keep=visible&token=test-token",
               auth: "oauth",
               toolFilter: { include: ["search"] },
               sslVerify: false,

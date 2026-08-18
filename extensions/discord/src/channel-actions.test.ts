@@ -40,7 +40,7 @@ describe("discordMessageActions", () => {
       cfg: {
         channels: {
           discord: {
-            token: `ltfx.n.2031ff89f539bcf26f58.v1`,
+            token: "Bot token-main",
             actions: {
               polls: true,
               reactions: true,
@@ -233,14 +233,14 @@ describe("discordMessageActions", () => {
     const cfg = {
       channels: {
         discord: {
-          token: `ltfx.n.2031ff89f539bcf26f58.v1`,
+          token: "Bot token-main",
           actions: {
             reactions: false,
             polls: true,
           },
           accounts: {
             work: {
-              token: `ltfx.n.1493727ef1cd4facd571.v1`,
+              token: "Bot token-work",
               actions: {
                 reactions: true,
                 polls: false,
@@ -335,7 +335,7 @@ describe("discordMessageActions", () => {
       cfg: {
         channels: {
           discord: {
-            token: `ltfx.n.2031ff89f539bcf26f58.v1`,
+            token: "Bot token-main",
             actions: {
               messages: false,
             },
@@ -356,7 +356,7 @@ describe("discordMessageActions", () => {
       cfg: {
         channels: {
           discord: {
-            token: `ltfx.n.2031ff89f539bcf26f58.v1`,
+            token: "Bot token-main",
           },
         },
       } as OpenClawConfig,
@@ -497,7 +497,7 @@ describe("discordMessageActions", () => {
     const cfg = {
       channels: {
         discord: {
-          token: `ltfx.n.2031ff89f539bcf26f58.v1`,
+          token: "Bot token-main",
         },
       },
     } as OpenClawConfig;

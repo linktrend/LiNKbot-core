@@ -435,7 +435,7 @@ describe("machine-token clientAssertionKeyRef SecretRef runtime boundary", () =>
             bindingId: `${manifest.id}-stage`,
             issuerUrl: "https://issuer.example.test",
             clientId: `${manifest.id}-client`,
-            clientAssertionKeyRef: "-----BEGIN LTFX PRIVATE KEY-----\nstub\n-----END PRIVATE KEY-----",
+            clientAssertionKeyRef: "-----BEGIN PRIVATE KEY-----\nstub\n-----END PRIVATE KEY-----",
           },
         },
       });

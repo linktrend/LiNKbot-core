@@ -495,9 +495,9 @@ extension MacNodeCodexThreadCatalog {
         try self.validateKeys(config, allowed: self.pluginConfigKeys)
         try self.validateEnum(
             config,
-            key: "${ltfx.n.9703b08bba09735908f5.v1}",
+            key: "codexDynamicToolsLoading",
             allowed: ["searchable", "direct"])
-        try self.validateStringArray(config, key: "${ltfx.n.e457387939ff0b43d963.v1}")
+        try self.validateStringArray(config, key: "codexDynamicToolsExclude")
         try self.validateDiscoveryConfig(config["discovery"])
         try self.validateComputerUseConfig(config["computerUse"])
         // `codexPlugins` is intentionally parsed independently by readCodexPluginConfig.
@@ -516,23 +516,23 @@ extension MacNodeCodexThreadCatalog {
         }
         try self.validateKeys(appServer, allowed: self.appServerConfigKeys)
         try self.validateEnum(appServer, key: "mode", allowed: ["yolo", "guardian"])
-        try self.validateEnum(appServer, key: "${ltfx.n.6694ea8075001f6628da.v1}", allowed: ["stdio", "websocket", "unix"])
-        try self.validateEnum(appServer, key: "${ltfx.n.b713ed656ff34c2155d8.v1}", allowed: ["agent", "user"])
+        try self.validateEnum(appServer, key: "transport", allowed: ["stdio", "websocket", "unix"])
+        try self.validateEnum(appServer, key: "homeScope", allowed: ["agent", "user"])
         try self.validateString(appServer, key: "command")
         try self.validateString(appServer, key: "url")
         try self.validateSecretInput(appServer["authToken"])
         try self.validateHeaders(appServer["headers"])
-        try self.validateStringArray(appServer, key: "${ltfx.n.73e15839f0a8fd5b3a1c.v1}")
-        try self.validateNonEmptyString(appServer, key: "${ltfx.n.eee17e4b776c8c992dfa.v1}")
-        try self.validateBoolean(appServer, key: "${ltfx.n.80bf9697d370b4ae486d.v1}")
-        try self.validatePositiveNumber(appServer, key: "${ltfx.n.9a9e209c2c1a99eef1e0.v1}")
-        try self.validatePositiveNumber(appServer, key: "${ltfx.n.bfc359db0ec6dabd2b31.v1}")
+        try self.validateStringArray(appServer, key: "clearEnv")
+        try self.validateNonEmptyString(appServer, key: "remoteWorkspaceRoot")
+        try self.validateBoolean(appServer, key: "codeModeOnly")
+        try self.validatePositiveNumber(appServer, key: "requestTimeoutMs")
+        try self.validatePositiveNumber(appServer, key: "turnCompletionIdleTimeoutMs")
         try self.validatePositiveNumber(
             appServer,
-            key: "${ltfx.n.d8116b798ab63c67b644.v1}")
+            key: "postToolRawAssistantCompletionIdleTimeoutMs")
         try self.validateEnum(
             appServer,
-            key: "${ltfx.n.2746d313bea632b40775.v1}",
+            key: "approvalPolicy",
             allowed: ["never", "on-request", "on-failure", "untrusted"])
         try self.validateEnum(
             appServer,
@@ -540,18 +540,18 @@ extension MacNodeCodexThreadCatalog {
             allowed: ["read-only", "workspace-write", "danger-full-access"])
         try self.validateEnum(
             appServer,
-            key: "${ltfx.n.a65b90b7f85f8d72f05b.v1}",
+            key: "approvalsReviewer",
             allowed: ["user", "auto_review", "guardian_subagent"])
-        try self.validateStringOrNull(appServer, key: "${ltfx.n.3ecfbe3376b7f2505f58.v1}")
+        try self.validateStringOrNull(appServer, key: "serviceTier")
         try self.validateNetworkProxyConfig(appServer["networkProxy"])
-        try self.validateString(appServer, key: "${ltfx.n.591fd18be92a3ac42328.v1}")
+        try self.validateString(appServer, key: "defaultWorkspaceDir")
         try self.validateExperimentalConfig(appServer["experimental"])
 
-        let transport = try self.optionalConfiguredString(appServer, key: "${ltfx.n.6694ea8075001f6628da.v1}")
-        let homeScope = try self.optionalConfiguredString(appServer, key: "${ltfx.n.b713ed656ff34c2155d8.v1}")
+        let transport = try self.optionalConfiguredString(appServer, key: "transport")
+        let homeScope = try self.optionalConfiguredString(appServer, key: "homeScope")
         let command = try self.optionalConfiguredString(appServer, key: "command")
         let args = try self.configuredArguments(appServer, key: "args")
-        let clearEnv = try self.configuredStringList(appServer, key: "${ltfx.n.73e15839f0a8fd5b3a1c.v1}")
+        let clearEnv = try self.configuredStringList(appServer, key: "clearEnv")
 
         return ConfiguredAppServer(
             transport: transport,
@@ -609,7 +609,7 @@ extension MacNodeCodexThreadCatalog {
         }
         try self.validateKeys(config, allowed: ["enabled", "timeoutMs"])
         try self.validateBoolean(config, key: "enabled")
-        try self.validatePositiveNumber(config, key: "${ltfx.n.39c82dec89e6c8c7e68e.v1}")
+        try self.validatePositiveNumber(config, key: "timeoutMs")
     }
 
     private static func validateComputerUseConfig(_ rawValue: Any?) throws {
@@ -628,8 +628,8 @@ extension MacNodeCodexThreadCatalog {
             "mcpServerName",
         ])
         try self.validateBoolean(config, key: "enabled")
-        try self.validateBoolean(config, key: "${ltfx.n.3fce18fba414997b2efc.v1}")
-        try self.validatePositiveNumber(config, key: "${ltfx.n.4b4b4391ec4e6547091f.v1}")
+        try self.validateBoolean(config, key: "autoInstall")
+        try self.validatePositiveNumber(config, key: "marketplaceDiscoveryTimeoutMs")
         for key in [
             "marketplaceSource",
             "marketplacePath",
@@ -653,8 +653,8 @@ extension MacNodeCodexThreadCatalog {
             "allowWriteControls",
         ])
         try self.validateBoolean(config, key: "enabled")
-        try self.validateBoolean(config, key: "${ltfx.n.5f0af71586b489a5b16b.v1}")
-        try self.validateBoolean(config, key: "${ltfx.n.e3895491ab358cf96aa1.v1}")
+        try self.validateBoolean(config, key: "allowRawTranscripts")
+        try self.validateBoolean(config, key: "allowWriteControls")
         if let rawEndpoints = config["endpoints"] {
             guard let endpoints = rawEndpoints as? [Any] else {
                 throw CatalogError.invalidAppServerConfiguration
@@ -678,7 +678,7 @@ extension MacNodeCodexThreadCatalog {
             for key in ["id", "label", "command", "cwd"] {
                 try self.validateString(endpoint, key: key)
             }
-            try self.validateEnum(endpoint, key: "${ltfx.n.6694ea8075001f6628da.v1}", allowed: ["stdio-proxy"])
+            try self.validateEnum(endpoint, key: "transport", allowed: ["stdio-proxy"])
             try self.validateStringArray(endpoint, key: "args")
             return
         }
@@ -731,7 +731,7 @@ extension MacNodeCodexThreadCatalog {
         for key in ["profileName", "proxyUrl", "socksUrl"] {
             try self.validateNonEmptyString(config, key: key)
         }
-        try self.validateEnum(config, key: "${ltfx.n.8d419a4ebc8333003510.v1}", allowed: ["read-only", "workspace"])
+        try self.validateEnum(config, key: "baseProfile", allowed: ["read-only", "workspace"])
         try self.validateEnum(config, key: "mode", allowed: ["limited", "full"])
         try self.validateStringRecord(
             config,
@@ -739,7 +739,7 @@ extension MacNodeCodexThreadCatalog {
             allowedValues: ["allow", "deny"])
         try self.validateStringRecord(
             config,
-            key: "${ltfx.n.658b4cc8a81ab22ee1dd.v1}",
+            key: "unixSockets",
             allowedValues: ["allow", "none"])
     }
 
@@ -749,7 +749,7 @@ extension MacNodeCodexThreadCatalog {
             throw CatalogError.invalidAppServerConfiguration
         }
         try self.validateKeys(config, allowed: ["sandboxExecServer"])
-        try self.validateBoolean(config, key: "${ltfx.n.b9f05d35a95f1c12ea51.v1}")
+        try self.validateBoolean(config, key: "sandboxExecServer")
     }
 
     private static func validateHeaders(_ rawValue: Any?) throws {
@@ -968,7 +968,7 @@ extension MacNodeCodexThreadCatalog {
         params.cursor = try self.optionalString(raw, key: "cursor", maxLength: self.maxCursorLength)
         params.searchTerm = try self.optionalString(
             raw,
-            key: "${ltfx.n.f16f93648d2d2c7d0f5a.v1}",
+            key: "searchTerm",
             maxLength: self.maxSessionNameLength)
         params.cwd = try self.optionalString(raw, key: "cwd", maxLength: self.maxCwdLength)
         if let value = raw["limit"] {
@@ -997,7 +997,7 @@ extension MacNodeCodexThreadCatalog {
         }
         guard let threadId = try optionalString(
             raw,
-            key: "${ltfx.n.6c90fd916a9af405d435.v1}",
+            key: "threadId",
             maxLength: maxSessionIdLength)
         else {
             throw CatalogError.invalidParams("threadId is required")
