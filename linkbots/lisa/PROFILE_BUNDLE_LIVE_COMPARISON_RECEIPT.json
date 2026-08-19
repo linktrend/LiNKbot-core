@@ -1,9 +1,9 @@
 {
   "receiptType": "lisa_profile_bundle_live_comparison_receipt_v1",
-  "capturedAt": "2026-08-10T15:11:46.714081Z",
+  "capturedAt": "2026-08-19T05:20:45Z",
   "sourceEnvironment": {
     "id": "linkserver01-vps-lisa-production",
-    "codeRevision": "6b8245a4eb8fa6551aad6cbe6898f6190752b1c3",
+    "codeRevision": "2913897ccd8389e54cccb1931f3dff0f56534dbf",
     "workspace": "/var/lib/openclaw/lisa/.openclaw-lisa/workspace"
   },
   "capturePolicy": {
@@ -46,9 +46,9 @@
     },
     {
       "path": "Personality files/TOOLS.md",
-      "repoSha256": "6035ab4f333527f8cf3ed694f53044e23b70573055bc79f189d274e78a8722fd",
-      "liveRawSha256": "6035ab4f333527f8cf3ed694f53044e23b70573055bc79f189d274e78a8722fd",
-      "liveRawBytes": 15388,
+      "repoSha256": "0fd775fbcb4e49081f1d19390d3a9dde85f2c859ce92a0fdd66c85a1b873efe5",
+      "liveRawSha256": "0fd775fbcb4e49081f1d19390d3a9dde85f2c859ce92a0fdd66c85a1b873efe5",
+      "liveRawBytes": 15769,
       "normalization": "none"
     },
     {
@@ -95,15 +95,15 @@
     },
     {
       "path": "Personality files/skills/lisa-tasks/SKILL.md",
-      "repoSha256": "a5ad6d15e87637362a786ca23e8ad3962ad68851e1cf042a0ac6811e81163b01",
-      "liveRawSha256": "a5ad6d15e87637362a786ca23e8ad3962ad68851e1cf042a0ac6811e81163b01",
-      "liveRawBytes": 4627,
+      "repoSha256": "90a9e09552b487e70cd2a6f53a0434a6439388b1d9e129d3ad8251dde58c0386",
+      "liveRawSha256": "90a9e09552b487e70cd2a6f53a0434a6439388b1d9e129d3ad8251dde58c0386",
+      "liveRawBytes": 5117,
       "normalization": "none"
     },
     {
       "path": "Personality files/soul/detail.md",
-      "repoSha256": "9a8d742eb5b1437e23a96ac7d5bb0fa7171e08634dea993eae6a44a603b41aa2",
-      "liveRawSha256": "9a8d742eb5b1437e23a96ac7d5bb0fa7171e08634dea993eae6a44a603b41aa2",
+      "repoSha256": "b43000f56da36f25b8d1b61ae0eb4627775024ec3b4076bdf0214ebaa8ef546d",
+      "liveRawSha256": "b43000f56da36f25b8d1b61ae0eb4627775024ec3b4076bdf0214ebaa8ef546d",
       "liveRawBytes": 2045,
       "normalization": "none"
     },
@@ -151,18 +151,17 @@
     },
     {
       "path": "Personality files/tools/gws.md",
-      "repoSha256": "37ac12a74be13fbd71856a0d29db610733e320421ca6195df021c1bf77a51ecb",
-      "liveRawSha256": "37ac12a74be13fbd71856a0d29db610733e320421ca6195df021c1bf77a51ecb",
-      "liveRawBytes": 15775,
+      "repoSha256": "67d78c4ff6df5f5b95888d83d49678e431d3a0ce44699e4e4ed36b9aaaf46f33",
+      "liveRawSha256": "67d78c4ff6df5f5b95888d83d49678e431d3a0ce44699e4e4ed36b9aaaf46f33",
+      "liveRawBytes": 17455,
       "normalization": "none"
     },
     {
       "path": "Personality files/tools/lisa-safe.md",
-      "repoSha256": "240abeddaa5429e023d03568942d847552907447646b646cd49367ac77e80fe4",
-      "liveRawSha256": "2a32bb919374292ad50087f291e6bb4db559d8bd9fe91c26d6bdabb780748f0c",
-      "liveRawBytes": 5963,
-      "normalization": "strip-cr",
-      "liveNormalizedSha256": "240abeddaa5429e023d03568942d847552907447646b646cd49367ac77e80fe4"
+      "repoSha256": "96f6c5133054f55655233bc003feeca4192eeab869a1c640450b25591e13e72c",
+      "liveRawSha256": "96f6c5133054f55655233bc003feeca4192eeab869a1c640450b25591e13e72c",
+      "liveRawBytes": 8162,
+      "normalization": "none"
     },
     {
       "path": "Personality files/tools/local-coder.md",

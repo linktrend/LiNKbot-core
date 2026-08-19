@@ -4,15 +4,15 @@
   "bundlePurpose": "Version-controlled, non-secret source of truth for Lisa's durable definition and recovery materialization.",
   "checksumAlgorithm": "sha256",
   "sourceSnapshot": {
-    "checkedAt": "2026-08-10T15:11:46.714081Z",
-    "liveCodeRevision": "6b8245a4eb8fa6551aad6cbe6898f6190752b1c3",
+    "checkedAt": "2026-08-19T05:20:45Z",
+    "liveCodeRevision": "2913897ccd8389e54cccb1931f3dff0f56534dbf",
     "liveWorkspace": "/var/lib/openclaw/lisa/.openclaw-lisa/workspace",
     "comparisonMethod": "Path, byte count, and SHA-256 metadata only; document contents and secret values were not recorded in the immutable comparison receipt.",
     "textNormalization": "Repository text uses LF. A live CRLF file may be declared equivalent only when its LF-normalized SHA-256 equals the repository SHA-256."
   },
   "comparisonReceipt": {
     "path": "PROFILE_BUNDLE_LIVE_COMPARISON_RECEIPT.json",
-    "sha256": "b8c0c2049168f8f6fbd0f5d6f32e90cf45daa647c297730c7ad87096addfa108"
+    "sha256": "b207b566fc1ed3eeffbf03c930c8aa6f04874298e63537621987833095c76057"
   },
   "liveRuntimeRule": "Git restores only the required stable definition and intentional deployment asset. Runtime configuration, secrets, private memory, sessions, databases, and other mutable state are restored through their separately governed mechanisms.",
   "requiredStableDefinition": [
@@ -39,7 +39,7 @@
     {
       "path": "Personality files/TOOLS.md",
       "role": "tool-policy",
-      "sha256": "6035ab4f333527f8cf3ed694f53044e23b70573055bc79f189d274e78a8722fd"
+      "sha256": "0fd775fbcb4e49081f1d19390d3a9dde85f2c859ce92a0fdd66c85a1b873efe5"
     },
     {
       "path": "Personality files/VERSION.md",
@@ -74,12 +74,12 @@
     {
       "path": "Personality files/skills/lisa-tasks/SKILL.md",
       "role": "skill-definition",
-      "sha256": "a5ad6d15e87637362a786ca23e8ad3962ad68851e1cf042a0ac6811e81163b01"
+      "sha256": "90a9e09552b487e70cd2a6f53a0434a6439388b1d9e129d3ad8251dde58c0386"
     },
     {
       "path": "Personality files/soul/detail.md",
       "role": "personality-detail",
-      "sha256": "9a8d742eb5b1437e23a96ac7d5bb0fa7171e08634dea993eae6a44a603b41aa2"
+      "sha256": "b43000f56da36f25b8d1b61ae0eb4627775024ec3b4076bdf0214ebaa8ef546d"
     },
     {
       "path": "Personality files/templates/email-daily-digest.md",
@@ -114,12 +114,12 @@
     {
       "path": "Personality files/tools/gws.md",
       "role": "tool-instructions",
-      "sha256": "37ac12a74be13fbd71856a0d29db610733e320421ca6195df021c1bf77a51ecb"
+      "sha256": "67d78c4ff6df5f5b95888d83d49678e431d3a0ce44699e4e4ed36b9aaaf46f33"
     },
     {
       "path": "Personality files/tools/lisa-safe.md",
       "role": "tool-instructions",
-      "sha256": "240abeddaa5429e023d03568942d847552907447646b646cd49367ac77e80fe4"
+      "sha256": "96f6c5133054f55655233bc003feeca4192eeab869a1c640450b25591e13e72c"
     },
     {
       "path": "Personality files/tools/local-coder.md",
@@ -239,8 +239,8 @@
   ],
   "alignment": {
     "requiredStableFiles": 22,
-    "exactLiveMatches": 21,
-    "normalizedLiveMatches": 1,
+    "exactLiveMatches": 22,
+    "normalizedLiveMatches": 0,
     "requiredMissingFromLive": [],
     "requiredHashMismatches": [],
     "deploymentAssetsExact": 1,
