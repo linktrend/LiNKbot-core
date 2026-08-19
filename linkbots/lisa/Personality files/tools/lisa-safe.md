@@ -47,6 +47,10 @@ tools/bin/lisa-safe gws-help gmail +send
 tools/bin/lisa-safe calendar-list --max-results 10
 tools/bin/lisa-safe calendar-agenda --timezone Asia/Taipei
 tools/bin/lisa-safe calendar-agenda --tomorrow --timezone Asia/Taipei
+tools/bin/lisa-safe calendar-events-list --calendar CALENDAR_ID --single-events --max-results 50
+tools/bin/lisa-safe calendar-event-get --calendar CALENDAR_ID --event EVENT_ID
+tools/bin/lisa-safe calendar-event-patch --calendar CALENDAR_ID --event EVENT_ID --summary "Title" --dry-run
+tools/bin/lisa-safe calendar-event-delete --calendar CALENDAR_ID --event EVENT_ID --dry-run
 tools/bin/lisa-safe calendar-insert \
   --calendar calusa@linktrend.media \
   --summary "Title" \
@@ -70,7 +74,7 @@ tools/bin/lisa-safe drive-json \
 tools/bin/lisa-safe smoke-gws
 ```
 
-**Verbs (complete list):** `email-send` · `gmail-triage` · `gws-help` · `calendar-list` · `calendar-agenda` · `calendar-insert` · `drive-list` · `drive-create-doc` · `docs-append` · `drive-share` · `drive-json` · `smoke-gws`
+**Verbs (complete list):** `email-send` · `gmail-triage` · `gws-help` · `calendar-list` · `calendar-agenda` · `calendar-events-list` · `calendar-event-get` · `calendar-event-patch` · `calendar-event-delete` · `calendar-insert` · `drive-list` · `drive-create-doc` · `docs-append` · `drive-share` · `drive-json` · `smoke-gws`
 
 ## Need → command (do this / never that)
 
@@ -81,6 +85,7 @@ tools/bin/lisa-safe smoke-gws
 | Unread email           | `lisa-safe gmail-triage --max 5`                                  | `gws gmail list`, `+list`, `… 2>&1 \| head`                      |
 | gws help               | `lisa-safe gws-help gmail +send`                                  | `gws … --help 2>&1 \| head -N`                                   |
 | Calendar list / agenda | `lisa-safe calendar-list` / `calendar-agenda`                     | `gws calendarList …`, `gws calendar get`, `gws events …`         |
+| Calendar event change  | `lisa-safe calendar-event-get|patch|delete` with explicit calendar and event IDs | direct `gws events …`, guessed event IDs, or series-wide writes without the recurring master |
 | Create calendar event  | `lisa-safe calendar-insert …` (prefer `--dry-run` first)          | multiline `+insert` with `\` / `2>&1`                            |
 | Send email (any body)  | `write` body → `lisa-safe email-send --body-file …`               | `gws gmail send` (no `+`), `--body "$(cat …)"`                   |
 | Create Google Doc      | `lisa-safe drive-create-doc --name "…"`                           | inline `--json '{…}' 2>&1`                                       |

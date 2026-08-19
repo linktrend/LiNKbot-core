@@ -55,6 +55,7 @@ docker run --rm --platform linux/arm64 \
     mkdir -p "$HOME"
     for command in \
       "calendar +agenda" "calendar +insert" "calendar calendarList list" \
+      "calendar events delete" "calendar events get" "calendar events list" "calendar events patch" \
       "docs +write" "docs documents get" \
       "drive files create" "drive files get" "drive files list" "drive permissions create" \
       "gmail +send" "gmail +triage" "gmail users messages get" "gmail users messages list" \

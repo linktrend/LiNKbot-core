@@ -288,6 +288,12 @@ gws_id() {
   [[ "$value" =~ ^[A-Za-z0-9_-]+$ ]] || gws_die "Google resource id has an invalid shape"
 }
 
+gws_calendar_id() {
+  local value=$1
+  [[ "$value" =~ ^[A-Za-z0-9][A-Za-z0-9._%+@-]{0,254}$ ]] ||
+    gws_die "Google Calendar id has an invalid shape"
+}
+
 gws_positive_int() {
   local value=$1
   [[ "$value" =~ ^[1-9][0-9]{0,3}$ ]] || gws_die "value must be a positive integer"

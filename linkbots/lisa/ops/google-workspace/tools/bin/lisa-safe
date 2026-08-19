@@ -12,7 +12,7 @@ source "$SCRIPT_DIR/../../gws-wrapper-common.sh"
 
 usage() {
   cat >&2 <<'EOF'
-Usage: lisa-safe <gmail-triage|gmail-search|gmail-read|email-send|calendar-list|calendar-agenda|calendar-insert|drive-list|drive-read|drive-create-doc|docs-read|docs-append|drive-share|smoke-gws> ...
+Usage: lisa-safe <gmail-triage|gmail-search|gmail-read|email-send|calendar-list|calendar-agenda|calendar-events-list|calendar-event-get|calendar-event-patch|calendar-event-delete|calendar-insert|drive-list|drive-read|drive-create-doc|docs-read|docs-append|drive-share|smoke-gws> ...
 EOF
   exit 64
 }
@@ -119,6 +119,104 @@ case "$1" in
     fi
     [[ -n "$calendar" ]] && args+=(--calendar "$calendar")
     gws_exec_route "calendar +agenda" "${args[@]}"
+    ;;
+
+  calendar-events-list)
+    shift
+    calendar= time_min= time_max= query= max=50 order_by= single_events=false show_deleted=false
+    while (($#)); do
+      case "$1" in
+        --calendar) (($# >= 2)) || gws_die "--calendar requires a value"; calendar=$2; shift 2 ;;
+        --time-min) (($# >= 2)) || gws_die "--time-min requires a value"; time_min=$2; shift 2 ;;
+        --time-max) (($# >= 2)) || gws_die "--time-max requires a value"; time_max=$2; shift 2 ;;
+        --query) (($# >= 2)) || gws_die "--query requires a value"; query=$2; shift 2 ;;
+        --max-results) (($# >= 2)) || gws_die "--max-results requires a value"; max=$2; shift 2 ;;
+        --order-by) (($# >= 2)) || gws_die "--order-by requires a value"; order_by=$2; shift 2 ;;
+        --single-events) single_events=true; shift ;;
+        --show-deleted) show_deleted=true; shift ;;
+        *) gws_die "unsupported calendar-events-list argument" ;;
+      esac
+    done
+    gws_calendar_id "$calendar"
+    gws_positive_int "$max"
+    params="{\"calendarId\":$(gws_json_string "$calendar"),\"maxResults\":$max"
+    [[ -n "$time_min" ]] && params+=",\"timeMin\":$(gws_json_string "$time_min")"
+    [[ -n "$time_max" ]] && params+=",\"timeMax\":$(gws_json_string "$time_max")"
+    [[ -n "$query" ]] && params+=",\"q\":$(gws_json_string "$query")"
+    [[ -n "$order_by" ]] && params+=",\"orderBy\":$(gws_json_string "$order_by")"
+    [[ "$single_events" == true ]] && params+=",\"singleEvents\":true"
+    [[ "$show_deleted" == true ]] && params+=",\"showDeleted\":true"
+    params+='}'
+    gws_exec_route "calendar events list" calendar events list --params "$params" --format json
+    ;;
+
+  calendar-event-get)
+    shift
+    calendar= event=
+    while (($#)); do
+      case "$1" in
+        --calendar) (($# >= 2)) || gws_die "--calendar requires a value"; calendar=$2; shift 2 ;;
+        --event) (($# >= 2)) || gws_die "--event requires a value"; event=$2; shift 2 ;;
+        *) gws_die "unsupported calendar-event-get argument" ;;
+      esac
+    done
+    gws_calendar_id "$calendar"
+    gws_id "$event"
+    gws_exec_route "calendar events get" calendar events get --params "{\"calendarId\":$(gws_json_string "$calendar"),\"eventId\":$(gws_json_string "$event")}" --format json
+    ;;
+
+  calendar-event-patch)
+    shift
+    calendar= event= summary= start= end= location= description= dry_run=false
+    while (($#)); do
+      case "$1" in
+        --calendar) (($# >= 2)) || gws_die "--calendar requires a value"; calendar=$2; shift 2 ;;
+        --event) (($# >= 2)) || gws_die "--event requires a value"; event=$2; shift 2 ;;
+        --summary) (($# >= 2)) || gws_die "--summary requires a value"; summary=$2; shift 2 ;;
+        --start) (($# >= 2)) || gws_die "--start requires a value"; start=$2; shift 2 ;;
+        --end) (($# >= 2)) || gws_die "--end requires a value"; end=$2; shift 2 ;;
+        --location) (($# >= 2)) || gws_die "--location requires a value"; location=$2; shift 2 ;;
+        --description) (($# >= 2)) || gws_die "--description requires a value"; description=$2; shift 2 ;;
+        --dry-run) dry_run=true; shift ;;
+        *) gws_die "unsupported calendar-event-patch argument" ;;
+      esac
+    done
+    gws_calendar_id "$calendar"
+    gws_id "$event"
+    [[ -n "$summary" || -n "$start" || -n "$end" || -n "$location" || -n "$description" ]] ||
+      gws_die "calendar-event-patch requires at least one change"
+    [[ -z "$start" || -n "$end" ]] || gws_die "--start and --end must be supplied together"
+    [[ -z "$end" || -n "$start" ]] || gws_die "--start and --end must be supplied together"
+    json='{'
+    [[ -n "$summary" ]] && json+="\"summary\":$(gws_json_string "$summary"),"
+    if [[ -n "$start" ]]; then
+      json+="\"start\":{\"dateTime\":$(gws_json_string "$start"),\"timeZone\":\"Asia/Taipei\"},"
+      json+="\"end\":{\"dateTime\":$(gws_json_string "$end"),\"timeZone\":\"Asia/Taipei\"},"
+    fi
+    [[ -n "$location" ]] && json+="\"location\":$(gws_json_string "$location"),"
+    [[ -n "$description" ]] && json+="\"description\":$(gws_json_string "$description"),"
+    json="${json%,}}"
+    args=(calendar events patch --params "{\"calendarId\":$(gws_json_string "$calendar"),\"eventId\":$(gws_json_string "$event")}" --json "$json" --format json)
+    [[ "$dry_run" == true ]] && args+=(--dry-run)
+    gws_exec_route "calendar events patch" "${args[@]}"
+    ;;
+
+  calendar-event-delete)
+    shift
+    calendar= event= dry_run=false
+    while (($#)); do
+      case "$1" in
+        --calendar) (($# >= 2)) || gws_die "--calendar requires a value"; calendar=$2; shift 2 ;;
+        --event) (($# >= 2)) || gws_die "--event requires a value"; event=$2; shift 2 ;;
+        --dry-run) dry_run=true; shift ;;
+        *) gws_die "unsupported calendar-event-delete argument" ;;
+      esac
+    done
+    gws_calendar_id "$calendar"
+    gws_id "$event"
+    args=(calendar events delete --params "{\"calendarId\":$(gws_json_string "$calendar"),\"eventId\":$(gws_json_string "$event")}" --format json)
+    [[ "$dry_run" == true ]] && args+=(--dry-run)
+    gws_exec_route "calendar events delete" "${args[@]}"
     ;;
 
   calendar-insert)

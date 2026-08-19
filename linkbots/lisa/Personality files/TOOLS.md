@@ -113,7 +113,7 @@ Lisa's gateway is `security=full` + `ask=off`, **plus** a denylist STOP list (`g
 4. **Files / sessions:** native `read` / `write` / `list` / `glob` / `sessions_*` — never `cat`/`ls` with redirects.
 5. **Carlos Tasks:** `tools/bin/lisa-carlos-tasks …` only (skill `lisa-tasks`).
 
-**Allowed lisa-safe verbs:** `gmail-triage` · `email-send` · `calendar-list` · `calendar-agenda` · `calendar-insert` · `drive-list` · `drive-create-doc` · `docs-append` · `drive-share` · `drive-json` · `gws-help` · `smoke-gws`.
+**Allowed lisa-safe verbs:** `gmail-triage` · `email-send` · `calendar-list` · `calendar-agenda` · `calendar-events-list` · `calendar-event-get` · `calendar-event-patch` · `calendar-event-delete` · `calendar-insert` · `drive-list` · `drive-create-doc` · `docs-append` · `drive-share` · `drive-json` · `gws-help` · `smoke-gws`.
 
 If exec returns `SYSTEM_RUN_DENIED`, do **not** retry the same opaque/wrong shape — use the cheat sheet. Failure modes: [`tools/gws.md`](tools/gws.md).
 
@@ -144,7 +144,7 @@ Native free-running heartbeat is **off** (`heartbeat.every: 0m` — OpenClaw has
 
 ## Google Workspace (`gws`) (Summary)
 
-Primary identity: **`lisa@linktrend.media`** (`~/.config/gws`) for Calendar, Drive, Gmail (send to `@linktrend.media` only). **Default exec path:** `tools/bin/lisa-safe …` (not improvised bare `gws`). Trusted Google/host cron jobs (`lisa-heartbeat-45`, `lisa-morning-digest`, `lisa-calendar-check`) run as isolated `agentTurn` jobs on `agentId: lisa-cron`, whose sandbox is off so host `/opt/homebrew/bin` and `~/.config/gws*` are available. **Do not** set `main.tools.exec.host: gateway` (or `pathPrepend` under it) — that host-exec path was rolled back after it broke all channel responses. For a catch-up digest, force-run `lisa-morning-digest` through the cron CLI/gateway; do not spawn `lisa-cron` from main. **Carlos Tasks exception:** `tools/bin/lisa-carlos-tasks` / skill `lisa-tasks` as `calusa@linktrend.media`. **Not working via CLI: Google Keep** — doctrine only; never `gws keep`.
+Primary identity: **Lisa's VPS Google Workspace identity** (`lisa@linktrend.media`) for Calendar, Drive, and Gmail (send to `@linktrend.media` only). **Default exec path:** `tools/bin/lisa-safe …` (not improvised bare `gws`). The wrapper supplies the pinned native `gws` binary, encrypted file-backed credentials, a controlled HOME, and execution directories outside the OpenClaw profile's `.env` ancestry. The Codex app Google Calendar connector is not an allowed Lisa route; if it is unavailable, use `lisa-safe` or stop and report. Trusted Google/host cron jobs (`lisa-heartbeat-45`, `lisa-morning-digest`, `lisa-calendar-check`) run as isolated `agentTurn` jobs on `agentId: lisa-cron`, whose sandbox is off. **Do not** set `main.tools.exec.host: gateway` (or `pathPrepend` under it) — that host-exec path was rolled back after it broke all channel responses. For a catch-up digest, force-run `lisa-morning-digest` through the cron CLI/gateway; do not spawn `lisa-cron` from main. **Carlos Tasks exception:** `tools/bin/lisa-carlos-tasks` / skill `lisa-tasks` as `calusa@linktrend.media`. **Not working via CLI: Google Keep** — doctrine only; never `gws keep`.
 
 **Full reference:** [`tools/gws.md`](tools/gws.md) · **Cheat sheet:** [`tools/lisa-safe.md`](tools/lisa-safe.md).
 

@@ -110,6 +110,78 @@ describe("VPS Lisa Google Workspace wrappers", () => {
     }
   });
 
+  it("keeps Calendar event inspection and mutation bounded to explicit ids", () => {
+    const fixture = makeFixture();
+    try {
+      const listed = run(
+        lisaSafe,
+        [
+          "calendar-events-list",
+          "--calendar",
+          "routine@linktrend.media",
+          "--time-min",
+          "2026-08-19T00:00:00+08:00",
+          "--time-max",
+          "2026-08-20T00:00:00+08:00",
+          "--single-events",
+          "--max-results",
+          "20",
+        ],
+        fixture,
+      );
+      assert.equal(listed.status, 0, listed.stderr);
+      assert.match(listed.stdout, /calendar\nevents\nlist/);
+      assert.match(listed.stdout, /routine@linktrend\.media/);
+      assert.match(listed.stdout, /"singleEvents":true/);
+
+      const fetched = run(
+        lisaSafe,
+        ["calendar-event-get", "--calendar", "routine@linktrend.media", "--event", "event_1"],
+        fixture,
+      );
+      assert.equal(fetched.status, 0, fetched.stderr);
+      assert.match(fetched.stdout, /calendar\nevents\nget/);
+
+      const patched = run(
+        lisaSafe,
+        [
+          "calendar-event-patch",
+          "--calendar",
+          "routine@linktrend.media",
+          "--event",
+          "event_1",
+          "--summary",
+          "Recovery break",
+          "--start",
+          "2026-08-19T10:15:00+08:00",
+          "--end",
+          "2026-08-19T11:00:00+08:00",
+          "--dry-run",
+        ],
+        fixture,
+      );
+      assert.equal(patched.status, 0, patched.stderr);
+      const patchArgs = patched.stdout.split("\n");
+      const patchJson = patchArgs[patchArgs.indexOf("--json") + 1];
+      assert.deepEqual(JSON.parse(patchJson ?? ""), {
+        summary: "Recovery break",
+        start: { dateTime: "2026-08-19T10:15:00+08:00", timeZone: "Asia/Taipei" },
+        end: { dateTime: "2026-08-19T11:00:00+08:00", timeZone: "Asia/Taipei" },
+      });
+
+      const deleted = run(
+        lisaSafe,
+        ["calendar-event-delete", "--calendar", "routine@linktrend.media", "--event", "event_1", "--dry-run"],
+        fixture,
+      );
+      assert.equal(deleted.status, 0, deleted.stderr);
+      assert.match(deleted.stdout, /calendar\nevents\ndelete/);
+      assert.match(deleted.stdout, /--dry-run/);
+    } finally {
+      rmSync(fixture.directory, { recursive: true, force: true });
+    }
+  });
+
   it("denies external email before invoking gws", () => {
     const fixture = makeFixture();
     const body = path.join(fixture.workRoot, "body.txt");

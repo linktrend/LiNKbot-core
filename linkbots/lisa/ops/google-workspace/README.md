@@ -43,8 +43,10 @@ configuration:
 ```text
 LISA_GOOGLE_WORKSPACE_CONFIG_ROOT=/var/lib/openclaw/lisa/.openclaw-lisa/google-workspace
 LISA_GOOGLE_WORKSPACE_WORK_DIR=/var/lib/openclaw/lisa/.openclaw-lisa/workspace
-LISA_GOOGLE_WORKSPACE_EXEC_CWD=/var/lib/openclaw/lisa/.openclaw-lisa/gws-exec
-LISA_GOOGLE_WORKSPACE_HOME_DIR=/var/lib/openclaw/lisa/.openclaw-lisa/gws-home
+# Keep these two directories outside the OpenClaw profile tree. The profile
+# contains .env files, and gws refuses to run below a dotenv ancestor.
+LISA_GOOGLE_WORKSPACE_EXEC_CWD=/var/lib/openclaw/lisa/gws-exec
+LISA_GOOGLE_WORKSPACE_HOME_DIR=/var/lib/openclaw/lisa/gws-home
 LISA_GWS_NODE_BIN=/usr/bin/node
 ```
 
@@ -85,8 +87,10 @@ credentials-file override are rejected at execution time.
 The two entrypoints are deliberately finite:
 
 - `tools/bin/lisa-safe`: Gmail triage/search/message read and internal-only send,
-  Calendar list/agenda/insert, Drive list/content read/document create/internal
-  share, Docs content read/append, and a read-only smoke.
+  Calendar list/agenda/event list/get/patch/delete/insert, Drive list/content
+  read/document create/internal share, Docs content read/append, and a
+  read-only smoke. Calendar mutation requires an explicit calendar ID and event
+  ID; recurring-series changes must target the recurring master event ID.
 - `tools/bin/lisa-carlos-tasks`: only the approved Tasks list/insert/patch/
   delete operations under the separate `carlos-tasks` configuration directory.
 
