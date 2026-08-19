@@ -11,9 +11,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   renderEmailDailyDigest,
-  renderPipelineOneLiner,
   renderTelegramDailyDigest,
-  renderTelegramHeartbeat,
   type TemplateContext,
 } from "../templates.ts";
 import { renderExecutiveDigest, renderFlashReport } from "./reporting/reporting.ts";
@@ -24,10 +22,8 @@ import {
 } from "./time-management/planner.ts";
 
 export const LISA_TEMPLATE_KINDS = [
-  "telegram-heartbeat",
   "telegram-daily-digest",
   "email-daily-digest",
-  "pipeline-one-liner",
   "executive-digest",
   "flash-report",
   "weekly-plan",
@@ -56,10 +52,8 @@ const PRIVATE_TEMPLATE_KINDS = new Set<LisaTemplateKind>([
 ]);
 
 const WORK_TEMPLATE_KINDS = new Set<LisaTemplateKind>([
-  "telegram-heartbeat",
   "telegram-daily-digest",
   "email-daily-digest",
-  "pipeline-one-liner",
   "executive-digest",
   "flash-report",
   "weekly-plan",
@@ -76,10 +70,8 @@ const STATIC_TEMPLATE_FILES: Readonly<
   Record<
     Exclude<
       LisaTemplateKind,
-      | "telegram-heartbeat"
       | "telegram-daily-digest"
       | "email-daily-digest"
-      | "pipeline-one-liner"
       | "executive-digest"
       | "flash-report"
       | "weekly-plan"
@@ -231,26 +223,12 @@ export function renderLisaJobTemplate(kind: string, input: unknown = {}): string
 
   let output: string;
   switch (kind) {
-    case "telegram-heartbeat":
-      output = renderTelegramHeartbeat(input as TemplateContext);
-      break;
     case "telegram-daily-digest":
       output = renderTelegramDailyDigest(input as TemplateContext);
       break;
     case "email-daily-digest":
       output = renderEmailDailyDigest(input as TemplateContext);
       break;
-    case "pipeline-one-liner": {
-      if (
-        !isRecord(input) ||
-        typeof input.wave !== "string" ||
-        (input.result !== "Clear" && input.result !== "Issues")
-      ) {
-        throw new Error("pipeline-one-liner requires { wave, result: Clear|Issues }");
-      }
-      output = renderPipelineOneLiner(input.wave, input.result);
-      break;
-    }
     case "executive-digest":
       output = renderExecutiveDigest(input as Parameters<typeof renderExecutiveDigest>[0]);
       break;

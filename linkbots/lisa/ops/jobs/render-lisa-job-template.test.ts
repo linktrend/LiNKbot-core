@@ -25,10 +25,8 @@ const context = {
 describe("unified Lisa source renderer", () => {
   it("registers and renders structured existing and domain templates", () => {
     expect(LISA_TEMPLATE_KINDS).toContain("executive-digest");
-    expect(renderLisaJobTemplate("telegram-heartbeat", context)).toContain("Heartbeat");
-    expect(renderLisaJobTemplate("pipeline-one-liner", { wave: "Ship 05", result: "Issues" })).toBe(
-      "Ship 05: Issues\n",
-    );
+    expect(LISA_TEMPLATE_KINDS).not.toContain("telegram-heartbeat");
+    expect(LISA_TEMPLATE_KINDS).not.toContain("pipeline-one-liner");
     expect(
       renderLisaJobTemplate("executive-digest", {
         variant: "morning",
@@ -48,10 +46,10 @@ describe("unified Lisa source renderer", () => {
   it("accepts the {kind,input} JSON envelope and rejects unknown kinds", () => {
     expect(
       renderLisaJobTemplateJson({
-        kind: "pipeline-one-liner",
-        input: { wave: "Pull 07", result: "Clear" },
+        kind: "battery-checkpoint",
+        input: {},
       }),
-    ).toBe("Pull 07: Clear\n");
+    ).toContain("Battery checkpoint");
     expect(() => renderLisaJobTemplate("not-a-template", {})).toThrow(/unknown/i);
     expect(() => renderLisaJobTemplateJson({ input: {} })).toThrow(/structured renderer input/i);
   });

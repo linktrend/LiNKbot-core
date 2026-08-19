@@ -45,18 +45,18 @@ describe("stage-workspace-package", () => {
     assert.equal(manifest.manifestType, "lisa_stage_workspace_package_v1");
     assert.equal(manifest.defaultMutateStageWorkspace, false);
     assert.equal(manifest.liveMutationAllowed, false);
-    assert.equal(manifest.files.length, 50);
+    assert.equal(manifest.files.length, 45);
     assert.deepEqual(manifest.initializeIfMissing, []);
     const sources = new Set(manifest.files.map((f) => f.source));
     assert.ok(sources.has("Personality files/HEARTBEAT.md"));
     assert.ok(sources.has("Personality files/agents/morning-digest.md"));
-    assert.ok(sources.has("Personality files/agents/ship-pull-clock.md"));
-    assert.ok(sources.has("Personality files/agents/repair-dispatcher.md"));
-    assert.ok(sources.has("Personality files/agents/pipeline-status.md"));
-    assert.ok(sources.has("Personality files/templates/telegram-heartbeat.md"));
     assert.ok(sources.has("Personality files/templates/telegram-daily-digest.md"));
     assert.ok(sources.has("Personality files/templates/email-daily-digest.md"));
-    assert.ok(sources.has("Personality files/templates/pipeline-one-liner.md"));
+    assert.ok(!sources.has("Personality files/agents/ship-pull-clock.md"));
+    assert.ok(!sources.has("Personality files/agents/repair-dispatcher.md"));
+    assert.ok(!sources.has("Personality files/agents/pipeline-status.md"));
+    assert.ok(!sources.has("Personality files/templates/telegram-heartbeat.md"));
+    assert.ok(!sources.has("Personality files/templates/pipeline-one-liner.md"));
     assert.ok(sources.has("ops/render-template.ts"));
     assert.ok(sources.has("ops/templates.ts"));
     assert.ok(sources.has("ops/jobs/lisa-job-catalogue.ts"));
@@ -73,7 +73,7 @@ describe("stage-workspace-package", () => {
     const { ok, files } = verifyStageWorkspacePackage({ manifest });
     assert.equal(ok, true);
     assert.ok(files.every((f) => f.ok));
-    assert.equal(files.length, 50);
+    assert.equal(files.length, 45);
     assert.match(hashStageWorkspacePackageManifest(manifest), /^[a-f0-9]{64}$/);
   });
 
@@ -166,7 +166,7 @@ describe("stage-workspace-package", () => {
       assert.equal(receipt.liveLisaTouched, false);
       assert.equal(receipt.hardStops.defaultMutateStageWorkspace, false);
       assert.equal(receipt.installedPaths.length, 0);
-      assert.equal(receipt.files.length, 50);
+      assert.equal(receipt.files.length, 45);
       const written = JSON.parse(
         readFileSync(path.join(dir, "stage-workspace-package-receipt.json"), "utf8"),
       ) as typeof receipt;
@@ -218,8 +218,14 @@ describe("stage-workspace-package", () => {
       assert.deepEqual(liveCommandsBlocked.copyCommands, []);
 
       const liveAlias = path.join(dir, "alias-to-live-lisa");
-      symlinkSync("/Users/linktrend/.openclaw-lisa", liveAlias);
-      const hiddenLiveTarget = path.join(liveAlias, "workspace", "missing", "nested");
+      symlinkSync("/Users/linktrend", liveAlias);
+      const hiddenLiveTarget = path.join(
+        liveAlias,
+        ".openclaw-lisa",
+        "workspace",
+        "missing",
+        "nested",
+      );
       assert.equal(isForbiddenLiveLisaTarget(hiddenLiveTarget), true);
       const symlinkBlocked = planStageWorkspacePackage({
         action: "install",
@@ -254,19 +260,19 @@ describe("stage-workspace-package", () => {
       assert.deepEqual(receipt.initializedPaths, []);
       assert.ok(existsSync(path.join(target, "HEARTBEAT.md")));
       assert.ok(existsSync(path.join(target, "agents", "morning-digest.md")));
-      assert.ok(existsSync(path.join(target, "agents", "ship-pull-clock.md")));
-      assert.ok(existsSync(path.join(target, "agents", "repair-dispatcher.md")));
-      assert.ok(existsSync(path.join(target, "agents", "pipeline-status.md")));
-      assert.ok(existsSync(path.join(target, "templates", "telegram-heartbeat.md")));
+      assert.equal(existsSync(path.join(target, "agents", "ship-pull-clock.md")), false);
+      assert.equal(existsSync(path.join(target, "agents", "repair-dispatcher.md")), false);
+      assert.equal(existsSync(path.join(target, "agents", "pipeline-status.md")), false);
+      assert.equal(existsSync(path.join(target, "templates", "telegram-heartbeat.md")), false);
       assert.ok(existsSync(path.join(target, "templates", "telegram-daily-digest.md")));
       assert.ok(existsSync(path.join(target, "templates", "email-daily-digest.md")));
-      assert.ok(existsSync(path.join(target, "templates", "pipeline-one-liner.md")));
+      assert.equal(existsSync(path.join(target, "templates", "pipeline-one-liner.md")), false);
       assert.ok(existsSync(path.join(target, "ops", "render-template.ts")));
       assert.ok(existsSync(path.join(target, "ops", "templates.ts")));
       assert.ok(existsSync(path.join(target, "tools", "bin", "lisa-safe")));
       assert.ok(existsSync(path.join(target, "tools", "bin", "lisa-carlos-tasks")));
       assert.equal(existsSync(path.join(target, "memory")), false);
-      assert.equal(receipt.copyCommands.length, 50);
+      assert.equal(receipt.copyCommands.length, 45);
       assert.ok(existsSync(path.join(target, "ops", "jobs", "lisa-job-catalogue.ts")));
       assert.ok(existsSync(path.join(target, "ops", "jobs", "render-lisa-job-template.ts")));
       assert.ok(
@@ -278,29 +284,7 @@ describe("stage-workspace-package", () => {
         existsSync(path.join(target, "ops", "jobs", "health", "templates", "monthly-report.md")),
       );
 
-      const inputPath = path.join(dir, "renderer-input.json");
-      writeFileSync(
-        inputPath,
-        JSON.stringify({
-          kind: "pipeline-one-liner",
-          input: { wave: "Ship 05", result: "Issues" },
-        }),
-      );
       const tsxLoader = createRequire(import.meta.url).resolve("tsx");
-      const rendered = spawnSync(
-        process.execPath,
-        [
-          "--import",
-          tsxLoader,
-          path.join(target, "ops", "jobs", "render-lisa-job-template.ts"),
-          "pipeline-one-liner",
-          inputPath,
-        ],
-        { cwd: target, encoding: "utf8" },
-      );
-      assert.equal(rendered.status, 0, rendered.stderr);
-      assert.equal(rendered.stdout, "Ship 05: Issues\n");
-
       const stdinRendered = spawnSync(
         process.execPath,
         [
@@ -312,14 +296,14 @@ describe("stage-workspace-package", () => {
         {
           cwd: target,
           input: JSON.stringify({
-            kind: "pipeline-one-liner",
-            input: { wave: "Pull 07", result: "Clear" },
+            kind: "battery-checkpoint",
+            input: {},
           }),
           encoding: "utf8",
         },
       );
       assert.equal(stdinRendered.status, 0, stdinRendered.stderr);
-      assert.equal(stdinRendered.stdout, "Pull 07: Clear\n");
+      assert.match(stdinRendered.stdout, /Battery checkpoint/);
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }

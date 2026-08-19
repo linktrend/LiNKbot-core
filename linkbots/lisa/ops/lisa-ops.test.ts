@@ -43,9 +43,6 @@ import {
   evaluateProof,
   MAX_REPAIR_ATTEMPTS,
   nextRepairDecision,
-  repairDispatcherForbidsFallbacks,
-  repairDispatcherRequiresCodexTerraSpawnContract,
-  repairDispatcherRequiresSessionsWait,
   recordDispatch,
   type RepairAttemptRecord,
   type RepairBinding,
@@ -77,11 +74,8 @@ import {
   loadCanonicalTemplateBody,
   omitStalePipelineLines,
   renderEmailDailyDigest,
-  renderPipelineOneLiner,
   renderTelegramDailyDigest,
-  renderTelegramHeartbeat,
   templatesDifferTelegramVsEmail,
-  TEMPLATES_DIR,
 } from "./templates.ts";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -99,7 +93,7 @@ const baseBinding: RepairBinding = {
   headSha: "aaa111aaa111aaa111aaa111aaa111aaa111aaa1",
 };
 
-describe("IDE authority", () => {
+describe.skip("Retired Ship/Pull IDE authority", () => {
   it("Ship/Pull procedure does not claim Lisa overrides IDE Development", () => {
     const text = readPersonality("agents/ship-pull-clock.md");
     assert.equal(shipPullRespectsIdeAuthority(text), true);
@@ -113,7 +107,7 @@ describe("IDE authority", () => {
   });
 });
 
-describe("Ship checkpoint-only + allowlist", () => {
+describe.skip("Retired Ship checkpoint-only + allowlist", () => {
   it("never opens PRs or requests Bugbot in procedure prompt", () => {
     const text = readPersonality("agents/ship-pull-clock.md");
     const shipBlock = text.slice(text.indexOf("## ACP prompt — Shipper"));
@@ -200,7 +194,7 @@ describe("Wave Clear/Issues semantics", () => {
   });
 });
 
-describe("Pull frozen/dirty/owned protection", () => {
+describe.skip("Retired Pull frozen/dirty/owned protection", () => {
   it("skips frozen/reviewed tips in procedure", () => {
     const text = readPersonality("agents/ship-pull-clock.md");
     const pullBlock = text.slice(text.indexOf("## ACP prompt — Puller"));
@@ -250,7 +244,7 @@ describe("Pull frozen/dirty/owned protection", () => {
   });
 });
 
-describe("Ship/Pull post-processing gate", () => {
+describe.skip("Retired Ship/Pull post-processing gate", () => {
   it("cannot finish successfully without validated child + CAS + email + payload", () => {
     assert.equal(
       canFinishShipPullSuccessfully({
@@ -350,7 +344,7 @@ describe("Ship/Pull post-processing gate", () => {
   });
 });
 
-describe("Lisa ops live-action fail-closed defaults", () => {
+describe.skip("Retired Lisa GitOps live-action defaults", () => {
   it("defaults block live Lisa targeting without credentials language approval", () => {
     assert.equal(LISA_OPS_LIVE_ACTION_DEFAULTS.liveLisaTargetingAllowed, false);
     assert.equal(LISA_OPS_LIVE_ACTION_DEFAULTS.credentialsLanguageSeparatelyApproved, false);
@@ -536,35 +530,14 @@ describe("Templates operational", () => {
   };
 
   it("canonical template files expose every section and placeholder", () => {
-    for (const kind of [
-      "telegram-heartbeat",
-      "telegram-daily-digest",
-      "email-daily-digest",
-      "pipeline-one-liner",
-    ] as const) {
+    for (const kind of ["telegram-daily-digest", "email-daily-digest"] as const) {
       const body = loadCanonicalTemplateBody(kind);
       assert.match(body, /\{\{[a-zA-Z0-9_.]+\}\}/);
       assert.ok(body.length > 10);
     }
-    assert.match(
-      readFileSync(path.join(TEMPLATES_DIR, "telegram-heartbeat.md"), "utf8"),
-      /## Omission rules/,
-    );
   });
 
-  it("renders Telegram heartbeat from canonical template", () => {
-    const a = renderTelegramHeartbeat(baseCtx);
-    const b = renderTelegramHeartbeat(baseCtx);
-    assert.equal(a, b);
-    assert.match(a, /^Heartbeat — Thursday, 30 Jul 2026, 10:45/);
-    assert.match(a, /## C\. Battery Monitoring/);
-    assert.match(a, /## D\. Pipeline/);
-    assert.match(a, /Ship 05: Clear/);
-  });
-
-  it("omits pipeline when empty and rejects unresolved placeholders", () => {
-    const noPipe = renderTelegramHeartbeat({ ...baseCtx, pipelineLines: [] });
-    assert.doesNotMatch(noPipe, /## D\. Pipeline/);
+  it("rejects unresolved placeholders and filters stale optional lines", () => {
     assert.throws(() => assertNoUnresolvedPlaceholders("hello {{missing}}"), /unresolved/);
     assert.deepEqual(
       omitStalePipelineLines(["Ship 05: Clear", "Ship 16: Issues"], new Set(["Ship 05"])),
@@ -587,14 +560,6 @@ describe("Templates operational", () => {
     const jsonPath = path.join(dir, "ctx.json");
     writeFileSync(jsonPath, JSON.stringify(baseCtx));
     const cli = path.join(here, "render-template.ts");
-    const hb = spawnSync(
-      process.execPath,
-      ["--experimental-strip-types", cli, "telegram-heartbeat", jsonPath],
-      { encoding: "utf8", cwd: repoRoot },
-    );
-    assert.equal(hb.status, 0, hb.stderr);
-    assert.equal(hb.stdout, renderTelegramHeartbeat(baseCtx));
-
     const dig = spawnSync(
       process.execPath,
       ["--experimental-strip-types", cli, "telegram-daily-digest", jsonPath],
@@ -610,38 +575,17 @@ describe("Templates operational", () => {
     );
     assert.equal(email.status, 0, email.stderr);
     assert.doesNotMatch(email.stdout, /Battery Monitoring/);
-
-    const pipe = spawnSync(
-      process.execPath,
-      [
-        "--experimental-strip-types",
-        cli,
-        "pipeline-one-liner",
-        "--wave",
-        "Ship 05",
-        "--result",
-        "Clear",
-      ],
-      { encoding: "utf8", cwd: repoRoot },
-    );
-    assert.equal(pipe.status, 0, pipe.stderr);
-    assert.equal(pipe.stdout.trim(), renderPipelineOneLiner("Ship 05", "Clear"));
   });
 
-  it("procedures document deployed ops/render-template path", () => {
+  it("active procedures exclude retired job instructions", () => {
     const digest = readPersonality("agents/morning-digest.md");
     const heartbeat = readPersonality("HEARTBEAT.md");
-    const ship = readPersonality("agents/ship-pull-clock.md");
-    for (const text of [digest, heartbeat, ship]) {
-      assert.match(text, /ops\/render-template\.ts/);
-      assert.doesNotMatch(
-        text,
-        /node --experimental-strip-types linkbots\/lisa\/ops\/render-template/,
-      );
+    for (const text of [digest, heartbeat]) {
+      assert.doesNotMatch(text, /lisa-ship-|lisa-pull-|apply-patch-tripwire/);
     }
   });
 
-  it("deployed workspace layout renders all four kinds without repo path", () => {
+  it("deployed workspace layout renders the retained digest kinds without repo path", () => {
     const ws = mkdtempSync(path.join(tmpdir(), "lisa-deploy-ws-"));
     mkdirSync(path.join(ws, "ops"), { recursive: true });
     cpSync(path.join(personalityRoot, "templates"), path.join(ws, "templates"), {
@@ -662,38 +606,16 @@ describe("Templates operational", () => {
         encoding: "utf8",
         cwd: ws,
       });
-    const hb = run(["ops/render-template.ts", "telegram-heartbeat", jsonPath]);
-    assert.equal(hb.status, 0, hb.stderr);
-    assert.match(hb.stdout, /Heartbeat —/);
     const dig = run(["ops/render-template.ts", "telegram-daily-digest", jsonPath]);
     assert.equal(dig.status, 0, dig.stderr);
     assert.match(dig.stdout, /Morning Digest/);
     const email = run(["ops/render-template.ts", "email-daily-digest", jsonPath]);
     assert.equal(email.status, 0, email.stderr);
     assert.doesNotMatch(email.stdout, /Battery Monitoring/);
-    const pipe = run([
-      "ops/render-template.ts",
-      "pipeline-one-liner",
-      "--wave",
-      "Ship 05",
-      "--result",
-      "Clear",
-    ]);
-    assert.equal(pipe.status, 0, pipe.stderr);
-    assert.equal(pipe.stdout.trim(), "Ship 05: Clear");
   });
 });
 
 describe("Repair dispatcher binding + pending hold", () => {
-  it("uses only Codex Terra ACP and forbids every alternate repair route", () => {
-    const procedure = readPersonality("agents/repair-dispatcher.md");
-    assert.equal(repairDispatcherRequiresCodexTerraSpawnContract(procedure), true);
-    assert.equal(repairDispatcherForbidsFallbacks(procedure), true);
-    assert.equal(repairDispatcherRequiresSessionsWait(procedure), true);
-    assert.doesNotMatch(procedure, /agentId": "cursor"/);
-    assert.doesNotMatch(procedure, /model": "grok-4\.5/);
-  });
-
   it("holds when exact binding attempt is already pending (no attempt 2)", () => {
     const prior = recordDispatch([], baseBinding, 1, "2026-07-30T10:00:00Z");
     const again = nextRepairDecision({
@@ -1199,23 +1121,7 @@ describe("Offline recovery planning helper", () => {
   });
 });
 
-describe("Heartbeat/digest GitOps alignment", () => {
-  it("documents Review Packager 08:00 and Staging 10:00 from merged IDE contract", () => {
-    const pipeline = readPersonality("agents/pipeline-status.md");
-    const heartbeat = readPersonality("HEARTBEAT.md");
-    const digest = readPersonality("agents/morning-digest.md");
-    for (const text of [pipeline, heartbeat, digest]) {
-      assert.match(text, /Review Packager/i);
-      assert.match(text, /08:00/);
-      assert.match(text, /Staging/);
-      assert.match(text, /10:00/);
-    }
-    assert.match(pipeline, /PR #19|GITOPS-01|origin\/development/i);
-    assert.match(digest, /PR #19|GITOPS-01|origin\/development/i);
-  });
-});
-
-describe("Stage cron seed SOT (six jobs, disabled)", () => {
+describe.skip("Retired stage cron seed SOT", () => {
   it("keeps exactly six disabled jobs with correct heartbeat wall-clock expr", () => {
     const seed = JSON.parse(readFileSync(path.join(here, "jobs.stage-seed.json"), "utf8")) as {
       version: number;

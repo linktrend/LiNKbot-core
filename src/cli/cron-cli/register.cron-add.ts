@@ -94,6 +94,8 @@ export function registerCronAddCommand(cron: Command) {
       .option("--delete-after-run", "Delete one-shot job after it succeeds", false)
       .option("--keep-after-run", "Keep one-shot job after it succeeds", false)
       .option("--agent <id>", "Agent id for this job")
+      .option("--owner-agent <id>", "Agent that owns and can manage this job")
+      .option("--owner-session-key <key>", "Owning session key (requires --owner-agent)")
       .option("--session <target>", "Session target (main|isolated)")
       .option("--session-key <key>", "Session key for job routing (e.g. agent:my-agent:my-session)")
       .option("--wake <mode>", "Wake mode (now|next-heartbeat)", "now")
@@ -187,6 +189,12 @@ export function registerCronAddCommand(cron: Command) {
 
             const rawAgentId = normalizeOptionalString(opts.agent);
             const agentId = rawAgentId ? sanitizeAgentId(rawAgentId) : undefined;
+            const rawOwnerAgentId = normalizeOptionalString(opts.ownerAgent);
+            const ownerAgentId = rawOwnerAgentId ? sanitizeAgentId(rawOwnerAgentId) : undefined;
+            const ownerSessionKey = normalizeOptionalString(opts.ownerSessionKey);
+            if (ownerSessionKey && !ownerAgentId) {
+              throw new Error("--owner-session-key requires --owner-agent");
+            }
 
             const hasAnnounce = Boolean(opts.announce) || opts.deliver === true;
             const hasNoDeliver = opts.deliver === false;
@@ -477,6 +485,12 @@ export function registerCronAddCommand(cron: Command) {
                 : { enabled: !opts.disabled }),
               deleteAfterRun: opts.deleteAfterRun ? true : opts.keepAfterRun ? false : undefined,
               agentId,
+              owner: ownerAgentId
+                ? {
+                    agentId: ownerAgentId,
+                    ...(ownerSessionKey ? { sessionKey: ownerSessionKey } : {}),
+                  }
+                : undefined,
               sessionKey,
               schedule,
               ...(pacingMin || pacingMax

@@ -1,163 +1,27 @@
-# HEARTBEAT.md — Active Checklist
+# Lisa Scheduled Checks
 
-**Candidate-only / non-live default (fail-closed):** Workshop copies of this checklist do not authorize live heartbeat actions, cron edits, or credential use against `~/.openclaw-lisa`. Live targeting is opt-in and requires separately approved credentials language in docs/contracts.
+OpenClaw's free-running native heartbeat is disabled. Lisa's approved periodic wake-up is the silent hourly **Battery Evaluation** cron job. It checks the private battery ledger and sends a message only when an approved 35% alert is due. It is not the retired `lisa-heartbeat-45` job.
 
-## Schedule (authoritative — Asia/Taipei)
+## Job source of truth
 
-| Local time                                                                      | Job                        | Telegram                | Notes                                                                                              |
-| ------------------------------------------------------------------------------- | -------------------------- | ----------------------- | -------------------------------------------------------------------------------------------------- |
-| **00:45, 02:45, 04:45, 06:45, 10:45, 12:45, 14:45, 16:45, 18:45, 20:45, 22:45** | `lisa-heartbeat-45`        | Announce → `1123023078` | Wall-clock HEARTBEAT.md output (this file). **No 08:45** (digest owns that slot)                   |
-| **08:30**                                                                       | `lisa-morning-digest`      | Announce → `1123023078` | Full morning digest (email + Telegram) + Main Approve when needed. **No heartbeat** at 08:30/08:45 |
-| **17:45**                                                                       | `battery-selfie-1745`      | Announce → `1123023078` | Selfie reminder only — **no heartbeat cron** (avoid burying selfie)                                |
-| **21:45**                                                                       | `battery-selfie-2145`      | Announce → `1123023078` | Selfie reminder only — **no heartbeat cron**                                                       |
-| Event-driven                                                                    | `battery-monitor-alert-35` | Announce → `1123023078` | One-shot when projected/confirmed ≤35% while unplugged                                             |
+The live cron scheduler is the only source of truth for what will run. When Carlos asks for Lisa's next job, job list, schedule, or whether a job is active:
 
-**Mechanism (Option B):** Native OpenClaw heartbeat has **no wall-clock `:45` anchor** (`agents.defaults.heartbeat.every` / phase hash only). Free-running native heartbeat is **disabled** (`every: "0m"`). Visible heartbeats are the cron job `lisa-heartbeat-45` with expr `45 0,2,4,6,10,12,14,16,18,20,22 * * *` Asia/Taipei (exact — includes 06:45, excludes 08:45), isolated `agentTurn`, `agentId: lisa-cron`, announce → Telegram.
+1. Call the cron list tool with disabled jobs included.
+2. Answer from the returned live jobs and their next-run times in Asia/Taipei.
+3. Never infer a job from old documentation, memory, filenames, or conversation history.
+4. Never call a documented job "unregistered" unless the live list has been checked in that same response.
+5. If the list contains only Memory Dreaming, report a scheduler-visibility fault. Do not claim the other approved jobs are absent.
 
-Each cycle runs in an **isolated fresh session** with **no conversation history** — use tools and files (daily memory, session logs, cron/state) to discover what happened since the last cycle; do not assume chat continuity. The job is assigned to `lisa-cron`, whose `sandbox.mode: off` means isolated fresh transcript, not Docker clean room; host `tools/bin/lisa-safe` / `lisa-carlos-tasks` (`gws`) use the Mac mini environment. `main` remains the default chat agent with `sandbox.mode: non-main`; **do not** set `main.tools.exec.host: gateway`. Trusted cron routing is enforced by cron `agentId`, not model judgment. Never echo internal/runtime metadata; always send the visible **Heartbeat output format** below (not `HEARTBEAT_OK` alone). Keep this checklist small; batch checks, don't burn tokens re-reading unrelated files.
+Lisa's main agent owns the approved operational jobs. The `lisa-cron` agent executes them. This separation lets Lisa list and manage her jobs without giving the chat agent direct host execution.
 
-## Every :45 Cycle — Data Gathering
+## Approved recurring job families
 
-Gather real data each cycle (never invent; never default Unanswered Messages or Coding Work & Evals to "No" without actually checking session/memory/logs).
+- Executive Digest: delivered by 07:00 and 17:00.
+- Flash Reports: delivered by 10:45, 12:45, 14:45, 20:45, and 22:45.
+- Battery Evaluation: hourly and normally silent.
+- Selfie Compliance: 17:45 reminder, conditional 21:45 reminder, midnight finalizer.
+- Private Health: 08:15, 13:15, and 22:45 checkpoints; monthly reassessment/report; private Drive export.
+- Time Management: Monday plan and last-workday monthly report check.
+- Memory Dreaming: separately managed by OpenClaw memory-core.
 
-### HARD TOOL CONTRACT (heartbeat — no improvisation)
-
-This isolated cron **must not** invent shell. Opaque shapes (`|`, `2>&1`, `||`, `$(…)`, `head`, redirects, `cat … | python3 -c`) are **hard-denied** and waste the whole cycle (Control UI Connect timeout). Use **only**:
-
-| Check                                  | Allowed tools / exact commands                                                                                                                                                                        |
-| -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Files (battery, memory, openclaw.json) | Native `read` tool — **never** `cat` / `python3 -c` / pipes                                                                                                                                           |
-| Sessions / Cursor state                | Native `sessions_list` (or `sessions.list`) tool — **never** `ls`/`find` on session dirs                                                                                                              |
-| Cron health                            | Gateway CLI unpiped: `/opt/homebrew/opt/node@24/bin/node /Users/linktrend/Projects/openclaw_prime/openclaw.mjs --profile lisa cron list` — **or** native `cron` tool `list` if available for this job |
-| Email                                  | **Only:** `tools/bin/lisa-safe gmail-triage --max 5` — **never** bare improvised `gws gmail list` / pipes / `2>&1`                                                                                    |
-| Calendar                               | **Only:** `tools/bin/lisa-safe calendar-agenda --timezone Asia/Taipei` (and `calendar-list` if needed) — **never** `gws calendarList` / `gws events` / pipes                                          |
-| Tasks                                  | Exact: `tools/bin/lisa-carlos-tasks …` (see below) — **never** bare `gws tasks`                                                                                                                       |
-
-If a command is hard-denied because an opaque shell form was used, retry the exact allowed unpiped command once. Continue only if that retry succeeds. If the retry is denied or fails, stop the run and preserve the fatal failure; do not emit a complete best-effort heartbeat from missing checks.
-
-1. **Unanswered messages** — Check for any unanswered messages from Carlos (Telegram/Web UI) since the last cycle that weren't fully replied to or didn't get necessary info captured into records. Note or handle if actionable. Compute from real session/data records via `sessions_list` / memory `read` — do **not** assume "No" without checking.
-2. **Cursor/ACP session state** — Count **only live/recent coding activity since the last heartbeat cycle** (~2h window). Use `sessions_list` (prefer recent/active) + memory files. **Ignore stale failed ACP sessions** from earlier config bugs (e.g. old `agent:cursor:acp:*` keys whose only issue was an unadvertised model like `cursor-grok-4.5-medium` / medium no-fast, or open issues titled "Fix wired default model…"). Those are **not** current coding work and must **not** make Section B Yes or invent Open Issues. Section B for heartbeat is **Yes/No only** — never print Method/Description/Open Issues here (that detail is morning-digest only). Report Cursor failure in Section B only if a **new** spawn/fallback actually happened in this cycle window.
-3. **Local coding-model use** — Any **new** use since the last heartbeat of local-coder / `Qwen 9B (Local)` for coding: what task, outcome. Infer from memory/logs / recent `sessions_list`. Do **not** assume none without checking; do **not** re-count hours-old completed tests as open issues.
-4. **Eval comparisons** — Inspect only sanitized receipts produced by the `nemotron-shadow-eval` plugin. Report whether a sampled comparison occurred and its primary/shadow models. Never initiate a comparison from heartbeat, expose stored excerpts, or invent a quality verdict; receipts remain `unjudged` until human review.
-5. **Email** — **Only:** `tools/bin/lisa-safe gmail-triage --max 5`. Never invent `gws gmail list` / `+list`; never pipes/`2>&1`. If the verb is somehow missing, stop — do not improvise bare `gws`.
-6. **Calendar / Tasks (for A. Work summary Yes/No)** — Lightweight Yes/No only. Exact commands:
-   ```bash
-   tools/bin/lisa-safe calendar-agenda --timezone Asia/Taipei
-   tools/bin/lisa-carlos-tasks tasklists list
-   # Then for each list id returned:
-   tools/bin/lisa-carlos-tasks tasks list --params '{"tasklist":"<LIST_ID>","showCompleted":false}'
-   ```
-   Skill: `skills/lisa-tasks/SKILL.md`. **Tasks: Yes.** if any open task exists on any Carlos list; else **No.** Do **not** invent helpers like `gws tasks +list` or `gws tasks --help | head`. **Never loop** on `--help`/piped variants. If the exact unpiped `lisa-carlos-tasks` call returns a normal non-denial error, stop retrying tasks-related exec calls for this cycle. The Summary line **must still be a plain `Yes.` or `No.`** — "Unknown"/"unavailable"/"check not available" is never a valid Summary value. For a normal non-denial error, fall back to best-effort Yes/No from the most recent successful check (this cycle's earlier data, last cycle's memory, or the last morning digest). A hard denial follows the fatal retry rule above. Never count Docs Assign / Chat Space assign / Lisa-primary `gws tasks`.
-7. **Always report when checks complete** — Send Carlos the full Heartbeat output format this cycle even if everything is "all clear." Carlos wants visible output every completed cycle, not silence. The only exception is an unrecovered hard denial under the fatal retry rule above; do not turn missing checks into a misleading complete report. Prefer finishing within a few minutes — do not repeatedly retry denied opaque shell.
-
-Quiet hours (`user/schedule.md`, 23:00–07:00) suppress only non-urgent proactive contact; Lisa keeps working and monitoring, and safety/compliance warnings still go out. Send the Heartbeat format for every completed cycle regardless of quiet hours (Carlos opted into always-visible heartbeat output); an unrecovered hard denial remains the fatal exception above.
-
-## Pipeline checkpoints (Ship / Pull / Promote)
-
-**Primary clock:** Lisa Option A — crons `lisa-ship-05` / `lisa-pull-07` / `lisa-ship-16` / `lisa-pull-18` use only `sessions_spawn` with `runtime="acp"`, `agentId="codex"`, `model="openai/gpt-5.6-terra"`, and `thinking="medium"` (see `agents/ship-pull-clock.md`). Mini must be awake. If Codex ACP or Terra Medium is unavailable, record `STAGE_SKIPPED_acp`, report `WAVE: Issues`, and stop. Explicitly forbidden: Cursor/Grok, Cursor Automation/webhook, internal subagents, direct/self edits, or alternate automation as execution or fallback. `sessions_wait` remains required; `sessions_yield` remains forbidden.
-
-When this cycle’s wall-clock is near or after a checkpoint (05:00 Ship 05, 07:00 Pull 07, 16:00 Ship 16, 18:00 Pull 18, Tue/Fri **08:00 Review Packager**, Tue/Fri **10:00 Staging**, Mon 08:00 main package), `read` `memory/pipeline-status.md` if present and include **section D** below. Full procedure: `agents/pipeline-status.md`. Compare the stored `Cycle date` with the Asia/Taipei digest cycle being reported; include Ship/Pull lines only when it matches, and never include the metadata line. One result line per checkpoint only — no lists/links. Distinguish checkpointed / review-ready / under-review / merged / conflict / repair pending / blocked in private diagnosis; Telegram stays one-liners. If the file is missing or its Ship/Pull results are stale/undated, omit those lines rather than inventing Clear. Also verify the four ship/pull cron jobs are enabled when listing cron health. ### Template load / fill (deterministic)
-
-1. Read canonical template `templates/telegram-heartbeat.md` (every section, heading, omission rule, and `{{placeholder}}` is in that file).
-2. Build a JSON context matching deployed `ops/templates.ts` `TemplateContext`.
-3. Render with Lisa-executable (cwd = workspace root `/Users/linktrend/.openclaw-lisa/workspace`):
-   `node --experimental-strip-types ops/render-template.ts telegram-heartbeat <json-path>`
-4. Reject any output that still contains `{{...}}`. Same inputs → identical body.
-5. Omit Pipeline / Main Approve by leaving those placeholders empty (renderer omits empty optional blocks).
-
-**Monday Main Approve fallback:** the 08:30 digest owns the normal ask. After 08:30 Monday, if `Main ready date` is today, `Main ready (Mon): Clear`, no decision is recorded today, and no current-day `Main approve claim` exists from the last two hours, use the compare-and-swap `edit` protocol in `agents/pipeline-status.md` to claim the current timestamp, then append the same short Main Approve ask used by the digest after section D. This recovers late readiness or failed delivery while preventing concurrent duplicates. Carlos still answers Approve on Telegram; the main session records today's decision before dispatching or deferring.
-
-Ship/Pull **status emails** are **not** a heartbeat duty — Lisa sends those one-liner emails from the ship/pull cron after each wave (see `agents/ship-pull-clock.md`).
-
-## Battery Monitoring Oversight
-
-Each cycle: (1) verify `memory/battery-monitor.md` and `memory/battery-monitor-state.json` exist, are readable, and agree — use the `read` tool on both files directly (same approach as `agents/morning-digest.md`), **not** a shell `ls`/`cat` check. If a shell check is ever unavoidable, run it relative to the workspace with no `cd` and no pipe/redirect (e.g. `ls -la memory/battery-monitor.md memory/battery-monitor-state.json`) — `~/.openclaw-lisa/workspace` is already the default working directory; (2) verify `lisa-morning-digest` (08:30), `lisa-heartbeat-45`, `battery-selfie-1745`, and `battery-selfie-2145` are enabled and healthy; (3) **reconcile the event-driven 35% Telegram alert** with newest state — see **35% alert scheduling** below; **never** create 45% or 98% projected one-shot jobs (deleted); if `pendingAlert35.needed` is set by digest, fulfill or clear it here; skip scheduling if already plugged; if expected OR confirmed charge is already ≤35% and unplugged, send the Telegram alert now (or ensure a due one-shot exists) and clear pending; (4) after every new report or confirmed state change, recalculate in Asia/Taipei using learned rates or defaults of +30 pp/h charging and −6.5 discharging; (5) refresh Routine Changes from Carlos reports + Google Calendar named **Routine**.
-
-**Persist-before-other-work:** When Carlos reports battery/plug/plan/selfie/routine in Telegram (including dual-intent messages), the main session must `write` both Battery Monitoring files **before** any other task. Saying "I'll update" without a `write` tool call is a failure — treat missing writes as stale/impossible state and surface them in the heartbeat Checks.
-
-### 35% alert scheduling (heartbeat / main — never digest)
-
-Isolated cron jobs **cannot** use the `cron` tool to `add`/`update`/`remove` other jobs (`Cron tool is restricted to the current cron job` — Jul 21 digest bug). Digest may only write `pendingAlert35` in state.
-
-From **`lisa-heartbeat-45`** (and main session when Carlos reports):
-
-1. Update `pendingAlert35` in `battery-monitor-state.json` as needed.
-2. Schedule/cancel one-shot `battery-monitor-alert-35` via **gateway CLI exec** (not the cron tool), unpiped:
-   ```bash
-   /opt/homebrew/opt/node@24/bin/node /Users/linktrend/Projects/openclaw_prime/openclaw.mjs --profile lisa cron add --name battery-monitor-alert-35 --at <ISO+08:00> --tz Asia/Taipei --session isolated --agent main --announce --channel telegram --to 1123023078 --delete-after-run --light-context --message "Battery Monitoring 35% alert: expected or confirmed charge at/below 35% while unplugged. Tell Carlos to plug in now. Telegram only."
-   ```
-3. Cancel with the same CLI (`cron list` then `cron rm <id>` for that alert job only).
-4. If exec is denied once: stop retrying; leave `pendingAlert35` for main session. Main session may use the normal `cron` tool freely when Carlos is chatting.
-5. Skip scheduling if plugged.
-
-At/near 30%, 20%, or 10% while unplugged, tell him to plug in immediately; these safety/compliance alerts override quiet hours. Surface missed runs, stale/impossible state, and alert anomalies under **Checks** in section C. Do not add duplicate routine battery prompts or infer location, selfie completion, percentage, or plug state without Carlos's report. All Battery Monitoring / battery / selfie / restriction / compliance details are Telegram-only—never email them.
-
-### Battery Monitoring Checks (item 7)
-
-Consolidate these into **Checks: Yes/No**:
-
-1. Files exist, readable, and agree (`battery-monitor.md` + `battery-monitor-state.json`)
-2. Cron jobs healthy (`lisa-morning-digest` 08:30 + `lisa-heartbeat-45` + `battery-selfie-1745` + `battery-selfie-2145`)
-3. 35% alert reconciled (pending vs scheduled vs plugged skip); no leftover 45%/98% projected jobs
-
-- **Checks: No** = all checks passed (all clear). Print only `7. Checks: No` — do **not** print an "All OK" line, and do **not** add alert bullets.
-- **Checks: Yes** = at least one issue. Print `7. Checks: Yes` then one or more lines: `- Alert — <short alert description> — <short action needed or taken>`
-
-## Silent work (mandatory)
-
-Tool calls only while gathering data. Emit **no** mid-run assistant narration. The announced Telegram body is **only** the Heartbeat Output Format below — no preamble, scratch notes, or “checking…” lines.
-
-## Heartbeat Output Format (exact structure — produce this every cycle)
-
-This is the **full** text Lisa must produce each cycle. Only real data changes. Condensation rules (do not violate):
-
-- **TELEGRAM PLAIN TEXT ONLY.** Send the body as a normal Telegram message. **Never** wrap it in Markdown code fences (` ``` ` / ` ```text ` / ` ```markdown `). Fences make Telegram show a gray “Text” code card instead of a normal bubble — that is a delivery failure.
-- **A. Work:** only the condensed `i. Summary` Yes/No block — **no** itemized ii–v lists, even if there are events/tasks/emails.
-- **Summary lines are strictly `Yes.` or `No.` — nothing else.** No counts, no parentheticals, no reasons, no descriptions appended to the four Summary lines, ever. Any detail belongs only in the digest's itemized ii–v sections (never in the heartbeat).
-- **B. Coding Work & Evals:** always only the one-line topline (`## B. Coding Work & Evals: Yes/No`) — **no** Method/Description/Open Issues detail, even if Yes.
-- **C. Battery Monitoring:** always show **all 7 numbered items in full** (never condensed). Concise, no commentary. Identical structure to the morning digest section C.
-- **Exec:** run exact `tools/bin/lisa-safe …` / `tools/bin/lisa-carlos-tasks …` commands with **no** trailing `2>&1`, pipes, or redirects. If a command is hard-denied for opaque shell, retry the exact allowed unpiped command **once**. Continue only after a successful retry; otherwise stop the run and preserve the fatal failure.
-
-Produce exactly this structure (documentation template — copy the shape, not any fence wrapper):
-
-Heartbeat — <weekday, date, time>
-
-## A. Work
-
-i. Summary:
-Calendar events: Yes/No.
-Tasks: Yes/No.
-Email: Yes/No.
-Unanswered Messages: Yes/No.
-
-## B. Coding Work & Evals: Yes/No
-
-## C. Battery Monitoring
-
-1. Expected current charge left: ~<N>%
-2. Expected time to 30%: <HH:mm | Wed HH:mm | N/A>
-3. Expected time to 98%: <HH:mm | Wed HH:mm | N/A>
-4. Updated Charge Rate: +X pp/h charging / −Y pp/h discharging
-5. Routine Changes: None | <one short line>
-6. Please report current percentage and plugged status if you can.
-7. Checks: Yes/No
-   (if Yes, one or more alert lines below:)
-
-- Alert — <short alert description> — <short action needed or taken>
-
-## D. Pipeline
-
-<one or more lines from memory/pipeline-status.md, exact Ship/Pull/Staging/Main shapes only>
-(omit section D entirely if no status file / no known checkpoint)
-
-## E. Main Approve
-
-<Monday fallback only when the current dated Clear result has no decision today and no unexpired two-hour claim; otherwise omit this whole section>
-
-Section B is **Yes** if there was any **new** Cursor coding work, local coding-model use, and/or eval comparison **since the last cycle** (after checking real records in the cycle window). Otherwise **No**. Stale/closed ACP sessions and already-fixed config issues (wired default model, unadvertised medium) do **not** count.
-
-## Special Case — 08:30 Morning Digest
-
-Handled by a **separate native cron job** (`lisa-morning-digest`, `30 8 * * *` Asia/Taipei), not by `lisa-heartbeat-45` and never by a main-session `lisa-cron` spawn — see `agents/detail.md` § Heartbeat vs Cron and full procedure `agents/morning-digest.md`. That job compiles the morning digest (Carlos's shared calendar via `tools/bin/lisa-safe calendar-agenda` / `calendar-list`, due/overdue Carlos Google Tasks via `tools/bin/lisa-carlos-tasks`, email, unanswered messages, coding/evals, Battery Monitoring, Pipeline, and Monday Main Approve when Clear) and delivers it on **two separate paths**: email via `tools/bin/lisa-safe email-send` to `calusa@linktrend.media` (A+B+D + Approve when needed; never Battery), and Telegram via the cron announce (final reply only, A–D + Approve when needed). Never concatenate email+Telegram into one Telegram message. Battery Monitoring content is Telegram-only and must never appear in email. At generation time the digest must `read` `memory/battery-monitor-state.json` and recent `memory/battery-monitor.md` entries via tools and use confirmed readings as the Telegram status source of truth — never conversation memory or overnight estimates when a newer confirmed report exists. Digest recalculates learned rates, then emits concise section C. Digest must **never** call `cron.add` for alerts.
-
-If `lisa-morning-digest` is ever disabled/missing, report it under Checks and repair the cron job; do **not** run the full digest from `lisa-heartbeat-45` or spawn `lisa-cron` from main. For a same-day catch-up, force-run the existing cron job through the gateway CLI: `PATH="/opt/homebrew/opt/node@24/bin:$PATH" node /Users/linktrend/Projects/openclaw_prime/openclaw.mjs --profile lisa cron run <lisa-morning-digest-id> --wait --expect-final --wait-timeout 20m`.
+Retired Ship, Pull, Repair Dispatcher, and `lisa-heartbeat-45` jobs are not Lisa duties and must never be presented as active or upcoming.

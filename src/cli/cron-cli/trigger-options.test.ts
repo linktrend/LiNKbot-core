@@ -190,6 +190,39 @@ describe("cron trigger CLI options", () => {
     );
   });
 
+  it("keeps job ownership separate from the execution agent", async () => {
+    const program = new Command().exitOverride();
+    registerCronAddCommand(program);
+
+    await program.parseAsync(
+      [
+        "add",
+        "--name",
+        "owned worker job",
+        "--every",
+        "1h",
+        "--message",
+        "check",
+        "--agent",
+        "lisa-cron",
+        "--owner-agent",
+        "main",
+        "--owner-session-key",
+        "agent:main:main",
+      ],
+      { from: "user" },
+    );
+
+    expect(callGatewayFromCli).toHaveBeenCalledWith(
+      "cron.add",
+      expect.anything(),
+      expect.objectContaining({
+        agentId: "lisa-cron",
+        owner: { agentId: "main", sessionKey: "agent:main:main" },
+      }),
+    );
+  });
+
   it("accepts trigger script files at the byte limit", async () => {
     const scriptPath = path.join(fixtureRoot, "at-limit.js");
     await fs.writeFile(scriptPath, "x".repeat(65_536), "utf8");

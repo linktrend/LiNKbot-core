@@ -12,11 +12,7 @@ import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-export type TemplateKind =
-  | "telegram-heartbeat"
-  | "telegram-daily-digest"
-  | "email-daily-digest"
-  | "pipeline-one-liner";
+export type TemplateKind = "telegram-daily-digest" | "email-daily-digest";
 
 export type TemplateContext = {
   weekdayDate: string;
@@ -68,10 +64,8 @@ export function resolveTemplatesDir(opsDir: string = here): string {
 export const TEMPLATES_DIR = resolveTemplatesDir();
 
 const KIND_FILE: Record<TemplateKind, string> = {
-  "telegram-heartbeat": "telegram-heartbeat.md",
   "telegram-daily-digest": "telegram-daily-digest.md",
   "email-daily-digest": "email-daily-digest.md",
-  "pipeline-one-liner": "pipeline-one-liner.md",
 };
 
 export function assertNoUnresolvedPlaceholders(rendered: string): void {
@@ -109,19 +103,6 @@ export function fillPlaceholders(body: string, vars: Record<string, string>): st
   }
   assertNoUnresolvedPlaceholders(out);
   return out.endsWith("\n") ? out : `${out}\n`;
-}
-
-export function renderPipelineOneLiner(wave: string, result: "Clear" | "Issues"): string {
-  const body = loadCanonicalTemplateBody("pipeline-one-liner");
-  const line = fillPlaceholders(body, { wave, result }).trimEnd();
-  if (
-    !/^(Ship 05|Pull 07|Ship 16|Pull 18|Staging promote \(Tue\)|Staging promote \(Fri\)|Main ready \(Mon\)): (Clear|Issues)$/.test(
-      line,
-    )
-  ) {
-    throw new Error(`invalid pipeline one-liner: ${line}`);
-  }
-  return line;
 }
 
 export function omitStalePipelineLines(lines: string[], allow: Set<string>): string[] {
@@ -164,39 +145,6 @@ function codingBlock(codingEvals: "Yes" | "No", codingDetail?: string): string {
     return "## B. Coding Work & Evals: No";
   }
   return `## B. Coding Work & Evals: Yes\n\n${codingDetail ?? "None."}`;
-}
-
-/** Telegram heartbeat — condensed Work/Coding; full Battery; no email body. */
-export function renderTelegramHeartbeat(ctx: TemplateContext): string {
-  if (!ctx.battery) {
-    throw new Error("heartbeat requires battery block");
-  }
-  if (!ctx.time) {
-    throw new Error("heartbeat requires time");
-  }
-  const body = loadCanonicalTemplateBody("telegram-heartbeat");
-  return (
-    fillPlaceholders(body, {
-      weekday_date: ctx.weekdayDate,
-      time: ctx.time,
-      calendar: ctx.workSummary.calendar,
-      tasks: ctx.workSummary.tasks,
-      email: ctx.workSummary.email,
-      unanswered: ctx.workSummary.unanswered,
-      coding_evals: ctx.codingEvals,
-      expected_charge: ctx.battery.expectedCharge,
-      time_to_30: ctx.battery.timeTo30,
-      time_to_98: ctx.battery.timeTo98,
-      charge_rate: ctx.battery.chargeRate,
-      routine_changes: ctx.battery.routineChanges,
-      checks: ctx.battery.checks,
-      battery_alerts: batteryAlerts(ctx.battery.alerts, ctx.battery.checks),
-      pipeline_section: pipelineSection(ctx.pipelineLines),
-      main_approve_section: mainApproveSection(ctx.mainApproveAsk),
-    })
-      .replace(/\n{3,}/g, "\n\n")
-      .trimEnd() + "\n"
-  );
 }
 
 /** Telegram morning digest — itemized Work + Battery + Pipeline. */
@@ -289,14 +237,10 @@ export function templatesDifferTelegramVsEmail(
  */
 export function renderKind(kind: TemplateKind, ctx: TemplateContext): string {
   switch (kind) {
-    case "telegram-heartbeat":
-      return renderTelegramHeartbeat(ctx);
     case "telegram-daily-digest":
       return renderTelegramDailyDigest(ctx);
     case "email-daily-digest":
       return renderEmailDailyDigest(ctx);
-    case "pipeline-one-liner":
-      throw new Error("use renderPipelineOneLiner(wave, result) for pipeline-one-liner");
     default: {
       const _exhaustive: never = kind;
       throw new Error(`unknown kind: ${_exhaustive}`);

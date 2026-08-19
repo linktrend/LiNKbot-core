@@ -1,35 +1,23 @@
 # Lisa jobs source operations
 
-WP-07 is a source-only catalogue and packaging change. The ten logical job
-families are defined in `ops/jobs/lisa-job-catalogue.ts`; all entries are
-disabled, use `delivery.mode: none`, and retain the explicit live/provider
-hard stops. Embedded checkpoints and hooks are catalogue entries, not extra
-standalone timers.
+The ten logical job families are defined in `ops/jobs/lisa-job-catalogue.ts`. Embedded checkpoints and hooks remain catalogue entries, not duplicate timers.
 
-The unified renderer accepts structured JSON or stdin and fails closed for
-unknown kinds, unresolved placeholders, table-form weekly/monthly output,
-missing `Other — specify`, or private-health values in work output. It renders
-text only; it does not deliver, schedule, invoke a provider, or mutate state.
+Production activation is recorded separately in the live cron store. The 19 approved operational declarations execute as `lisa-cron` but must be owned by `main`, so Lisa can list and manage them.
 
-The disposable stage package contains deterministic source files with
-per-file SHA-256 hashes and byte sizes. Package verification and synthetic
-renderer execution are local source checks only. The immutable live-comparison
-receipt and profile bundle remain unchanged.
+## Ownership repair
+
+Run `ops/jobs/lisa-live-job-ownership.mjs <openclaw.sqlite>` first for a read-only inspection. During a maintenance stop, add `--apply` to:
+
+- create an exclusive database backup;
+- require all 19 approved declarations to be present, enabled, and assigned to `lisa-cron`;
+- set their owner to `main` and owning session to `agent:main:main`;
+- delete the exact retired job names.
+
+The command fails closed if the approved declaration set is incomplete, disabled, or assigned to another execution agent. It never changes schedules, payloads, delivery targets, run history, or job identifiers.
 
 ## Evidence boundary
 
-- **SOURCE PASS:** catalogue validation, renderer positive/negative coverage,
-  deterministic package verification, and synthetic disposable-package
-  rendering. The immutable profile validator records a pre-existing
-  profile/live-parity HOLD: its `TOOLS.md` receipt mismatch is unchanged from
-  the frozen base and is not refreshed or forged by this source packet.
-- **STAGE HOLD:** no stage installation, schedule creation, schedule update,
-  enablement, runtime, or stage workspace action was performed.
-- **CROSS-SYSTEM E2E HOLD:** no real provider, Google, Telegram, email, GSM,
-  VPS, or Mac Mini interaction was performed or claimed.
-- **PRODUCTION ACTIVATION HOLD:** no deployment, timer/service change,
-  activation, delivery, or external service action was performed.
-
-Provider release and opaque credential bindings remain an explicit source
-`HOLD` until an authorized owner supplies exact matching evidence. No source
-HOLD is converted into stage, E2E, or production readiness.
+- Source evidence consists of catalogue validation, renderer coverage, deterministic package verification, and ownership-migration coverage.
+- Production evidence additionally requires the database backup, migrated job count, removed retired-job check, service health, and a real Lisa main-agent cron listing.
+- The profile bundle and immutable live-comparison receipt may be refreshed only after the exact stable files have been deployed and hash-compared with VPS Lisa.
+- Provider release and opaque credential bindings remain independently governed; this repair does not grant provider authority or expose credentials.

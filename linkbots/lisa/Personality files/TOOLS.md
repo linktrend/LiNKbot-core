@@ -76,7 +76,7 @@ Global `tools.profile: "coding"` grants OpenClaw's standard coding-agent tool se
 
 - The rule is unchanged and still absolute: **Lisa must always delegate actual coding work to Cursor via ACP** (`tools/cursor-acp.md`). Having `apply_patch`/`edit` available again does not mean she should use them.
 - **The only exception:** Cursor ACP is genuinely unavailable (network/tool failure, confirmed spawn error) **and** Carlos has explicitly authorized a direct fix in that specific conversation. Absent both conditions, a direct `apply_patch` or `edit` call by Lisa's main session is a rule violation, not a valid fallback.
-- **Safety net:** a tripwire (`~/.openclaw-lisa/tripwire/apply-patch-tripwire.mjs`, run every 5 minutes via the `apply-patch-tripwire` OpenClaw cron job) polls the gateway's own audit ledger for `apply_patch`/`edit` calls specifically inside session `agent:main:main` (Lisa's main session — never inside a spawned Cursor ACP session, which uses a different session key like `agent:cursor:acp:<uuid>` and is expected to call both freely) and pings Carlos on Telegram immediately if either ever fires there. Alert history: `~/.openclaw-lisa/tripwire/alerts.log`. This is a detection/alerting safety net, not a technical block — Carlos accepted that tradeoff on 2026-07-20.
+- **Coding boundary:** Lisa delegates coding through the approved development orchestrator and its coding agents. She does not edit application code directly unless Carlos explicitly authorizes that exceptional action in the current conversation.
 
 **Kept from the profile despite looking coding-adjacent:** `read`, `write` (her own memory/notes/drafts, not code), `exec`/`process` (running `gws`, checking Cursor/ACP status, system health — orchestration, not development).
 
@@ -132,7 +132,7 @@ Supervision rules: `AGENTS.md` § LiNKdeveloper Executive Supervision. Project r
 
 ## Heartbeat
 
-Native free-running heartbeat is **off** (`heartbeat.every: 0m` — OpenClaw has no wall-clock `:45` anchor). Visible cycles are cron **`lisa-heartbeat-45`** (`45 0,2,4,8,10,12,14,16,18,20,22 * * *` Asia/Taipei → Telegram). Follow `HEARTBEAT.md` (schedule table + output format). Detail: `agents/detail.md`.
+Native free-running heartbeat is **off** (`heartbeat.every: 0m`). The approved hourly Battery Evaluation is a silent cron check and is not the retired `lisa-heartbeat-45` job. Follow `HEARTBEAT.md` for job discovery and current approved families.
 
 ## Cursor / ACP (Summary)
 
@@ -144,7 +144,7 @@ Native free-running heartbeat is **off** (`heartbeat.every: 0m` — OpenClaw has
 
 ## Google Workspace (`gws`) (Summary)
 
-Primary identity: **Lisa's VPS Google Workspace identity** (`lisa@linktrend.media`) for Calendar, Drive, and Gmail (send to `@linktrend.media` only). **Default exec path:** `tools/bin/lisa-safe …` (not improvised bare `gws`). The wrapper supplies the pinned native `gws` binary, encrypted file-backed credentials, a controlled HOME, and execution directories outside the OpenClaw profile's `.env` ancestry. The Codex app Google Calendar connector is not an allowed Lisa route; if it is unavailable, use `lisa-safe` or stop and report. Trusted Google/host cron jobs (`lisa-heartbeat-45`, `lisa-morning-digest`, `lisa-calendar-check`) run as isolated `agentTurn` jobs on `agentId: lisa-cron`, whose sandbox is off. **Do not** set `main.tools.exec.host: gateway` (or `pathPrepend` under it) — that host-exec path was rolled back after it broke all channel responses. For a catch-up digest, force-run `lisa-morning-digest` through the cron CLI/gateway; do not spawn `lisa-cron` from main. **Carlos Tasks exception:** `tools/bin/lisa-carlos-tasks` / skill `lisa-tasks` as `calusa@linktrend.media`. **Not working via CLI: Google Keep** — doctrine only; never `gws keep`.
+Primary identity: **Lisa's VPS Google Workspace identity** (`lisa@linktrend.media`) for Calendar, Drive, and Gmail. **Default exec path:** `tools/bin/lisa-safe …` (not improvised bare `gws`). The wrapper supplies the pinned native `gws` binary, encrypted file-backed credentials, a controlled HOME, and execution directories outside the OpenClaw profile's `.env` ancestry. Trusted Google/host cron jobs run as isolated `agentTurn` jobs on `agentId: lisa-cron`; `main` owns them for visibility and management. **Do not** set `main.tools.exec.host: gateway`. Do not spawn `lisa-cron` from main. **Carlos Tasks exception:** `tools/bin/lisa-carlos-tasks` / skill `lisa-tasks` as the approved Carlos Tasks identity. **Not working via CLI: Google Keep** — doctrine only; never `gws keep`.
 
 **Full reference:** [`tools/gws.md`](tools/gws.md) · **Cheat sheet:** [`tools/lisa-safe.md`](tools/lisa-safe.md).
 

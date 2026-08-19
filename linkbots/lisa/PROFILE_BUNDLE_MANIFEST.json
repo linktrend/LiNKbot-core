@@ -4,7 +4,7 @@
   "bundlePurpose": "Version-controlled, non-secret source of truth for Lisa's durable definition and recovery materialization.",
   "checksumAlgorithm": "sha256",
   "sourceSnapshot": {
-    "checkedAt": "2026-08-19T05:20:45Z",
+    "checkedAt": "2026-08-19T07:51:39.398Z",
     "liveCodeRevision": "2913897ccd8389e54cccb1931f3dff0f56534dbf",
     "liveWorkspace": "/var/lib/openclaw/lisa/.openclaw-lisa/workspace",
     "comparisonMethod": "Path, byte count, and SHA-256 metadata only; document contents and secret values were not recorded in the immutable comparison receipt.",
@@ -12,19 +12,19 @@
   },
   "comparisonReceipt": {
     "path": "PROFILE_BUNDLE_LIVE_COMPARISON_RECEIPT.json",
-    "sha256": "b207b566fc1ed3eeffbf03c930c8aa6f04874298e63537621987833095c76057"
+    "sha256": "ac9a7eb75947741e75ee0da6003b74cf17c7602b6ea2766b6b24031087c8a4c2"
   },
   "liveRuntimeRule": "Git restores only the required stable definition and intentional deployment asset. Runtime configuration, secrets, private memory, sessions, databases, and other mutable state are restored through their separately governed mechanisms.",
   "requiredStableDefinition": [
     {
       "path": "Personality files/AGENTS.md",
       "role": "operating-instructions",
-      "sha256": "08e07802dfb3efc057633a3b5222358b8426a5a159391833c9d620f27cef9709"
+      "sha256": "e72b0d6d2af0282e2eea6d8ff42f24ccae2c50e4a8f7613585cc1a54979698cf"
     },
     {
       "path": "Personality files/HEARTBEAT.md",
       "role": "scheduled-operations-instructions",
-      "sha256": "9f63e48584e1ab8cdaf00cd4c604d4175ead665bc364abcfba6d5a73c5554ab1"
+      "sha256": "e211a36faf78cdd3a62dc91dd79ace37dea046d977d34c83cf9e77f9927b318c"
     },
     {
       "path": "Personality files/IDENTITY.md",
@@ -39,37 +39,22 @@
     {
       "path": "Personality files/TOOLS.md",
       "role": "tool-policy",
-      "sha256": "0fd775fbcb4e49081f1d19390d3a9dde85f2c859ce92a0fdd66c85a1b873efe5"
+      "sha256": "9df672d3f697f98d53d2fc2f5f117fcf18b64f1fe4b99aa1180e24c6350a3cfc"
     },
     {
       "path": "Personality files/VERSION.md",
       "role": "definition-version",
-      "sha256": "a5fe80136fcc6b3bf4e72f67669e5f818234885b6b9103f6a0e7d63b7bdc7f65"
+      "sha256": "43b87a37f2b159c1372b88eaf354e9f945913bcdfaaa857c328daae4f9f9ad26"
     },
     {
       "path": "Personality files/agents/detail.md",
       "role": "agent-operating-detail",
-      "sha256": "0ed7e438e7f4deea378b95f2f6091549b78d8274bbbfd70784962aed0a6ad8cd"
+      "sha256": "fe0bb40a69c4df6ca698691676b09887974beb8a54ddc6d3f6bff74684fae4b7"
     },
     {
       "path": "Personality files/agents/morning-digest.md",
       "role": "scheduled-role-definition",
-      "sha256": "9be6057b62fbfc500f1acceaf355ab7eb6b738664b793aa4782dab45b6382bb7"
-    },
-    {
-      "path": "Personality files/agents/pipeline-status.md",
-      "role": "scheduled-role-definition",
-      "sha256": "6689d764b731c29173ac57779f659440ca31d1a75024392246fe8c398adec142"
-    },
-    {
-      "path": "Personality files/agents/repair-dispatcher.md",
-      "role": "scheduled-role-definition",
-      "sha256": "36ab118071bbcf67e6e8d53d966d90dc2bb6968f7e457f574c6d319f6358c99d"
-    },
-    {
-      "path": "Personality files/agents/ship-pull-clock.md",
-      "role": "scheduled-role-definition",
-      "sha256": "217bc1076a6f6588c3ebfec12fdbe7e98285da49d7621eb444526878a34c4ea7"
+      "sha256": "dd97e861a945a024f1a6e54fb7244b7abcb4f2df80bbeb0b5d9a5a9200da59e7"
     },
     {
       "path": "Personality files/skills/lisa-tasks/SKILL.md",
@@ -87,24 +72,14 @@
       "sha256": "69c0601a7fc8b49f2897d44f400a7092e7481f6811bc5427a6ce3318ba3f4239"
     },
     {
-      "path": "Personality files/templates/pipeline-one-liner.md",
-      "role": "output-template",
-      "sha256": "0ede999ca81ecbe206afcbd152b8c56f4521228324ebd30041c72f2020ce49c8"
-    },
-    {
       "path": "Personality files/templates/telegram-daily-digest.md",
       "role": "output-template",
       "sha256": "299e69474e642bb67201791a72376751356122e13a691de96c1b298e13f51d9a"
     },
     {
-      "path": "Personality files/templates/telegram-heartbeat.md",
-      "role": "output-template",
-      "sha256": "4505a511626e2cfcd18f06c8e4583c0786ea685ced2676e2322196ea04f3de66"
-    },
-    {
       "path": "Personality files/tools/cursor-acp.md",
       "role": "tool-instructions",
-      "sha256": "fec23b8ca18e004c140c18566e9d6958a55cb79291d1798b45402385c88a157e"
+      "sha256": "e490b59cb6f8f91eacedf512ed70a1567925ad527f88d4d4b9c9c6788a38b638"
     },
     {
       "path": "Personality files/tools/development-orchestrator.md",
@@ -238,8 +213,8 @@
     }
   ],
   "alignment": {
-    "requiredStableFiles": 22,
-    "exactLiveMatches": 22,
+    "requiredStableFiles": 17,
+    "exactLiveMatches": 17,
     "normalizedLiveMatches": 0,
     "requiredMissingFromLive": [],
     "requiredHashMismatches": [],
@@ -270,8 +245,8 @@
     "secrets": "Resolve Google Secret Manager references at runtime; never restore secret payloads from Git.",
     "mutableState": "Restore only from the encrypted off-VPS backup and validate SQLite integrity before starting Lisa.",
     "offVpsBackup": {
-      "storage": "Google Cloud Storage bucket linktrend-lisa-recovery-prod, encrypted at rest and transferred over TLS.",
-      "identity": "The VPS backup process uses the dedicated lisa-backup Google Cloud workload identity with bucket-only access.",
+      "storage": "The company Shared Drive Backups folder, accessed through Lisa's existing Google Workspace account.",
+      "identity": "The VPS backup process uses Lisa's approved Google Workspace authorization; no separate paid Workspace identity is required.",
       "cadence": "Daily systemd timer.",
       "restoreOrder": [
         "Deploy the approved OpenClaw Prime revision.",
