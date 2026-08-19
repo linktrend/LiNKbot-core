@@ -169,6 +169,55 @@ describe("VPS Lisa Google Workspace wrappers", () => {
         end: { dateTime: "2026-08-19T11:00:00+08:00", timeZone: "Asia/Taipei" },
       });
 
+      const recurring = run(
+        lisaSafe,
+        [
+          "calendar-event-patch",
+          "--calendar",
+          "routine@linktrend.media",
+          "--event",
+          "event_1",
+          "--weekdays",
+          "MO,WE,FR",
+          "--dry-run",
+        ],
+        fixture,
+      );
+      assert.equal(recurring.status, 0, recurring.stderr);
+      const recurringArgs = recurring.stdout.split("\n");
+      const recurringJson = recurringArgs[recurringArgs.indexOf("--json") + 1];
+      assert.deepEqual(JSON.parse(recurringJson ?? ""), {
+        recurrence: ["RRULE:FREQ=WEEKLY;WKST=MO;BYDAY=MO,WE,FR"],
+      });
+
+      const inserted = run(
+        lisaSafe,
+        [
+          "calendar-insert",
+          "--calendar",
+          "routine@linktrend.media",
+          "--summary",
+          "Recurring test event",
+          "--start",
+          "2026-08-20T17:30:00+08:00",
+          "--end",
+          "2026-08-20T18:30:00+08:00",
+          "--weekdays",
+          "TU,TH",
+          "--dry-run",
+        ],
+        fixture,
+      );
+      assert.equal(inserted.status, 0, inserted.stderr);
+      const insertArgs = inserted.stdout.split("\n");
+      const insertJson = insertArgs[insertArgs.indexOf("--json") + 1];
+      assert.deepEqual(JSON.parse(insertJson ?? ""), {
+        summary: "Recurring test event",
+        start: { dateTime: "2026-08-20T17:30:00+08:00", timeZone: "Asia/Taipei" },
+        end: { dateTime: "2026-08-20T18:30:00+08:00", timeZone: "Asia/Taipei" },
+        recurrence: ["RRULE:FREQ=WEEKLY;WKST=MO;BYDAY=TU,TH"],
+      });
+
       const deleted = run(
         lisaSafe,
         ["calendar-event-delete", "--calendar", "routine@linktrend.media", "--event", "event_1", "--dry-run"],

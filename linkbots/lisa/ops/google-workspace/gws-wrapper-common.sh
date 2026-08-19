@@ -294,6 +294,26 @@ gws_calendar_id() {
     gws_die "Google Calendar id has an invalid shape"
 }
 
+gws_weekdays() {
+  local value=${1:-}
+  local token seen= normalized= day
+  [[ "$value" =~ ^(MO|TU|WE|TH|FR|SA|SU)(,(MO|TU|WE|TH|FR|SA|SU))*$ ]] ||
+    gws_die "weekdays must be a comma-separated list of MO,TU,WE,TH,FR,SA,SU"
+  IFS=',' read -r -a tokens <<< "$value"
+  for token in "${tokens[@]}"; do
+    case ",$seen," in
+      *,"$token",*) gws_die "weekdays must not contain duplicates" ;;
+    esac
+    seen+="${seen:+,}$token"
+  done
+  for day in MO TU WE TH FR SA SU; do
+    case ",$value," in
+      *,"$day",*) normalized+="${normalized:+,}$day" ;;
+    esac
+  done
+  printf '%s' "$normalized"
+}
+
 gws_positive_int() {
   local value=$1
   [[ "$value" =~ ^[1-9][0-9]{0,3}$ ]] || gws_die "value must be a positive integer"

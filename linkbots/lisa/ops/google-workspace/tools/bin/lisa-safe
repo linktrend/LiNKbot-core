@@ -167,7 +167,7 @@ case "$1" in
 
   calendar-event-patch)
     shift
-    calendar= event= summary= start= end= location= description= dry_run=false
+    calendar= event= summary= start= end= location= description= weekdays= dry_run=false
     while (($#)); do
       case "$1" in
         --calendar) (($# >= 2)) || gws_die "--calendar requires a value"; calendar=$2; shift 2 ;;
@@ -177,16 +177,18 @@ case "$1" in
         --end) (($# >= 2)) || gws_die "--end requires a value"; end=$2; shift 2 ;;
         --location) (($# >= 2)) || gws_die "--location requires a value"; location=$2; shift 2 ;;
         --description) (($# >= 2)) || gws_die "--description requires a value"; description=$2; shift 2 ;;
+        --weekdays) (($# >= 2)) || gws_die "--weekdays requires a value"; weekdays=$2; shift 2 ;;
         --dry-run) dry_run=true; shift ;;
         *) gws_die "unsupported calendar-event-patch argument" ;;
       esac
     done
     gws_calendar_id "$calendar"
     gws_id "$event"
-    [[ -n "$summary" || -n "$start" || -n "$end" || -n "$location" || -n "$description" ]] ||
+    [[ -n "$summary" || -n "$start" || -n "$end" || -n "$location" || -n "$description" || -n "$weekdays" ]] ||
       gws_die "calendar-event-patch requires at least one change"
     [[ -z "$start" || -n "$end" ]] || gws_die "--start and --end must be supplied together"
     [[ -z "$end" || -n "$start" ]] || gws_die "--start and --end must be supplied together"
+    [[ -z "$weekdays" ]] || weekdays=$(gws_weekdays "$weekdays")
     json='{'
     [[ -n "$summary" ]] && json+="\"summary\":$(gws_json_string "$summary"),"
     if [[ -n "$start" ]]; then
@@ -195,6 +197,7 @@ case "$1" in
     fi
     [[ -n "$location" ]] && json+="\"location\":$(gws_json_string "$location"),"
     [[ -n "$description" ]] && json+="\"description\":$(gws_json_string "$description"),"
+    [[ -n "$weekdays" ]] && json+="\"recurrence\":[$(gws_json_string "RRULE:FREQ=WEEKLY;WKST=MO;BYDAY=$weekdays")],"
     json="${json%,}}"
     args=(calendar events patch --params "{\"calendarId\":$(gws_json_string "$calendar"),\"eventId\":$(gws_json_string "$event")}" --json "$json" --format json)
     [[ "$dry_run" == true ]] && args+=(--dry-run)
@@ -221,7 +224,7 @@ case "$1" in
 
   calendar-insert)
     shift
-    calendar= summary= start= end= location= description= dry_run=false
+    calendar= summary= start= end= location= description= weekdays= dry_run=false
     attendees=()
     while (($#)); do
       case "$1" in
@@ -231,17 +234,36 @@ case "$1" in
         --end) (($# >= 2)) || gws_die "--end requires a value"; end=$2; shift 2 ;;
         --location) (($# >= 2)) || gws_die "--location requires a value"; location=$2; shift 2 ;;
         --description) (($# >= 2)) || gws_die "--description requires a value"; description=$2; shift 2 ;;
+        --weekdays) (($# >= 2)) || gws_die "--weekdays requires a value"; weekdays=$2; shift 2 ;;
         --attendee) (($# >= 2)) || gws_die "--attendee requires a value"; attendees+=("$2"); shift 2 ;;
         --dry-run) dry_run=true; shift ;;
         *) gws_die "unsupported calendar-insert argument" ;;
       esac
     done
     [[ -n "$calendar" && -n "$summary" && -n "$start" && -n "$end" ]] || gws_die "calendar-insert requires explicit --calendar, --summary, --start, and --end"
-    for attendee in "${attendees[@]}"; do gws_internal_email "$attendee"; done
-    args=(calendar +insert --calendar "$calendar" --summary "$summary" --start "$start" --end "$end" --format json)
-    [[ -n "$location" ]] && args+=(--location "$location")
-    [[ -n "$description" ]] && args+=(--description "$description")
-    for attendee in "${attendees[@]}"; do args+=(--attendee "$attendee"); done
+    [[ -z "$weekdays" ]] || weekdays=$(gws_weekdays "$weekdays")
+    if ((${#attendees[@]})); then
+      for attendee in "${attendees[@]}"; do gws_internal_email "$attendee"; done
+    fi
+    if [[ -n "$weekdays" ]]; then
+      json="{\"summary\":$(gws_json_string "$summary"),\"start\":{\"dateTime\":$(gws_json_string "$start"),\"timeZone\":\"Asia/Taipei\"},\"end\":{\"dateTime\":$(gws_json_string "$end"),\"timeZone\":\"Asia/Taipei\"},\"recurrence\":[$(gws_json_string "RRULE:FREQ=WEEKLY;WKST=MO;BYDAY=$weekdays")],"
+      [[ -n "$location" ]] && json+="\"location\":$(gws_json_string "$location"),"
+      [[ -n "$description" ]] && json+="\"description\":$(gws_json_string "$description"),"
+      if ((${#attendees[@]})); then
+        json+='"attendees":['
+        for attendee in "${attendees[@]}"; do json+="{\"email\":$(gws_json_string "$attendee")},"; done
+        json="${json%,}],"
+      fi
+      json="${json%,}}"
+      args=(calendar events insert --params "{\"calendarId\":$(gws_json_string "$calendar")}" --json "$json" --format json)
+    else
+      args=(calendar +insert --calendar "$calendar" --summary "$summary" --start "$start" --end "$end" --format json)
+      [[ -n "$location" ]] && args+=(--location "$location")
+      [[ -n "$description" ]] && args+=(--description "$description")
+      if ((${#attendees[@]})); then
+        for attendee in "${attendees[@]}"; do args+=(--attendee "$attendee"); done
+      fi
+    fi
     [[ "$dry_run" == true ]] && args+=(--dry-run)
     gws_exec_route "calendar +insert" "${args[@]}"
     ;;

@@ -113,7 +113,7 @@ Lisa's gateway is `security=full` + `ask=off`, **plus** a denylist STOP list (`g
 4. **Files / sessions:** native `read` / `write` / `list` / `glob` / `sessions_*` — never `cat`/`ls` with redirects.
 5. **Carlos Tasks:** `tools/bin/lisa-carlos-tasks …` only (skill `lisa-tasks`).
 
-**Allowed lisa-safe verbs:** `gmail-triage` · `email-send` · `calendar-list` · `calendar-agenda` · `calendar-events-list` · `calendar-event-get` · `calendar-event-patch` · `calendar-event-delete` · `calendar-insert` · `drive-list` · `drive-create-doc` · `docs-append` · `drive-share` · `drive-json` · `gws-help` · `smoke-gws`.
+**Allowed lisa-safe verbs:** `gmail-triage` · `email-send` · `calendar-list` · `calendar-agenda` · `calendar-events-list` · `calendar-event-get` · `calendar-event-patch` · `calendar-event-delete` · `calendar-insert` · `drive-list` · `drive-create-doc` · `docs-append` · `drive-share` · `drive-json` · `gws-help` · `smoke-gws`. Recurring changes require a master event ID; `--weekdays` is limited to explicit weekly day codes.
 
 If exec returns `SYSTEM_RUN_DENIED`, do **not** retry the same opaque/wrong shape — use the cheat sheet. Failure modes: [`tools/gws.md`](tools/gws.md).
 

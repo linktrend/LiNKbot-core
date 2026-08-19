@@ -50,12 +50,22 @@ tools/bin/lisa-safe calendar-agenda --tomorrow --timezone Asia/Taipei
 tools/bin/lisa-safe calendar-events-list --calendar CALENDAR_ID --single-events --max-results 50
 tools/bin/lisa-safe calendar-event-get --calendar CALENDAR_ID --event EVENT_ID
 tools/bin/lisa-safe calendar-event-patch --calendar CALENDAR_ID --event EVENT_ID --summary "Title" --dry-run
+tools/bin/lisa-safe calendar-event-patch --calendar CALENDAR_ID --event MASTER_EVENT_ID --weekdays MO,WE,FR --dry-run
 tools/bin/lisa-safe calendar-event-delete --calendar CALENDAR_ID --event EVENT_ID --dry-run
 tools/bin/lisa-safe calendar-insert \
   --calendar calusa@linktrend.media \
   --summary "Title" \
   --start "2026-07-22T10:00:00+08:00" \
   --end "2026-07-22T10:30:00+08:00" \
+  --dry-run
+
+# Recurring insert: --weekdays accepts only MO,TU,WE,TH,FR,SA,SU.
+tools/bin/lisa-safe calendar-insert \
+  --calendar CALENDAR_ID \
+  --summary "Recurring title" \
+  --start "2026-07-23T17:30:00+08:00" \
+  --end "2026-07-23T18:30:00+08:00" \
+  --weekdays TU,TH \
   --dry-run
 
 # Drive / Docs
@@ -86,6 +96,7 @@ tools/bin/lisa-safe smoke-gws
 | gws help               | `lisa-safe gws-help gmail +send`                                  | `gws … --help 2>&1 \| head -N`                                   |
 | Calendar list / agenda | `lisa-safe calendar-list` / `calendar-agenda`                     | `gws calendarList …`, `gws calendar get`, `gws events …`         |
 | Calendar event change  | `lisa-safe calendar-event-get|patch|delete` with explicit calendar and event IDs | direct `gws events …`, guessed event IDs, or series-wide writes without the recurring master |
+| Recurring series change | `calendar-event-patch --event MASTER_EVENT_ID --weekdays MO,WE,FR` or a bounded `calendar-insert --weekdays TU,TH` | patching a single occurrence when the schedule should persist, or changing a whole series without checking the master |
 | Create calendar event  | `lisa-safe calendar-insert …` (prefer `--dry-run` first)          | multiline `+insert` with `\` / `2>&1`                            |
 | Send email (any body)  | `write` body → `lisa-safe email-send --body-file …`               | `gws gmail send` (no `+`), `--body "$(cat …)"`                   |
 | Create Google Doc      | `lisa-safe drive-create-doc --name "…"`                           | inline `--json '{…}' 2>&1`                                       |
