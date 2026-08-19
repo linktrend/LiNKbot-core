@@ -2,11 +2,11 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import { authorizeLisaProviderOperation } from "./policy.js";
-import { createFakeClock, ownDataFactsForProvider } from "./fakes.js";
-import { requestLisaSkills } from "./skills.js";
 import { computeAutoworkFingerprint, requestLisaAutowork } from "./autowork.js";
+import { createFakeClock, ownDataFactsForProvider } from "./fakes.js";
 import { requestLisaLibraries } from "./libraries.js";
+import { authorizeLisaProviderOperation } from "./policy.js";
+import { requestLisaSkills } from "./skills.js";
 import {
   LISA_WAVE_B_ACCEPTED_ITEM2,
   LISA_WAVE_B_BARREL_PIN_IDENTITIES,
@@ -23,12 +23,8 @@ const repoRoot = path.resolve(here, "../../../..");
 
 describe("P-10 Wave B public-barrel wiring", () => {
   it("records the independently accepted Item 2 commit/tree and five public barrels", () => {
-    expect(LISA_WAVE_B_ACCEPTED_ITEM2.commit).toBe(
-      "90dad7381cce213db23fa81881787c4ea7d1ad0a",
-    );
-    expect(LISA_WAVE_B_ACCEPTED_ITEM2.tree).toBe(
-      "8358bc165dbe0d5c48d61c7c906c773ee6f14ac1",
-    );
+    expect(LISA_WAVE_B_ACCEPTED_ITEM2.commit).toBe("90dad7381cce213db23fa81881787c4ea7d1ad0a");
+    expect(LISA_WAVE_B_ACCEPTED_ITEM2.tree).toBe("8358bc165dbe0d5c48d61c7c906c773ee6f14ac1");
     expect(LISA_WAVE_B_ACCEPTED_ITEM2.pinProfile).toBe("ocp-01");
     expect([...LISA_WAVE_B_PUBLIC_BARRELS]).toEqual([
       "extensions/linkplatform/api.ts",
@@ -59,9 +55,9 @@ describe("P-10 Wave B public-barrel wiring", () => {
   });
 
   it("fails closed when a recorded export binding is missing", () => {
-    expect(() =>
-      assertRecordedExportsPresent({ validatePlatformTrustFacts: undefined }),
-    ).toThrow(/lisa_wave_b_missing_public_export:validatePlatformTrustFacts/u);
+    expect(() => assertRecordedExportsPresent({ validatePlatformTrustFacts: undefined })).toThrow(
+      /lisa_wave_b_missing_public_export:validatePlatformTrustFacts/u,
+    );
   });
 
   it("does not deep-import extensions/*/src from the wiring module", () => {

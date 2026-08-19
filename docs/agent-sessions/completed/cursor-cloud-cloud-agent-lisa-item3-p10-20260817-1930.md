@@ -2,28 +2,28 @@
 
 ## Identity
 
-| Field             | Value                                                    |
-| ----------------- | -------------------------------------------------------- |
-| Agent type        | Cursor Cloud Agent                                       |
-| Platform          | Cursor                                                   |
-| Machine           | cloud VM                                                 |
-| Surface           | Cloud Agent                                              |
-| Execution         | cloud                                                    |
-| Role              | feature                                                  |
-| Orchestrator key  | cursor-cloud-cloud-agent-orchestrator                    |
-| Coordination home | openclaw_prime                                           |
-| Session ID        | `cursor-cloud-cloud-agent-lisa-item3-p10-20260817-1930`  |
-| Started           | 2026-08-17 19:30 Asia/Taipei                             |
-| Last updated      | 2026-08-17 19:36 Asia/Taipei                             |
+| Field             | Value                                                   |
+| ----------------- | ------------------------------------------------------- |
+| Agent type        | Cursor Cloud Agent                                      |
+| Platform          | Cursor                                                  |
+| Machine           | cloud VM                                                |
+| Surface           | Cloud Agent                                             |
+| Execution         | cloud                                                   |
+| Role              | feature                                                 |
+| Orchestrator key  | cursor-cloud-cloud-agent-orchestrator                   |
+| Coordination home | openclaw_prime                                          |
+| Session ID        | `cursor-cloud-cloud-agent-lisa-item3-p10-20260817-1930` |
+| Started           | 2026-08-17 19:30 Asia/Taipei                            |
+| Last updated      | 2026-08-17 19:36 Asia/Taipei                            |
 
 ## Work
 
-| Field           | Value                                                                 |
-| --------------- | --------------------------------------------------------------------- |
-| Objective       | Complete Lisa Item 3 P-10 Wave B wiring against accepted Item 2 head  |
-| Branch          | `issue/190-implement-lisa-item-3-foundation-packets-p-01-th`          |
-| Starting commit | layered Wave A tip on `90dad7381cce213db23fa81881787c4ea7d1ad0a`     |
-| Status          | `complete`                                                            |
+| Field           | Value                                                                  |
+| --------------- | ---------------------------------------------------------------------- |
+| Objective       | Complete Lisa Item 3 P-10 Wave B wiring against accepted Item 2 head   |
+| Branch          | `issue/190-implement-lisa-item-3-foundation-packets-p-01-th`           |
+| Starting commit | layered Wave A tip on `90dad7381cce213db23fa81881787c4ea7d1ad0a`       |
+| Status          | `complete`                                                             |
 | Handoff         | `docs/handoffs/2026-08-17-1936-cursor-cloud-lisa-item-3-p10-wave-b.md` |
 
 ## Ownership Scope

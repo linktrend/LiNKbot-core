@@ -88,23 +88,23 @@ tools/bin/lisa-safe smoke-gws
 
 ## Need → command (do this / never that)
 
-| Need                   | Do this                                                           | Never do this                                                    |
-| ---------------------- | ----------------------------------------------------------------- | ---------------------------------------------------------------- |
-| Read/list files        | native `read` / `list` / `glob`                                   | `cat … 2>&1`, `ls … 2>&1 \|\| echo`                              |
-| Session state          | `sessions_*` / `sessions.list`                                    | shell `ls`/`find` on session dirs with pipes                     |
-| Unread email           | `lisa-safe gmail-triage --max 5`                                  | `gws gmail list`, `+list`, `… 2>&1 \| head`                      |
-| gws help               | `lisa-safe gws-help gmail +send`                                  | `gws … --help 2>&1 \| head -N`                                   |
-| Calendar list / agenda | `lisa-safe calendar-list` / `calendar-agenda`                     | `gws calendarList …`, `gws calendar get`, `gws events …`         |
-| Calendar event change  | `lisa-safe calendar-event-get|patch|delete` with explicit calendar and event IDs | direct `gws events …`, guessed event IDs, or series-wide writes without the recurring master |
+| Need                    | Do this                                                                                                            | Never do this                                                                                                         |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
+| Read/list files         | native `read` / `list` / `glob`                                                                                    | `cat … 2>&1`, `ls … 2>&1 \|\| echo`                                                                                   |
+| Session state           | `sessions_*` / `sessions.list`                                                                                     | shell `ls`/`find` on session dirs with pipes                                                                          |
+| Unread email            | `lisa-safe gmail-triage --max 5`                                                                                   | `gws gmail list`, `+list`, `… 2>&1 \| head`                                                                           |
+| gws help                | `lisa-safe gws-help gmail +send`                                                                                   | `gws … --help 2>&1 \| head -N`                                                                                        |
+| Calendar list / agenda  | `lisa-safe calendar-list` / `calendar-agenda`                                                                      | `gws calendarList …`, `gws calendar get`, `gws events …`                                                              |
+| Calendar event change   | `lisa-safe calendar-event-get                                                                                      | patch                                                                                                                 | delete` with explicit calendar and event IDs | direct `gws events …`, guessed event IDs, or series-wide writes without the recurring master |
 | Recurring series change | `calendar-event-patch --event MASTER_EVENT_ID --weekdays MO,WE,FR` or a bounded `calendar-insert --weekdays TU,TH` | patching a single occurrence when the schedule should persist, or changing a whole series without checking the master |
-| Create calendar event  | `lisa-safe calendar-insert …` (prefer `--dry-run` first)          | multiline `+insert` with `\` / `2>&1`                            |
-| Send email (any body)  | `write` body → `lisa-safe email-send --body-file …`               | `gws gmail send` (no `+`), `--body "$(cat …)"`                   |
-| Create Google Doc      | `lisa-safe drive-create-doc --name "…"`                           | inline `--json '{…}' 2>&1`                                       |
-| Share Drive file       | `lisa-safe drive-share --file-id ID --email user@linktrend.media` | `permissions create --json '…' 2>&1`                             |
-| Append to Doc          | `write` → `lisa-safe docs-append --document ID --text-file …`     | giant `--text` on command line                                   |
-| Structured gws JSON    | `scratch/` JSON → `lisa-safe drive-json …`                        | embedding large JSON on the command line                         |
-| Carlos Tasks           | `tools/bin/lisa-carlos-tasks …`                                   | `gws tasks +list`, Lisa-primary `gws tasks` for digest/heartbeat |
-| Missing verb           | **Stop and report**                                               | inventing a new `gws` path                                       |
+| Create calendar event   | `lisa-safe calendar-insert …` (prefer `--dry-run` first)                                                           | multiline `+insert` with `\` / `2>&1`                                                                                 |
+| Send email (any body)   | `write` body → `lisa-safe email-send --body-file …`                                                                | `gws gmail send` (no `+`), `--body "$(cat …)"`                                                                        |
+| Create Google Doc       | `lisa-safe drive-create-doc --name "…"`                                                                            | inline `--json '{…}' 2>&1`                                                                                            |
+| Share Drive file        | `lisa-safe drive-share --file-id ID --email user@linktrend.media`                                                  | `permissions create --json '…' 2>&1`                                                                                  |
+| Append to Doc           | `write` → `lisa-safe docs-append --document ID --text-file …`                                                      | giant `--text` on command line                                                                                        |
+| Structured gws JSON     | `scratch/` JSON → `lisa-safe drive-json …`                                                                         | embedding large JSON on the command line                                                                              |
+| Carlos Tasks            | `tools/bin/lisa-carlos-tasks …`                                                                                    | `gws tasks +list`, Lisa-primary `gws tasks` for digest/heartbeat                                                      |
+| Missing verb            | **Stop and report**                                                                                                | inventing a new `gws` path                                                                                            |
 
 ## Narrow bare-gws escape hatch (optional only)
 

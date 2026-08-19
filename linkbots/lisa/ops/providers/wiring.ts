@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 /**
  * Item 3 Wave B (P-10): bind Lisa Wave A ports to public Item 2 barrels only.
  *
@@ -53,7 +54,6 @@ import {
   isModernSkillsOperation,
   validateExactRelease,
 } from "../../../../extensions/linkskills/api.js";
-import { createHash } from "node:crypto";
 import type { LisaIdentityHandle, LisaProviderName } from "./outcomes.js";
 import { LISA_OCP01_PIN_IDENTITIES } from "./pin-identities.js";
 import {
@@ -77,8 +77,7 @@ export const LISA_WAVE_B_ACCEPTED_ITEM2 = Object.freeze({
   commit: "90dad7381cce213db23fa81881787c4ea7d1ad0a",
   tree: "8358bc165dbe0d5c48d61c7c906c773ee6f14ac1",
   pinProfile: "ocp-01",
-  independentReviewIdentity:
-    "orchestrator-accepted-item2-public-barrel-head-for-lisa-p10",
+  independentReviewIdentity: "orchestrator-accepted-item2-public-barrel-head-for-lisa-p10",
 });
 
 /** Recorded public barrel paths on the accepted Item 2 tree. */
@@ -115,11 +114,7 @@ export const LISA_WAVE_B_RECORDED_EXPORTS = Object.freeze({
     "isModernSkillsOperation",
     "validateExactRelease",
   ]),
-  libraries: Object.freeze([
-    "LIBRARIES_COMMIT",
-    "LIBRARIES_TREE",
-    "validateRevision2Record",
-  ]),
+  libraries: Object.freeze(["LIBRARIES_COMMIT", "LIBRARIES_TREE", "validateRevision2Record"]),
   autowork: Object.freeze([
     "AUTOWORK_COMMIT",
     "AUTOWORK_TREE",
@@ -137,7 +132,8 @@ export const LISA_WAVE_B_PORT_BINDING_MAP = Object.freeze({
   skills: "isModernSkillsOperation + SKILLS_COMMIT/TREE + validateExactRelease",
   autowork: "AUTOWORK_OPERATIONS/AUDIENCE/COMMIT/TREE + requestFingerprint + assertIdempotency",
   libraries: "LIBRARIES_COMMIT/TREE + validateRevision2Record",
-  brain: "BRAIN_V2_OPERATIONS + LINKBRAIN_V2_COMMIT/TREE + createBrainV2Client (named; no live transport)",
+  brain:
+    "BRAIN_V2_OPERATIONS + LINKBRAIN_V2_COMMIT/TREE + createBrainV2Client (named; no live transport)",
   clock: "Lisa-injected LisaPolicyClock (not an Item 2 export)",
 });
 
@@ -240,7 +236,7 @@ function createWiredProviderStatusPort(
         return status;
       }
       if (allowed.has(status)) {
-        return PLATFORM_TO_LISA_STATUS[status as ProviderStatus] ?? "unavailable" as never;
+        return PLATFORM_TO_LISA_STATUS[status as ProviderStatus] ?? ("unavailable" as never);
       }
       return status;
     },
@@ -414,8 +410,7 @@ function createWiredLibrariesPort(): LisaLibrariesPort {
           evidence: {
             kind: "exact-release-receipt",
             catalogueHash:
-              request.catalogueHash ??
-              createHash("sha256").update(request.recordId).digest("hex"),
+              request.catalogueHash ?? createHash("sha256").update(request.recordId).digest("hex"),
             recordId: request.recordId,
             pinCommit: LIBRARIES_COMMIT,
             pinTree: LIBRARIES_TREE,
@@ -489,14 +484,15 @@ export const LISA_WAVE_B_BARREL_PIN_IDENTITIES = Object.freeze({
 
 /** Wave A pin table must match the accepted-head barrel constants. */
 export function assertWaveAPinsMatchAcceptedBarrels(): void {
-  const pairs: Array<readonly [keyof typeof LISA_OCP01_PIN_IDENTITIES, { commit: string; tree: string }]> =
-    [
-      ["platform", LISA_WAVE_B_BARREL_PIN_IDENTITIES.platform],
-      ["brain", LISA_WAVE_B_BARREL_PIN_IDENTITIES.brain],
-      ["skills", LISA_WAVE_B_BARREL_PIN_IDENTITIES.skills],
-      ["libraries", LISA_WAVE_B_BARREL_PIN_IDENTITIES.libraries],
-      ["autowork", LISA_WAVE_B_BARREL_PIN_IDENTITIES.autowork],
-    ];
+  const pairs: Array<
+    readonly [keyof typeof LISA_OCP01_PIN_IDENTITIES, { commit: string; tree: string }]
+  > = [
+    ["platform", LISA_WAVE_B_BARREL_PIN_IDENTITIES.platform],
+    ["brain", LISA_WAVE_B_BARREL_PIN_IDENTITIES.brain],
+    ["skills", LISA_WAVE_B_BARREL_PIN_IDENTITIES.skills],
+    ["libraries", LISA_WAVE_B_BARREL_PIN_IDENTITIES.libraries],
+    ["autowork", LISA_WAVE_B_BARREL_PIN_IDENTITIES.autowork],
+  ];
   for (const [name, barrel] of pairs) {
     if (
       LISA_OCP01_PIN_IDENTITIES[name].commit !== barrel.commit ||

@@ -2,21 +2,21 @@
 
 ## Session Metadata
 
-| Field            | Value                                                                                          |
-| ---------------- | ---------------------------------------------------------------------------------------------- |
-| Agent identity   | Cursor Cloud Agent                                                                             |
-| Session ID       | `cursor-cloud-cloud-agent-lisa-item3-p10-20260817-1930`                                        |
-| Orchestrator key | cursor-cloud-cloud-agent-orchestrator                                                          |
-| Objective        | Complete only P-10 Wave B wiring against immutable accepted Item 2 head; checkpoint; no PR     |
-| Scope            | issue/190 Lisa Wave B binder; plan §2.2 fill; focused tests                                    |
-| Started          | 2026-08-17 19:30 Asia/Taipei                                                                   |
-| Ended            | 2026-08-17 19:36 Asia/Taipei                                                                   |
-| Starting branch  | `issue/190-implement-lisa-item-3-foundation-packets-p-01-th`                                   |
-| Ending branch    | `issue/190-implement-lisa-item-3-foundation-packets-p-01-th`                                   |
-| Starting commit  | Wave A tip layered on `90dad7381cce213db23fa81881787c4ea7d1ad0a`                                |
+| Field            | Value                                                                                        |
+| ---------------- | -------------------------------------------------------------------------------------------- |
+| Agent identity   | Cursor Cloud Agent                                                                           |
+| Session ID       | `cursor-cloud-cloud-agent-lisa-item3-p10-20260817-1930`                                      |
+| Orchestrator key | cursor-cloud-cloud-agent-orchestrator                                                        |
+| Objective        | Complete only P-10 Wave B wiring against immutable accepted Item 2 head; checkpoint; no PR   |
+| Scope            | issue/190 Lisa Wave B binder; plan §2.2 fill; focused tests                                  |
+| Started          | 2026-08-17 19:30 Asia/Taipei                                                                 |
+| Ended            | 2026-08-17 19:36 Asia/Taipei                                                                 |
+| Starting branch  | `issue/190-implement-lisa-item-3-foundation-packets-p-01-th`                                 |
+| Ending branch    | `issue/190-implement-lisa-item-3-foundation-packets-p-01-th`                                 |
+| Starting commit  | Wave A tip layered on `90dad7381cce213db23fa81881787c4ea7d1ad0a`                             |
 | Ending commit    | `2e9f0f842ccc68ffaea0a978cadc1ad7afd06740` / tree `25ecd38c2d9acab6dcc1ecb73fa701b6c09639ad` |
-| Starting status  | dirty with P-10 wiring in progress                                                             |
-| Ending status    | committed and pushed; working tree clean; HEAD equals origin/issue/190                         |
+| Starting status  | dirty with P-10 wiring in progress                                                           |
+| Ending status    | committed and pushed; working tree clean; HEAD equals origin/issue/190                       |
 
 ## Summary
 

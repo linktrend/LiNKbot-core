@@ -16,10 +16,7 @@ function readLisa(relPath: string): string {
 
 function providerPolicySources(): string[] {
   return readdirSync(here)
-    .filter(
-      (name) =>
-        name.endsWith(".ts") && !name.endsWith(".test.ts") && name !== "wiring.ts",
-    )
+    .filter((name) => name.endsWith(".ts") && !name.endsWith(".test.ts") && name !== "wiring.ts")
     .map((name) => readFileSync(path.join(here, name), "utf8"));
 }
 

@@ -2,29 +2,29 @@
 
 ## Identity
 
-| Field             | Value |
-|-------------------|-------|
-| Agent type        | Codex Desktop Agent |
-| Platform          | macOS |
-| Machine           | Mac mini |
-| Surface           | Desktop workspace |
-| Execution         | local worktree plus approved VPS deployment |
-| Role              | lisa |
-| Orchestrator key  | codex-local-vps-lisa-google-workspace-repair |
-| Coordination home | `/Users/linktrend/Projects/openclaw_prime` |
+| Field             | Value                                                   |
+| ----------------- | ------------------------------------------------------- |
+| Agent type        | Codex Desktop Agent                                     |
+| Platform          | macOS                                                   |
+| Machine           | Mac mini                                                |
+| Surface           | Desktop workspace                                       |
+| Execution         | local worktree plus approved VPS deployment             |
+| Role              | lisa                                                    |
+| Orchestrator key  | codex-local-vps-lisa-google-workspace-repair            |
+| Coordination home | `/Users/linktrend/Projects/openclaw_prime`              |
 | Session ID        | `codex-local-vps-lisa-google-workspace-repair-20260819` |
-| Started           | 2026-08-19 Asia/Taipei |
-| Last updated      | 2026-08-19 Asia/Taipei |
+| Started           | 2026-08-19 Asia/Taipei                                  |
+| Last updated      | 2026-08-19 Asia/Taipei                                  |
 
 ## Work
 
-| Field           | Value |
-|-----------------|-------|
+| Field           | Value                                                                                                                 |
+| --------------- | --------------------------------------------------------------------------------------------------------------------- |
 | Objective       | Repair VPS Lisa Google Workspace routing and Calendar mutation capability without reauthentication or Mac dependency. |
-| Branch          | `fix/lisa-google-workspace-calendar-20260819` |
-| Starting commit | `10f96532a82` |
-| Status          | `active` |
-| Handoff         | pending |
+| Branch          | `fix/lisa-google-workspace-calendar-20260819`                                                                         |
+| Starting commit | `10f96532a82`                                                                                                         |
+| Status          | `active`                                                                                                              |
+| Handoff         | pending                                                                                                               |
 
 ## Ownership Scope
 

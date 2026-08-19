@@ -220,7 +220,14 @@ describe("VPS Lisa Google Workspace wrappers", () => {
 
       const deleted = run(
         lisaSafe,
-        ["calendar-event-delete", "--calendar", "routine@linktrend.media", "--event", "event_1", "--dry-run"],
+        [
+          "calendar-event-delete",
+          "--calendar",
+          "routine@linktrend.media",
+          "--event",
+          "event_1",
+          "--dry-run",
+        ],
         fixture,
       );
       assert.equal(deleted.status, 0, deleted.stderr);
