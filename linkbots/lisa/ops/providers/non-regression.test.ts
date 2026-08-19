@@ -38,7 +38,7 @@ describe("P-09 operating-model non-regression ledger", () => {
     expect(tools).toContain("tools/bin/lisa-carlos-tasks");
     expect(tools).toContain("calusa@linktrend.media");
     expect(agents).toContain("development-orchestrator");
-    expect(agents).toContain("Main must never `sessions_spawn`/subagent-spawn `lisa-cron`");
+    expect(agents).toContain("Main must not spawn `lisa-cron` as a subagent");
     expect(agents).toContain("Never author your own skills");
     expect(agents).toContain("gws auth*");
     expect(cursor).toContain("Cursor ACP");
@@ -54,8 +54,8 @@ describe("P-09 operating-model non-regression ledger", () => {
     expect(agents).toContain("Progressive Disclosure");
     expect(agents).toContain("MEMORY.md");
     expect(agents).toContain("battery-monitor");
-    expect(agents).toContain("lisa-heartbeat-45");
-    expect(agents).toMatch(/heartbeat\.every` is `0m/u);
+    expect(agents).toContain("Retired Ship, Pull, Repair Dispatcher, and `lisa-heartbeat-45`");
+    expect(agents).toContain("Native `heartbeat.every` is disabled");
     expect(identity).toMatch(/v1\.3/u);
     expect(LISA_JOB_CATALOGUE.sourceStatus).toBe("SOURCE_ONLY");
     expect(LISA_JOB_CATALOGUE.deliveryMode).toBe("none");

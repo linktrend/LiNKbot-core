@@ -408,6 +408,18 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
 - Headings:
   - H1: Active Agent Sessions
 
+## agent-sessions/active/codex-local-vps-lisa-google-workspace-repair-20260819.md
+
+- Route: /agent-sessions/active/codex-local-vps-lisa-google-workspace-repair-20260819
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
 ## agent-sessions/completed/README.md
 
 - Route: /agent-sessions/completed/README
@@ -898,6 +910,42 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Progress
   - H2: Next Action
 
+## agent-sessions/completed/cursor-cloud-cloud-agent-lisa-item3-p08-p10-20260817-1858.md
+
+- Route: /agent-sessions/completed/cursor-cloud-cloud-agent-lisa-item3-p08-p10-20260817-1858
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-cloud-cloud-agent-lisa-item3-p10-20260817-1930.md
+
+- Route: /agent-sessions/completed/cursor-cloud-cloud-agent-lisa-item3-p10-20260817-1930
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-cloud-cloud-agent-orchestrator-item2-controller-20260817-1856.md
+
+- Route: /agent-sessions/completed/cursor-cloud-cloud-agent-orchestrator-item2-controller-20260817-1856
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
 ## agent-sessions/completed/cursor-cloud-feature-linkbrain-linkskills-machine-token-20260730.md
 
 - Route: /agent-sessions/completed/cursor-cloud-feature-linkbrain-linkskills-machine-token-20260730
@@ -1199,6 +1247,42 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
 ## agent-sessions/completed/cursor-local-mac-mini-agents-window-feature-ocp-brain-capture-contract-fix-20260803-2132.md
 
 - Route: /agent-sessions/completed/cursor-local-mac-mini-agents-window-feature-ocp-brain-capture-contract-fix-20260803-2132
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-agents-window-lisa-20260817-1517.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-agents-window-lisa-20260817-1517
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-agents-window-lisa-20260817-1635.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-agents-window-lisa-20260817-1635
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
+## agent-sessions/completed/cursor-local-mac-mini-agents-window-lisa-20260817-1649.md
+
+- Route: /agent-sessions/completed/cursor-local-mac-mini-agents-window-lisa-20260817-1649
 - Headings:
   - H1: Agent Session Record
   - H2: Identity
@@ -9854,6 +9938,151 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Functional source receipt
   - H2: Supervisor acceptance and closeout
   - H2: Remaining gates
+
+## handoffs/2026-08-17-1517-cursor-lisa-item-3-p01-p04-foundation.md
+
+- Route: /handoffs/2026-08-17-1517-cursor-lisa-item-3-p01-p04-foundation
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-17-1635-cursor-lisa-item-3-p01-p04-foundation.md
+
+- Route: /handoffs/2026-08-17-1635-cursor-lisa-item-3-p01-p04-foundation
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-17-1649-cursor-lisa-item-3-p05-p09-wave-a.md
+
+- Route: /handoffs/2026-08-17-1649-cursor-lisa-item-3-p05-p09-wave-a
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: P-09 Evidence
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-17-1916-cursor-cloud-lisa-item-3-p08-p10-hold.md
+
+- Route: /handoffs/2026-08-17-1916-cursor-cloud-lisa-item-3-p08-p10-hold
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: P-10 HOLD (precise)
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
+
+## handoffs/2026-08-17-1925-cursor-cloud-item2-pr191-knip-controller.md
+
+- Route: /handoffs/2026-08-17-1925-cursor-cloud-item2-pr191-knip-controller
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems Encountered
+  - H2: Uncommitted Changes
+  - H2: Risks
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Incoming Agent
+  - H2: Confidence
+
+## handoffs/2026-08-17-1936-cursor-cloud-lisa-item-3-p10-wave-b.md
+
+- Route: /handoffs/2026-08-17-1936-cursor-cloud-lisa-item-3-p10-wave-b
+- Headings:
+  - H1: Agent Session Handoff
+  - H2: Session Metadata
+  - H2: Summary
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified
+  - H2: Files Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+  - H2: Amendments
 
 ## handoffs/TEMPLATE.md
 
