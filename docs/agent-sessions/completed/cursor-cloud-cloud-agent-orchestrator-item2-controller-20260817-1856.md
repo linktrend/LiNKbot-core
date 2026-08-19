@@ -48,7 +48,7 @@
 - 6 focused provider files / 194 tests PASS; both extension TypeScript lanes PASS.
 - Scope: five files only; no Lisa/runtime/deployment paths.
 - FF completed: `phase/188-connect-openclaw-prime-providers` and PR #191 now at accepted tip. UNMERGED.
-- Ordinary CI monitored on run https://github.com/linktrend/openclaw_prime/actions/runs/32023935965.
+- Ordinary CI monitored on [run 32023935965](https://github.com/linktrend/openclaw_prime/actions/runs/32023935965).
 - HOLD: OpenClaw `check-lint`, `checks-node-core-tooling-3` (`as-any`=11), and aggregate `openclaw/ci-gate` remain red; outside bounded Knip repair. Linktrend Fast Checks SUCCESS.
 
 ## Next Action
