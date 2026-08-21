@@ -81,9 +81,8 @@ CREDENTIAL_FIELDS = (
     "api-key",
     "private_key",
     "private-key",
-    "key",
-    "url",
 )
+GENERIC_REFERENCE_FIELDS = frozenset({"key", "url"})
 ANY_FIELD_RE = re.compile(r"(?i)\b(?P<field>[A-Za-z_][A-Za-z0-9_]*)\b")
 FIELD_RE = re.compile(
     r"(?i)\b(?P<field>"
@@ -379,6 +378,10 @@ def _is_credential_field(name: str) -> bool:
     return FIELD_RE.fullmatch(name) is not None
 
 
+def _is_generic_reference_field(name: str) -> bool:
+    return name.lower().replace("-", "_") in GENERIC_REFERENCE_FIELDS
+
+
 def _is_code_expression(value: str) -> bool:
     stripped = value.strip().rstrip(",;:)}]")
     if re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", stripped):
@@ -415,13 +418,16 @@ def extract_assignments(line: str) -> list[tuple[str, str]]:
             value, _ = _read_unquoted(line, index)
             if not value:
                 continue
-        if not _is_credential_field(raw_field) and not is_synthetic_value(value):
+        credential_field = _is_credential_field(raw_field)
+        generic_reference_field = _is_generic_reference_field(raw_field)
+        if not credential_field and not generic_reference_field and not is_synthetic_value(value):
+            continue
+        if generic_reference_field and not is_realistic_value(value) and not is_synthetic_value(value):
             continue
         if _is_reference_value(value) and not is_realistic_value(value) and not is_synthetic_value(value):
             continue
         if (
-            not quoted
-            and _is_code_expression(value)
+            _is_code_expression(value)
             and not is_realistic_value(value)
             and not is_synthetic_value(value)
         ):

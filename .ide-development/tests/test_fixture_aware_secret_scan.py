@@ -105,6 +105,16 @@ class CodeExpressionTests(unittest.TestCase):
             [],
         )
 
+    def test_quoted_member_and_call_references_are_not_credentials(self) -> None:
+        self.assertEqual(extract_assignments('token = "gateway.remote.token"'), [])
+        self.assertEqual(extract_assignments('token = "resolveToken()"'), [])
+
+    def test_generic_key_and_url_fields_keep_realistic_detection(self) -> None:
+        self.assertEqual(extract_assignments('key = "ordinary-name"'), [])
+        self.assertEqual(extract_assignments('url = "https://example.invalid/path"'), [])
+        entropy = hashlib.sha256(b"generic-key-high-entropy").hexdigest()
+        self.assertEqual(extract_assignments(f'key = "{entropy}"')[0][0], "key")
+
 
 def declaration(
     *,
