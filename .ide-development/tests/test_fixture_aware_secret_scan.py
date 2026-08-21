@@ -17,6 +17,7 @@ from scripts.gitops.secret_scan import (
     KIND_APPROVED,
     KIND_CREDENTIAL,
     KIND_SCOPE,
+    KIND_SKIPPED,
     KIND_STALE,
     RULE_INPUT_TOO_LARGE,
     RULE_INPUT_UNDECODABLE,
@@ -877,10 +878,10 @@ class AdversarialRepairTests(unittest.TestCase):
         self.assertIn("concat.py", paths)
         self.assertTrue(any(row["rule"] == RULE_FORMAT_SK for row in result["findings"]))
 
-    def test_huge_input_and_scanner_timeout_are_typed_results(self) -> None:
+    def test_huge_text_is_scanned_and_scanner_timeout_is_typed(self) -> None:
         tmp, root = init_repo()
         self.addCleanup(tmp.cleanup)
-        write_tracked(root, "huge.txt", "x" * 200)
+        write_tracked(root, "huge.txt", "x" * (1_048_576 + 1))
         blocker = root / "slow.sh"
         blocker.write_text("#!/bin/sh\nsleep 5\n", encoding="utf-8")
         blocker.chmod(0o755)
@@ -891,13 +892,11 @@ class AdversarialRepairTests(unittest.TestCase):
         )
         git(root, "add", "--", "slow.sh")
         commit(root, "huge and slow")
-        with patch.object(secret_scan_mod, "MAX_FILE_BYTES", 64), patch.object(
-            secret_scan_mod, "REPO_SCANNER_TIMEOUT_SEC", 0.2
-        ):
+        with patch.object(secret_scan_mod, "REPO_SCANNER_TIMEOUT_SEC", 0.2):
             result = scan_repository(root)
         self.assertFalse(result["ok"])
         self.assertEqual(result["kind"], "secret-scan-result")
-        self.assertTrue(any(row["rule"] == RULE_INPUT_TOO_LARGE and row["path"] == "huge.txt" for row in result["findings"]))
+        self.assertFalse(any(row["rule"] == RULE_INPUT_TOO_LARGE and row["path"] == "huge.txt" for row in result["findings"]))
         self.assertTrue(any(row["rule"] == RULE_REPO_TIMEOUT and row.get("scannerId") == "slow" for row in result["findings"]))
 
     def test_schema_extras_and_typed_failures_match_result_schema(self) -> None:
@@ -934,14 +933,23 @@ class AdversarialRepairTests(unittest.TestCase):
         for key in ("schemaVersion", "kind", "scannerPolicyVersion", "candidateTree", "ok", "findings"):
             self.assertIn(key, result)
 
-    def test_undecodable_nul_content_fails_closed(self) -> None:
+    def test_undecodable_nul_content_is_nonblocking_skipped_input(self) -> None:
         tmp, root = init_repo()
         self.addCleanup(tmp.cleanup)
         write_tracked_bytes(root, "opaque.bin", b"\x00\x01\x02\x00secret-not-decoded")
         commit(root, "undecodable")
         result = scan_repository(root)
-        self.assertFalse(result["ok"])
-        self.assertTrue(any(row["rule"] == RULE_INPUT_UNDECODABLE and row["path"] == "opaque.bin" for row in result["findings"]))
+        self.assertTrue(result["ok"])
+        self.assertTrue(any(row["kind"] == KIND_SKIPPED and row["rule"] == RULE_INPUT_UNDECODABLE and row["path"] == "opaque.bin" for row in result["findings"]))
+
+    def test_binary_control_content_is_nonblocking_skipped_input(self) -> None:
+        tmp, root = init_repo()
+        self.addCleanup(tmp.cleanup)
+        write_tracked_bytes(root, "opaque.bin", bytes([1, 31, 2, 30]) * 3000)
+        commit(root, "binary")
+        result = scan_repository(root)
+        self.assertTrue(result["ok"])
+        self.assertTrue(any(row["kind"] == KIND_SKIPPED and row["rule"] == "input.binary" and row["path"] == "opaque.bin" for row in result["findings"]))
 
     def test_bound_bytes_must_match_detected_value(self) -> None:
         tmp, root = init_repo()
