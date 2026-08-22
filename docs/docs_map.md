@@ -2012,6 +2012,18 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Progress
   - H2: Next Action
 
+## agent-sessions/completed/issue209-change-scoped-secret-scan-acceptance-20260821.md
+
+- Route: /agent-sessions/completed/issue209-change-scoped-secret-scan-acceptance-20260821
+- Headings:
+  - H1: Agent Session Record
+  - H2: Identity
+  - H2: Work
+  - H2: Ownership Scope
+  - H2: Coordination
+  - H2: Progress
+  - H2: Next Action
+
 ## announcements/bluebubbles-imessage.md
 
 - Route: /announcements/bluebubbles-imessage
@@ -10083,6 +10095,39 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Questions for the Orchestrator or Next Agent
   - H2: Confidence
   - H2: Amendments
+
+## handoffs/2026-08-21-issue209-change-scoped-secret-scan-acceptance.md
+
+- Route: /handoffs/2026-08-21-issue209-change-scoped-secret-scan-acceptance
+- Headings:
+  - H1: Issue #209 Change-Scoped Secret-Scan Acceptance Package
+  - H2: Status
+  - H2: Exact identity
+  - H2: Scope
+  - H2: Controller acceptance rule
+  - H2: Negative and adversarial evidence
+  - H2: Validation and remaining gate
+  - H2: Session Metadata
+  - H2: Files Inspected
+  - H2: Files Created
+  - H2: Files Modified or Deleted
+  - H2: Commands Run
+  - H2: Decisions
+  - H2: Tests and Verification
+  - H2: Problems and Blockers
+  - H2: Uncommitted Changes
+  - H2: Risks and Unknowns
+  - H2: Remaining Work
+  - H2: Exact Next Action
+  - H2: Questions for Carlos
+  - H2: Questions for the Orchestrator or Next Agent
+  - H2: Confidence
+
+## handoffs/2026-08-22-issue209-ide405-install.md
+
+- Route: /handoffs/2026-08-22-issue209-ide405-install
+- Headings:
+  - H1: Issue 209 IDE 2.5.1 adoption handoff — 2026-08-22
 
 ## handoffs/TEMPLATE.md
 

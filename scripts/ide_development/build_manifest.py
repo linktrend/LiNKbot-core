@@ -416,10 +416,6 @@ def build_entries() -> list[dict[str, Any]]:
             ".ide-development/content/config/transactional-dispatch.json",
         ),
         ("migrations/catalog.json", ".ide-development/migrations/catalog.json"),
-        (
-            "migrations/external-cleanup-plan.json",
-            ".ide-development/migrations/external-cleanup-plan.json",
-        ),
         ("migrations/schema.json", ".ide-development/migrations/schema.json"),
         ("migrations/README.md", ".ide-development/migrations/README.md"),
         ("schemas/manifest.schema.json", ".ide-development/schemas/manifest.schema.json"),
@@ -502,6 +498,14 @@ def build_entries() -> list[dict[str, Any]]:
             ".ide-development/schemas/secret-scan-result.schema.json",
         ),
         (
+            "schemas/managed-upgrade-resolution.schema.json",
+            ".ide-development/schemas/managed-upgrade-resolution.schema.json",
+        ),
+        (
+            "schemas/change-scoped-secret-scan.schema.json",
+            ".ide-development/schemas/change-scoped-secret-scan.schema.json",
+        ),
+        (
             "schemas/repository-ci-contract.schema.json",
             ".ide-development/schemas/repository-ci-contract.schema.json",
         ),
@@ -569,6 +573,18 @@ def build_entries() -> list[dict[str, Any]]:
         )
 
     execution_runtime_files = (
+        (
+            "core/execution/CODING-EXECUTION-PROTOCOL.md",
+            ".ide-development/execution/CODING-EXECUTION-PROTOCOL.md",
+        ),
+        (
+            "core/contracts/EXECUTION-CONTROL-CONTRACT.md",
+            ".ide-development/contracts/EXECUTION-CONTROL-CONTRACT.md",
+        ),
+        (
+            "core/contracts/EXECUTION-MANIFEST.schema.json",
+            ".ide-development/contracts/EXECUTION-MANIFEST.schema.json",
+        ),
         ("core/execution/__init__.py", ".ide-development/execution/__init__.py"),
         ("core/execution/lifecycle.py", ".ide-development/execution/lifecycle.py"),
         ("core/execution/protocol.py", ".ide-development/execution/protocol.py"),
@@ -584,6 +600,10 @@ def build_entries() -> list[dict[str, Any]]:
         (
             "core/execution/transactional_dispatch.py",
             ".ide-development/execution/transactional_dispatch.py",
+        ),
+        (
+            "core/execution/cursor_cloud_dispatch.py",
+            ".ide-development/execution/cursor_cloud_dispatch.py",
         ),
         ("core/execution/rollout.py", ".ide-development/execution/rollout.py"),
         (
@@ -630,6 +650,22 @@ def build_entries() -> list[dict[str, Any]]:
         (
             "core/managed-core/content/doctrine/PKT08-REVISION-60-FINAL-CONTROLS.md",
             ".ide-development/content/doctrine/PKT08-REVISION-60-FINAL-CONTROLS.md",
+        ),
+        (
+            "core/contracts/CURSOR-CLOUD-DISPATCH-CONTRACT.md",
+            ".ide-development/contracts/CURSOR-CLOUD-DISPATCH-CONTRACT.md",
+        ),
+        (
+            "core/managed-core/content/config/cursor-cloud-dispatch.json",
+            ".ide-development/content/config/cursor-cloud-dispatch.json",
+        ),
+        (
+            "core/managed-core/content/doctrine/CURSOR-CLOUD-DISPATCH-CONTRACT.md",
+            ".ide-development/content/doctrine/CURSOR-CLOUD-DISPATCH-CONTRACT.md",
+        ),
+        (
+            "core/managed-core/schemas/cursor-cloud-dispatch.schema.json",
+            ".ide-development/schemas/cursor-cloud-dispatch.schema.json",
         ),
     )
     for source, destination in transactional_dispatch_files:
