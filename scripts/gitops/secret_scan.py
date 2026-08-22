@@ -268,9 +268,10 @@ def _remote_ref_name(ref: str) -> str:
 def changed_paths(root: Path, baseline_commit: str, candidate_commit: str) -> set[str]:
     """Resolve a conservative baseline-to-candidate path set.
 
-    Any delete, rename/copy, malformed status, or path ambiguity is a hard
-    failure.  This prevents a missing path from becoming an accidental blind
-    spot in a large fork.
+    Deletes are allowed only for exact migration-catalog removal destinations;
+    all other deletes, malformed statuses, or path ambiguity are hard failures.
+    Git rename/copy records contribute both source and destination paths so
+    neither side becomes an accidental blind spot in a large fork.
     """
     raw = _git_bytes(
         root,
@@ -284,6 +285,7 @@ def changed_paths(root: Path, baseline_commit: str, candidate_commit: str) -> se
     )
     tokens = raw.split(b"\0")
     paths: set[str] = set()
+    managed_migrations = _managed_migration_paths(root)
     index = 0
     while index < len(tokens):
         status_raw = tokens[index]
@@ -294,7 +296,9 @@ def changed_paths(root: Path, baseline_commit: str, candidate_commit: str) -> se
             status = status_raw.decode("ascii")
         except UnicodeDecodeError as exc:
             raise SecretScanError("change_scope_paths", "non-ascii diff status") from exc
-        if not status or status[0] not in "AMUT" or (len(status) > 1 and not status[1:].isdigit()):
+        if not status or status[0] not in "ADMUTRC" or (len(status) > 1 and not status[1:].isdigit()):
+            raise SecretScanError("change_scope_paths", f"ambiguous status {status}")
+        if status[0] == "D" and len(status) != 1:
             raise SecretScanError("change_scope_paths", f"ambiguous status {status}")
         if index >= len(tokens) or not tokens[index]:
             raise SecretScanError("change_scope_paths", "missing changed path")
@@ -303,7 +307,19 @@ def changed_paths(root: Path, baseline_commit: str, candidate_commit: str) -> se
         path = path_raw.decode("utf-8", errors="strict")
         if not _valid_relpath(path):
             raise SecretScanError("change_scope_paths", "invalid changed path")
+        if status[0] == "D" and path not in managed_migrations:
+            raise SecretScanError("change_scope_paths", "undeclared migration deletion")
         paths.add(path)
+        if status[0] in "RC":
+            if len(status) == 1 or not status[1:].isdigit():
+                raise SecretScanError("change_scope_paths", f"ambiguous status {status}")
+            if index >= len(tokens) or not tokens[index]:
+                raise SecretScanError("change_scope_paths", "missing rename/copy destination")
+            destination = tokens[index].decode("utf-8", errors="strict")
+            index += 1
+            if not _valid_relpath(destination):
+                raise SecretScanError("change_scope_paths", "invalid rename/copy destination")
+            paths.add(destination)
     return paths
 
 
@@ -1550,7 +1566,11 @@ def _scan_repository(root: Path, baseline_evidence: Any | None = None) -> dict[s
         scope = _validate_change_scoped_evidence(root, baseline_evidence)
         scan_paths = set(scope["changedPaths"]) | set(managed_scanner_policy_paths(root))
         current_paths = {entry.path for entry in entries}
-        if any(path not in current_paths for path in scope["changedPaths"]):
+        migration_paths = _managed_migration_paths(root)
+        if any(
+            path not in current_paths and path not in migration_paths
+            for path in scope["changedPaths"]
+        ):
             raise SecretScanError("change_scope_paths", "changed path is absent from candidate")
         inherited = [
             dict(row)

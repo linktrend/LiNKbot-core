@@ -29,12 +29,14 @@ from scripts.gitops.secret_scan import (
     SCANNER_POLICY_VERSION,
     SYNTHETIC_PREFIX,
     candidate_content_tree,
+    changed_paths,
     config_digest,
     managed_scanner_policy_paths,
     digest_bytes,
     extract_assignments,
     identify_synthetic_candidates,
     scan_repository,
+    SecretScanError,
 )
 from scripts.ide_development.constants import RC_REQUIRED_SCHEMA_RELS
 
@@ -127,6 +129,66 @@ class CodeExpressionTests(unittest.TestCase):
             ("payload_secret", f"-{value}"),
             extract_assignments(f"payload_secret: -{value}"),
         )
+
+
+class ChangedPathStatusTests(unittest.TestCase):
+    def test_copy_status_includes_source_and_destination(self) -> None:
+        raw = b"C093\0source.py\0copied.py\0"
+        with patch.object(secret_scan_mod, "_git_bytes", return_value=raw):
+            self.assertEqual(
+                changed_paths(Path("."), "baseline", "candidate"),
+                {"source.py", "copied.py"},
+            )
+
+    def test_rename_status_includes_source_and_destination(self) -> None:
+        raw = b"R100\0old.py\0new.py\0"
+        with patch.object(secret_scan_mod, "_git_bytes", return_value=raw):
+            self.assertEqual(
+                changed_paths(Path("."), "baseline", "candidate"),
+                {"old.py", "new.py"},
+            )
+
+    def test_malformed_copy_status_fails_closed(self) -> None:
+        for raw in (b"C09x\0source.py\0dest.py\0", b"C093\0source.py\0"):
+            with self.subTest(raw=raw), patch.object(secret_scan_mod, "_git_bytes", return_value=raw):
+                with self.assertRaises(SecretScanError):
+                    changed_paths(Path("."), "baseline", "candidate")
+
+    def test_delete_and_invalid_copy_paths_remain_fail_closed(self) -> None:
+        for raw in (
+            b"D\0deleted.py\0",
+            b"D1\0deleted.py\0",
+            b"C093\0source.py\0",
+            b"C093\0source.py\0../dest.py\0",
+            b"C093\0source.py\0/dest.py\0",
+        ):
+            with self.subTest(raw=raw), patch.object(secret_scan_mod, "_git_bytes", return_value=raw):
+                with self.assertRaises(SecretScanError):
+                    changed_paths(Path("."), "baseline", "candidate")
+
+    def test_declared_migration_deletion_is_included(self) -> None:
+        raw = b"D\0.ide-development/migrations/legacy.json\0"
+        with (
+            patch.object(secret_scan_mod, "_git_bytes", return_value=raw),
+            patch.object(
+                secret_scan_mod,
+                "_managed_migration_paths",
+                return_value={".ide-development/migrations/legacy.json"},
+            ),
+        ):
+            self.assertEqual(
+                changed_paths(Path("."), "baseline", "candidate"),
+                {".ide-development/migrations/legacy.json"},
+            )
+
+    def test_undeclared_migration_deletion_fails_closed(self) -> None:
+        raw = b"D\0.ide-development/migrations/legacy.json\0"
+        with (
+            patch.object(secret_scan_mod, "_git_bytes", return_value=raw),
+            patch.object(secret_scan_mod, "_managed_migration_paths", return_value=set()),
+        ):
+            with self.assertRaises(SecretScanError):
+                changed_paths(Path("."), "baseline", "candidate")
 
 
 def declaration(
@@ -1400,6 +1462,56 @@ class ChangeScopedEvidenceTests(unittest.TestCase):
         untracked_blocked = scan_repository(root, baseline_evidence=evidence)
         self.assertFalse(untracked_blocked["ok"])
         self.assertTrue(any(row["rule"] == "change_scope.paths" for row in untracked_blocked["findings"]))
+
+    def test_absent_declared_migration_path_is_allowed_but_absent_unrelated_path_blocks(self) -> None:
+        tmp, root, evidence = self._candidate_with_baseline()
+        self.addCleanup(tmp.cleanup)
+        migration = ".ide-development/migrations/legacy.json"
+        write_tracked(
+            root,
+            "core/managed-core/migrations/catalog.json",
+            json.dumps(
+                {
+                    "schemaVersion": 1,
+                    "entries": [
+                        {
+                            "identity": migration,
+                            "path": migration,
+                            "contentHash": "sha256:" + ("a" * 64),
+                            "action": "remove",
+                        }
+                    ],
+                }
+            )
+            + "\n",
+        )
+        write_tracked(root, migration, "legacy\n")
+        baseline, baseline_tree = commit(root, "migration baseline")
+        git(root, "update-ref", "refs/remotes/origin/development", baseline)
+
+        (root / migration).unlink()
+        candidate, candidate_tree = commit(root, "remove declared migration")
+        evidence.update(
+            {
+                "baselineCommit": baseline,
+                "baselineTree": baseline_tree,
+                "candidateCommit": candidate,
+                "candidateGitTree": candidate_tree,
+                "findings": [],
+            }
+        )
+        allowed = scan_repository(root, baseline_evidence=evidence)
+        self.assertFalse(any(row["rule"] == "change_scope.paths" for row in allowed["findings"]), allowed)
+
+        evidence["findings"] = []
+        with patch.object(
+            secret_scan_mod,
+            "changed_paths",
+            return_value={"unrelated-deleted.py"},
+        ):
+            blocked = scan_repository(root, baseline_evidence=evidence)
+        self.assertFalse(blocked["ok"])
+        self.assertTrue(any(row["rule"] == "change_scope.paths" for row in blocked["findings"]))
 
     def test_rename_is_scope_ambiguity_not_an_ignore(self) -> None:
         tmp, root, evidence = self._candidate_with_baseline()

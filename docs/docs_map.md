@@ -5230,6 +5230,77 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
 - Headings:
   - H1: OpenClaw fork baseline CI receipt
 
+## execution/openclaw-prime-lisa/FINAL-PRD.md
+
+- Route: /execution/openclaw-prime-lisa/FINAL-PRD
+- Headings:
+  - H1: OpenClaw Prime and Lisa Common Agent Foundation: Final PRD
+  - H2: 1. Decision and outcome
+  - H2: 2. Non-negotiable ownership
+  - H2: 3. Verified baseline and reconciliation
+  - H3: 3.1 OpenClaw source
+  - H3: 3.2 Already implemented and reusable
+  - H3: 3.3 Recoverable but unmerged
+  - H3: 3.4 Runtime-only and unverified-current
+  - H3: 3.5 Stale or incomplete source
+  - H3: 3.6 Controlling dispatch authority
+  - H2: 4. Product requirements
+  - H3: 4.1 Common agent foundation
+  - H3: 4.2 Lisa jobs and delivery
+  - H3: 4.3 Overnight maintenance
+  - H3: 4.4 Executive Digest and Flash Reports
+  - H3: 4.5 Time management and permanent tasks
+  - H3: 4.6 Private health, battery, and selfie
+  - H3: 4.7 Model routing and provider fallback
+  - H3: 4.8 Coding delegation
+  - H3: 4.9 Web and governed browser
+  - H3: 4.10 Google Workspace
+  - H3: 4.11 Brain, Skills, Libraries, and Autowork consumers
+  - H3: 4.12 Platform provider requirements
+  - H3: 4.13 Autowork provider requirement
+  - H3: 4.14 Backup and source/runtime parity
+  - H3: 4.15 Communication and business plans
+  - H2: 5. Security, privacy, and authority acceptance
+  - H2: 6. Evidence levels and definition of done
+  - H2: 7. Performance objectives
+  - H2: 8. Explicit exclusions
+  - H2: 9. Approval gates
+  - H2: 10. Resolved and unresolved decisions
+
+## execution/openclaw-prime-lisa/IMPLEMENTATION-ROADMAP.md
+
+- Route: /execution/openclaw-prime-lisa/IMPLEMENTATION-ROADMAP
+- Headings:
+  - H1: OpenClaw Prime and Lisa Common Agent Foundation Implementation Roadmap
+  - H2: 1. Execution topology
+  - H2: 2. Baselines and promotion discipline
+  - H2: 3. Wave plan
+  - H3: Wave 0: Approval and exact-contract intake
+  - H3: Wave 1: Safe parallel foundations
+  - H3: Wave 2: Common runtime capabilities
+  - H3: Wave 3: Provider automation and operational parity
+  - H3: Wave 4: Serial integration and live acceptance
+  - H2: 4. OpenClaw work packets
+  - H3: PKT-01: Reconcile Lisa delivery contracts and canonical job desired state
+  - H3: PKT-02: Common profile manifest, safe provisioning, and cloning exclusions
+  - H3: PKT-03: Three-gate provider consumers, exact pins, and capability exposure
+  - H3: PKT-04: Non-coding model evaluation, transient router, and fallback migration
+  - H3: PKT-05: Principal task ledger, T-IDs, time management, and private compliance state
+  - H3: PKT-06: Governed browser and web research runtime
+  - H3: PKT-07: Workspace Docs/Sheets/Slides operations and exact Skills consumption
+  - H3: PKT-08: Standard MCP v2 Brain/Skills consumer migration
+  - H3: PKT-09: VPS backup/encryption and deployment recreation
+  - H3: PKT-10: Inactive executive blueprints and business-plan workflow shell
+  - H3: PKT-11: Lisa integrated acceptance, deployment, and production canary
+  - H2: 5. Provider-owned packets
+  - H3: LP-01: Platform agent identity/grants and generic approval evidence
+  - H3: AW-01: Deterministic external skill-source watcher
+  - H2: 6. Libraries closure audit
+  - H2: 7. Cross-packet verification matrix
+  - H2: 8. Global acceptance and rollback
+  - H2: 9. Execution readiness
+  - H3: 9.1 OpenClaw-fork progressive validation amendment
+
 ## execution/openclawdevelopmentplan01/BRAIN-TOOL-NAME-DECISION-PACKET.md
 
 - Route: /execution/openclawdevelopmentplan01/BRAIN-TOOL-NAME-DECISION-PACKET

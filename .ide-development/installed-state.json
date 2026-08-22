@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "packageName": "ide-development-managed-core",
   "packageVersion": "2.5.1",
-  "installedAt": "2026-08-22T05:30:37Z",
+  "installedAt": "2026-08-22T07:14:00Z",
   "files": {
     ".agents/skills-loader.mjs": {
       "id": "codex-non-skill-skills-loader-mjs",
@@ -720,8 +720,8 @@
     },
     ".ide-development/MANIFEST.json": {
       "id": "package-manifest",
-      "sourceHash": "sha256:1a8151da96e7b4a2e0a03b5b02fd94f2c44c57a08d73a04803c5e78b9933b4cc",
-      "contentHash": "sha256:1a8151da96e7b4a2e0a03b5b02fd94f2c44c57a08d73a04803c5e78b9933b4cc",
+      "sourceHash": "sha256:87f333da52a3fd990e36627748f8093feccc2bbf73f8c8076e7b9259304fb229",
+      "contentHash": "sha256:87f333da52a3fd990e36627748f8093feccc2bbf73f8c8076e7b9259304fb229",
       "mode": "0644"
     },
     ".ide-development/README.md": {
@@ -756,8 +756,8 @@
     },
     ".ide-development/content/config/continuous-utilization.json": {
       "id": "config-continuous-utilization-json",
-      "sourceHash": "sha256:637cc6d5e688eb3b183d8e07d84cfb9a82571b723d0c6ce11ca19f82a36b4321",
-      "contentHash": "sha256:637cc6d5e688eb3b183d8e07d84cfb9a82571b723d0c6ce11ca19f82a36b4321",
+      "sourceHash": "sha256:f3c2acedb1c32c8acb512be9f6be3a49bdd42230a8f311aa6890c6d9b064430b",
+      "contentHash": "sha256:f3c2acedb1c32c8acb512be9f6be3a49bdd42230a8f311aa6890c6d9b064430b",
       "mode": "0644"
     },
     ".ide-development/content/config/cursor-cloud-dispatch.json": {
@@ -786,8 +786,8 @@
     },
     ".ide-development/content/doctrine/0003-autonomous-ship-pull-promote.md": {
       "id": "doctrine-0003-autonomous-ship-pull-promote-md",
-      "sourceHash": "sha256:d0a5989a83ebeff7c4447966e67a8b72004da73dc124f54c67025f7ec0906bd5",
-      "contentHash": "sha256:d0a5989a83ebeff7c4447966e67a8b72004da73dc124f54c67025f7ec0906bd5",
+      "sourceHash": "sha256:394c6e1a891cfbcff783c54f848f6cf0013dff396670b49880af0852382829e3",
+      "contentHash": "sha256:394c6e1a891cfbcff783c54f848f6cf0013dff396670b49880af0852382829e3",
       "mode": "0644"
     },
     ".ide-development/content/doctrine/0004-portable-managed-core-v2.md": {
@@ -822,8 +822,8 @@
     },
     ".ide-development/content/doctrine/CODING-EXECUTION-PROTOCOL.md": {
       "id": "doctrine-coding-execution-protocol-md",
-      "sourceHash": "sha256:5914cc1c870463f51bf8154e3f12411c06b3b16e6a5e019fbf9212d52a5d5362",
-      "contentHash": "sha256:5914cc1c870463f51bf8154e3f12411c06b3b16e6a5e019fbf9212d52a5d5362",
+      "sourceHash": "sha256:57ced8207133240abb35db889eca55051d12bd61d4b6651393a39cff2265ebf8",
+      "contentHash": "sha256:57ced8207133240abb35db889eca55051d12bd61d4b6651393a39cff2265ebf8",
       "mode": "0644"
     },
     ".ide-development/content/doctrine/CURSOR-CLOUD-DISPATCH-CONTRACT.md": {
@@ -846,8 +846,8 @@
     },
     ".ide-development/content/doctrine/HOSTED-CAPACITY-SCHEDULER.md": {
       "id": "doctrine-hosted-capacity-scheduler-md",
-      "sourceHash": "sha256:58ff1d5cafe737d91f7badbff0629f7c15582e5c8deacc80117690cb4d0fa4a0",
-      "contentHash": "sha256:58ff1d5cafe737d91f7badbff0629f7c15582e5c8deacc80117690cb4d0fa4a0",
+      "sourceHash": "sha256:bf91c0ba63b0016ac9fb3c82f6c89c9c6f6f02b36183d40669f950de2e331154",
+      "contentHash": "sha256:bf91c0ba63b0016ac9fb3c82f6c89c9c6f6f02b36183d40669f950de2e331154",
       "mode": "0644"
     },
     ".ide-development/content/doctrine/LINKTREND-REVIEW-GATE.md": {
@@ -918,20 +918,20 @@
     },
     ".ide-development/contracts/CURSOR-CLOUD-DISPATCH-CONTRACT.md": {
       "id": "revision-60-final-controls-ide-development-contracts-cursor-cloud-dispatch-contract-md",
-      "sourceHash": "sha256:5c503244c8f08944b79a651f108a0b652a1c950d25a50d83ab79747f043c2aba",
-      "contentHash": "sha256:5c503244c8f08944b79a651f108a0b652a1c950d25a50d83ab79747f043c2aba",
+      "sourceHash": "sha256:b9097dcf535666e4bc700e264049f628ea7ba9f83739abcd196528b2edd91bf9",
+      "contentHash": "sha256:b9097dcf535666e4bc700e264049f628ea7ba9f83739abcd196528b2edd91bf9",
       "mode": "0644"
     },
     ".ide-development/contracts/EXECUTION-CONTROL-CONTRACT.md": {
       "id": "execution-runtime-execution-control-contract-md",
-      "sourceHash": "sha256:7b51d53675adb017f98a933ad64ce12a6939f59ef70284ef02a5d34f83dc2c2d",
-      "contentHash": "sha256:7b51d53675adb017f98a933ad64ce12a6939f59ef70284ef02a5d34f83dc2c2d",
+      "sourceHash": "sha256:67c799098a98e4285bcfa6cf14d42348c01de132007cef14759800239eb79cae",
+      "contentHash": "sha256:67c799098a98e4285bcfa6cf14d42348c01de132007cef14759800239eb79cae",
       "mode": "0644"
     },
     ".ide-development/contracts/EXECUTION-MANIFEST.schema.json": {
       "id": "execution-runtime-execution-manifest-schema-json",
-      "sourceHash": "sha256:de9814e464ebe3c98052fcc2fcfe27f6f3440a2daf6c5fa9ac9ca6deb644369e",
-      "contentHash": "sha256:de9814e464ebe3c98052fcc2fcfe27f6f3440a2daf6c5fa9ac9ca6deb644369e",
+      "sourceHash": "sha256:de39297785ad0aa542a51838fce4647f717f646488a67ccd7b31f6a03873e63a",
+      "contentHash": "sha256:de39297785ad0aa542a51838fce4647f717f646488a67ccd7b31f6a03873e63a",
       "mode": "0644"
     },
     ".ide-development/contracts/PKT08-REVISION-60-FINAL-CONTROLS.md": {
@@ -954,8 +954,8 @@
     },
     ".ide-development/examples/continuous-utilization.example.json": {
       "id": "example-continuous-utilization-example-json",
-      "sourceHash": "sha256:637cc6d5e688eb3b183d8e07d84cfb9a82571b723d0c6ce11ca19f82a36b4321",
-      "contentHash": "sha256:637cc6d5e688eb3b183d8e07d84cfb9a82571b723d0c6ce11ca19f82a36b4321",
+      "sourceHash": "sha256:f3c2acedb1c32c8acb512be9f6be3a49bdd42230a8f311aa6890c6d9b064430b",
+      "contentHash": "sha256:f3c2acedb1c32c8acb512be9f6be3a49bdd42230a8f311aa6890c6d9b064430b",
       "mode": "0644"
     },
     ".ide-development/examples/verification-run.example.json": {
@@ -966,8 +966,8 @@
     },
     ".ide-development/execution/CODING-EXECUTION-PROTOCOL.md": {
       "id": "execution-runtime-coding-execution-protocol-md",
-      "sourceHash": "sha256:5914cc1c870463f51bf8154e3f12411c06b3b16e6a5e019fbf9212d52a5d5362",
-      "contentHash": "sha256:5914cc1c870463f51bf8154e3f12411c06b3b16e6a5e019fbf9212d52a5d5362",
+      "sourceHash": "sha256:57ced8207133240abb35db889eca55051d12bd61d4b6651393a39cff2265ebf8",
+      "contentHash": "sha256:57ced8207133240abb35db889eca55051d12bd61d4b6651393a39cff2265ebf8",
       "mode": "0644"
     },
     ".ide-development/execution/__init__.py": {
@@ -978,8 +978,8 @@
     },
     ".ide-development/execution/cursor_cloud_dispatch.py": {
       "id": "execution-runtime-cursor-cloud-dispatch-py",
-      "sourceHash": "sha256:49a9f14b944c6856f1e72f2e10344abd400dff85a4971c6c7f670ec679d43ea2",
-      "contentHash": "sha256:49a9f14b944c6856f1e72f2e10344abd400dff85a4971c6c7f670ec679d43ea2",
+      "sourceHash": "sha256:e0f8a3d9dd130c7bf5709df657605dd6a58647211c51753868165560e4579456",
+      "contentHash": "sha256:e0f8a3d9dd130c7bf5709df657605dd6a58647211c51753868165560e4579456",
       "mode": "0644"
     },
     ".ide-development/execution/examples/verification-run.example.json": {
@@ -1014,8 +1014,8 @@
     },
     ".ide-development/execution/scheduler.py": {
       "id": "execution-runtime-scheduler-py",
-      "sourceHash": "sha256:cf44018687d332f0b59341e039c040856b6e3b8b1258a0bf68bb6b3ff7de6a51",
-      "contentHash": "sha256:cf44018687d332f0b59341e039c040856b6e3b8b1258a0bf68bb6b3ff7de6a51",
+      "sourceHash": "sha256:fcd8e926efd7758595234d6707a39c1d729fdc1308a57adc749cf9820632036a",
+      "contentHash": "sha256:fcd8e926efd7758595234d6707a39c1d729fdc1308a57adc749cf9820632036a",
       "mode": "0644"
     },
     ".ide-development/execution/transactional_dispatch.py": {
@@ -1446,8 +1446,8 @@
     },
     ".ide-development/schemas/continuous-utilization.schema.json": {
       "id": "schema-continuous-utilization-schema-json",
-      "sourceHash": "sha256:243b8479084cea00aabcbb3545e5e52d308e1bc19e475941a8f032da7a494d4a",
-      "contentHash": "sha256:243b8479084cea00aabcbb3545e5e52d308e1bc19e475941a8f032da7a494d4a",
+      "sourceHash": "sha256:3863713da8a1a9c3696d00ee5b82baecc7977c90c3e818478469a3ce085598b2",
+      "contentHash": "sha256:3863713da8a1a9c3696d00ee5b82baecc7977c90c3e818478469a3ce085598b2",
       "mode": "0644"
     },
     ".ide-development/schemas/cursor-cloud-dispatch.schema.json": {
@@ -1884,8 +1884,8 @@
     },
     ".ide-development/tests/test_candidate_baseline_resolution.py": {
       "id": "test-test-candidate-baseline-resolution-py",
-      "sourceHash": "sha256:e806ccbf1e27ffbeefce41ee23cfcf2c9990223cd502f069445f4bf15d9d5417",
-      "contentHash": "sha256:e806ccbf1e27ffbeefce41ee23cfcf2c9990223cd502f069445f4bf15d9d5417",
+      "sourceHash": "sha256:fa79c2e29b00098fb7ed680a8ef2db66d9c471d7022d0d58d7af33f548a8adfe",
+      "contentHash": "sha256:fa79c2e29b00098fb7ed680a8ef2db66d9c471d7022d0d58d7af33f548a8adfe",
       "mode": "0644"
     },
     ".ide-development/tests/test_candidate_lifecycle.py": {
@@ -1902,8 +1902,8 @@
     },
     ".ide-development/tests/test_fixture_aware_secret_scan.py": {
       "id": "test-test-fixture-aware-secret-scan-py",
-      "sourceHash": "sha256:715ac0f98070bbcff4e36aaba6e55a58c51428d5f5db190a239fc153fe6cc4e5",
-      "contentHash": "sha256:715ac0f98070bbcff4e36aaba6e55a58c51428d5f5db190a239fc153fe6cc4e5",
+      "sourceHash": "sha256:86cf461837094798632977ec0fc128d8993fee461bc803a0e97f0bf75f0cf225",
+      "contentHash": "sha256:86cf461837094798632977ec0fc128d8993fee461bc803a0e97f0bf75f0cf225",
       "mode": "0644"
     },
     ".ide-development/tests/test_gate_receipts.py": {
@@ -1932,8 +1932,8 @@
     },
     ".ide-development/tests/test_manifest_persistence_recovery.py": {
       "id": "test-test-manifest-persistence-recovery-py",
-      "sourceHash": "sha256:2b1ef4c38afed404c85c4209fa632f1c3c965f700c92a98d96efb7bc5a4477aa",
-      "contentHash": "sha256:2b1ef4c38afed404c85c4209fa632f1c3c965f700c92a98d96efb7bc5a4477aa",
+      "sourceHash": "sha256:7cbe87fa76b0da706cd8f1eb385af2896573a3e4f28d5b055791ca9ba1d42174",
+      "contentHash": "sha256:7cbe87fa76b0da706cd8f1eb385af2896573a3e4f28d5b055791ca9ba1d42174",
       "mode": "0644"
     },
     ".ide-development/tests/test_phase_batch_lifecycle.py": {
@@ -2028,8 +2028,8 @@
     },
     "core/execution/cursor_cloud_dispatch.py": {
       "id": "gitops-core-execution-cursor-cloud-dispatch-py",
-      "sourceHash": "sha256:49a9f14b944c6856f1e72f2e10344abd400dff85a4971c6c7f670ec679d43ea2",
-      "contentHash": "sha256:49a9f14b944c6856f1e72f2e10344abd400dff85a4971c6c7f670ec679d43ea2",
+      "sourceHash": "sha256:e0f8a3d9dd130c7bf5709df657605dd6a58647211c51753868165560e4579456",
+      "contentHash": "sha256:e0f8a3d9dd130c7bf5709df657605dd6a58647211c51753868165560e4579456",
       "mode": "0644"
     },
     "core/execution/lifecycle.py": {
@@ -2058,8 +2058,8 @@
     },
     "core/execution/scheduler.py": {
       "id": "gitops-core-execution-scheduler-py",
-      "sourceHash": "sha256:cf44018687d332f0b59341e039c040856b6e3b8b1258a0bf68bb6b3ff7de6a51",
-      "contentHash": "sha256:cf44018687d332f0b59341e039c040856b6e3b8b1258a0bf68bb6b3ff7de6a51",
+      "sourceHash": "sha256:fcd8e926efd7758595234d6707a39c1d729fdc1308a57adc749cf9820632036a",
+      "contentHash": "sha256:fcd8e926efd7758595234d6707a39c1d729fdc1308a57adc749cf9820632036a",
       "mode": "0644"
     },
     "core/execution/transactional_dispatch.py": {
@@ -2214,8 +2214,8 @@
     },
     "scripts/gitops/generated_output_closure.py": {
       "id": "gitops-scripts-gitops-generated-output-closure-py",
-      "sourceHash": "sha256:0b41a03b1817c0dec167dcda2e1a8a741cf50843716387fcf93041c27576ce59",
-      "contentHash": "sha256:0b41a03b1817c0dec167dcda2e1a8a741cf50843716387fcf93041c27576ce59",
+      "sourceHash": "sha256:8ef23dcdd55c85e7094290169cbe5266e8c64f8d986533fd269035c7800bbdf6",
+      "contentHash": "sha256:8ef23dcdd55c85e7094290169cbe5266e8c64f8d986533fd269035c7800bbdf6",
       "mode": "0644"
     },
     "scripts/gitops/github_auth.py": {
@@ -2376,8 +2376,8 @@
     },
     "scripts/gitops/secret_scan.py": {
       "id": "gitops-scripts-gitops-secret-scan-py",
-      "sourceHash": "sha256:2e9f9e731eaba8f73d1b18121e9005deb5670e81455d3f875d04e73c921f0884",
-      "contentHash": "sha256:2e9f9e731eaba8f73d1b18121e9005deb5670e81455d3f875d04e73c921f0884",
+      "sourceHash": "sha256:107c8188b8598278da116a2bbc1aa621328aa3298adc3af1c9a2bce024c2092f",
+      "contentHash": "sha256:107c8188b8598278da116a2bbc1aa621328aa3298adc3af1c9a2bce024c2092f",
       "mode": "0644"
     },
     "scripts/gitops/secret_scan_migrate.py": {
