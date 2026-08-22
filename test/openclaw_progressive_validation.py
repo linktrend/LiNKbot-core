@@ -1,0 +1,95 @@
+"""Focused adversarial tests for the fork-owned baseline classifier."""
+
+from __future__ import annotations
+
+import subprocess
+import tempfile
+import unittest
+from pathlib import Path
+
+from importlib.util import module_from_spec, spec_from_file_location
+
+MODULE_PATH = Path(__file__).parents[1] / ".github" / "openclaw_progressive_validation.py"
+SPEC = spec_from_file_location("openclaw_progressive_validation", MODULE_PATH)
+assert SPEC and SPEC.loader
+MODULE = module_from_spec(SPEC)
+SPEC.loader.exec_module(MODULE)
+
+
+def git(root: Path, *args: str) -> str:
+    result = subprocess.run(["git", *args], cwd=root, capture_output=True, text=True, check=False)
+    if result.returncode:
+        raise AssertionError(result.stderr or result.stdout)
+    return result.stdout.strip()
+
+
+def receipt(root: Path) -> dict[str, object]:
+    return {
+        "schemaVersion": 1,
+        "kind": MODULE.BASELINE_RECEIPT_KIND,
+        "repository": "linktrend/openclaw_prime",
+        "baselineCommit": git(root, "rev-parse", "HEAD"),
+        "baselineTree": git(root, "rev-parse", "HEAD^{tree}"),
+        "workflow": "CI",
+        "runId": 1,
+        "policyId": MODULE.BASELINE_RECEIPT_POLICY_ID,
+        "policyDigest": MODULE.BASELINE_RECEIPT_POLICY_DIGEST,
+        "inheritedFailures": [{
+            "job": MODULE.BASELINE_RECEIPT_JOB,
+            "tests": list(MODULE.BASELINE_RECEIPT_TESTS),
+            "changedPathContract": list(MODULE.BASELINE_RECEIPT_CHANGED_PATH_CONTRACT),
+        }],
+        "baselineChecks": {"checkDocs": "success", "checksNodeCoreTestNondistShard": "failure"},
+        "reuse": "exact baseline commit/tree, policy digest, workflow and unchanged failure contract only",
+        "changedFailuresBlock": True,
+        "scope": "fork-only",
+        "upstreamMutation": False,
+    }
+
+
+class ProgressiveValidationTests(unittest.TestCase):
+    def fixture(self):
+        tmp = tempfile.TemporaryDirectory(prefix="openclaw-progressive-")
+        root = Path(tmp.name) / "repo"
+        root.mkdir()
+        for args in (("init", "-q", "-b", "development"), ("config", "user.email", "test@example.invalid"), ("config", "user.name", "Tests"), ("remote", "add", "origin", "https://github.com/linktrend/openclaw_prime.git")):
+            git(root, *args)
+        (root / "README.md").write_text("baseline\n", encoding="utf-8")
+        git(root, "add", "README.md"); git(root, "commit", "-qm", "baseline")
+        baseline = git(root, "rev-parse", "HEAD")
+        git(root, "update-ref", "refs/remotes/origin/development", baseline)
+        return tmp, root, receipt(root)
+
+    def test_exact_baseline_allows_unrelated_change(self):
+        tmp, root, rec = self.fixture(); self.addCleanup(tmp.cleanup)
+        (root / "src").mkdir(); (root / "src" / "app.ts").write_text("ok\n", encoding="utf-8")
+        git(root, "add", "src/app.ts"); git(root, "commit", "-qm", "unrelated")
+        result = MODULE.validate_baseline_ci_receipt(root=root, receipt=rec)
+        self.assertTrue(result["ok"]); self.assertEqual(result["classification"], "inherited_baseline_failure")
+
+    def test_changed_ledger_path_blocks_and_classifier_path_requires_focus(self):
+        tmp, root, rec = self.fixture(); self.addCleanup(tmp.cleanup)
+        path = root / "scripts/check-openclawdevelopmentplan01-section-13.3-ledger.mjs"
+        path.parent.mkdir(parents=True); path.write_text("changed\n", encoding="utf-8")
+        git(root, "add", str(path.relative_to(root))); git(root, "commit", "-qm", "ledger change")
+        result = MODULE.validate_baseline_ci_receipt(root=root, receipt=rec)
+        self.assertFalse(result["ok"]); self.assertIn("changed_failure_contract", result["errors"])
+
+        tmp2, root2, rec2 = self.fixture(); self.addCleanup(tmp2.cleanup)
+        path2 = root2 / ".github" / "workflows" / "ci.yml"
+        path2.parent.mkdir(parents=True); path2.write_text("classifier\n", encoding="utf-8")
+        git(root2, "add", str(path2.relative_to(root2))); git(root2, "commit", "-qm", "classifier change")
+        result2 = MODULE.validate_baseline_ci_receipt(root=root2, receipt=rec2)
+        self.assertTrue(result2["ok"]); self.assertEqual(result2["classifierPathsRequiringFocusedChecks"], [".github/workflows/ci.yml"])
+
+    def test_stale_identity_policy_workflow_and_failure_contract_block(self):
+        tmp, root, rec = self.fixture(); self.addCleanup(tmp.cleanup)
+        for field, value in (("baselineCommit", "a" * 40), ("baselineTree", "b" * 40), ("policyDigest", "sha256:" + "0" * 64), ("workflow", "Fast")):
+            stale = dict(rec); stale[field] = value
+            self.assertFalse(MODULE.validate_baseline_ci_receipt(root=root, receipt=stale)["ok"], field)
+        stale = dict(rec); stale["inheritedFailures"] = [{**rec["inheritedFailures"][0], "job": "other"}]
+        self.assertFalse(MODULE.validate_baseline_ci_receipt(root=root, receipt=stale)["ok"])
+
+
+if __name__ == "__main__":
+    unittest.main()

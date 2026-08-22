@@ -8,7 +8,7 @@ title: "Baseline CI receipt"
 
 The machine-readable receipt is
 `docs/execution/openclaw-prime-lisa/baseline-ci-receipt.json`. It is reusable
-only when `scripts/gitops/repository_ci_contract.py validate-baseline-receipt`
+only when `.github/openclaw_progressive_validation.py`
 matches the live `origin/development` commit and tree, the exact progressive
 validation policy digest, workflow, and the unchanged
 `checks-node-core-test-nondist-shard` failure contract.

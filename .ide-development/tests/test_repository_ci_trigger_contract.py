@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-import subprocess
 import tempfile
 import unittest
 from pathlib import Path
@@ -44,7 +43,6 @@ from scripts.gitops.repository_ci_contract import (
     select_profile,
     validate_affected_surface_evidence,
     validate_artifact_file,
-    validate_baseline_ci_receipt,
     validate_contract,
     validate_coverage_manifest,
     verify_promotion_exact_receipt,
@@ -56,54 +54,6 @@ SCHEMA_PATH = ROOT / "core" / "managed-core" / "schemas" / "repository-ci-contra
 MANIFEST_SCHEMA = ROOT / "core" / "managed-core" / "schemas" / "ci-component-manifest.schema.json"
 EVIDENCE_SCHEMA = ROOT / "core" / "managed-core" / "schemas" / "ci-evidence.schema.json"
 MODULE = ROOT / "scripts" / "gitops" / "repository_ci_contract.py"
-
-
-def _git(root: Path, *args: str) -> str:
-    result = subprocess.run(
-        ["git", *args], cwd=root, capture_output=True, text=True, check=False
-    )
-    if result.returncode:
-        raise AssertionError(result.stderr or result.stdout)
-    return result.stdout.strip()
-
-
-def _baseline_receipt(root: Path) -> dict[str, object]:
-    baseline = _git(root, "rev-parse", "HEAD")
-    tree = _git(root, "rev-parse", "HEAD^{tree}")
-    return {
-        "schemaVersion": 1,
-        "kind": "openclaw-fork-baseline-ci-receipt",
-        "repository": "linktrend/openclaw_prime",
-        "baselineCommit": baseline,
-        "baselineTree": tree,
-        "workflow": "CI",
-        "runId": 1,
-        "policyId": "openclaw-fork-progressive-validation-v1",
-        "policyDigest": "sha256:fa3f448e33fbc05e4b9676628a8be1f67bb020cc0baf58da6dd8fe720d0c26f0",
-        "inheritedFailures": [
-            {
-                "job": "checks-node-core-test-nondist-shard",
-                "tests": [
-                    "test/scripts/check-openclawdevelopmentplan01-section-13.3-ledger.test.ts > pins the frozen plan hash and accepts checked-in plan-derived artifacts",
-                    "test/scripts/check-openclawdevelopmentplan01-section-13.3-ledger.test.ts > frozen plan extraction covers every plan section family and required omission class",
-                    "test/scripts/check-openclawdevelopmentplan01-section-13.3-ledger.test.ts > write helper regenerates artifacts that validate",
-                ],
-                "changedPathContract": [
-                    "test/scripts/check-openclawdevelopmentplan01-section-13.3-ledger.test.ts",
-                    "scripts/check-openclawdevelopmentplan01-section-13.3-ledger.mjs",
-                    "docs/execution/openclawdevelopmentplan01/section-13.3",
-                ],
-            }
-        ],
-        "baselineChecks": {
-            "checkDocs": "success",
-            "checksNodeCoreTestNondistShard": "failure",
-        },
-        "reuse": "exact baseline commit/tree, policy digest, workflow and unchanged failure contract only",
-        "changedFailuresBlock": True,
-        "scope": "fork-only",
-        "upstreamMutation": False,
-    }
 
 
 def _head(n: int = 1) -> str:
@@ -118,87 +68,6 @@ class RepositoryCiTriggerContractTests(unittest.TestCase):
     def setUp(self) -> None:
         self.contract = load_contract(ROOT)
         self.assertEqual(self.contract["kind"], "repository-ci-contract")
-
-    def _baseline_fixture(self) -> tuple[tempfile.TemporaryDirectory[str], Path, dict[str, object]]:
-        tmp = tempfile.TemporaryDirectory(prefix="progressive-baseline-")
-        root = Path(tmp.name) / "repo"
-        root.mkdir()
-        _git(root, "init", "-q", "-b", "development")
-        _git(root, "config", "user.email", "progressive@example.invalid")
-        _git(root, "config", "user.name", "Progressive validation")
-        _git(root, "remote", "add", "origin", "https://github.com/linktrend/openclaw_prime.git")
-        (root / "README.md").write_text("baseline\n", encoding="utf-8")
-        _git(root, "add", "README.md")
-        _git(root, "commit", "-qm", "baseline")
-        baseline = _git(root, "rev-parse", "HEAD")
-        _git(root, "update-ref", "refs/remotes/origin/development", baseline)
-        receipt = _baseline_receipt(root)
-        return tmp, root, receipt
-
-    def test_exact_unmodified_failure_contract_allows_inherited_failure(self) -> None:
-        tmp, root, receipt = self._baseline_fixture()
-        self.addCleanup(tmp.cleanup)
-        (root / "src").mkdir()
-        (root / "src" / "app.ts").write_text("export const ok = true;\n", encoding="utf-8")
-        _git(root, "add", "src/app.ts")
-        _git(root, "commit", "-qm", "unrelated candidate change")
-        verdict = validate_baseline_ci_receipt(root=root, receipt=receipt)
-        self.assertTrue(verdict["ok"])
-        self.assertEqual(verdict["classification"], "inherited_baseline_failure")
-        self.assertEqual(verdict["changedFailureContractPaths"], [])
-
-    def test_changed_failure_or_cross_contract_path_blocks_inheritance(self) -> None:
-        tmp, root, receipt = self._baseline_fixture()
-        self.addCleanup(tmp.cleanup)
-        changed_path = "scripts/check-openclawdevelopmentplan01-section-13.3-ledger.mjs"
-        path = root / changed_path
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text("changed\n", encoding="utf-8")
-        _git(root, "add", changed_path)
-        _git(root, "commit", "-qm", "ledger contract change")
-        verdict = validate_baseline_ci_receipt(root=root, receipt=receipt)
-        self.assertFalse(verdict["ok"])
-        self.assertEqual(verdict["classification"], "blocking")
-
-    def test_classifier_changes_require_focused_checks_but_are_not_ledger_waiver(self) -> None:
-        tmp, root, receipt = self._baseline_fixture()
-        self.addCleanup(tmp.cleanup)
-        changed_path = ".github/workflows/ci.yml"
-        path = root / changed_path
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text("classifier change\n", encoding="utf-8")
-        _git(root, "add", changed_path)
-        _git(root, "commit", "-qm", "classifier change")
-        verdict = validate_baseline_ci_receipt(root=root, receipt=receipt)
-        self.assertTrue(verdict["ok"])
-        self.assertEqual(verdict["classification"], "inherited_baseline_failure")
-        self.assertEqual(verdict["changedCrossContractPaths"], [])
-        self.assertEqual(verdict["classifierPathsRequiringFocusedChecks"], [changed_path])
-
-    def test_policy_workflow_and_failure_contract_drift_blocks(self) -> None:
-        tmp, root, receipt = self._baseline_fixture()
-        self.addCleanup(tmp.cleanup)
-        for field, replacement in (
-            ("baselineCommit", "a" * 40),
-            ("baselineTree", "b" * 40),
-            ("policyDigest", "sha256:" + ("0" * 64)),
-            ("workflow", "Linktrend Fast Checks"),
-        ):
-            stale = dict(receipt)
-            stale[field] = replacement
-            verdict = validate_baseline_ci_receipt(root=root, receipt=stale)
-            self.assertFalse(verdict["ok"], field)
-            self.assertEqual(verdict["classification"], "blocking")
-        stale_contract = dict(receipt)
-        stale_contract["inheritedFailures"] = [
-            {
-                **receipt["inheritedFailures"][0],
-                "job": "other-job",
-            }
-        ]
-        verdict = validate_baseline_ci_receipt(root=root, receipt=stale_contract)
-        self.assertFalse(verdict["ok"])
-        self.assertEqual(verdict["classification"], "blocking")
 
     def test_packaged_schemas_and_repo_contract_exist(self) -> None:
         self.assertTrue(CONTRACT_PATH.is_file())

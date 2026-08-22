@@ -92,11 +92,12 @@ jobs:
             scripts/gitops/secret_scan.py \
             scripts/gitops/repository_ci_contract.py \
             scripts/gitops/receipt_seal.py
-          python3 scripts/gitops/repository_ci_contract.py validate-baseline-receipt \
+          python3 .github/openclaw_progressive_validation.py \
             --root . \
             --receipt docs/execution/openclaw-prime-lisa/baseline-ci-receipt.json \
             --baseline-ref origin/development \
             --candidate-ref HEAD
+          PYTHONPATH=. python3 test/openclaw_progressive_validation.py
           PYTHONPATH=. python3 .ide-development/tests/test_change_scoped_secret_scan_acceptance.py
 
       - name: Retain fast-check evidence
