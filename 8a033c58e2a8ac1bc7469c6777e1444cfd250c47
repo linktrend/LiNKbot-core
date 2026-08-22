@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "kind": "openclaw-routing-readiness-receipt",
+  "repository": "linktrend/openclaw_prime",
+  "candidate": {
+    "branch": "development",
+    "commit": "8a033c58e2a8ac1bc7469c6777e1444cfd250c47",
+    "tree": "4ab9d29eea21b25240b327b1446c431369ba9721"
+  },
+  "planningAuthority": {
+    "branch": "issue/127084-plan-openclaw-prime-and-lisa-common-agent-founda",
+    "commit": "54d63d29d88fc4e224e18186943b159633bb8dc7",
+    "tree": "0abe4fdb22031fadc135f340e11cbf644125f3d9",
+    "authorityId": "openclaw-prime-lisa-dispatch-authority-v4",
+    "authoritySha256": "sha256:c040fe79a0dd2bf2d6c7a03544f1aadaf52228010f054bf83113992a297d6358",
+    "executionAuthorizedAtCheckpoint": false
+  },
+  "sharedCursorAccount": {
+    "binding": "principal-confirmed-single-account-for-portfolio",
+    "apiKeyName": "LiNKdeveloper",
+    "userId": 348277621,
+    "capabilityReceiptSha256": "sha256:23a0173dc24e67a86a87aacd7aee8b8ec93719371070a7e26fe7045b33267aeb",
+    "catalogueEvidence": "authenticated shared Cursor Cloud account capability and exact fixed-model readback already established by portfolio coordination",
+    "localCliStatus": "non-authoritative; not used as a dispatch-readiness gate",
+    "freshApiModelsRequest": "not required; existing principal-bound shared-account evidence applies"
+  },
+  "fixedRoutes": {
+    "composer_bounded": {
+      "modelId": "composer-2.5",
+      "fast": false,
+      "packetCount": 3,
+      "packets": ["PKT-01", "PKT-07", "PKT-10"]
+    },
+    "grok_complex": {
+      "modelId": "cursor-grok-4.6-medium",
+      "fast": false,
+      "packetCount": 10
+    },
+    "independent_review": {
+      "modelId": "claude-opus-4-8-thinking-medium",
+      "fast": false,
+      "reviewCount": 9,
+      "separateWorker": true
+    },
+    "independent_terra_verification": {
+      "modelId": "gpt-5.6-terra-high",
+      "fast": false,
+      "verificationCount": 13,
+      "separateWorker": true
+    }
+  },
+  "forbidden": {
+    "autoCostAssignments": 0,
+    "genericAuto": true,
+    "fastSubstitution": true,
+    "unapprovedModelSubstitution": true
+  },
+  "control": {
+    "approvalRequired": "founder APPROVED",
+    "productDispatch": false,
+    "runtimeOrVpsMutation": false,
+    "upstreamMutation": false,
+    "readinessVerdict": "READY_FOR_APPROVAL_ONLY"
+  }
+}
