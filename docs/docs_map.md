@@ -5224,6 +5224,12 @@ Do not edit it by hand; run `pnpm docs:map:gen`.
   - H2: Installation gate
   - H2: Configuration and rollback
 
+## execution/openclaw-prime-lisa/BASELINE-CI-RECEIPT.md
+
+- Route: /execution/openclaw-prime-lisa/BASELINE-CI-RECEIPT
+- Headings:
+  - H1: OpenClaw fork baseline CI receipt
+
 ## execution/openclawdevelopmentplan01/BRAIN-TOOL-NAME-DECISION-PACKET.md
 
 - Route: /execution/openclawdevelopmentplan01/BRAIN-TOOL-NAME-DECISION-PACKET

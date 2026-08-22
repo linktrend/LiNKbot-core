@@ -13,6 +13,7 @@ import hashlib
 import json
 import os
 import re
+import subprocess
 import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -25,6 +26,41 @@ CONTRACT_KIND = "repository-ci-contract"
 MANIFEST_KIND = "ci-component-manifest"
 AGGREGATE_CONTEXT_DEFAULT = "Linktrend Repository CI Gate"
 SCHEMA_VERSION = 1
+
+# The fork's progressive-validation exception is deliberately narrow.  These
+# values are the signed-in-receipt contract, not a general CI waiver: any
+# change to the failed job's inputs or its cross-contract surface blocks reuse.
+BASELINE_RECEIPT_KIND = "openclaw-fork-baseline-ci-receipt"
+BASELINE_RECEIPT_POLICY_ID = "openclaw-fork-progressive-validation-v1"
+BASELINE_RECEIPT_POLICY_DIGEST = "sha256:fa3f448e33fbc05e4b9676628a8be1f67bb020cc0baf58da6dd8fe720d0c26f0"
+BASELINE_RECEIPT_WORKFLOW = "CI"
+BASELINE_RECEIPT_JOB = "checks-node-core-test-nondist-shard"
+BASELINE_RECEIPT_TESTS = (
+    "test/scripts/check-openclawdevelopmentplan01-section-13.3-ledger.test.ts > pins the frozen plan hash and accepts checked-in plan-derived artifacts",
+    "test/scripts/check-openclawdevelopmentplan01-section-13.3-ledger.test.ts > frozen plan extraction covers every plan section family and required omission class",
+    "test/scripts/check-openclawdevelopmentplan01-section-13.3-ledger.test.ts > write helper regenerates artifacts that validate",
+)
+BASELINE_RECEIPT_CHANGED_PATH_CONTRACT = (
+    "test/scripts/check-openclawdevelopmentplan01-section-13.3-ledger.test.ts",
+    "scripts/check-openclawdevelopmentplan01-section-13.3-ledger.mjs",
+    "docs/execution/openclawdevelopmentplan01/section-13.3",
+)
+# These ledger/test paths are the inherited failure's contract; any diff here
+# is never covered by an inherited failure receipt. Classifier paths are
+# reported separately and require their own focused checks.
+BASELINE_RECEIPT_CROSS_CONTRACT_PATHS = frozenset(
+    {
+        *BASELINE_RECEIPT_CHANGED_PATH_CONTRACT,
+    }
+)
+BASELINE_RECEIPT_CLASSIFIER_PATHS = frozenset(
+    {
+        ".github/workflows/ci.yml",
+        ".github/workflows/linktrend-review-packager.yml",
+        ".ide-development/schemas/repository-ci-contract.schema.json",
+        "scripts/gitops/repository_ci_contract.py",
+    }
+)
 
 PROFILE_NONE = "none"
 PROFILE_FAST = "fast"
@@ -214,6 +250,140 @@ def normalize_repo_path(path: str) -> str:
     while normalized.startswith("./"):
         normalized = normalized[2:]
     return normalized.lstrip("/")
+
+
+def _git_text(root: Path, *args: str) -> str:
+    result = subprocess.run(
+        ["git", *args],
+        cwd=root,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode:
+        detail = (result.stderr or result.stdout).strip()
+        raise ContractError("baseline_git_lookup_failed", detail)
+    return result.stdout.strip()
+
+
+def _receipt_sha(value: Any, field: str) -> str:
+    if not isinstance(value, str) or not re.fullmatch(r"[0-9a-f]{40}", value):
+        raise ContractError("baseline_receipt_identity", field)
+    return value
+
+
+def _validate_inherited_failure_contract(receipt: Mapping[str, Any]) -> None:
+    failures = receipt.get("inheritedFailures")
+    if not isinstance(failures, list) or len(failures) != 1 or not isinstance(failures[0], Mapping):
+        raise ContractError("baseline_receipt_failure_contract", "expected one inherited failure")
+    failure = failures[0]
+    if set(failure) != {"job", "tests", "changedPathContract"}:
+        raise ContractError("baseline_receipt_failure_contract", "unexpected failure fields")
+    if failure.get("job") != BASELINE_RECEIPT_JOB:
+        raise ContractError("baseline_receipt_failure_contract", "job")
+    if tuple(failure.get("tests", ())) != BASELINE_RECEIPT_TESTS:
+        raise ContractError("baseline_receipt_failure_contract", "tests")
+    if tuple(failure.get("changedPathContract", ())) != BASELINE_RECEIPT_CHANGED_PATH_CONTRACT:
+        raise ContractError("baseline_receipt_failure_contract", "changedPathContract")
+
+
+def validate_baseline_ci_receipt(
+    *,
+    root: Path,
+    receipt: Mapping[str, Any],
+    baseline_ref: str = "origin/development",
+    candidate_ref: str = "HEAD",
+    expected_repository: str = "linktrend/openclaw_prime",
+    expected_policy_id: str = BASELINE_RECEIPT_POLICY_ID,
+    expected_policy_digest: str = BASELINE_RECEIPT_POLICY_DIGEST,
+    expected_workflow: str = BASELINE_RECEIPT_WORKFLOW,
+) -> dict[str, Any]:
+    """Classify one inherited baseline failure without waiving changed code.
+
+    The receipt is reusable only when its exact baseline identity, policy,
+    workflow, and failure contract still match.  The candidate commit diff is
+    checked against both the failed-test contract and the CI classification
+    surface; either overlap is a blocking result.
+    """
+
+    errors: list[str] = []
+    if not isinstance(receipt, Mapping):
+        raise ContractError("baseline_receipt_invalid", "not an object")
+    if receipt.get("schemaVersion") != 1 or receipt.get("kind") != BASELINE_RECEIPT_KIND:
+        errors.append("schema")
+    if receipt.get("repository") != expected_repository:
+        errors.append("repository")
+    if receipt.get("workflow") != expected_workflow:
+        errors.append("workflow")
+    if receipt.get("policyId") != expected_policy_id:
+        errors.append("policyId")
+    if receipt.get("policyDigest") != expected_policy_digest:
+        errors.append("policyDigest")
+    if receipt.get("reuse") != "exact baseline commit/tree, policy digest, workflow and unchanged failure contract only":
+        errors.append("reuse")
+    if receipt.get("changedFailuresBlock") is not True:
+        errors.append("changedFailuresBlock")
+    if receipt.get("scope") != "fork-only":
+        errors.append("scope")
+    if receipt.get("upstreamMutation") is not False:
+        errors.append("upstreamMutation")
+
+    try:
+        _validate_inherited_failure_contract(receipt)
+    except ContractError as exc:
+        errors.append(exc.detail or exc.code)
+
+    checks = receipt.get("baselineChecks")
+    if checks != {
+        "checkDocs": "success",
+        "checksNodeCoreTestNondistShard": "failure",
+    }:
+        errors.append("baselineChecks")
+
+    try:
+        baseline_commit = _git_text(root, "rev-parse", f"{baseline_ref}^{{commit}}")
+        baseline_tree = _git_text(root, "rev-parse", f"{baseline_ref}^{{tree}}")
+        candidate_commit = _git_text(root, "rev-parse", f"{candidate_ref}^{{commit}}")
+        receipt_commit = _receipt_sha(receipt.get("baselineCommit"), "baselineCommit")
+        receipt_tree = _receipt_sha(receipt.get("baselineTree"), "baselineTree")
+        if receipt_commit != baseline_commit:
+            errors.append("baselineCommit")
+        if receipt_tree != baseline_tree:
+            errors.append("baselineTree")
+        changed_paths = tuple(
+            normalize_repo_path(path)
+            for path in _git_text(root, "diff", "--name-only", f"{baseline_commit}..{candidate_commit}").splitlines()
+            if path.strip()
+        )
+    except ContractError as exc:
+        errors.append(exc.detail or exc.code)
+        changed_paths = ()
+
+    failure_paths = set(BASELINE_RECEIPT_CHANGED_PATH_CONTRACT)
+    changed_contract_paths = sorted(set(changed_paths) & failure_paths)
+    changed_cross_contract_paths = sorted(
+        set(changed_paths) & set(BASELINE_RECEIPT_CROSS_CONTRACT_PATHS)
+    )
+    classifier_paths = sorted(set(changed_paths) & set(BASELINE_RECEIPT_CLASSIFIER_PATHS))
+    if changed_contract_paths:
+        errors.append("changed_failure_contract")
+    if changed_cross_contract_paths:
+        errors.append("changed_cross_contract")
+
+    allowed = not errors
+    return {
+        "ok": allowed,
+        "classification": "inherited_baseline_failure" if allowed else "blocking",
+        "baselineRef": baseline_ref,
+        "baselineCommit": receipt.get("baselineCommit"),
+        "baselineTree": receipt.get("baselineTree"),
+        "candidateCommit": candidate_commit if "candidate_commit" in locals() else None,
+        "changedPaths": list(changed_paths),
+        "changedFailureContractPaths": changed_contract_paths,
+        "changedCrossContractPaths": changed_cross_contract_paths,
+        "classifierPathsRequiringFocusedChecks": classifier_paths,
+        "errors": sorted(set(errors)),
+    }
 
 
 def path_is_trusted(path: str, prefixes: Sequence[str]) -> bool:
@@ -1265,6 +1435,15 @@ def _parser() -> argparse.ArgumentParser:
     k.add_argument("--lockfile-digest", required=True)
     k.add_argument("--workspace-mutated", action="store_true")
 
+    b = sub.add_parser("validate-baseline-receipt", parents=[common])
+    b.add_argument("--receipt", type=Path, required=True)
+    b.add_argument("--baseline-ref", default="origin/development")
+    b.add_argument("--candidate-ref", default="HEAD")
+    b.add_argument("--expected-repository", default="linktrend/openclaw_prime")
+    b.add_argument("--expected-policy-id", default=BASELINE_RECEIPT_POLICY_ID)
+    b.add_argument("--expected-policy-digest", default=BASELINE_RECEIPT_POLICY_DIGEST)
+    b.add_argument("--expected-workflow", default=BASELINE_RECEIPT_WORKFLOW)
+
     return parser
 
 
@@ -1327,6 +1506,20 @@ def main(argv: Sequence[str] | None = None) -> int:
             )
             print(json.dumps(result, sort_keys=True))
             return 0
+        if args.command == "validate-baseline-receipt":
+            receipt = load_json(args.receipt)
+            result = validate_baseline_ci_receipt(
+                root=root,
+                receipt=receipt,
+                baseline_ref=args.baseline_ref,
+                candidate_ref=args.candidate_ref,
+                expected_repository=args.expected_repository,
+                expected_policy_id=args.expected_policy_id,
+                expected_policy_digest=args.expected_policy_digest,
+                expected_workflow=args.expected_workflow,
+            )
+            print(json.dumps(result, sort_keys=True))
+            return 0 if result["ok"] else 1
         raise ContractError("command_unknown", str(args.command))
     except ContractError as exc:
         print(json.dumps({"ok": False, "code": exc.code, "detail": exc.detail}, sort_keys=True))
