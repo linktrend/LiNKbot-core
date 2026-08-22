@@ -1,0 +1,79 @@
+{
+  "branch": "development",
+  "candidate": {
+    "commit": "8a033c58e2a8ac1bc7469c6777e1444cfd250c47",
+    "tree": "4ab9d29eea21b25240b327b1446c431369ba9721"
+  },
+  "kind": "openclaw-readiness-receipt",
+  "phase": {
+    "head": "d538dbdda83173c381822684dfce8fa6adb8d22f",
+    "mergeCommit": "8a033c58e2a8ac1bc7469c6777e1444cfd250c47",
+    "pr": 212,
+    "protected": true,
+    "tree": "4ab9d29eea21b25240b327b1446c431369ba9721"
+  },
+  "planning": {
+    "commit": "2585651508f12a2b7766fd7c74503bb59b572ab1",
+    "executionAuthorizedAtCheckpoint": false,
+    "tree": "5f2123d64acbb735fe86d4fc498b722a1fe1dc4a"
+  },
+  "provider": {
+    "integratedDevelopmentCommit": "0c774129b7e0ae39ab10406780a01fa4d9a225ff",
+    "repository": "linktrend/IDE-Development",
+    "terraReceipt": "sha256:e22769640ff769224e9ac9f4b62de242c9c8bb79b1f97dcdc2f00e060301a5e9",
+    "tree": "1287758cfb3e8e3934f789788ef3b97d935cb112"
+  },
+  "receiptDigest": "sha256:681ef04f84a14e98610c5ef08111ca4be943831f6a220ffbca561db2610fb891",
+  "remote": "origin",
+  "repository": "linktrend/openclaw_prime",
+  "ruleset": {
+    "fullSuiteRequiredForDevelopment": false,
+    "id": 20623039,
+    "policyDigest": "sha256:fa3f448e33fbc05e4b9676628a8be1f67bb020cc0baf58da6dd8fe720d0c26f0",
+    "requiredContexts": [
+      "Linktrend Fast Checks",
+      "Linktrend Branch Source Policy",
+      "Real behavior proof",
+      "Scan changed paths (precise)"
+    ]
+  },
+  "schemaVersion": 1,
+  "scope": {
+    "approval": false,
+    "productDispatch": false,
+    "runtimeOrVpsMutation": false,
+    "upstreamMutation": false
+  },
+  "transaction": {
+    "backupCount": 4,
+    "id": "09c2d85c-620d-412a-992f-a64108551c86",
+    "paths": [
+      ".ide-development/MANIFEST.json",
+      ".ide-development/tests/test_fixture_aware_secret_scan.py",
+      "scripts/gitops/secret_scan.py"
+    ],
+    "rollbackAvailable": true,
+    "verify": "PASS; actionCount=438; mutatingActionCount=0; conflictCount=0; driftCount=0"
+  },
+  "trustedBaseline": {
+    "commit": "455b8c6402a4a6cffc94554addeec7bd07447b67",
+    "tree": "268e627f99919c1d9f86b7eb00bd91bdbb7a545e"
+  },
+  "validation": {
+    "branchSourcePolicy": "PASS; run 32560013063",
+    "changeScopedScan": {
+      "candidateContentTree": "1e990b6ad5fafe13a8318cee05b63d3da514b2a9",
+      "configDigest": "sha256:12536930956a3cb739dda0021967d2d88939d9161b3aee7fd50caafc82632d10",
+      "findings": 0,
+      "inheritedFindingCount": 0,
+      "scannedPathCount": 91,
+      "status": "PASS"
+    },
+    "fast": "PASS; run 32560013066",
+    "policyDigest": "sha256:fa3f448e33fbc05e4b9676628a8be1f67bb020cc0baf58da6dd8fe720d0c26f0",
+    "progressiveClassifier": "PASS; inherited_baseline_failure; changedFailureContractPaths=[]",
+    "progressivePolicy": "openclaw-fork-progressive-validation-v1",
+    "realBehaviorProof": "PASS",
+    "scanChangedPaths": "PASS"
+  }
+}
