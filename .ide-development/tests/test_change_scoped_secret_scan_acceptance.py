@@ -124,11 +124,12 @@ class ChangeScopedSecretScanAcceptanceTests(unittest.TestCase):
             ('token = "sk-' + ("B" * 32) + '"', RULE_FORMAT_SK),
             (f'key = "{entropy}"', RULE_FORMAT_HIGH_ENTROPY),
             (
-                'url = "postgres://fixture:placeholder@db.example.invalid:5432/app"',
+                ('url = "' + "postgres://" +
+                 'fixture:placeholder@db.example.invalid:5432/app"'),
                 RULE_FORMAT_DATABASE,
             ),
             ('key = "AKIA' + ("C" * 16) + '"', RULE_FORMAT_CLOUD),
-            ("-----BEGIN PRIVATE KEY-----", RULE_FORMAT_PEM),
+            (("-" * 5) + "BEGIN " + "PRIVATE KEY" + ("-" * 5), RULE_FORMAT_PEM),
         )
         for text, expected_rule in cases:
             findings = scan_text("changed-credential-fixture.txt", text)
