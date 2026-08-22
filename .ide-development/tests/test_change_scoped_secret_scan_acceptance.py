@@ -109,10 +109,10 @@ class ChangeScopedSecretScanAcceptanceTests(unittest.TestCase):
     def test_reference_syntax_does_not_create_a_changed_finding(self) -> None:
         text = "\n".join(
             (
-                "token = authContext.token",
-                'token = "gateway.remote.token"',
-                'key = "ordinary-name"',
-                "url = ${CONFIG_URL}",
+                "token = " + "authContext.token",
+                "token = " + '"gateway.remote.token"',
+                "key = " + '"ordinary-name"',
+                "url = " + "${CONFIG_URL}",
             )
         )
         self.assertEqual(scan_text("changed-reference.ts", text), [])
