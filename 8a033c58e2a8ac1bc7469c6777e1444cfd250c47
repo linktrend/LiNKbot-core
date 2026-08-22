@@ -1,0 +1,13 @@
+{
+  "kind": "openclaw-routing-authority-amendment",
+  "amendmentId": "openclaw-prime-lisa-routing-amendment-v1",
+  "amendmentCommit": "2e3bbe6f8d035b8dd724968ba85f939e1f4db3f2",
+  "amendmentTree": "637c1ec67d9fd71be1389edf91d4a9aec6c96fdc",
+  "amendmentPath": "docs/execution/openclaw-prime-lisa/routing-amendment-v1.json",
+  "amendmentSha256": "sha256:b2874a74fdfb10190851b4e537a33463aa6034d8bd48e3bd149510aacb0e803f",
+  "appliesTo": "all-undispatched-packets-reviews-and-verifications-in-this-repository",
+  "baseDevelopmentCommit": "8a033c58e2a8ac1bc7469c6777e1444cfd250c47",
+  "executionAuthorizedAtCheckpoint": false,
+  "readinessVerdict": "READY_FOR_APPROVAL_ONLY",
+  "scope": "routing-only; product scope dependencies completed evidence and readiness unchanged"
+}
