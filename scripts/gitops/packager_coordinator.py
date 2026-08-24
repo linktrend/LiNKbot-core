@@ -497,7 +497,12 @@ def _governed_branch_tokens(branch: str) -> tuple[str, str | None]:
     return issue_tokens[0].upper(), packet_tokens[0].upper() if packet_tokens else None
 
 
-def _manifest_identity(manifest: Mapping[str, Any], branch: str) -> tuple[str, str]:
+def _manifest_identity(
+    manifest: Mapping[str, Any],
+    branch: str,
+    *,
+    validate_branch: bool = True,
+) -> tuple[str, str]:
     issue_token, packet_token = _governed_branch_tokens(branch)
     issues = manifest.get("issues")
     packets = manifest.get("packets")
@@ -512,12 +517,17 @@ def _manifest_identity(manifest: Mapping[str, Any], branch: str) -> tuple[str, s
     packet_rows = [row for row in packets if isinstance(row, Mapping) and row.get("id") == packet_id]
     if len(packet_rows) != 1 or issue_token not in (packet_rows[0].get("issues") or []):
         raise CoordinatorError("manifest_identity_missing", branch)
-    if packet_token and packet_token != packet_id:
+    if validate_branch and packet_token and packet_token != packet_id:
         raise CoordinatorError("packet_identity_mismatch", branch)
     return packet_id, issue_token
 
 
-def _handoff_identity(handoff: Mapping[str, Any], branch: str) -> tuple[str, str]:
+def _handoff_identity(
+    handoff: Mapping[str, Any],
+    branch: str,
+    *,
+    validate_branch: bool = True,
+) -> tuple[str, str]:
     rows = handoff.get("acceptedCommits")
     if not isinstance(rows, list):
         raise CoordinatorError("handoff_identity_missing", branch)
@@ -529,7 +539,7 @@ def _handoff_identity(handoff: Mapping[str, Any], branch: str) -> tuple[str, str
     if not PACKET_ID_RE.fullmatch(packet_id) or not ISSUE_ID_RE.fullmatch(issue_id):
         raise CoordinatorError("handoff_identity_invalid", branch)
     issue_token, packet_token = _governed_branch_tokens(branch)
-    if issue_id != issue_token or (packet_token and packet_id != packet_token):
+    if validate_branch and (issue_id != issue_token or (packet_token and packet_id != packet_token)):
         raise CoordinatorError("handoff_identity_mismatch", branch)
     return packet_id, issue_id
 
@@ -543,6 +553,15 @@ def _resolve_branch_identity(
     """Bind internal packet branches to one exact manifest or handoff identity."""
 
     _governed_branch_tokens(branch)
+    if execution_manifest is not None and handoff is not None:
+        manifest_candidate = _manifest_identity(manifest=execution_manifest, branch=branch, validate_branch=False)
+        handoff_candidate = _handoff_identity(handoff=handoff, branch=branch, validate_branch=False)
+        if manifest_candidate != handoff_candidate:
+            raise CoordinatorError("ambiguous_issue_identity", branch)
+        # Preserve source-specific fail-closed errors after convergence is proven.
+        _manifest_identity(manifest=execution_manifest, branch=branch)
+        _handoff_identity(handoff=handoff, branch=branch)
+        return manifest_candidate
     candidates: list[tuple[str, str]] = []
     if execution_manifest is not None:
         candidates.append(_manifest_identity(execution_manifest, branch))
