@@ -54,7 +54,13 @@ def git(root: Path, *args: str) -> str:
     return result.stdout.strip()
 
 
-def validate(root: Path, receipt_path: Path, baseline_ref: str, candidate_ref: str) -> dict[str, object]:
+def validate(
+    root: Path,
+    receipt_path: Path,
+    baseline_ref: str,
+    candidate_ref: str,
+    baseline_sha: str | None = None,
+) -> dict[str, object]:
     receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
     errors: list[str] = []
     if receipt.get("schemaVersion") != 1 or receipt.get("kind") != "openclaw-fork-baseline-ci-receipt": errors.append("schema")
@@ -71,8 +77,8 @@ def validate(root: Path, receipt_path: Path, baseline_ref: str, candidate_ref: s
         if row.get("job") != FAILURE_JOB or tuple(row.get("tests", ())) != FAILURE_TESTS or set(row.get("changedPathContract", ())) != FAILURE_PATHS: errors.append("failure_contract")
     if receipt.get("baselineChecks") != {"checkDocs": "success", "checksNodeCoreTestNondistShard": "failure"}: errors.append("baseline_checks")
     try:
-        baseline = git(root, "rev-parse", f"{baseline_ref}^{{commit}}")
-        baseline_tree = git(root, "rev-parse", f"{baseline_ref}^{{tree}}")
+        baseline = git(root, "rev-parse", f"{baseline_sha or baseline_ref}^{{commit}}")
+        baseline_tree = git(root, "rev-parse", f"{baseline_sha or baseline_ref}^{{tree}}")
         candidate = git(root, "rev-parse", f"{candidate_ref}^{{commit}}")
         if receipt.get("baselineCommit") != baseline: errors.append("baseline_commit")
         if receipt.get("baselineTree") != baseline_tree: errors.append("baseline_tree")
@@ -87,12 +93,19 @@ def validate(root: Path, receipt_path: Path, baseline_ref: str, candidate_ref: s
     return {"ok": not errors, "classification": "inherited_baseline_failure" if not errors else "blocking", "baselineRef": baseline_ref, "baselineCommit": receipt.get("baselineCommit"), "baselineTree": receipt.get("baselineTree"), "candidateCommit": candidate, "changedPaths": list(changed), "changedFailureContractPaths": changed_failure, "classifierPathsRequiringFocusedChecks": classifier, "errors": sorted(set(errors))}
 
 
-def validate_baseline_ci_receipt(*, root: Path, receipt: dict[str, object], baseline_ref: str = "origin/development", candidate_ref: str = "HEAD") -> dict[str, object]:
+def validate_baseline_ci_receipt(
+    *,
+    root: Path,
+    receipt: dict[str, object],
+    baseline_ref: str = "origin/development",
+    candidate_ref: str = "HEAD",
+    baseline_sha: str | None = None,
+) -> dict[str, object]:
     """Compatibility-shaped entry point used by the focused consumer tests."""
     temp = root / ".git" / "openclaw-progressive-receipt.json"
     temp.write_text(json.dumps(receipt), encoding="utf-8")
     try:
-        return validate(root, temp, baseline_ref, candidate_ref)
+        return validate(root, temp, baseline_ref, candidate_ref, baseline_sha)
     finally:
         temp.unlink(missing_ok=True)
 
@@ -102,10 +115,17 @@ def main() -> int:
     parser.add_argument("--root", type=Path, default=Path.cwd())
     parser.add_argument("--receipt", type=Path, required=True)
     parser.add_argument("--baseline-ref", default="origin/development")
+    parser.add_argument("--baseline-sha", default="")
     parser.add_argument("--candidate-ref", default="HEAD")
     args = parser.parse_args()
     try:
-        result = validate(args.root.resolve(), args.receipt.resolve(), args.baseline_ref, args.candidate_ref)
+        result = validate(
+            args.root.resolve(),
+            args.receipt.resolve(),
+            args.baseline_ref,
+            args.candidate_ref,
+            args.baseline_sha or None,
+        )
     except (OSError, ValueError, RuntimeError) as exc:
         result = {"ok": False, "classification": "blocking", "errors": [str(exc)]}
     print(json.dumps(result, sort_keys=True))
