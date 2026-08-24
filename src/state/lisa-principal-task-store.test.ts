@@ -51,6 +51,7 @@ describe("Lisa Principal task state", () => {
     expect(names.map((row) => row.name)).toEqual([
       "lisa_principal_task_aliases",
       "lisa_principal_task_evidence",
+      "lisa_principal_task_evidence_conflicts",
       "lisa_principal_task_intake_events",
       "lisa_principal_task_references",
       "lisa_principal_task_sequences",
@@ -263,24 +264,34 @@ describe("Lisa Principal task state", () => {
       reference: "alias-receipt",
       nowMs: 103,
     });
+    recordLisaPrincipalTaskEvidence(o, {
+      internalId: alias.task.internalId,
+      source: "Lisa",
+      description: "Alias conflicting receipt",
+      reference: "shared-receipt",
+      nowMs: 104,
+    });
     const resolved = resolveLisaPrincipalTaskDuplicate(o, {
       aliasInternalId: alias.task.internalId,
       canonicalInternalId: canonical.task.internalId,
       reason: "adversarial evidence merge",
-      nowMs: 104,
+      nowMs: 105,
     });
     expect(resolved.canonicalInternalId).toBe(canonical.task.internalId);
     expect(
       listLisaPrincipalTaskEvidence(o, canonical.task.internalId).map((item) => item.reference),
-    ).toEqual(["shared-receipt", "alias-receipt"]);
+    ).toEqual(["shared-receipt", "alias-receipt", "shared-receipt"]);
+    expect(
+      listLisaPrincipalTaskEvidence(o, canonical.task.internalId).map((item) => item.description),
+    ).toEqual(["Canonical receipt", "Alias receipt", "Alias conflicting receipt"]);
     expect(
       resolveLisaPrincipalTaskDuplicate(o, {
         aliasInternalId: alias.task.internalId,
         canonicalInternalId: canonical.task.internalId,
         reason: "repeated merge",
-        nowMs: 105,
+        nowMs: 106,
       }),
     ).toEqual(resolved);
-    expect(listLisaPrincipalTaskEvidence(o, canonical.task.internalId)).toHaveLength(2);
+    expect(listLisaPrincipalTaskEvidence(o, canonical.task.internalId)).toHaveLength(3);
   });
 });

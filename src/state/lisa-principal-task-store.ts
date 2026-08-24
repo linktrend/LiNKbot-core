@@ -148,6 +148,15 @@ type EvidenceRow = {
   reference: string;
   created_at_ms: number;
 };
+type EvidenceConflictRow = {
+  conflict_id: string;
+  task_internal_id: string;
+  source: "Carlos" | "Lisa" | "subordinate-agent";
+  description: string;
+  reference: string;
+  original_evidence_id: string;
+  created_at_ms: number;
+};
 type AliasRow = {
   alias_internal_id: string;
   canonical_internal_id: string;
@@ -164,6 +173,7 @@ type PrincipalTaskDatabase = {
   lisa_principal_tasks: TaskRow;
   lisa_principal_task_references: ReferenceRow;
   lisa_principal_task_evidence: EvidenceRow;
+  lisa_principal_task_evidence_conflicts: EvidenceConflictRow;
   lisa_principal_task_aliases: AliasRow;
   lisa_principal_task_intake_events: IntakeRow;
   lisa_principal_task_sequences: { sequence_name: string; next_value: number };
@@ -288,6 +298,17 @@ function rowToReference(row: ReferenceRow): LisaPrincipalTaskReference {
 function rowToEvidence(row: EvidenceRow): LisaPrincipalTaskEvidence {
   return {
     evidenceId: row.evidence_id,
+    taskInternalId: row.task_internal_id,
+    source: row.source,
+    description: row.description,
+    reference: row.reference,
+    createdAtMs: row.created_at_ms,
+  };
+}
+
+function conflictRowToEvidence(row: EvidenceConflictRow): LisaPrincipalTaskEvidence {
+  return {
+    evidenceId: row.conflict_id,
     taskInternalId: row.task_internal_id,
     source: row.source,
     description: row.description,
@@ -906,7 +927,7 @@ export function listLisaPrincipalTaskEvidence(
   ensureLisaPrincipalTaskSchema(options);
   const { db } = openOpenClawAgentDatabase(options);
   const taskId = canonicalizeInternalId(db, internalId);
-  return [
+  const evidence = [
     ...iterateSqliteQuerySync(
       db,
       getNodeSqliteKysely<PrincipalTaskDatabase>(db)
@@ -916,6 +937,20 @@ export function listLisaPrincipalTaskEvidence(
         .orderBy("created_at_ms"),
     ),
   ].map((row) => rowToEvidence(row as EvidenceRow));
+  const conflicts = [
+    ...iterateSqliteQuerySync(
+      db,
+      getNodeSqliteKysely<PrincipalTaskDatabase>(db)
+        .selectFrom("lisa_principal_task_evidence_conflicts")
+        .selectAll()
+        .where("task_internal_id", "=", taskId)
+        .orderBy("created_at_ms"),
+    ),
+  ].map((row) => conflictRowToEvidence(row as EvidenceConflictRow));
+  return [...evidence, ...conflicts].toSorted(
+    (left, right) =>
+      left.createdAtMs - right.createdAtMs || left.evidenceId.localeCompare(right.evidenceId),
+  );
 }
 
 export function transitionLisaPrincipalTask(
@@ -959,14 +994,23 @@ export function transitionLisaPrincipalTask(
               .where("task_internal_id", "=", taskId),
           ),
         ] as EvidenceRow[];
-        if (evidence.length === 0) {
+        const conflictEvidence = [
+          ...iterateSqliteQuerySync(
+            db,
+            getNodeSqliteKysely<PrincipalTaskDatabase>(db)
+              .selectFrom("lisa_principal_task_evidence_conflicts")
+              .selectAll()
+              .where("task_internal_id", "=", taskId),
+          ),
+        ] as EvidenceConflictRow[];
+        if (evidence.length === 0 && conflictEvidence.length === 0) {
           throw new Error("completed task requires evidence");
         }
-        const hasIndependentEvidence = evidence.some(
+        const hasIndependentEvidence = [...evidence, ...conflictEvidence].some(
           (entry) =>
             entry.source !== "Carlos" && entry.description.trim() && entry.reference.trim(),
         );
-        const hasCarlosEvidence = evidence.some(
+        const hasCarlosEvidence = [...evidence, ...conflictEvidence].some(
           (entry) => entry.source === "Carlos" && entry.description.trim(),
         );
         if (task.owner === "Carlos" ? !hasCarlosEvidence : !hasIndependentEvidence) {
@@ -1073,7 +1117,22 @@ export function resolveLisaPrincipalTaskDuplicate(
             .where("reference", "=", evidence.reference),
         );
         if (canonicalEvidence) {
-          // Preserve canonical evidence when an alias carried the same receipt.
+          // Keep the alias receipt in a keyed conflict row when its description differs.
+          executeSqliteQuerySync(
+            db,
+            evidenceQuery
+              .insertInto("lisa_principal_task_evidence_conflicts")
+              .values({
+                conflict_id: evidence.evidence_id,
+                task_internal_id: canonical,
+                source: evidence.source,
+                description: evidence.description,
+                reference: evidence.reference,
+                original_evidence_id: evidence.evidence_id,
+                created_at_ms: evidence.created_at_ms,
+              })
+              .onConflict((conflict) => conflict.column("conflict_id").doNothing()),
+          );
           executeSqliteQuerySync(
             db,
             evidenceQuery

@@ -10,6 +10,7 @@ export const LISA_PRINCIPAL_TASK_SCHEMA_KIND = "additive_lazy_ensure" as const;
 export const LISA_PRINCIPAL_TASK_TABLES = [
   "lisa_principal_tasks",
   "lisa_principal_task_evidence",
+  "lisa_principal_task_evidence_conflicts",
   "lisa_principal_task_references",
   "lisa_principal_task_intake_events",
   "lisa_principal_task_aliases",
@@ -58,6 +59,16 @@ CREATE TABLE IF NOT EXISTS lisa_principal_task_evidence (
   reference TEXT NOT NULL,
   created_at_ms INTEGER NOT NULL,
   UNIQUE(task_internal_id, source, reference)
+) STRICT;
+
+CREATE TABLE IF NOT EXISTS lisa_principal_task_evidence_conflicts (
+  conflict_id TEXT NOT NULL PRIMARY KEY,
+  task_internal_id TEXT NOT NULL,
+  source TEXT NOT NULL CHECK(source IN ('Carlos', 'Lisa', 'subordinate-agent')),
+  description TEXT NOT NULL,
+  reference TEXT NOT NULL,
+  original_evidence_id TEXT NOT NULL UNIQUE,
+  created_at_ms INTEGER NOT NULL
 ) STRICT;
 
 CREATE TABLE IF NOT EXISTS lisa_principal_task_references (
