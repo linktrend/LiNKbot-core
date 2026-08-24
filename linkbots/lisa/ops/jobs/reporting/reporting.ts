@@ -180,7 +180,7 @@ function maintenanceSection(input: ExecutiveDigestInput): string {
     source: "lisa",
     verification: "verified",
   });
-  return `Overnight maintenance\n${input.maintenance}`;
+  return `**Overnight maintenance**\n${input.maintenance}`;
 }
 
 export function renderExecutiveDigest(input: ExecutiveDigestInput): string {
@@ -197,7 +197,7 @@ export function renderExecutiveDigest(input: ExecutiveDigestInput): string {
   }
   const output = replaceTemplate(EXECUTIVE_DIGEST_TEMPLATE, {
     decisions: decisionLines(input.decisions),
-    email_attention: `${input.decisions.length ? "\n" : ""}Email needing Carlos attention\n${emailLines(input.emails ?? [])}`,
+    email_attention: `${input.decisions.length ? "\n" : ""}**Email needing Carlos attention**\n${emailLines(input.emails ?? [])}`,
     completed: completionLines(input),
     work_calendar: calendarLines(input.workCalendar),
     personal_calendar: calendarLines(input.personalCalendar),
@@ -245,7 +245,7 @@ export function renderFlashReport(input: FlashReportInput): string {
     throw new Error("next expected result required");
   }
   if (noChange) {
-    const output = `No material changes since last report. Battery Status: ${input.batteryStatus}`;
+    const output = `No material changes since last report. **Battery Status:** ${input.batteryStatus}`;
     assertRenderedReport(output);
     return output;
   }
