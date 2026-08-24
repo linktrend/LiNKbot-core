@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openclaw.local/schemas/lisa/backup-receipt-v1.json",
+  "title": "Sanitized Lisa backup receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["formatVersion", "profile", "sourceArchive", "privateSnapshot", "upload", "restore", "retention", "capturedAtMs", "receiptSha256"],
+  "properties": {
+    "formatVersion": { "const": 1 },
+    "profile": { "const": "lisa" },
+    "sourceArchive": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sha256", "bytes", "entries", "excluded"],
+      "properties": {
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "bytes": { "type": "integer", "minimum": 0 },
+        "entries": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "kind", "bytes", "sha256"],
+            "properties": {
+              "path": { "type": "string", "pattern": "^[^/\\\\][^\\\\]*$" },
+              "kind": { "enum": ["source", "database", "procedure", "receipt"] },
+              "bytes": { "type": "integer", "minimum": 0 },
+              "sha256": { "$ref": "#/$defs/sha256" }
+            }
+          }
+        },
+        "excluded": { "const": ["private-health", "credentials"] }
+      }
+    },
+    "privateSnapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["objectSha256", "objectBytes", "plaintextSha256", "keyReference"],
+      "properties": {
+        "objectSha256": { "$ref": "#/$defs/sha256" },
+        "objectBytes": { "type": "integer", "minimum": 28 },
+        "plaintextSha256": { "$ref": "#/$defs/sha256" },
+        "keyReference": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["provider", "secretName", "version", "workloadIdentityAudience"],
+          "properties": {
+            "provider": { "const": "google-secret-manager" },
+            "secretName": { "type": "string", "minLength": 1 },
+            "version": { "type": "string", "minLength": 1 },
+            "workloadIdentityAudience": { "type": "string", "format": "uri" }
+          }
+        }
+      }
+    },
+    "upload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "destinationBindingId", "objectSha256", "objectBytes"],
+      "properties": {
+        "status": { "const": "verified" },
+        "destinationBindingId": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{1,127}$" },
+        "objectSha256": { "$ref": "#/$defs/sha256" },
+        "objectBytes": { "type": "integer", "minimum": 28 }
+      }
+    },
+    "restore": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "plaintextSha256", "quickCheck", "network", "channelDelivery"],
+      "properties": {
+        "status": { "const": "verified" },
+        "plaintextSha256": { "$ref": "#/$defs/sha256" },
+        "quickCheck": { "const": "passed" },
+        "network": { "const": "disabled" },
+        "channelDelivery": { "const": "disabled" }
+      }
+    },
+    "retention": { "enum": ["retain_previous", "promote_current"] },
+    "capturedAtMs": { "type": "integer", "minimum": 0 },
+    "receiptSha256": { "$ref": "#/$defs/sha256" }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  }
+}
