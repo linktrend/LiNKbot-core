@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import {
   chmodSync,
   mkdtempSync,
@@ -82,7 +83,7 @@ describe("VPS Lisa Google Workspace wrappers", () => {
         [
           "calendar-insert",
           "--calendar",
-          "shared_calendar",
+          "opaque_work_calendar_binding",
           "--summary",
           "Synthetic test event",
           "--start",
@@ -118,7 +119,7 @@ describe("VPS Lisa Google Workspace wrappers", () => {
         [
           "calendar-events-list",
           "--calendar",
-          "routine@linktrend.media",
+          "opaque_routine_calendar_binding",
           "--time-min",
           "2026-08-19T00:00:00+08:00",
           "--time-max",
@@ -131,12 +132,12 @@ describe("VPS Lisa Google Workspace wrappers", () => {
       );
       assert.equal(listed.status, 0, listed.stderr);
       assert.match(listed.stdout, /calendar\nevents\nlist/);
-      assert.match(listed.stdout, /routine@linktrend\.media/);
+      assert.match(listed.stdout, /opaque_routine_calendar_binding/);
       assert.match(listed.stdout, /"singleEvents":true/);
 
       const fetched = run(
         lisaSafe,
-        ["calendar-event-get", "--calendar", "routine@linktrend.media", "--event", "event_1"],
+        ["calendar-event-get", "--calendar", "opaque_routine_calendar_binding", "--event", "event_1"],
         fixture,
       );
       assert.equal(fetched.status, 0, fetched.stderr);
@@ -147,7 +148,7 @@ describe("VPS Lisa Google Workspace wrappers", () => {
         [
           "calendar-event-patch",
           "--calendar",
-          "routine@linktrend.media",
+          "opaque_routine_calendar_binding",
           "--event",
           "event_1",
           "--summary",
@@ -174,7 +175,7 @@ describe("VPS Lisa Google Workspace wrappers", () => {
         [
           "calendar-event-patch",
           "--calendar",
-          "routine@linktrend.media",
+          "opaque_routine_calendar_binding",
           "--event",
           "event_1",
           "--weekdays",
@@ -195,7 +196,7 @@ describe("VPS Lisa Google Workspace wrappers", () => {
         [
           "calendar-insert",
           "--calendar",
-          "routine@linktrend.media",
+          "opaque_routine_calendar_binding",
           "--summary",
           "Recurring test event",
           "--start",
@@ -223,7 +224,7 @@ describe("VPS Lisa Google Workspace wrappers", () => {
         [
           "calendar-event-delete",
           "--calendar",
-          "routine@linktrend.media",
+          "opaque_routine_calendar_binding",
           "--event",
           "event_1",
           "--dry-run",
@@ -233,6 +234,55 @@ describe("VPS Lisa Google Workspace wrappers", () => {
       assert.equal(deleted.status, 0, deleted.stderr);
       assert.match(deleted.stdout, /calendar\nevents\ndelete/);
       assert.match(deleted.stdout, /--dry-run/);
+    } finally {
+      rmSync(fixture.directory, { recursive: true, force: true });
+    }
+  });
+
+  it("denies inaccessible account/calendar bindings and scope escalation", () => {
+    const fixture = makeFixture();
+    try {
+      const foreignCalendar = run(
+        lisaSafe,
+        ["calendar-events-list", "--calendar", "carlos.private@example.invalid"],
+        fixture,
+      );
+      assert.equal(foreignCalendar.status, 64);
+      assert.match(foreignCalendar.stderr, /non-opaque shape/);
+      assert.equal(foreignCalendar.stdout, "");
+
+      const unboundCalendar = run(
+        lisaSafe,
+        ["calendar-event-get", "--calendar", "private_calendar", "--event", "event_1"],
+        fixture,
+      );
+      assert.equal(unboundCalendar.status, 64);
+      assert.match(unboundCalendar.stderr, /non-opaque shape/);
+      assert.equal(unboundCalendar.stdout, "");
+
+      const unboundAgenda = run(
+        lisaSafe,
+        ["calendar-agenda", "--calendar", "private_calendar", "--today"],
+        fixture,
+      );
+      assert.equal(unboundAgenda.status, 64);
+      assert.match(unboundAgenda.stderr, /non-opaque shape/);
+      assert.equal(unboundAgenda.stdout, "");
+
+      const scopeArgument = run(
+        lisaSafe,
+        ["drive-list", "--scope", "https://www.googleapis.com/auth/cloud-platform"],
+        fixture,
+      );
+      assert.equal(scopeArgument.status, 64);
+      assert.equal(scopeArgument.stdout, "");
+
+      const inheritedScope = run(lisaSafe, ["drive-list"], fixture, {
+        GOOGLE_WORKSPACE_CLI_SCOPES: "https://www.googleapis.com/auth/cloud-platform",
+      });
+      assert.equal(inheritedScope.status, 64);
+      assert.match(inheritedScope.stderr, /inherited auth\/config environment/);
+      assert.equal(inheritedScope.stdout, "");
     } finally {
       rmSync(fixture.directory, { recursive: true, force: true });
     }
@@ -331,6 +381,15 @@ describe("VPS Lisa Google Workspace wrappers", () => {
       assert.equal(sheetAppend.status, 0, sheetAppend.stderr);
       assert.match(sheetAppend.stdout, /sheets\n\+append/);
       assert.match(sheetAppend.stdout, /--json-values\n\[\[\"status\",true\],\[\"count\",2\]\]/);
+
+      const sheetCreate = run(
+        lisaSafe,
+        ["sheets-create", "--title", "Synthetic workbook", "--dry-run"],
+        fixture,
+      );
+      assert.equal(sheetCreate.status, 0, sheetCreate.stderr);
+      assert.match(sheetCreate.stdout, /sheets\nspreadsheets\ncreate/);
+      assert.match(sheetCreate.stdout, /--json\n\{"properties":\{"title":"Synthetic workbook"\}\}/);
 
       const badValues = run(
         lisaSafe,
@@ -648,10 +707,13 @@ describe("VPS Lisa Google Workspace wrappers", () => {
       readFileSync(path.join(root, "receipts/identity-scope.receipt.json"), "utf8"),
     ) as {
       identities: Array<{
+        id: string;
         requestedScopeUrls: string[];
         mandatoryUpstreamIdentityScopeUrls: string[];
         effectiveExpectedScopeUrls: string[];
         grantedScopeVerification: string;
+        scopeAllowlistDigest: string;
+        prohibitedScopeUrls: string[];
       }>;
     };
     const capability = JSON.parse(
@@ -670,6 +732,18 @@ describe("VPS Lisa Google Workspace wrappers", () => {
         ),
       );
       assert.match(identity.grantedScopeVerification, /equal effectiveExpectedScopeUrls/u);
+      const scopeDigestInput = JSON.stringify({
+        id: identity.id,
+        effectiveExpectedScopeUrls: identity.effectiveExpectedScopeUrls,
+        prohibitedScopeUrls: identity.prohibitedScopeUrls,
+      });
+      assert.equal(
+        identity.scopeAllowlistDigest,
+        `sha256:${createHash("sha256").update(scopeDigestInput).digest("hex")}`,
+      );
+      assert.ok(
+        identity.prohibitedScopeUrls.every((scope) => !identity.effectiveExpectedScopeUrls.includes(scope)),
+      );
     }
     assert.equal(
       capability.operations.find((item) => item.localOperation === "drive-json")?.disposition,
@@ -680,11 +754,66 @@ describe("VPS Lisa Google Workspace wrappers", () => {
         ?.disposition,
       "migrate",
     );
+    const bindings = JSON.parse(
+      readFileSync(path.join(root, "receipts/workspace-bindings.receipt.json"), "utf8"),
+    ) as {
+      status: string;
+      identityBindings: Record<string, string>;
+      calendarBindings: Record<string, string>;
+      calendarAllowlist: Array<{ bindingRef: string; access: string; includeInDigest: boolean }>;
+      excludedCalendars: Array<{ bindingRef: string; reason: string }>;
+      calendarAllowlistDigest: string;
+      negativeAccessAssertions: Array<{ case: string; expected: string }>;
+      privacy: { accountIdentifiers: string; calendarResourceIds: string };
+    };
+    assert.equal(bindings.status, "source-contract-only");
+    assert.deepEqual(bindings.identityBindings, {
+      lisaAccountRef: "opaque:lisa-workspace/account",
+      carlosTasksIdentityRef: "opaque:carlos-tasks/account",
+    });
+    assert.deepEqual(bindings.calendarBindings, {
+      workCalendarRef: "opaque:lisa-workspace/calendar/work",
+      routineCalendarRef: "opaque:lisa-workspace/calendar/routine",
+      sharedPersonalEventsCalendarRef: "opaque:lisa-workspace/calendar/shared-personal-events",
+    });
+    assert.ok(
+      bindings.calendarAllowlist.every(
+        (binding) => binding.bindingRef.startsWith("opaque:") && binding.includeInDigest,
+      ),
+    );
+    assert.equal(bindings.excludedCalendars[0]?.bindingRef, "opaque:lisa-workspace/calendar/routine");
+    assert.equal(
+      bindings.calendarAllowlistDigest,
+      `sha256:${createHash("sha256").update(JSON.stringify(bindings.calendarAllowlist)).digest("hex")}`,
+    );
+    assert.deepEqual(
+      bindings.negativeAccessAssertions.map((assertion) => assertion.expected),
+      ["denied", "denied", "denied", "denied", "denied"],
+    );
+    assert.equal(bindings.privacy.accountIdentifiers, "not recorded");
+    assert.equal(bindings.privacy.calendarResourceIds, "not recorded");
     const qualifiedSkills = JSON.parse(
       readFileSync(path.join(root, "receipts/qualified-skills.receipt.json"), "utf8"),
     ) as {
       status: string;
-      provider: { commit: string; tree: string; releaseHash: string };
+      provider: { commit: string; tree: string; releaseIdentity: string; skillSetDigest: string };
+      catalogueBinding: {
+        path: string;
+        sha256: string;
+        requiredServices: string[];
+        status: string;
+        providerRuntime: string;
+      };
+      catalogueIndexBinding: {
+        path: string;
+        catalogueGitSha: string;
+        sourceTreeSha256: string;
+        sha256: string;
+        requiredSkillIds: string[];
+        presentSkillIds: string[];
+        status: string;
+      };
+      qualification: { state: string; exactReleaseRequired: boolean; catalogueDigestRequired: boolean };
       retrieval: { mode: string; copiedSkillBodies: boolean; providerRuntime: string };
       skills: Array<{ id: string; source: string; sha256: string }>;
       unsupportedByDesign: string[];
@@ -693,7 +822,37 @@ describe("VPS Lisa Google Workspace wrappers", () => {
     assert.equal(qualifiedSkills.status, "source-reference-only");
     assert.equal(qualifiedSkills.provider.commit, "2896fd89726f0b20258ec5a7bba55ccc6299ceb6");
     assert.equal(qualifiedSkills.provider.tree, "727694a95c83678bd6c7be7da2c5b26127b49e6e");
-    assert.match(qualifiedSkills.provider.releaseHash, /^skill-release:[a-f0-9]{64}$/u);
+    assert.equal(
+      qualifiedSkills.provider.releaseIdentity,
+      "LiNKskills@2896fd89726f0b20258ec5a7bba55ccc6299ceb6",
+    );
+    assert.match(qualifiedSkills.provider.skillSetDigest, /^sha256:[a-f0-9]{64}$/u);
+    assert.equal(qualifiedSkills.catalogueBinding.path, "tools/gws/interface.json");
+    assert.match(qualifiedSkills.catalogueBinding.sha256, /^sha256:[a-f0-9]{64}$/u);
+    assert.deepEqual(qualifiedSkills.catalogueBinding.requiredServices, ["docs", "sheets", "slides"]);
+    assert.equal(qualifiedSkills.catalogueBinding.status, "source-catalogue-bound");
+    assert.equal(qualifiedSkills.catalogueBinding.providerRuntime, "not executed by OpenClaw");
+    assert.equal(qualifiedSkills.catalogueIndexBinding.path, "catalog/index.json");
+    assert.match(qualifiedSkills.catalogueIndexBinding.catalogueGitSha, /^[a-f0-9]{40}$/u);
+    assert.match(qualifiedSkills.catalogueIndexBinding.sourceTreeSha256, /^[a-f0-9]{64}$/u);
+    assert.match(qualifiedSkills.catalogueIndexBinding.sha256, /^sha256:[a-f0-9]{64}$/u);
+    assert.deepEqual(qualifiedSkills.catalogueIndexBinding.requiredSkillIds, [
+      "gws-shared",
+      "gws-docs",
+      "gws-docs-write",
+      "gws-sheets",
+      "gws-sheets-read",
+      "gws-sheets-append",
+      "gws-slides",
+    ]);
+    assert.deepEqual(qualifiedSkills.catalogueIndexBinding.presentSkillIds, []);
+    assert.equal(
+      qualifiedSkills.catalogueIndexBinding.status,
+      "required-entries-absent; qualification-unavailable",
+    );
+    assert.equal(qualifiedSkills.qualification.state, "source-reference-only");
+    assert.equal(qualifiedSkills.qualification.exactReleaseRequired, true);
+    assert.equal(qualifiedSkills.qualification.catalogueDigestRequired, true);
     assert.equal(qualifiedSkills.retrieval.mode, "exact-release-and-digest");
     assert.equal(qualifiedSkills.retrieval.copiedSkillBodies, false);
     assert.equal(qualifiedSkills.retrieval.providerRuntime, "not executed by OpenClaw");

@@ -101,6 +101,8 @@ gws_reject_inherited_auth_env() {
     GOOGLE_CLOUD_QUOTA_PROJECT
     GOOGLE_WORKSPACE_CLI_CONFIG_DIR
     GOOGLE_WORKSPACE_CLI_KEYRING_BACKEND
+    GOOGLE_WORKSPACE_CLI_SCOPES
+    GOOGLE_WORKSPACE_SCOPES
     CLOUDSDK_CONFIG
     XDG_CONFIG_HOME
   )
@@ -306,8 +308,8 @@ gws_json_rows() {
 
 gws_calendar_id() {
   local value=$1
-  [[ "$value" =~ ^[A-Za-z0-9][A-Za-z0-9._%+@-]{0,254}$ ]] ||
-    gws_die "Google Calendar id has an invalid shape"
+  [[ "$value" =~ ^opaque_[a-z0-9][a-z0-9_-]{0,126}$ ]] ||
+    gws_die "Google Calendar binding reference has an invalid or non-opaque shape"
 }
 
 gws_weekdays() {

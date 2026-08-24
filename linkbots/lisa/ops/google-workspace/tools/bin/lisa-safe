@@ -117,6 +117,7 @@ case "$1" in
     else
       args=(calendar +agenda "--$range" --timezone "$timezone" --format json)
     fi
+    [[ -z "$calendar" ]] || gws_calendar_id "$calendar"
     [[ -n "$calendar" ]] && args+=(--calendar "$calendar")
     gws_exec_route "calendar +agenda" "${args[@]}"
     ;;
@@ -241,6 +242,7 @@ case "$1" in
       esac
     done
     [[ -n "$calendar" && -n "$summary" && -n "$start" && -n "$end" ]] || gws_die "calendar-insert requires explicit --calendar, --summary, --start, and --end"
+    gws_calendar_id "$calendar"
     [[ -z "$weekdays" ]] || weekdays=$(gws_weekdays "$weekdays")
     if ((${#attendees[@]})); then
       for attendee in "${attendees[@]}"; do gws_internal_email "$attendee"; done

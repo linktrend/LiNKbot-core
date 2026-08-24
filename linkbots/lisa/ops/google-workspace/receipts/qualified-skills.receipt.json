@@ -5,8 +5,32 @@
     "repository": "linktrend/LiNKskills",
     "commit": "2896fd89726f0b20258ec5a7bba55ccc6299ceb6",
     "tree": "727694a95c83678bd6c7be7da2c5b26127b49e6e",
-    "releaseHash": "skill-release:006a23b0af3abbcb9a0600c3f44bf337b89dc6cdd5be6d328097a2498a5f05bb",
-    "qualificationEvidence": "evidence/phase10/catalog-certification-report.json"
+    "releaseIdentity": "LiNKskills@2896fd89726f0b20258ec5a7bba55ccc6299ceb6",
+    "skillSetDigest": "sha256:1b4e13835dd8b19b56d060d1e29d77f6d5019a879e92f6fb8d78740e8a248fe8"
+  },
+  "catalogueBinding": {
+    "repository": "linktrend/LiNKskills",
+    "path": "tools/gws/interface.json",
+    "sha256": "sha256:65e8d5ac49cbc15cf93347d4fa85c65187ce9d4a55116ab95dcc2e99babe8637",
+    "requiredServices": ["docs", "sheets", "slides"],
+    "status": "source-catalogue-bound",
+    "providerRuntime": "not executed by OpenClaw"
+  },
+  "catalogueIndexBinding": {
+    "repository": "linktrend/LiNKskills",
+    "path": "catalog/index.json",
+    "catalogueGitSha": "af70f7ff04b2f148d04fe450a4e20c88df06fc36",
+    "sourceTreeSha256": "fd4e17edf08e88ff976f504749f0f0235c4b4b53db02db24260c07d1f25e1788",
+    "sha256": "sha256:1c2292ed5aa28d06097749eac5c8dcd5ee34891ac973df9b1a7351ea607967e3",
+    "requiredSkillIds": ["gws-shared", "gws-docs", "gws-docs-write", "gws-sheets", "gws-sheets-read", "gws-sheets-append", "gws-slides"],
+    "presentSkillIds": [],
+    "status": "required-entries-absent; qualification-unavailable"
+  },
+  "qualification": {
+    "state": "source-reference-only",
+    "exactReleaseRequired": true,
+    "catalogueDigestRequired": true,
+    "executionGate": "human-controlled provider qualification remains required"
   },
   "retrieval": {
     "mode": "exact-release-and-digest",

@@ -2,7 +2,9 @@
 
 This directory is the source-only Linux portability package for Lisa's two
 Google identities. It contains no OAuth material, account identifiers, live
-profile data, service configuration, or live receipts.
+profile data, service configuration, or live receipts. Account and Calendar
+inputs are opaque binding references; private runtime configuration resolves
+those references to actual Google resources outside this repository.
 
 ## Upstream CLI pin
 
@@ -90,10 +92,18 @@ The two entrypoints are deliberately finite:
   Calendar list/agenda/event list/get/patch/delete/insert, Drive list/content
   read/document create/internal share, Docs content read/append, Sheets values
   read/append/create, Slides presentation read/create, and a read-only smoke.
-  Calendar mutation requires an explicit calendar ID and event ID; recurring-
+  Calendar mutation requires an explicit opaque calendar binding reference and
+  event ID; recurring-
   series changes must target the recurring master event ID.
 - `tools/bin/lisa-carlos-tasks`: only the approved Tasks list/insert/patch/
   delete operations under the separate `carlos-tasks` configuration directory.
+
+Calendar operations accept only opaque `opaque_*` binding references. The
+source binding receipt names Lisa's account, work calendar, Routine calendar,
+and shared personal-events calendar without recording their private resource
+IDs. Routine is available for explicit operations but excluded from executive
+digests; the exact digest-included allowlist is bound by its committed SHA-256
+receipt.
 
 There is no generic shell passthrough, `auth` command, Keep command, arbitrary
 service selector, external recipient, external Drive share, raw JSON method
@@ -101,11 +111,13 @@ surface, Sheets batch update, or Slides batch update. Sheets ranges and values
 are bounded; Sheets and Slides creation accept only a validated title. Mutating
 wrapper calls accept `--dry-run`, but a dry run is not proof of a live write.
 
-The qualified Workspace skill references are recorded in
+The Workspace skill release and gws interface catalogue binding are recorded in
 [`receipts/qualified-skills.receipt.json`](receipts/qualified-skills.receipt.json).
-OpenClaw records the provider release/tree and per-skill digests, then invokes
-only the finite wrapper verbs; it does not copy or execute reusable skill
-bodies from this repository.
+OpenClaw records the provider release/tree, gws catalogue digest, and per-skill
+digests, then invokes only the finite wrapper verbs; it does not copy or execute
+reusable skill bodies from this repository. Provider qualification remains a
+separate human-controlled gate; missing exact release/catalogue evidence must
+fail closed rather than activating a guessed skill release.
 
 `drive-read` is intentionally distinct from Google-native `docs-read`: it reads
 binary Drive media only when the caller supplies a simple `--output-file` name.
@@ -159,14 +171,17 @@ does not claim that OAuth or any Google call has passed.
 
 ## Source-only validation
 
-The focused test is offline and replaces `gws` with a synthetic executable; it
+The canonical focused test is offline and replaces `gws` with a synthetic
+executable; it
 does not read credentials, open OAuth, contact Google, or mutate a VPS:
 
 ```text
-node --test linkbots/lisa/ops/google-workspace/google-workspace.test.ts
+node scripts/run-vitest.mjs linkbots/lisa/ops/google-workspace/google-workspace.test.ts
 ```
 
-Also run `bash -n` over both wrappers and the installer. A passing source test
+When repository dependencies are unavailable, the equivalent dependency-free
+source fallback is `node --test` on the same file. Also run `bash -n` over both
+wrappers and the installer. A passing source test
 proves argument routing, identity separation, private-path checks, internal
 recipient rejection, and prohibited-command rejection only. It does not prove
 Google access, account ownership, live writes, restart survival, or cleanup.

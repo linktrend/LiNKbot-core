@@ -1,0 +1,46 @@
+{
+  "schema": "lisa_google_workspace_opaque_bindings_receipt_v1",
+  "status": "source-contract-only",
+  "privacy": {
+    "accountIdentifiers": "not recorded",
+    "calendarResourceIds": "not recorded",
+    "bindingValues": "opaque references only",
+    "liveGoogleCallsPerformed": false
+  },
+  "identityBindings": {
+    "lisaAccountRef": "opaque:lisa-workspace/account",
+    "carlosTasksIdentityRef": "opaque:carlos-tasks/account"
+  },
+  "calendarBindings": {
+    "workCalendarRef": "opaque:lisa-workspace/calendar/work",
+    "routineCalendarRef": "opaque:lisa-workspace/calendar/routine",
+    "sharedPersonalEventsCalendarRef": "opaque:lisa-workspace/calendar/shared-personal-events"
+  },
+  "calendarAllowlist": [
+    {
+      "bindingRef": "opaque:lisa-workspace/calendar/shared-personal-events",
+      "access": "read",
+      "includeInDigest": true
+    },
+    {
+      "bindingRef": "opaque:lisa-workspace/calendar/work",
+      "access": "read-write",
+      "includeInDigest": true
+    }
+  ],
+  "excludedCalendars": [
+    {
+      "bindingRef": "opaque:lisa-workspace/calendar/routine",
+      "reason": "Routine is accessible for explicit operations but excluded from executive digests"
+    }
+  ],
+  "canonicalization": "UTF-8 JSON.stringify(calendarAllowlist) with array order and object key order fixed as committed",
+  "calendarAllowlistDigest": "sha256:d69ce427c6097f7203b4061c2ec2ed99627ad24aadbe2e0e5abdc8deaa6dce05",
+  "negativeAccessAssertions": [
+    { "case": "Carlos private mailbox", "expected": "denied" },
+    { "case": "inaccessible private company calendar", "expected": "denied" },
+    { "case": "inaccessible private personal calendar", "expected": "denied" },
+    { "case": "wrong Lisa account", "expected": "denied" },
+    { "case": "scope escalation", "expected": "denied" }
+  ]
+}
