@@ -40,7 +40,7 @@ describe("PKT-09 deterministic backup and encrypted private-state contract", () 
       },
     ];
     const first = createSourceArchive(entries);
-    const second = createSourceArchive([...entries].reverse());
+    const second = createSourceArchive([entries[1], entries[0]]);
     expect(first.sha256).toBe(second.sha256);
     expect(first.entries.map((entry) => entry.path)).toEqual([
       "config/openclaw.json",

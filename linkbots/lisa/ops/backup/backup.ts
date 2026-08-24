@@ -164,6 +164,19 @@ function sha256(value: Uint8Array): string {
   return createHash("sha256").update(value).digest("hex");
 }
 
+function sortedCopy<T>(values: readonly T[], compare: (left: T, right: T) => number): T[] {
+  const sorted: T[] = [];
+  for (const value of values) {
+    const index = sorted.findIndex((existing) => compare(value, existing) < 0);
+    if (index === -1) {
+      sorted.push(value);
+    } else {
+      sorted.splice(index, 0, value);
+    }
+  }
+  return sorted;
+}
+
 function assertHash(value: string, code: string): void {
   if (!/^[a-f0-9]{64}$/u.test(value)) {
     fail(code);
@@ -178,9 +191,10 @@ function canonicalJson(value: unknown): string {
     return `[${value.map((item) => canonicalJson(item)).join(",")}]`;
   }
   if (isRecord(value)) {
-    return `{${Object.keys(value)
-      .filter((key) => value[key] !== undefined)
-      .sort()
+    return `{${sortedCopy(
+      Object.keys(value).filter((key) => value[key] !== undefined),
+      (left, right) => left.localeCompare(right),
+    )
       .map((key) => `${JSON.stringify(key)}:${canonicalJson(value[key])}`)
       .join(",")}}`;
   }
@@ -210,8 +224,8 @@ function assertKeyReference(reference: KeyReference): KeyReference {
     reference.provider !== "google-secret-manager" ||
     !/^[A-Za-z0-9._:/-]{1,256}$/u.test(reference.secretName) ||
     !/^[A-Za-z0-9._:-]{1,64}$/u.test(reference.version) ||
-    !/^https:\/\//u.test(reference.workloadIdentityAudience) ||
-    Object.prototype.hasOwnProperty.call(reference, "secretValue")
+    !reference.workloadIdentityAudience.startsWith("https://") ||
+    Object.hasOwn(reference, "secretValue")
   ) {
     fail("invalid_key_reference");
   }
@@ -228,8 +242,8 @@ function assertAesKey(key: Uint8Array): Uint8Array {
 
 /** Build a stable source archive. Private health and credential paths never enter it. */
 export function createSourceArchive(entries: readonly SourceArchiveEntry[]): SourceArchive {
-  const normalized = entries
-    .map((entry) => {
+  const normalized = sortedCopy(
+    entries.map((entry) => {
       const path = safeRelativePath(entry.path);
       assertCompanyArchivePath(path);
       if (!["source", "database", "procedure", "receipt"].includes(entry.kind)) {
@@ -243,8 +257,9 @@ export function createSourceArchive(entries: readonly SourceArchiveEntry[]): Sou
         bytesCount: bytes.byteLength,
         sha256: sha256(bytes),
       };
-    })
-    .sort((left, right) => left.path.localeCompare(right.path));
+    }),
+    (left, right) => left.path.localeCompare(right.path),
+  );
   if (new Set(normalized.map((entry) => entry.path)).size !== normalized.length) {
     fail("duplicate_artifact_path");
   }

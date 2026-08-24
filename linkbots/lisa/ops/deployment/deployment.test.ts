@@ -60,13 +60,34 @@ describe("PKT-09 source deployment recreation", () => {
     ).toThrow("prohibited_deployment_content:OPENCLAW_GATEWAY_TOKEN=");
   });
 
+  it("rejects newline/control injection before rendering unit directives", () => {
+    expect(() =>
+      buildDeploymentPlan({
+        paths: { ...PATHS, checkoutRoot: "/opt/openclaw_prime\nExecStart=/bin/evil" },
+      }),
+    ).toThrow("invalid_checkout_root");
+    expect(() =>
+      buildDeploymentPlan({
+        paths: { ...PATHS, receiptRoot: "/var/lib/openclaw/lisa/receipts%N" },
+      }),
+    ).toThrow("invalid_receipt_root");
+  });
+
   it("executes rollback in a fixed order and preserves the verified backup", async () => {
     const events: string[] = [];
     const result = await executeSourceRollback({
-      stopBackupTimer: async () => events.push("stop-timer"),
-      restorePreviousUnits: async () => events.push("restore-units"),
-      preserveVerifiedBackup: async () => events.push("preserve-backup"),
-      startBackupService: async () => events.push("start-service"),
+      stopBackupTimer: async () => {
+        events.push("stop-timer");
+      },
+      restorePreviousUnits: async () => {
+        events.push("restore-units");
+      },
+      preserveVerifiedBackup: async () => {
+        events.push("preserve-backup");
+      },
+      startBackupService: async () => {
+        events.push("start-service");
+      },
     });
     expect(result).toEqual({ status: "rolled_back" });
     expect(events).toEqual(["stop-timer", "restore-units", "preserve-backup", "start-service"]);

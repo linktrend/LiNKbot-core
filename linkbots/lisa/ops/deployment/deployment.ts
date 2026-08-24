@@ -52,8 +52,23 @@ function fail(code: string): never {
   throw new Error(`lisa_deployment_${code}`);
 }
 
+function hasUnitControlCharacter(value: string): boolean {
+  for (const character of value) {
+    const codePoint = character.codePointAt(0) ?? 0;
+    if (codePoint <= 0x1f || codePoint === 0x7f) {
+      return true;
+    }
+  }
+  return false;
+}
+
 function linuxAbsolutePath(value: string, field: string): string {
-  if (!value.startsWith("/") || value.includes("\0") || value.includes("\\")) {
+  if (
+    !value.startsWith("/") ||
+    !/^\/[A-Za-z0-9._/+:-]*$/u.test(value) ||
+    hasUnitControlCharacter(value) ||
+    value.includes("\\")
+  ) {
     fail(`invalid_${field}`);
   }
   for (const prohibited of ["/Users/", "/Applications/"]) {
