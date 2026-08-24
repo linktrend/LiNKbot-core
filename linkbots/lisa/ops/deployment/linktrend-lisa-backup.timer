@@ -1,0 +1,10 @@
+[Unit]
+Description=Lisa encrypted off-host backup schedule
+
+[Timer]
+OnCalendar=*-*-* 05:30:00 Asia/Taipei
+Persistent=true
+Unit=linktrend-lisa-backup.service
+
+[Install]
+WantedBy=timers.target
