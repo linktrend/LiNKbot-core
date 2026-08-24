@@ -1,4 +1,15 @@
+import { readFileSync } from "node:fs";
 import { expect, it } from "vitest";
+import {
+  createBusinessPlanDraft,
+  evaluateBlueprintLaunch,
+  prepareBrainIndex,
+  prepareDrivePublication,
+  recordBrainIndex,
+  recordDrivePublication,
+  recordPrincipalApproval,
+  requestBusinessPlanReview,
+} from "../../linkbots/blueprints/business-plan-workflow.js";
 import { createAgent } from "./agent-create.js";
 import {
   PROFILE_MANIFEST_EXCLUSIONS,
@@ -7,6 +18,7 @@ import {
   assertValidProfileManifest,
   cloneProfileManifest,
   planProfileProvisioning,
+  profileManifestAgentConfig,
   validateProfileManifest,
 } from "./profile-manifest.js";
 
@@ -120,4 +132,112 @@ it("keeps createAgent side-effect free for inactive profiles and supports active
 
 it("exposes structured validation errors to provisioning callers", () => {
   expect(() => assertValidProfileManifest({})).toThrow(ProfileManifestValidationError);
+});
+
+const executiveBlueprintIds = ["eric", "david", "sara", "jane"] as const;
+
+function readExecutiveBlueprint(id: (typeof executiveBlueprintIds)[number]) {
+  return JSON.parse(
+    readFileSync(
+      new URL(`../../linkbots/blueprints/${id}.profile-manifest.json`, import.meta.url),
+      "utf8",
+    ),
+  ) as unknown;
+}
+
+it("keeps all executive blueprints schema-valid, inactive, and excluded from private runtime state", () => {
+  for (const id of executiveBlueprintIds) {
+    const input = readExecutiveBlueprint(id);
+    const manifest = assertValidProfileManifest(input);
+
+    expect(manifest.profileId).toBe(id);
+    expect(manifest.activation).toBe("inactive");
+    expect(manifest.exclusions).toEqual(
+      Object.fromEntries(PROFILE_MANIFEST_EXCLUSIONS.map((key) => [key, true])),
+    );
+    expect(planProfileProvisioning(manifest).actions).toEqual([]);
+    expect(() => {
+      // Inactive manifests cannot be turned into an agent config by accident.
+      profileManifestAgentConfig({ manifest, agentId: manifest.profileId });
+    }).toThrow(/inactive/);
+
+    const serialized = JSON.stringify({
+      ...(input as Record<string, unknown>),
+      exclusions: undefined,
+    }).toLowerCase();
+    for (const forbidden of [
+      "lisa",
+      "credential",
+      "private state",
+      "session",
+      "recipient",
+      "schedule",
+      "job",
+      "account@",
+    ]) {
+      expect(serialized).not.toContain(forbidden);
+    }
+  }
+});
+
+const workflowDigest = "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
+
+it("carries no-content plan metadata through review, approval, Drive, and Brain receipts", () => {
+  const draft = createBusinessPlanDraft({
+    artifactId: "artifact:executive-plan",
+    version: 1,
+    blueprintProfileId: "eric",
+    contentDigest: workflowDigest,
+    contentLength: 0,
+    sourceRefs: ["source:approved-brief"],
+  });
+  const review = requestBusinessPlanReview(draft, ["reviewer:principal-staff"]);
+  const approval = recordPrincipalApproval(review, {
+    receiptRef: "receipt:principal-approval-1",
+    approverRef: "principal:founder",
+    approvalDigest: workflowDigest,
+    approved: true,
+  });
+  const driveIntent = prepareDrivePublication(approval, "drive-target:business-plan");
+  const publication = recordDrivePublication(driveIntent, "drive-receipt:1");
+  const brainIntent = prepareBrainIndex(publication, "brain-collection:executive-plans");
+  const indexed = recordBrainIndex(brainIntent, "brain-receipt:1");
+
+  expect(indexed).toMatchObject({
+    status: "indexed",
+    content: null,
+    versionLink: "artifact:executive-plan@v1",
+    contentDigest: workflowDigest,
+    publicationReceiptRef: "drive-receipt:1",
+  });
+});
+
+it("rejects plan bodies and blocks activation without exact Platform identity and grants", () => {
+  expect(() =>
+    createBusinessPlanDraft({
+      artifactId: "artifact:plan",
+      version: 1,
+      blueprintProfileId: "eric",
+      contentDigest: workflowDigest,
+      contentLength: 100,
+      content: "a fake plan",
+    }),
+  ).toThrow(/does not accept content/);
+
+  expect(evaluateBlueprintLaunch({ profileId: "eric", activation: "inactive" })).toMatchObject({
+    status: "blocked",
+    actions: [],
+  });
+  expect(
+    evaluateBlueprintLaunch(
+      { profileId: "eric", activation: "inactive" },
+      {
+        blueprintProfileId: "eric",
+        platformIdentityRef: "platform-identity:eric",
+        grantsDigest: workflowDigest,
+        launchApprovalRef: "approval:launch-eric",
+        approved: true,
+      },
+    ),
+  ).toMatchObject({ status: "launch-authority-verified", activation: "inactive", actions: [] });
 });

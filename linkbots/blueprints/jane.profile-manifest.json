@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "profileId": "jane",
+  "roleRefs": ["role:chief-trading-officer", "scope:strategy", "scope:market-research"],
+  "identityRef": "platform-identity:pending:jane",
+  "activation": "inactive",
+  "capabilityClasses": ["trading-strategy", "market-research", "risk-review"],
+  "providerPins": {
+    "platform": "platform-contract:actor-grants-v1",
+    "openclaw": "openclaw-profile-runtime:v1"
+  },
+  "skillPins": {
+    "trading-strategy": "skills-qualified:trading-strategy:v1",
+    "risk-review": "skills-qualified:risk-review:v1"
+  },
+  "modelPolicyRef": "model-policy:future:jane",
+  "toolExposure": ["market.read", "strategy.review", "risk.review"],
+  "stateOwners": {
+    "profile": "openclaw-agent-sqlite",
+    "approval": "platform-approval-authority",
+    "trading": "trading-domain-authority",
+    "risk": "risk-domain-authority"
+  },
+  "exclusions": {
+    "credentials": true,
+    "accountIds": true,
+    "privateState": true,
+    "sessions": true,
+    "recipients": true,
+    "schedules": true,
+    "jobs": true,
+    "cookies": true,
+    "downloads": true,
+    "workspace": true
+  }
+}
