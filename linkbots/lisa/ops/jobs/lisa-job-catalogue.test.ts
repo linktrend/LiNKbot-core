@@ -13,6 +13,12 @@ import {
   validateLisaJobCatalogue,
 } from "./lisa-job-catalogue.ts";
 import {
+  LISA_JOB_DESIRED_STATE,
+  assertValidLisaJobDesiredState,
+  diffLisaJobDesiredState,
+  validateLisaJobDesiredState,
+} from "./lisa-job-desired-state.ts";
+import {
   createMaintenanceState,
   completeMaintenanceStage,
   nextMaintenanceStage,
@@ -143,6 +149,54 @@ describe("Lisa ten-family catalogue", () => {
     );
     expect(plan.entries.filter((entry) => entry.family === "battery_tracking")).toHaveLength(1);
     expect(plan.providerDecision.status).toBe("HOLD");
+  });
+});
+
+describe("Lisa canonical operational desired state", () => {
+  it("contains the 19 stable declarations plus separately registered Memory Dreaming", () => {
+    expect(validateLisaJobDesiredState()).toEqual([]);
+    assertValidLisaJobDesiredState();
+    expect(LISA_JOB_DESIRED_STATE.declarations).toHaveLength(19);
+    expect(
+      new Set(LISA_JOB_DESIRED_STATE.declarations.map((item) => item.declarationKey)).size,
+    ).toBe(19);
+    expect(LISA_JOB_DESIRED_STATE.externalMaintenance).toMatchObject({
+      id: "memory-dreaming",
+      cronDeclaration: null,
+      registration: "separate-openclaw-item",
+    });
+    expect(LISA_JOB_DESIRED_STATE.excludedCronFamilies).toEqual(["librarian", "backup"]);
+    for (const item of LISA_JOB_DESIRED_STATE.declarations) {
+      expect(item.owner).toBe("main");
+      expect(item.executor).toBe("lisa-cron");
+      expect(item.activation).toEqual({ enabled: false, deliveryMode: "none" });
+      expect(item.idempotencyKey).toMatch(/^[a-f0-9]{64}$/u);
+      expect(item.receiptRequirements.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("computes a bounded read-only diff and detects schedule or delivery drift", () => {
+    const live = LISA_JOB_DESIRED_STATE.declarations.map((item) => ({
+      declarationKey: item.declarationKey,
+      instanceIdentity: item.instanceIdentity,
+      scheduleExpression: item.schedule.expression,
+      scheduleTimeZone: item.schedule.timeZone,
+      owner: item.owner,
+      executor: item.executor,
+      deliveryMode: item.delivery.mode,
+      deliveryChannel: item.delivery.channel,
+      enabled: item.activation.enabled,
+    }));
+    expect(diffLisaJobDesiredState(live).ok).toBe(true);
+    const drifted = live.map((item) =>
+      item.declarationKey === "lisa-executive-digest-evening-v1"
+        ? { ...item, scheduleExpression: "0 17 * * *" }
+        : item,
+    );
+    expect(diffLisaJobDesiredState(drifted)).toMatchObject({
+      ok: false,
+      drifted: ["lisa-executive-digest-evening-v1"],
+    });
   });
 });
 

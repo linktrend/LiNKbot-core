@@ -1,0 +1,75 @@
+{
+  "$schema": "./jobs/lisa-profile-manifest.schema.json",
+  "schemaVersion": 1,
+  "profileId": "lisa",
+  "roleReference": "linkbots/lisa/Personality files/AGENTS.md",
+  "activation": {
+    "profile": "active",
+    "sourceSchedules": "disabled",
+    "liveMutation": "separate-approval-required"
+  },
+  "timeZone": "Asia/Taipei",
+  "jobDesiredState": {
+    "source": "linkbots/lisa/ops/jobs/lisa-job-desired-state.ts",
+    "version": 1,
+    "owner": "main",
+    "executor": "lisa-cron",
+    "operationalDeclarationCount": 19,
+    "separateMemoryDreamingRegistration": true,
+    "excludedCronFamilies": ["librarian", "backup"]
+  },
+  "providerBindings": {
+    "mode": "opaque-references-only",
+    "required": [
+      "operational-reporting-binding",
+      "personal-compliance-binding",
+      "private-health-binding",
+      "time-management-binding"
+    ],
+    "missingBindingPolicy": "HOLD"
+  },
+  "stateOwners": {
+    "jobs": "openclaw-agent-sqlite",
+    "privateHealth": "private-health-ledger",
+    "credentials": "platform-provider-authority"
+  },
+  "declarations": [
+    "lisa-battery-evaluation-hourly-v1",
+    "lisa-time-management-monthly-work-v1",
+    "lisa-executive-digest-evening-v1",
+    "lisa-selfie-1745-v1",
+    "lisa-flash-2045-v1",
+    "lisa-selfie-2145-v1",
+    "lisa-private-health-2245-v1",
+    "lisa-flash-2245-v1",
+    "lisa-private-health-drive-export-v1",
+    "lisa-midnight-finalizer-v1",
+    "lisa-executive-digest-morning-v1",
+    "lisa-private-health-0815-v1",
+    "lisa-flash-1045-v1",
+    "lisa-flash-1245-v1",
+    "lisa-private-health-1315-v1",
+    "lisa-flash-1445-v1",
+    "lisa-time-management-weekly-plan-v1",
+    "lisa-private-health-reassessment-v1",
+    "lisa-private-health-monthly-report-v1"
+  ],
+  "exclusions": [
+    "private-memory",
+    "credentials",
+    "recipient-identifiers",
+    "account-identifiers",
+    "cookies",
+    "downloads",
+    "workspace-state-from-another-agent",
+    "librarian-cron",
+    "backup-cron"
+  ],
+  "hardStops": [
+    "source declarations never enable schedules",
+    "live cron is read-only until an explicit apply authority exists",
+    "provider or credential binding absence is HOLD",
+    "Memory Dreaming is separately registered and never inferred as a cron declaration",
+    "general backup is systemd-owned and never duplicated as OpenClaw cron"
+  ]
+}
