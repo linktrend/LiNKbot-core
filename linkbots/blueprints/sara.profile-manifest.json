@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "profileId": "sara",
+  "roleRefs": ["role:coo-cfo", "scope:business-operations", "scope:finance-review"],
+  "identityRef": "platform-identity:pending:sara",
+  "activation": "inactive",
+  "capabilityClasses": ["business-operations", "finance-review", "profile-administration"],
+  "providerPins": {
+    "platform": "platform-contract:actor-grants-v1",
+    "openclaw": "openclaw-profile-runtime:v1"
+  },
+  "skillPins": {
+    "business-operations": "skills-qualified:business-operations:v1",
+    "finance-review": "skills-qualified:finance-review:v1"
+  },
+  "modelPolicyRef": "model-policy:future:sara",
+  "toolExposure": ["business.read", "finance.review", "profile.plan"],
+  "stateOwners": {
+    "profile": "openclaw-agent-sqlite",
+    "approval": "platform-approval-authority",
+    "finance": "finance-domain-authority",
+    "business": "business-domain-authority"
+  },
+  "exclusions": {
+    "credentials": true,
+    "accountIds": true,
+    "privateState": true,
+    "sessions": true,
+    "recipients": true,
+    "schedules": true,
+    "jobs": true,
+    "cookies": true,
+    "downloads": true,
+    "workspace": true
+  }
+}
