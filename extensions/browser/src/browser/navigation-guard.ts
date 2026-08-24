@@ -63,6 +63,7 @@ export type BrowserNavigationPolicyOptions = {
   ssrfPolicy?: SsrFPolicy;
   browserProxyMode?: BrowserNavigationProxyMode;
   lookupFn?: LookupFn;
+  fetchImpl?: typeof fetch;
 };
 
 /** DNS result retained from policy admission and reused by request guards. */
@@ -80,11 +81,16 @@ type BrowserNavigationRequestLike = {
 /** Build a navigation-policy object while omitting default direct proxy mode. */
 export function withBrowserNavigationPolicy(
   ssrfPolicy?: SsrFPolicy,
-  opts?: { browserProxyMode?: BrowserNavigationProxyMode; lookupFn?: LookupFn },
+  opts?: {
+    browserProxyMode?: BrowserNavigationProxyMode;
+    lookupFn?: LookupFn;
+    fetchImpl?: typeof fetch;
+  },
 ): BrowserNavigationPolicyOptions {
   return {
     ...(ssrfPolicy ? { ssrfPolicy } : {}),
     ...(opts?.lookupFn ? { lookupFn: opts.lookupFn } : {}),
+    ...(opts?.fetchImpl ? { fetchImpl: opts.fetchImpl } : {}),
     ...(opts?.browserProxyMode && opts.browserProxyMode !== "direct"
       ? { browserProxyMode: opts.browserProxyMode }
       : {}),
@@ -161,10 +167,9 @@ export async function admitBrowserNavigationAllowed(
     );
   }
 
-  // Browser navigations happen in Chromium's network stack, not Node's. In
-  // strict mode, a hostname-based URL would be resolved twice by different
-  // resolvers, so Node-side pinning cannot guarantee the browser connects to
-  // the same address that passed policy checks.
+  // Strict hostname navigation is admitted only for explicitly trusted names.
+  // The Playwright route boundary then fetches HTTP(S) requests through the
+  // retained Node dispatcher; direct browser-proxy paths remain fail-closed.
   if (
     opts.ssrfPolicy &&
     opts.ssrfPolicy.dangerouslyAllowPrivateNetwork === false &&

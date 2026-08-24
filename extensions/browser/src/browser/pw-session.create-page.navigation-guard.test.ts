@@ -43,6 +43,9 @@ type MockRoute = {
 type MockRequest = {
   isNavigationRequest: () => boolean;
   frame: () => object;
+  method?: () => string;
+  headers?: () => Record<string, string>;
+  postDataBuffer?: () => Buffer | null;
   resourceType?: () => string;
   url: () => string;
 };
@@ -159,6 +162,9 @@ async function dispatchMockNavigation(params: {
   frameError?: Error;
   isNavigationRequest?: boolean;
   resourceType?: string;
+  method?: string;
+  headers?: Record<string, string>;
+  postDataBuffer?: Buffer | null;
   route?: Partial<MockRoute>;
 }) {
   const handler = params.getRouteHandler();
@@ -175,6 +181,11 @@ async function dispatchMockNavigation(params: {
       return params.frame ?? params.mainFrame;
     },
     ...(resourceType ? { resourceType: () => resourceType } : {}),
+    ...(params.method ? { method: () => params.method! } : {}),
+    ...(params.headers ? { headers: () => params.headers! } : {}),
+    ...(params.postDataBuffer !== undefined
+      ? { postDataBuffer: () => params.postDataBuffer ?? null }
+      : {}),
     url: () => params.url,
   });
 }
@@ -698,17 +709,22 @@ describe("pw-session createPageViaPlaywright navigation guard", () => {
     const lookupFn = vi.fn(async () => [
       { address: "93.184.216.34", family: 4 },
     ]) as unknown as LookupFn;
+    const fetchImpl = vi.fn(async () => new Response("<html>ok</html>", { status: 200 }));
     pageGoto.mockImplementationOnce(async () => {
       await dispatchMockNavigation({
         getRouteHandler,
         mainFrame,
         resourceType: "document",
+        method: "GET",
+        headers: { accept: "text/html" },
         url: "https://public.example/start",
       });
       await dispatchMockNavigation({
         getRouteHandler,
         mainFrame,
         resourceType: "document",
+        method: "GET",
+        headers: { accept: "text/html" },
         url: "https://public.example/redirected",
       });
       return null;
@@ -721,9 +737,14 @@ describe("pw-session createPageViaPlaywright navigation guard", () => {
         url: "https://public.example/start",
         timeoutMs: 1000,
         lookupFn,
+        fetchImpl,
       }),
     ).resolves.toBeNull();
     expect(lookupFn).toHaveBeenCalledTimes(1);
+    expect(fetchImpl).toHaveBeenCalledTimes(2);
+    expect(
+      (fetchImpl.mock.calls[0]?.[1] as { dispatcher?: unknown } | undefined)?.dispatcher,
+    ).toBeTruthy();
   });
 
   it("falls back to caller targetId quarantine when target lookup fails", async () => {
