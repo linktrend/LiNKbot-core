@@ -2,6 +2,7 @@
 import type { OpenClawConfig } from "../config/types.openclaw.js";
 import { createSubsystemLogger } from "../logging/subsystem.js";
 import { registerRuntimeAuthProfileStoreMutationListener } from "./auth-profiles/runtime-snapshots.js";
+import type { ModelCatalogSnapshot } from "./model-catalog.types.js";
 import {
   PreparedModelRuntimeOwnerNotPublishedError,
   PreparedModelRuntimePublicationSupersededError,
@@ -134,6 +135,17 @@ export function getPreparedModelRuntimeSnapshot(
     return undefined;
   }
   return owner.snapshot;
+}
+
+/**
+ * Returns only the already-published catalog for a transient route decision.
+ * A missing result is intentional: route callers must use the lifecycle loader
+ * rather than rebuilding provider discovery in the request path.
+ */
+export function getPreparedModelRuntimeCatalogSnapshot(
+  rawInput: PreparedModelRuntimeInput,
+): ModelCatalogSnapshot | undefined {
+  return getPreparedModelRuntimeSnapshot(rawInput)?.modelCatalog;
 }
 
 /** Publishes one owner from an explicit startup/activation lifecycle boundary. */
