@@ -89,6 +89,34 @@ class ProgressiveValidationTests(unittest.TestCase):
             self.assertFalse(MODULE.validate_baseline_ci_receipt(root=root, receipt=stale)["ok"], field)
         stale = dict(rec); stale["inheritedFailures"] = [{**rec["inheritedFailures"][0], "job": "other"}]
         self.assertFalse(MODULE.validate_baseline_ci_receipt(root=root, receipt=stale)["ok"])
+        self.assertFalse(
+            MODULE.validate_baseline_ci_receipt(root=root, receipt=rec, baseline_sha="origin/development")["ok"]
+        )
+
+    def test_explicit_baseline_sha_survives_moving_development_ref(self):
+        tmp, root, rec = self.fixture(); self.addCleanup(tmp.cleanup)
+        (root / "src").mkdir(); (root / "src" / "app.ts").write_text("candidate\n", encoding="utf-8")
+        git(root, "add", "src/app.ts"); git(root, "commit", "-qm", "candidate")
+        candidate = git(root, "rev-parse", "HEAD")
+        baseline = str(rec["baselineCommit"])
+        git(root, "checkout", "-q", "-b", "moving-tip")
+        (root / "moving.txt").write_text("development moved\n", encoding="utf-8")
+        git(root, "add", "moving.txt"); git(root, "commit", "-qm", "move development")
+        moving_tip = git(root, "rev-parse", "HEAD")
+        git(root, "update-ref", "refs/remotes/origin/development", moving_tip)
+        git(root, "checkout", "-q", "--detach", candidate)
+
+        bound = MODULE.validate_baseline_ci_receipt(
+            root=root,
+            receipt=rec,
+            baseline_ref="origin/development",
+            baseline_sha=baseline,
+        )
+        self.assertTrue(bound["ok"], bound)
+        self.assertEqual(bound["baselineCommit"], baseline)
+        stale = MODULE.validate_baseline_ci_receipt(root=root, receipt=rec)
+        self.assertFalse(stale["ok"])
+        self.assertIn("baseline_commit", stale["errors"])
 
 
 if __name__ == "__main__":
