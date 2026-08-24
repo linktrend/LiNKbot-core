@@ -3,6 +3,7 @@ import { loadPreparedModelCatalogForRouting } from "./prepared-model-catalog.js"
 
 export const NONCODING_ROUTE_VERSION = "2026-08-24-transient-noncoding-routing-v1" as const;
 export const NONCODING_CLASSIFIER_CONTEXT_LIMIT = 2_000 as const;
+export const NONCODING_FALLBACK_MAX_HOPS = 1 as const;
 
 export type NonCodingRouteTag =
   | "conversation"
@@ -48,6 +49,7 @@ export type NonCodingRouteDecision = {
   classifierError: boolean;
   /** Request overrides are deliberately one-response values, never session state. */
   persisted: false;
+  fallbackMaxHops: typeof NONCODING_FALLBACK_MAX_HOPS;
   fallbackRefs: readonly string[];
 };
 
@@ -153,6 +155,7 @@ export async function resolveNonCodingRoute(params: {
     classifierInvoked,
     classifierError,
     persisted: false,
+    fallbackMaxHops: NONCODING_FALLBACK_MAX_HOPS,
     fallbackRefs: [
       catalogModelRef(NONCODING_ROUTING_POLICY.firstFallback, params.catalog),
       catalogModelRef(NONCODING_ROUTING_POLICY.secondFallback, params.catalog),
@@ -173,7 +176,12 @@ export async function resolveNonCodingRouteWithPreparedCatalog(params: {
   return await resolveNonCodingRoute({ ...params, catalog });
 }
 
-export type TransientFallbackFailure = "provider" | "model" | "quality" | "infrastructure";
+export type TransientFallbackFailure =
+  | "success"
+  | "provider"
+  | "model"
+  | "quality"
+  | "infrastructure";
 
 export type TransientFallbackDecision = {
   modelRef: string;
@@ -187,13 +195,29 @@ export function resolveTransientFallback(params: {
   fallbackRefs: readonly string[];
   failure: TransientFallbackFailure;
   qualityFailureLogged?: boolean;
+  primaryModelRef?: string;
+  fallbackMaxHops?: number;
 }): TransientFallbackDecision {
+  const primaryModelRef = params.primaryModelRef ?? NONCODING_ROUTING_POLICY.primary;
+  const fallbackMaxHops = Math.min(
+    Math.max(0, Math.floor(params.fallbackMaxHops ?? NONCODING_FALLBACK_MAX_HOPS)),
+    NONCODING_FALLBACK_MAX_HOPS,
+  );
+  if (params.failure === "success") {
+    return { modelRef: params.currentModelRef, action: "no_fallback", hops: 0 };
+  }
   if (params.failure === "infrastructure") {
     return { modelRef: params.currentModelRef, action: "retry_same_model", hops: 0 };
   }
-  if (params.failure === "quality" && params.qualityFailureLogged !== true) {
+  if (
+    fallbackMaxHops < 1 ||
+    params.currentModelRef !== primaryModelRef ||
+    (params.failure === "quality" && params.qualityFailureLogged !== true)
+  ) {
     return { modelRef: params.currentModelRef, action: "no_fallback", hops: 0 };
   }
+  // A transient fallback is one hop from the primary. Never select the next
+  // fallback after a fallback attempt, even when its error is provider-level.
   const next = params.fallbackRefs.find((ref) => ref !== params.currentModelRef);
   return next
     ? { modelRef: next, action: "fallback_one_hop", hops: 1 }
