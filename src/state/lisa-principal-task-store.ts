@@ -216,7 +216,7 @@ function assertDisplayRef(value: string): string {
 
 function parseJson(value: string, label: string): unknown {
   try {
-    return JSON.parse(value) as T;
+    return JSON.parse(value) as unknown;
   } catch {
     throw new Error(`invalid ${label}`);
   }
