@@ -59,6 +59,8 @@ docker run --rm --platform linux/arm64 \
       "docs +write" "docs documents get" \
       "drive files create" "drive files get" "drive files list" "drive permissions create" \
       "gmail +send" "gmail +triage" "gmail users messages get" "gmail users messages list" \
+      "sheets +append" "sheets +read" "sheets spreadsheets create" \
+      "slides presentations create" "slides presentations get" \
       "tasks tasklists list" "tasks tasks delete" "tasks tasks insert" "tasks tasks list" "tasks tasks patch"; do
       # These are fixed source-owned command tuples, never caller input.
       /proof/gws $command --help >/dev/null
