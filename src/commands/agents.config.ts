@@ -13,6 +13,11 @@ import {
 import { resolveAgentAvatarUrlFromSource } from "../agents/identity-avatar-file.js";
 import type { AgentIdentityFile } from "../agents/identity-file.js";
 import { identityHasValues, loadAgentIdentityFromWorkspace } from "../agents/identity-file.js";
+import {
+  assertValidProfileManifest,
+  InactiveProfileManifestError,
+  type ProfileManifest,
+} from "../agents/profile-manifest.js";
 import { listRouteBindings } from "../config/bindings.js";
 import type { IdentityConfig } from "../config/types.base.js";
 import type { OpenClawConfig } from "../config/types.openclaw.js";
@@ -131,10 +136,17 @@ export function applyAgentConfig(
     agentDir?: string;
     model?: string | null;
     identity?: IdentityConfig;
+    profileManifest?: ProfileManifest;
   },
 ): OpenClawConfig {
   const agentId = normalizeAgentId(params.agentId);
   const name = params.name?.trim();
+  if (params.profileManifest) {
+    const manifest = assertValidProfileManifest(params.profileManifest);
+    if (manifest.activation !== "active") {
+      throw new InactiveProfileManifestError(manifest.profileId);
+    }
+  }
   const list = listAgentEntries(cfg);
   const index = findAgentEntryIndex(list, agentId);
   const base = (index >= 0 ? list[index] : undefined) ?? { id: agentId };
