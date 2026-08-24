@@ -8,7 +8,7 @@
   ],
   "identities": [
     {
-      "localIdentityCategory": "Lisa Workspace Gmail Calendar Drive Docs",
+      "localIdentityCategory": "Lisa Workspace Gmail Calendar Drive Docs Sheets Slides",
       "vpsIdentity": "lisa-workspace",
       "disposition": "migrate-separated"
     },
@@ -26,6 +26,9 @@
     { "localOperation": "drive-list", "disposition": "migrate", "vpsVerb": "drive-list" },
     { "localOperation": "drive-query-and-content-read", "disposition": "migrate-constrained", "vpsVerb": "drive-read", "reason": "content reads require a finite file ID; broad raw query syntax is not carried forward" },
     { "localOperation": "docs-content-read-and-append", "disposition": "migrate", "vpsVerb": "docs-read,docs-append" },
+    { "localOperation": "sheets-values-read-and-append", "disposition": "migrate-constrained", "vpsVerb": "sheets-read,sheets-append", "reason": "ranges and scalar row values are bounded; generic Sheets batchUpdate is not carried forward" },
+    { "localOperation": "sheets-create", "disposition": "migrate-constrained", "vpsVerb": "sheets-create", "reason": "creation accepts only a bounded title; arbitrary request bodies are not carried forward" },
+    { "localOperation": "slides-read-and-create", "disposition": "migrate-constrained", "vpsVerb": "slides-read,slides-create", "reason": "presentation metadata and creation are finite; arbitrary Slides batchUpdate is not carried forward" },
     { "localOperation": "drive-document-create-internal-share", "disposition": "migrate", "vpsVerb": "drive-create-doc,drive-share" },
     { "localOperation": "calendar-meet-helper", "disposition": "omit", "reason": "not required by approved minimum and no finite policy was approved" },
     { "localOperation": "gmail-html-draft-attachments", "disposition": "omit", "reason": "not required by approved minimum; attachment and draft policy need separate approval" },
