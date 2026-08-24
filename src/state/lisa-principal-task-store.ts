@@ -1007,7 +1007,7 @@ export function resolveLisaPrincipalTaskDuplicate(
   ensureLisaPrincipalTaskSchema(options);
   return runOpenClawAgentWriteTransaction(
     ({ db }) => {
-      const alias = canonicalizeInternalId(db, aliasInternalId);
+      const alias = aliasInternalId;
       const canonical = canonicalizeInternalId(db, canonicalInternalId);
       if (alias === canonical) {
         throw new Error("task alias would create a cycle");
@@ -1021,35 +1021,74 @@ export function resolveLisaPrincipalTaskDuplicate(
           .selectAll()
           .where("alias_internal_id", "=", alias),
       ) as AliasRow | undefined;
-      if (existing && existing.canonical_internal_id !== canonical) {
-        throw new Error("task alias already resolved to another canonical task");
+      if (existing) {
+        if (canonicalizeInternalId(db, existing.canonical_internal_id) !== canonical) {
+          throw new Error("task alias already resolved to another canonical task");
+        }
+        return rowToAlias(existing);
       }
-      if (!existing) {
-        executeSqliteQuerySync(
+      executeSqliteQuerySync(
+        db,
+        getNodeSqliteKysely<PrincipalTaskDatabase>(db)
+          .insertInto("lisa_principal_task_aliases")
+          .values({
+            alias_internal_id: alias,
+            canonical_internal_id: canonical,
+            reason,
+            resolved_at_ms: nowMs,
+          }),
+      );
+      executeSqliteQuerySync(
+        db,
+        getNodeSqliteKysely<PrincipalTaskDatabase>(db)
+          .updateTable("lisa_principal_task_references")
+          .set({ task_internal_id: canonical })
+          .where("task_internal_id", "=", alias),
+      );
+      executeSqliteQuerySync(
+        db,
+        getNodeSqliteKysely<PrincipalTaskDatabase>(db)
+          .updateTable("lisa_principal_task_intake_events")
+          .set({ task_internal_id: canonical })
+          .where("task_internal_id", "=", alias),
+      );
+      const aliasEvidence = [
+        ...iterateSqliteQuerySync(
           db,
           getNodeSqliteKysely<PrincipalTaskDatabase>(db)
-            .insertInto("lisa_principal_task_aliases")
-            .values({
-              alias_internal_id: alias,
-              canonical_internal_id: canonical,
-              reason,
-              resolved_at_ms: nowMs,
-            }),
-        );
-        executeSqliteQuerySync(
-          db,
-          getNodeSqliteKysely<PrincipalTaskDatabase>(db)
-            .updateTable("lisa_principal_task_references")
-            .set({ task_internal_id: canonical })
+            .selectFrom("lisa_principal_task_evidence")
+            .selectAll()
             .where("task_internal_id", "=", alias),
-        );
-        executeSqliteQuerySync(
+        ),
+      ] as EvidenceRow[];
+      const evidenceQuery = getNodeSqliteKysely<PrincipalTaskDatabase>(db);
+      for (const evidence of aliasEvidence) {
+        const canonicalEvidence = executeSqliteQueryTakeFirstSync(
           db,
-          getNodeSqliteKysely<PrincipalTaskDatabase>(db)
-            .updateTable("lisa_principal_task_intake_events")
-            .set({ task_internal_id: canonical })
-            .where("task_internal_id", "=", alias),
+          evidenceQuery
+            .selectFrom("lisa_principal_task_evidence")
+            .select("evidence_id")
+            .where("task_internal_id", "=", canonical)
+            .where("source", "=", evidence.source)
+            .where("reference", "=", evidence.reference),
         );
+        if (canonicalEvidence) {
+          // Preserve canonical evidence when an alias carried the same receipt.
+          executeSqliteQuerySync(
+            db,
+            evidenceQuery
+              .deleteFrom("lisa_principal_task_evidence")
+              .where("evidence_id", "=", evidence.evidence_id),
+          );
+        } else {
+          executeSqliteQuerySync(
+            db,
+            evidenceQuery
+              .updateTable("lisa_principal_task_evidence")
+              .set({ task_internal_id: canonical })
+              .where("evidence_id", "=", evidence.evidence_id),
+          );
+        }
       }
       const row = executeSqliteQueryTakeFirstSync(
         db,

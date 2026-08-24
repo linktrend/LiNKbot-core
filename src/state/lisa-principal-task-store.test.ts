@@ -236,4 +236,51 @@ describe("Lisa Principal task state", () => {
       first.task.internalId,
     );
   });
+
+  it("migrates alias evidence transactionally and keeps repeated merge idempotent", () => {
+    const o = options();
+    const canonical = intakeLisaPrincipalTask(o, {
+      title: "Evidence-bearing task",
+      explicit: true,
+      nowMs: 100,
+    });
+    const alias = intakeLisaPrincipalTask(o, {
+      title: "Evidence-bearing task",
+      explicit: true,
+      nowMs: 101,
+    });
+    recordLisaPrincipalTaskEvidence(o, {
+      internalId: canonical.task.internalId,
+      source: "Lisa",
+      description: "Canonical receipt",
+      reference: "shared-receipt",
+      nowMs: 102,
+    });
+    recordLisaPrincipalTaskEvidence(o, {
+      internalId: alias.task.internalId,
+      source: "Lisa",
+      description: "Alias receipt",
+      reference: "alias-receipt",
+      nowMs: 103,
+    });
+    const resolved = resolveLisaPrincipalTaskDuplicate(o, {
+      aliasInternalId: alias.task.internalId,
+      canonicalInternalId: canonical.task.internalId,
+      reason: "adversarial evidence merge",
+      nowMs: 104,
+    });
+    expect(resolved.canonicalInternalId).toBe(canonical.task.internalId);
+    expect(
+      listLisaPrincipalTaskEvidence(o, canonical.task.internalId).map((item) => item.reference),
+    ).toEqual(["shared-receipt", "alias-receipt"]);
+    expect(
+      resolveLisaPrincipalTaskDuplicate(o, {
+        aliasInternalId: alias.task.internalId,
+        canonicalInternalId: canonical.task.internalId,
+        reason: "repeated merge",
+        nowMs: 105,
+      }),
+    ).toEqual(resolved);
+    expect(listLisaPrincipalTaskEvidence(o, canonical.task.internalId)).toHaveLength(2);
+  });
 });
