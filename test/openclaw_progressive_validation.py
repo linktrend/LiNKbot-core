@@ -89,6 +89,9 @@ class ProgressiveValidationTests(unittest.TestCase):
             self.assertFalse(MODULE.validate_baseline_ci_receipt(root=root, receipt=stale)["ok"], field)
         stale = dict(rec); stale["inheritedFailures"] = [{**rec["inheritedFailures"][0], "job": "other"}]
         self.assertFalse(MODULE.validate_baseline_ci_receipt(root=root, receipt=stale)["ok"])
+        self.assertFalse(
+            MODULE.validate_baseline_ci_receipt(root=root, receipt=rec, baseline_sha="origin/development")["ok"]
+        )
 
     def test_explicit_baseline_sha_survives_moving_development_ref(self):
         tmp, root, rec = self.fixture(); self.addCleanup(tmp.cleanup)

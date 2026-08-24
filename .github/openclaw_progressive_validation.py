@@ -76,6 +76,7 @@ def validate(
         row = failures[0]
         if row.get("job") != FAILURE_JOB or tuple(row.get("tests", ())) != FAILURE_TESTS or set(row.get("changedPathContract", ())) != FAILURE_PATHS: errors.append("failure_contract")
     if receipt.get("baselineChecks") != {"checkDocs": "success", "checksNodeCoreTestNondistShard": "failure"}: errors.append("baseline_checks")
+    if baseline_sha is not None and not re.fullmatch(r"[0-9a-f]{40}", baseline_sha): errors.append("baseline_sha")
     try:
         baseline = git(root, "rev-parse", f"{baseline_sha or baseline_ref}^{{commit}}")
         baseline_tree = git(root, "rev-parse", f"{baseline_sha or baseline_ref}^{{tree}}")
