@@ -1,22 +1,22 @@
-{{status}}
-Completed
+**{{status}}**
+**Completed**
 {{completed}}
 
-In progress
+**In progress**
 {{in_progress}}
 
-Issues
+**Issues**
 {{issues}}
 
-Decisions needed
+**Decisions needed**
 {{decisions}}
 
-Supervised agents
+**Supervised agents**
 {{supervised_agents}}
 
-Next expected result
+**Next expected result**
 {{next_expected_result}}
 
-Battery Status
+**Battery Status**
 {{battery_status}}
 {{flexible_period}}

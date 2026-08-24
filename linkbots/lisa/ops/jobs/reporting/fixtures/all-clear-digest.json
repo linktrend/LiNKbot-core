@@ -1,4 +1,4 @@
 {
   "name": "all clear digest",
-  "expected": "Decisions and attention\nNone.\nEmail needing Carlos attention\nNone.\n\nCompleted since last digest\nNone.\n\nCalendar before next digest\nWork\nNone.\nPersonal\nNone.\n\nTasks before next digest\nCarlos's Google Tasks\nNone.\nOther tasks\nNone.\n\nOutstanding\nNone.\n\nSupervised agents\nAll current — no exceptions."
+  "expected": "**Decisions and attention**\nNone.\n**Email needing Carlos attention**\nNone.\n\n**Completed since last digest**\nNone.\n\n**Calendar before next digest**\n**Work**\nNone.\n**Personal**\nNone.\n\n**Tasks before next digest**\n**Carlos's Google Tasks**\nNone.\n**Other tasks**\nNone.\n\n**Outstanding**\nNone.\n\n**Supervised agents**\nAll current — no exceptions."
 }
