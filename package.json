@@ -634,6 +634,10 @@
       "types": "./dist/plugin-sdk/allowlist-config-edit.d.ts",
       "default": "./dist/plugin-sdk/allowlist-config-edit.js"
     },
+    "./plugin-sdk/browser-policy": {
+      "types": "./dist/plugin-sdk/browser-policy.d.ts",
+      "default": "./dist/plugin-sdk/browser-policy.js"
+    },
     "./plugin-sdk/boolean-param": {
       "types": "./dist/plugin-sdk/boolean-param.d.ts",
       "default": "./dist/plugin-sdk/boolean-param.js"

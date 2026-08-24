@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import type { LookupFn } from "../../infra/net/ssrf.js";
 import {
   admitBrowserSession,
@@ -6,6 +6,7 @@ import {
   assertGovernedBrowserUrl,
   evaluateBrowserCapability,
   parseGovernedBrowserUrl,
+  resolveGovernedBrowserUrl,
   resolveBrowserDownloadPath,
   resolveBrowserDownloadPolicy,
   resolveBrowserRuntimeLimits,
@@ -96,6 +97,18 @@ describe("governed browser URL policy", () => {
         { lookupFn: publicLookup, maxRedirects: 1 },
       ),
     ).rejects.toThrow("redirect limit");
+  });
+
+  it("retains a checked DNS answer for the browser driver boundary", async () => {
+    const lookupFn = vi.fn(publicLookup);
+    const admitted = await resolveGovernedBrowserUrl("https://public.example", { lookupFn });
+    const rebound = await resolveGovernedBrowserUrl("https://public.example/next", {
+      lookupFn: privateLookup,
+      pinnedHostname: admitted.pinnedHostname,
+    });
+    expect(admitted.pinnedHostname?.addresses).toEqual(["93.184.216.34"]);
+    expect(rebound.pinnedHostname).toBe(admitted.pinnedHostname);
+    expect(lookupFn).toHaveBeenCalledTimes(1);
   });
 });
 

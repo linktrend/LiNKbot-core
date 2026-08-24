@@ -1,7 +1,7 @@
 // Browser tests cover pw session.create page.navigation guard plugin behavior.
 import { chromium } from "playwright-core";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { SsrFBlockedError } from "../infra/net/ssrf.js";
+import { SsrFBlockedError, type LookupFn } from "../infra/net/ssrf.js";
 import "../test-support/browser-security.mock.js";
 import * as chromeModule from "./chrome.js";
 import { BrowserTabNotFoundError } from "./errors.js";
@@ -691,6 +691,39 @@ describe("pw-session createPageViaPlaywright navigation guard", () => {
         cdpUrl: "http://127.0.0.1:18792",
       }),
     ).rejects.toThrow("Browser target is unavailable after SSRF policy blocked its navigation.");
+  });
+
+  it("binds one checked DNS answer across repeated document requests", async () => {
+    const { page, pageGoto, getRouteHandler, mainFrame } = installBrowserMocks();
+    const lookupFn = vi.fn(async () => [
+      { address: "93.184.216.34", family: 4 },
+    ]) as unknown as LookupFn;
+    pageGoto.mockImplementationOnce(async () => {
+      await dispatchMockNavigation({
+        getRouteHandler,
+        mainFrame,
+        resourceType: "document",
+        url: "https://public.example/start",
+      });
+      await dispatchMockNavigation({
+        getRouteHandler,
+        mainFrame,
+        resourceType: "document",
+        url: "https://public.example/redirected",
+      });
+      return null;
+    });
+
+    await expect(
+      gotoPageWithNavigationGuard({
+        cdpUrl: "http://127.0.0.1:18792",
+        page,
+        url: "https://public.example/start",
+        timeoutMs: 1000,
+        lookupFn,
+      }),
+    ).resolves.toBeNull();
+    expect(lookupFn).toHaveBeenCalledTimes(1);
   });
 
   it("falls back to caller targetId quarantine when target lookup fails", async () => {

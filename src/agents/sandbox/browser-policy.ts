@@ -9,8 +9,10 @@ import path from "node:path";
 import {
   isBlockedHostnameOrIp,
   isPrivateNetworkAllowedByPolicy,
+  matchesHostnameAllowlist,
   resolvePinnedHostnameWithPolicy,
   type LookupFn,
+  type PinnedHostname,
   type SsrFPolicy,
 } from "../../infra/net/ssrf.js";
 
@@ -147,11 +149,15 @@ export function evaluateBrowserCapability(
 export const authorizeBrowserCapability = evaluateBrowserCapability;
 
 export type GovernedBrowserUrlOptions = {
+  /** Canonical SSRF policy supplied by the browser runtime boundary. */
+  policy?: SsrFPolicy;
   /** Explicit operator policy for an approved private endpoint. */
   allowPrivateNetwork?: boolean;
   allowedHostnames?: string[];
   hostnameAllowlist?: string[];
   lookupFn?: LookupFn;
+  /** Previously admitted DNS result for this hostname during one navigation. */
+  pinnedHostname?: PinnedHostname;
 };
 
 const NETWORK_PROTOCOLS = new Set(["http:", "https:"]);
@@ -190,27 +196,50 @@ export function parseGovernedBrowserUrl(rawUrl: string): URL {
 
 function buildSsrFPolicy(options: GovernedBrowserUrlOptions): SsrFPolicy {
   return {
+    ...(options.policy ?? {}),
     ...(options.allowPrivateNetwork ? { dangerouslyAllowPrivateNetwork: true } : {}),
     ...(options.allowedHostnames?.length ? { allowedHostnames: options.allowedHostnames } : {}),
     ...(options.hostnameAllowlist?.length ? { hostnameAllowlist: options.hostnameAllowlist } : {}),
   };
 }
 
-/** Validate one URL before handing it to Chromium. DNS is pinned and checked. */
-export async function assertGovernedBrowserUrl(
+/** The DNS answer admitted for one browser navigation hostname. */
+export type GovernedBrowserUrlBinding = {
+  url: URL;
+  pinnedHostname?: PinnedHostname;
+};
+
+/**
+ * Validate a URL and retain the DNS answer that passed policy.
+ *
+ * Browser callers use this binding at their request interception boundary so
+ * a navigation does not silently discard the address that was checked.
+ */
+export async function resolveGovernedBrowserUrl(
   rawUrl: string,
   options: GovernedBrowserUrlOptions = {},
-): Promise<URL> {
+): Promise<GovernedBrowserUrlBinding> {
   const parsed = parseGovernedBrowserUrl(rawUrl);
   if (parsed.href === ALLOWED_NON_NETWORK_URL) {
-    return parsed;
+    return { url: parsed };
   }
 
   const policy = buildSsrFPolicy(options);
   const normalizedHostname = parsed.hostname.toLowerCase().replace(/\.+$/, "");
-  const explicitlyAllowedHostname = (options.allowedHostnames ?? []).some(
-    (hostname) => hostname.trim().toLowerCase().replace(/\.+$/, "") === normalizedHostname,
-  );
+  const exactAllowedHostnames = [
+    ...(options.policy?.allowedHostnames ?? []),
+    ...(options.allowedHostnames ?? []),
+  ];
+  const hostnameAllowlist = [
+    ...(options.policy?.hostnameAllowlist ?? []),
+    ...(options.hostnameAllowlist ?? []),
+  ]
+    .map((hostname) => hostname.trim().toLowerCase().replace(/\.+$/, ""))
+    .filter(Boolean);
+  const explicitlyAllowedHostname =
+    exactAllowedHostnames.some(
+      (hostname) => hostname.trim().toLowerCase().replace(/\.+$/, "") === normalizedHostname,
+    ) || matchesHostnameAllowlist(normalizedHostname, hostnameAllowlist);
   if (
     !isPrivateNetworkAllowedByPolicy(policy) &&
     !explicitlyAllowedHostname &&
@@ -218,11 +247,18 @@ export async function assertGovernedBrowserUrl(
   ) {
     throw new GovernedBrowserUrlError("private or special-use browser target is blocked");
   }
+  if (options.pinnedHostname) {
+    if (options.pinnedHostname.hostname !== normalizedHostname) {
+      throw new GovernedBrowserUrlError("browser DNS binding does not match the requested host");
+    }
+    return { url: parsed, pinnedHostname: options.pinnedHostname };
+  }
   try {
-    await resolvePinnedHostnameWithPolicy(parsed.hostname, {
+    const pinnedHostname = await resolvePinnedHostnameWithPolicy(parsed.hostname, {
       lookupFn: options.lookupFn,
       policy,
     });
+    return { url: parsed, pinnedHostname };
   } catch (error) {
     if (error instanceof GovernedBrowserUrlError) {
       throw error;
@@ -230,7 +266,14 @@ export async function assertGovernedBrowserUrl(
     const message = error instanceof Error ? error.message : "browser URL failed network policy";
     throw new GovernedBrowserUrlError(message);
   }
-  return parsed;
+}
+
+/** Validate one URL before handing it to Chromium. DNS is pinned and checked. */
+export async function assertGovernedBrowserUrl(
+  rawUrl: string,
+  options: GovernedBrowserUrlOptions = {},
+): Promise<URL> {
+  return (await resolveGovernedBrowserUrl(rawUrl, options)).url;
 }
 
 /** Validate every URL in a redirect chain, preserving order for diagnostics. */

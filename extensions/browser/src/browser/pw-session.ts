@@ -23,7 +23,7 @@ import type {
   Route,
 } from "playwright-core";
 import { formatErrorMessage } from "../infra/errors.js";
-import { SsrFBlockedError, type SsrFPolicy } from "../infra/net/ssrf.js";
+import { SsrFBlockedError, type PinnedHostname, type SsrFPolicy } from "../infra/net/ssrf.js";
 import { withNoProxyForCdpUrl } from "./cdp-proxy-bypass.js";
 import {
   appendCdpPath,
@@ -45,6 +45,7 @@ import {
   assertBrowserNavigationAllowed,
   assertBrowserNavigationRedirectChainAllowed,
   assertBrowserNavigationResultAllowed,
+  parseBrowserNavigationUrl,
   type BrowserNavigationPolicyOptions,
   InvalidBrowserNavigationUrlError,
   withBrowserNavigationPolicy,
@@ -1585,6 +1586,7 @@ export async function assertPageNavigationCompletedSafely(
 ): Promise<void> {
   const navigationPolicy = withBrowserNavigationPolicy(opts.ssrfPolicy, {
     browserProxyMode: opts.browserProxyMode,
+    lookupFn: opts.lookupFn,
   });
   try {
     await assertBrowserNavigationRedirectChainAllowed({
@@ -1783,10 +1785,12 @@ export async function withPageNavigationRequestGuard<T>(
       }
       return;
     }
-    const policyCheck = assertBrowserNavigationAllowed({
-      url: request.url(),
-      ...navigationPolicy,
-    });
+    const policyCheck = (async () => {
+      await assertBrowserNavigationAllowed({
+        url: request.url(),
+        ...navigationPolicy,
+      });
+    })();
     try {
       opts.onPolicyCheckStarted?.(policyCheck);
     } catch {
@@ -1901,8 +1905,10 @@ export async function gotoPageWithNavigationGuard(
 ): Promise<Response | null> {
   const navigationPolicy = withBrowserNavigationPolicy(opts.ssrfPolicy, {
     browserProxyMode: opts.browserProxyMode,
+    lookupFn: opts.lookupFn,
   });
   let blockedError: unknown = null;
+  const pinnedHostnames = new Map<string, PinnedHostname>();
 
   const handler = async (route: Route, request: Request) => {
     if (blockedError) {
@@ -1915,10 +1921,18 @@ export async function gotoPageWithNavigationGuard(
       return;
     }
     try {
-      await assertBrowserNavigationAllowed({
+      const parsedRequestUrl = parseBrowserNavigationUrl(request.url());
+      const normalizedHostname = parsedRequestUrl.hostname.toLowerCase().replace(/\.+$/, "");
+      const pinnedHostname = pinnedHostnames.get(normalizedHostname);
+      const admitted = await assertBrowserNavigationAllowed({
         url: request.url(),
+        pinnedHostname,
+        returnBinding: true,
         ...navigationPolicy,
       });
+      if (!pinnedHostname && admitted?.pinnedHostname) {
+        pinnedHostnames.set(admitted.pinnedHostname.hostname, admitted.pinnedHostname);
+      }
     } catch (err) {
       if (isPolicyDenyNavigationError(err)) {
         if (requestKind === "top-level") {
