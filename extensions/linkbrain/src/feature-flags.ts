@@ -1,4 +1,7 @@
-import { LINKBRAIN_MCP_TOOL_ALLOWLIST, isAllowedLinkbrainMcpTool } from "../mcp-tool-filter.js";
+import {
+  LINKBRAIN_MCP_MANAGED_TOOL_ALLOWLIST,
+  isAllowedLinkbrainMcpTool,
+} from "../mcp-tool-filter.js";
 /**
  * Feature flags for Brain — managed MCP allowlist gating + fake/MCP delegation.
  *
@@ -11,6 +14,7 @@ import { LINKBRAIN_MCP_TOOL_ALLOWLIST, isAllowedLinkbrainMcpTool } from "../mcp-
  * `{ include: [] }` — empty include means unrestricted in OpenClaw materialize.
  */
 import type { LinkbrainConfig } from "./config.js";
+import { BRAIN_V2_OPERATIONS } from "./v2-pins.js";
 
 export const LINKBRAIN_MCP_READ_TOOLS = Object.freeze([
   "brain_browse",
@@ -20,6 +24,18 @@ export const LINKBRAIN_MCP_READ_TOOLS = Object.freeze([
   "brain_private_search",
   "brain_private_load",
   "brain_inbox_read",
+  "v2.discovery",
+  "v2.capability.status",
+  "v2.projection.list",
+  "v2.projection.get",
+  "v2.projection.evidence",
+  "v2.task.get",
+  "v2.task.list",
+  "v2.inbox.read",
+  "v2.event.poll",
+  "v2.knowledge.search",
+  "v2.knowledge.browse",
+  "v2.knowledge.load",
 ] as const);
 
 /** Capture enqueue family — gated by `captureEnqueue`. */
@@ -44,6 +60,14 @@ export const LINKBRAIN_MCP_COORDINATION_WRITE_TOOLS = Object.freeze([
   "brain_handoff_create",
   "brain_handoff_accept",
   "brain_task_close",
+  "v2.projection.ingest",
+  "v2.message.send",
+  "v2.checkpoint.write",
+  "v2.handoff.create",
+  "v2.handoff.accept",
+  "v2.conflict.report",
+  "v2.event.ack",
+  "v2.finding.submit",
 ] as const);
 
 type LinkbrainReadTool = (typeof LINKBRAIN_MCP_READ_TOOLS)[number];
@@ -51,6 +75,17 @@ type LinkbrainReadTool = (typeof LINKBRAIN_MCP_READ_TOOLS)[number];
 const readSet = new Set<string>(LINKBRAIN_MCP_READ_TOOLS);
 const captureEnqueueSet = new Set<string>(LINKBRAIN_MCP_CAPTURE_ENQUEUE_TOOLS);
 const coordinationWriteSet = new Set<string>(LINKBRAIN_MCP_COORDINATION_WRITE_TOOLS);
+
+if (
+  BRAIN_V2_OPERATIONS.some(
+    (operation) =>
+      !readSet.has(operation) &&
+      !captureEnqueueSet.has(operation) &&
+      !coordinationWriteSet.has(operation),
+  )
+) {
+  throw new Error("linkbrain: unclassified v2 MCP operation");
+}
 
 export function isLinkbrainReadTool(toolName: string): toolName is LinkbrainReadTool {
   return readSet.has(toolName);
@@ -79,7 +114,7 @@ export function buildLinkbrainFlaggedMcpToolFilter(
   >,
 ): { include: string[] } | null {
   void config.captureDrain;
-  const include = LINKBRAIN_MCP_TOOL_ALLOWLIST.filter((name) => {
+  const include = LINKBRAIN_MCP_MANAGED_TOOL_ALLOWLIST.filter((name) => {
     if (isLinkbrainReadTool(name)) {
       return config.mcpRead;
     }

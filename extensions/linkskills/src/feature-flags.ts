@@ -1,4 +1,9 @@
-import { LINKSKILLS_MCP_TOOL_ALLOWLIST, isAllowedLinkskillsMcpTool } from "../mcp-tool-filter.js";
+import {
+  LINKSKILLS_MCP_MANAGED_TOOL_ALLOWLIST,
+  LINKSKILLS_MCP_TOOL_ALLOWLIST,
+  LINKSKILLS_MCP_V2_TOOLS,
+  isAllowedLinkskillsMcpTool,
+} from "../mcp-tool-filter.js";
 /**
  * Feature flags for Skills — managed MCP allowlist gating + fake/MCP delegation.
  *
@@ -10,8 +15,14 @@ import { LINKSKILLS_MCP_TOOL_ALLOWLIST, isAllowedLinkskillsMcpTool } from "../mc
  * `{ include: [] }` — empty include means unrestricted in OpenClaw materialize.
  */
 import type { LinkskillsConfig } from "./config.js";
+import {
+  SKILLS_V2_OPERATIONS,
+  SKILLS_V2_RESOURCE_OPERATIONS,
+  SKILLS_V2_TOOL_OPERATIONS,
+} from "./v2.js";
 
 export const LINKSKILLS_MCP_DISCOVERY_TOOLS = Object.freeze([
+  ...SKILLS_V2_RESOURCE_OPERATIONS,
   "skills_list",
   "skills_search",
   "skills_describe",
@@ -20,6 +31,7 @@ export const LINKSKILLS_MCP_DISCOVERY_TOOLS = Object.freeze([
 ] as const);
 
 export const LINKSKILLS_MCP_EXECUTION_TOOLS = Object.freeze([
+  ...SKILLS_V2_TOOL_OPERATIONS.filter((name) => name !== "skills_feedback_submit"),
   "skills_run_start",
   "skills_run_update",
   "skills_run_complete",
@@ -45,6 +57,19 @@ export const LINKSKILLS_MCP_TELEMETRY_DRAIN_TOOLS = Object.freeze([] as const);
 const discoverySet = new Set<string>(LINKSKILLS_MCP_DISCOVERY_TOOLS);
 const executionSet = new Set<string>(LINKSKILLS_MCP_EXECUTION_TOOLS);
 const telemetryEnqueueSet = new Set<string>(LINKSKILLS_MCP_TELEMETRY_ENQUEUE_TOOLS);
+const v2TelemetryEnqueueSet = new Set<string>(["skills_feedback_submit"]);
+const v2OperationSet = new Set<string>(SKILLS_V2_OPERATIONS);
+
+if (
+  SKILLS_V2_OPERATIONS.some(
+    (operation) =>
+      !discoverySet.has(operation) &&
+      !executionSet.has(operation) &&
+      !v2TelemetryEnqueueSet.has(operation),
+  )
+) {
+  throw new Error("linkskills: unclassified v2 MCP operation");
+}
 
 export function isLinkskillsDiscoveryTool(toolName: string): boolean {
   return discoverySet.has(toolName);
@@ -67,9 +92,13 @@ export function buildLinkskillsFlaggedMcpToolFilter(
     LinkskillsConfig,
     "mcpDiscoveryRead" | "governedExecution" | "telemetryEnqueue" | "telemetryDrain"
   >,
+  options: { includeLegacyCompatibility?: boolean } = {},
 ): { include: string[] } | null {
   void config.telemetryDrain;
-  const include = LINKSKILLS_MCP_TOOL_ALLOWLIST.filter((name) => {
+  const allowlist = options.includeLegacyCompatibility
+    ? Array.from(new Set([...LINKSKILLS_MCP_TOOL_ALLOWLIST, ...LINKSKILLS_MCP_V2_TOOLS]))
+    : LINKSKILLS_MCP_MANAGED_TOOL_ALLOWLIST;
+  const include = allowlist.filter((name) => {
     if (isLinkskillsDiscoveryTool(name)) {
       return config.mcpDiscoveryRead;
     }
@@ -125,6 +154,7 @@ export async function invokeLinkskillsFeatureOp(params: {
   >;
   transport: SkillsFeatureTransport;
   toolName: string;
+  includeLegacyCompatibility?: boolean;
   arguments?: Record<string, unknown>;
   idempotencyKey: string;
   signal?: AbortSignal;
@@ -136,7 +166,10 @@ export async function invokeLinkskillsFeatureOp(params: {
       safeMessage: "transportMode is disabled",
     };
   }
-  if (!isAllowedLinkskillsMcpTool(params.toolName)) {
+  if (
+    !isAllowedLinkskillsMcpTool(params.toolName) ||
+    (!v2OperationSet.has(params.toolName) && params.includeLegacyCompatibility !== true)
+  ) {
     return {
       ok: false,
       errorCode: "tool_not_allowlisted",
