@@ -44,7 +44,17 @@ describe("linkskills registered-plugin integration", () => {
           telemetryDrain: false,
         }),
       )?.include,
-    ).toContain("skills_run_start");
+    ).toContain("skills_release_verify");
+    expect(
+      buildLinkskillsFlaggedMcpToolFilter(
+        parseLinkskillsConfig({
+          mcpDiscoveryRead: true,
+          governedExecution: true,
+          telemetryEnqueue: true,
+          telemetryDrain: false,
+        }),
+      )?.include,
+    ).not.toContain("skills_run_start");
   });
 
   it("registers after_tool_call and never conversation hooks; isolates from Brain", () => {

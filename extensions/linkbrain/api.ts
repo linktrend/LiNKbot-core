@@ -42,6 +42,10 @@ export {
 } from "./src/stores.js";
 export {
   LINKBRAIN_MCP_TOOL_ALLOWLIST,
+  LINKBRAIN_MCP_V2_TOOLS,
+  LINKBRAIN_MCP_MANAGED_TOOL_ALLOWLIST,
+  buildLinkbrainV2McpToolFilter,
+  LINKBRAIN_LEGACY_MCP_COMPATIBILITY_CONTRACT,
   buildLinkbrainMcpToolFilter,
   isAllowedLinkbrainMcpTool,
   assertAllowedLinkbrainMcpTool,
