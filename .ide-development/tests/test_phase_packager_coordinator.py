@@ -391,6 +391,66 @@ class PhasePackagerCoordinatorAdversarialTests(unittest.TestCase):
         self.fx = Fixture()
         self.addCleanup(self.fx.cleanup)
 
+    def test_internal_packet_branch_requires_exact_manifest_identity(self) -> None:
+        sha = "a" * 40
+        manifest = {
+            "packets": [{"id": "PKT-01", "issues": ["ISS-01"]}],
+            "issues": [{"id": "ISS-01", "packetId": "PKT-01"}],
+        }
+        source = coordinator.parse_accept(
+            f"issue/pkt-01-iss-01-20260824@{sha}",
+            1,
+            execution_manifest=manifest,
+        )
+        self.assertEqual(source.packet_id, "PKT-01")
+        self.assertEqual(source.issue_id, "ISS-01")
+        with self.assertRaisesRegex(coordinator.CoordinatorError, "identity_evidence_required"):
+            coordinator.parse_accept(f"issue/pkt-01-iss-01-20260824@{sha}", 1)
+        with self.assertRaisesRegex(coordinator.CoordinatorError, "packet_identity_mismatch"):
+            coordinator.parse_accept(
+                f"issue/pkt-02-iss-01-20260824@{sha}",
+                1,
+                execution_manifest=manifest,
+            )
+
+    def test_internal_issue_branch_can_bind_packet_from_handoff(self) -> None:
+        sha = "b" * 40
+        branch = "issue/iss-04-noncoding-model-routing"
+        handoff = {
+            "acceptedCommits": [
+                {"branch": branch, "packetId": "PKT-04", "issueId": "ISS-04", "order": 1}
+            ]
+        }
+        source = coordinator.parse_accept(f"{branch}@{sha}", 1, handoff=handoff)
+        self.assertEqual(source.to_dict()["packetId"], "PKT-04")
+        self.assertEqual(source.to_dict()["issueId"], "ISS-04")
+        with self.assertRaisesRegex(coordinator.CoordinatorError, "ambiguous_issue_identity"):
+            coordinator.parse_accept(
+                f"issue/pkt-01-iss-01-iss-02-20260824@{sha}",
+                1,
+                handoff=handoff,
+            )
+
+    def test_internal_branch_identity_sources_must_converge(self) -> None:
+        sha = "c" * 40
+        branch = "issue/pkt-01-iss-01-20260824"
+        manifest = {
+            "packets": [{"id": "PKT-01", "issues": ["ISS-01"]}],
+            "issues": [{"id": "ISS-01", "packetId": "PKT-01"}],
+        }
+        handoff = {
+            "acceptedCommits": [
+                {"branch": branch, "packetId": "PKT-02", "issueId": "ISS-01", "order": 1}
+            ]
+        }
+        with self.assertRaisesRegex(coordinator.CoordinatorError, "ambiguous_issue_identity"):
+            coordinator.parse_accept(
+                f"{branch}@{sha}",
+                1,
+                execution_manifest=manifest,
+                handoff=handoff,
+            )
+
     def test_cli_assemble_refuses_memory_github_without_credentials(self) -> None:
         one = self.fx.accept_issue(21, "cli.txt", "cli\n")
         env_keys = (
