@@ -5,7 +5,7 @@ import { createTestPluginApi } from "openclaw/plugin-sdk/plugin-test-api";
  */
 import { describe, expect, it } from "vitest";
 import linkbrainPlugin from "./index.js";
-import { LINKBRAIN_MCP_TOOL_ALLOWLIST } from "./mcp-tool-filter.js";
+import { LINKBRAIN_MCP_MANAGED_TOOL_ALLOWLIST } from "./mcp-tool-filter.js";
 import { parseLinkbrainConfig } from "./src/config.js";
 import { buildLinkbrainFlaggedMcpToolFilter } from "./src/feature-flags.js";
 
@@ -48,10 +48,10 @@ describe("linkbrain managed MCP toolFilter registration (extension scope)", () =
       captureDrain: true,
       coordinationWrites: true,
     });
-    expect(resolve?.()?.include?.length).toBe(LINKBRAIN_MCP_TOOL_ALLOWLIST.length);
+    expect(resolve?.()?.include?.length).toBe(LINKBRAIN_MCP_MANAGED_TOOL_ALLOWLIST.length);
     expect(
       buildLinkbrainFlaggedMcpToolFilter(parseLinkbrainConfig(liveConfig))?.include.length,
-    ).toBe(LINKBRAIN_MCP_TOOL_ALLOWLIST.length);
+    ).toBe(LINKBRAIN_MCP_MANAGED_TOOL_ALLOWLIST.length);
   });
 
   it("exposes unregisterMcpServerToolFilter on the test API surface", () => {
