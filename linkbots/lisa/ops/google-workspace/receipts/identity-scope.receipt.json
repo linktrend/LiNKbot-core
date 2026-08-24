@@ -4,7 +4,7 @@
   "identities": [
     {
       "id": "lisa-workspace",
-      "purpose": "Lisa Workspace Gmail, Calendar, Drive, and Docs operations",
+      "purpose": "Lisa Workspace Gmail, Calendar, Drive, Docs, Sheets, and Slides operations",
       "configSubdirectory": "lisa",
       "requestedScopeUrls": [
         "https://www.googleapis.com/auth/gmail.readonly",
@@ -12,7 +12,9 @@
         "https://www.googleapis.com/auth/calendar.readonly",
         "https://www.googleapis.com/auth/calendar.events",
         "https://www.googleapis.com/auth/drive",
-        "https://www.googleapis.com/auth/documents"
+        "https://www.googleapis.com/auth/documents",
+        "https://www.googleapis.com/auth/spreadsheets",
+        "https://www.googleapis.com/auth/presentations"
       ],
       "mandatoryUpstreamIdentityScopeUrls": [
         "openid",
@@ -28,10 +30,12 @@
         "https://www.googleapis.com/auth/calendar.readonly",
         "https://www.googleapis.com/auth/calendar.events",
         "https://www.googleapis.com/auth/drive",
-        "https://www.googleapis.com/auth/documents"
+        "https://www.googleapis.com/auth/documents",
+        "https://www.googleapis.com/auth/spreadsheets",
+        "https://www.googleapis.com/auth/presentations"
       ],
       "grantedScopeVerification": "later human-controlled sanitized auth-status receipt must equal effectiveExpectedScopeUrls and name no account or unlisted capability scope",
-      "writeOperations": ["email-send-internal", "calendar-insert", "drive-create-document", "drive-share-internal", "docs-append"],
+      "writeOperations": ["email-send-internal", "calendar-insert", "drive-create-document", "drive-share-internal", "docs-append", "sheets-append", "sheets-create", "slides-create"],
       "externalRecipients": "denied",
       "adminOperations": "denied",
       "keep": "omitted from OAuth scope request"

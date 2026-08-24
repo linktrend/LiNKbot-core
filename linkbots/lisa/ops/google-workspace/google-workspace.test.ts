@@ -302,6 +302,69 @@ describe("VPS Lisa Google Workspace wrappers", () => {
     }
   });
 
+  it("exposes bounded Sheets values and Slides presentation verbs", () => {
+    const fixture = makeFixture();
+    try {
+      const sheetRead = run(
+        lisaSafe,
+        ["sheets-read", "--spreadsheet", "sheet_1", "--range", "Summary!A1:D10"],
+        fixture,
+      );
+      assert.equal(sheetRead.status, 0, sheetRead.stderr);
+      assert.match(sheetRead.stdout, /sheets\n\+read/);
+      assert.match(sheetRead.stdout, /--range\nSummary!A1:D10/);
+
+      const sheetAppend = run(
+        lisaSafe,
+        [
+          "sheets-append",
+          "--spreadsheet",
+          "sheet_1",
+          "--range",
+          "Summary",
+          "--json-values",
+          '[["status",true],["count",2]]',
+          "--dry-run",
+        ],
+        fixture,
+      );
+      assert.equal(sheetAppend.status, 0, sheetAppend.stderr);
+      assert.match(sheetAppend.stdout, /sheets\n\+append/);
+      assert.match(sheetAppend.stdout, /--json-values\n\[\[\"status\",true\],\[\"count\",2\]\]/);
+
+      const badValues = run(
+        lisaSafe,
+        [
+          "sheets-append",
+          "--spreadsheet",
+          "sheet_1",
+          "--range",
+          "Summary",
+          "--json-values",
+          '{"not":"rows"}',
+        ],
+        fixture,
+      );
+      assert.equal(badValues.status, 64);
+      assert.equal(badValues.stdout, "");
+
+      const slideRead = run(lisaSafe, ["slides-read", "--presentation", "presentation_1"], fixture);
+      assert.equal(slideRead.status, 0, slideRead.stderr);
+      assert.match(slideRead.stdout, /slides\npresentations\nget/);
+
+      const slideCreate = run(
+        lisaSafe,
+        ["slides-create", "--title", "Synthetic review", "--dry-run"],
+        fixture,
+      );
+      assert.equal(slideCreate.status, 0, slideCreate.stderr);
+      assert.match(slideCreate.stdout, /slides\npresentations\ncreate/);
+      assert.match(slideCreate.stdout, /--json\n\{\"title\":\"Synthetic review\"\}/);
+    } finally {
+      rmSync(fixture.directory, { recursive: true, force: true });
+    }
+  });
+
   it("builds bounded Carlos Task write bodies without exposing a generic method", () => {
     const fixture = makeFixture();
     try {
@@ -617,6 +680,42 @@ describe("VPS Lisa Google Workspace wrappers", () => {
         ?.disposition,
       "migrate",
     );
+    const qualifiedSkills = JSON.parse(
+      readFileSync(path.join(root, "receipts/qualified-skills.receipt.json"), "utf8"),
+    ) as {
+      status: string;
+      provider: { commit: string; tree: string; releaseHash: string };
+      retrieval: { mode: string; copiedSkillBodies: boolean; providerRuntime: string };
+      skills: Array<{ id: string; source: string; sha256: string }>;
+      unsupportedByDesign: string[];
+      privacy: { liveGoogleCallsPerformed: boolean };
+    };
+    assert.equal(qualifiedSkills.status, "source-reference-only");
+    assert.equal(qualifiedSkills.provider.commit, "2896fd89726f0b20258ec5a7bba55ccc6299ceb6");
+    assert.equal(qualifiedSkills.provider.tree, "727694a95c83678bd6c7be7da2c5b26127b49e6e");
+    assert.match(qualifiedSkills.provider.releaseHash, /^skill-release:[a-f0-9]{64}$/u);
+    assert.equal(qualifiedSkills.retrieval.mode, "exact-release-and-digest");
+    assert.equal(qualifiedSkills.retrieval.copiedSkillBodies, false);
+    assert.equal(qualifiedSkills.retrieval.providerRuntime, "not executed by OpenClaw");
+    assert.deepEqual(
+      qualifiedSkills.skills.map((skill) => skill.id),
+      [
+        "gws-shared",
+        "gws-docs",
+        "gws-docs-write",
+        "gws-sheets",
+        "gws-sheets-read",
+        "gws-sheets-append",
+        "gws-slides",
+      ],
+    );
+    assert.ok(
+      qualifiedSkills.skills.every((skill) => /^tools\/gws\/.+SKILL\.md$/u.test(skill.source)),
+    );
+    assert.ok(qualifiedSkills.skills.every((skill) => /^[a-f0-9]{64}$/u.test(skill.sha256)));
+    assert.ok(qualifiedSkills.unsupportedByDesign.includes("raw Sheets batchUpdate"));
+    assert.ok(qualifiedSkills.unsupportedByDesign.includes("raw Slides batchUpdate"));
+    assert.equal(qualifiedSkills.privacy.liveGoogleCallsPerformed, false);
     const adapter = JSON.parse(
       readFileSync(path.join(root, "receipts/host-adapter-contract.json"), "utf8"),
     ) as {

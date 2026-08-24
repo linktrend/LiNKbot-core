@@ -88,16 +88,24 @@ The two entrypoints are deliberately finite:
 
 - `tools/bin/lisa-safe`: Gmail triage/search/message read and internal-only send,
   Calendar list/agenda/event list/get/patch/delete/insert, Drive list/content
-  read/document create/internal share, Docs content read/append, and a
-  read-only smoke. Calendar mutation requires an explicit calendar ID and event
-  ID; recurring-series changes must target the recurring master event ID.
+  read/document create/internal share, Docs content read/append, Sheets values
+  read/append/create, Slides presentation read/create, and a read-only smoke.
+  Calendar mutation requires an explicit calendar ID and event ID; recurring-
+  series changes must target the recurring master event ID.
 - `tools/bin/lisa-carlos-tasks`: only the approved Tasks list/insert/patch/
   delete operations under the separate `carlos-tasks` configuration directory.
 
 There is no generic shell passthrough, `auth` command, Keep command, arbitrary
-service selector, external recipient, external Drive share, or raw JSON method
-surface. Mutating wrapper calls accept `--dry-run`, but a dry run is not proof
-of a live write.
+service selector, external recipient, external Drive share, raw JSON method
+surface, Sheets batch update, or Slides batch update. Sheets ranges and values
+are bounded; Sheets and Slides creation accept only a validated title. Mutating
+wrapper calls accept `--dry-run`, but a dry run is not proof of a live write.
+
+The qualified Workspace skill references are recorded in
+[`receipts/qualified-skills.receipt.json`](receipts/qualified-skills.receipt.json).
+OpenClaw records the provider release/tree and per-skill digests, then invokes
+only the finite wrapper verbs; it does not copy or execute reusable skill
+bodies from this repository.
 
 `drive-read` is intentionally distinct from Google-native `docs-read`: it reads
 binary Drive media only when the caller supplies a simple `--output-file` name.
@@ -178,6 +186,8 @@ receipts:
 - Gmail read/search and one approved internal test send;
 - Calendar list/read and one dedicated test event;
 - Drive/Docs read plus one dedicated create/update artifact;
+- Sheets values read plus one bounded append and Slides metadata read plus one
+  bounded presentation create;
 - separate Carlos Tasks list and approved write proof;
 - returned identifiers, account ownership, idempotency, cleanup, and restart
   survival; and

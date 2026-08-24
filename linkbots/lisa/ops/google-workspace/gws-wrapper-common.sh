@@ -288,6 +288,22 @@ gws_id() {
   [[ "$value" =~ ^[A-Za-z0-9_-]+$ ]] || gws_die "Google resource id has an invalid shape"
 }
 
+gws_sheet_range() {
+  local value=$1
+  local pattern='^[A-Za-z0-9_][A-Za-z0-9_ -]{0,63}(![A-Z]{1,3}[1-9][0-9]*(:[A-Z]{1,3}[1-9][0-9]*)?)?$'
+  [[ "$value" =~ $pattern ]] ||
+    gws_die "Google Sheets range has an invalid shape"
+}
+
+gws_json_rows() {
+  local value=$1
+  "${GWS_JSON_NODE_BIN:-/usr/bin/node}" -e '
+    const value = JSON.parse(process.argv[1]);
+    const validCell = (cell) => cell === null || typeof cell === "string" || typeof cell === "number" || typeof cell === "boolean";
+    if (!Array.isArray(value) || value.length === 0 || value.length > 100 || !value.every((row) => Array.isArray(row) && row.length > 0 && row.length <= 100 && row.every(validCell))) process.exit(1);
+  ' "$value" 2>/dev/null || gws_die "Sheet values must be a bounded JSON array of scalar rows"
+}
+
 gws_calendar_id() {
   local value=$1
   [[ "$value" =~ ^[A-Za-z0-9][A-Za-z0-9._%+@-]{0,254}$ ]] ||

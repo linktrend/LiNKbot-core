@@ -1,5 +1,5 @@
 #!/bin/bash
-# Lisa Workspace identity: Gmail, Calendar, Drive, and Docs only.
+# Lisa Workspace identity: Gmail, Calendar, Drive, Docs, Sheets, and Slides.
 set -euo pipefail
 set -f
 # Set before dirname/source so an inherited PATH cannot replace preflight tools.
@@ -12,7 +12,7 @@ source "$SCRIPT_DIR/../../gws-wrapper-common.sh"
 
 usage() {
   cat >&2 <<'EOF'
-Usage: lisa-safe <gmail-triage|gmail-search|gmail-read|email-send|calendar-list|calendar-agenda|calendar-events-list|calendar-event-get|calendar-event-patch|calendar-event-delete|calendar-insert|drive-list|drive-read|drive-create-doc|docs-read|docs-append|drive-share|smoke-gws> ...
+Usage: lisa-safe <gmail-triage|gmail-search|gmail-read|email-send|calendar-list|calendar-agenda|calendar-events-list|calendar-event-get|calendar-event-patch|calendar-event-delete|calendar-insert|drive-list|drive-read|drive-create-doc|docs-read|docs-append|sheets-read|sheets-append|sheets-create|slides-read|slides-create|drive-share|smoke-gws> ...
 EOF
   exit 64
 }
@@ -352,6 +352,90 @@ case "$1" in
     done
     gws_id "$document"
     gws_exec_route "docs documents get" docs documents get --params "{\"documentId\":\"$document\"}" --format json
+    ;;
+
+  sheets-read)
+    shift
+    spreadsheet= range=
+    while (($#)); do
+      case "$1" in
+        --spreadsheet) (($# >= 2)) || gws_die "--spreadsheet requires a value"; spreadsheet=$2; shift 2 ;;
+        --range) (($# >= 2)) || gws_die "--range requires a value"; range=$2; shift 2 ;;
+        *) gws_die "unsupported sheets-read argument" ;;
+      esac
+    done
+    gws_id "$spreadsheet"
+    [[ -n "$range" ]] || gws_die "sheets-read requires --range"
+    gws_sheet_range "$range"
+    gws_exec_route "sheets +read" sheets +read --spreadsheet "$spreadsheet" --range "$range" --format json
+    ;;
+
+  sheets-append)
+    shift
+    spreadsheet= range= values_json= dry_run=false
+    while (($#)); do
+      case "$1" in
+        --spreadsheet) (($# >= 2)) || gws_die "--spreadsheet requires a value"; spreadsheet=$2; shift 2 ;;
+        --range) (($# >= 2)) || gws_die "--range requires a value"; range=$2; shift 2 ;;
+        --json-values) (($# >= 2)) || gws_die "--json-values requires a value"; values_json=$2; shift 2 ;;
+        --dry-run) dry_run=true; shift ;;
+        *) gws_die "unsupported sheets-append argument" ;;
+      esac
+    done
+    gws_id "$spreadsheet"
+    [[ -n "$range" && -n "$values_json" ]] || gws_die "sheets-append requires --spreadsheet, --range, and --json-values"
+    gws_sheet_range "$range"
+    gws_json_rows "$values_json"
+    args=(sheets +append --spreadsheet "$spreadsheet" --range "$range" --json-values "$values_json" --format json)
+    [[ "$dry_run" == true ]] && args+=(--dry-run)
+    gws_exec_route "sheets +append" "${args[@]}"
+    ;;
+
+  sheets-create)
+    shift
+    title= dry_run=false
+    while (($#)); do
+      case "$1" in
+        --title) (($# >= 2)) || gws_die "--title requires a value"; title=$2; shift 2 ;;
+        --dry-run) dry_run=true; shift ;;
+        *) gws_die "unsupported sheets-create argument" ;;
+      esac
+    done
+    title_pattern='^[A-Za-z0-9][A-Za-z0-9 ._:-]{0,119}$'
+    [[ "$title" =~ $title_pattern ]] || gws_die "spreadsheet title contains unsupported characters or is empty"
+    args=(sheets spreadsheets create --json "{\"properties\":{\"title\":$(gws_json_string "$title")}}" --format json)
+    [[ "$dry_run" == true ]] && args+=(--dry-run)
+    gws_exec_route "sheets spreadsheets create" "${args[@]}"
+    ;;
+
+  slides-read)
+    shift
+    presentation=
+    while (($#)); do
+      case "$1" in
+        --presentation) (($# >= 2)) || gws_die "--presentation requires a value"; presentation=$2; shift 2 ;;
+        *) gws_die "unsupported slides-read argument" ;;
+      esac
+    done
+    gws_id "$presentation"
+    gws_exec_route "slides presentations get" slides presentations get --params "{\"presentationId\":$(gws_json_string "$presentation")}" --format json
+    ;;
+
+  slides-create)
+    shift
+    title= dry_run=false
+    while (($#)); do
+      case "$1" in
+        --title) (($# >= 2)) || gws_die "--title requires a value"; title=$2; shift 2 ;;
+        --dry-run) dry_run=true; shift ;;
+        *) gws_die "unsupported slides-create argument" ;;
+      esac
+    done
+    title_pattern='^[A-Za-z0-9][A-Za-z0-9 ._:-]{0,119}$'
+    [[ "$title" =~ $title_pattern ]] || gws_die "presentation title contains unsupported characters or is empty"
+    args=(slides presentations create --json "{\"title\":$(gws_json_string "$title")}" --format json)
+    [[ "$dry_run" == true ]] && args+=(--dry-run)
+    gws_exec_route "slides presentations create" "${args[@]}"
     ;;
 
   drive-share)
