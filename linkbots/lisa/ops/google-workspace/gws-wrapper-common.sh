@@ -310,6 +310,10 @@ gws_calendar_id() {
   local value=$1
   [[ "$value" =~ ^opaque_[a-z0-9][a-z0-9_-]{0,126}$ ]] ||
     gws_die "Google Calendar binding reference has an invalid or non-opaque shape"
+  case "$value" in
+    opaque_lisa-workspace_calendar_work|opaque_lisa-workspace_calendar_routine|opaque_lisa-workspace_calendar_shared-personal-events) ;;
+    *) gws_die "Google Calendar binding reference is not in the approved Lisa allowlist" ;;
+  esac
 }
 
 gws_weekdays() {

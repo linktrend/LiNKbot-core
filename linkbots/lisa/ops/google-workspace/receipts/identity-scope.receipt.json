@@ -6,11 +6,11 @@
       "id": "lisa-workspace",
       "purpose": "Lisa Workspace Gmail, Calendar, Drive, Docs, Sheets, and Slides operations",
       "configSubdirectory": "lisa",
-      "accountBindingRef": "opaque:lisa-workspace/account",
+      "accountBindingRef": "opaque_lisa-workspace_account",
       "calendarBindingRefs": {
-        "work": "opaque:lisa-workspace/calendar/work",
-        "routine": "opaque:lisa-workspace/calendar/routine",
-        "sharedPersonalEvents": "opaque:lisa-workspace/calendar/shared-personal-events"
+        "work": "opaque_lisa-workspace_calendar_work",
+        "routine": "opaque_lisa-workspace_calendar_routine",
+        "sharedPersonalEvents": "opaque_lisa-workspace_calendar_shared-personal-events"
       },
       "requestedScopeUrls": [
         "https://www.googleapis.com/auth/gmail.readonly",
@@ -56,7 +56,7 @@
       "id": "carlos-tasks",
       "purpose": "Carlos-owned Google Tasks list and task operations",
       "configSubdirectory": "carlos-tasks",
-      "accountBindingRef": "opaque:carlos-tasks/account",
+      "accountBindingRef": "opaque_carlos-tasks_account",
       "requestedScopeUrls": ["https://www.googleapis.com/auth/tasks"],
       "mandatoryUpstreamIdentityScopeUrls": [
         "openid",

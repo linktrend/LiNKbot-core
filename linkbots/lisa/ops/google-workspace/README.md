@@ -115,9 +115,11 @@ The Workspace skill release and gws interface catalogue binding are recorded in
 [`receipts/qualified-skills.receipt.json`](receipts/qualified-skills.receipt.json).
 OpenClaw records the provider release/tree, gws catalogue digest, and per-skill
 digests, then invokes only the finite wrapper verbs; it does not copy or execute
-reusable skill bodies from this repository. Provider qualification remains a
-separate human-controlled gate; missing exact release/catalogue evidence must
-fail closed rather than activating a guessed skill release.
+reusable skill bodies from this repository. The receipt currently has
+`qualification-required` / `unavailable` status because an exact qualified
+release and provider receipt are not present; the execution gate is fail-closed
+and cannot activate a guessed skill release. Qualification remains a separate
+human-controlled gate.
 
 `drive-read` is intentionally distinct from Google-native `docs-read`: it reads
 binary Drive media only when the caller supplies a simple `--output-file` name.

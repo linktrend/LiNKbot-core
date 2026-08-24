@@ -1,6 +1,6 @@
 {
   "schema": "lisa_google_workspace_qualified_skills_receipt_v1",
-  "status": "source-reference-only",
+  "status": "qualification-required",
   "provider": {
     "repository": "linktrend/LiNKskills",
     "commit": "2896fd89726f0b20258ec5a7bba55ccc6299ceb6",
@@ -27,10 +27,11 @@
     "status": "required-entries-absent; qualification-unavailable"
   },
   "qualification": {
-    "state": "source-reference-only",
+    "state": "unavailable",
+    "reason": "exact qualified Skills release and provider receipt are not present",
     "exactReleaseRequired": true,
     "catalogueDigestRequired": true,
-    "executionGate": "human-controlled provider qualification remains required"
+    "executionGate": "fail-closed; no provider skill activation"
   },
   "retrieval": {
     "mode": "exact-release-and-digest",

@@ -87,13 +87,16 @@ case "$1" in
 
   calendar-list)
     shift
-    max=50
+    calendar= max=50
     while (($#)); do
       case "$1" in
+        --calendar) (($# >= 2)) || gws_die "--calendar requires a value"; calendar=$2; shift 2 ;;
         --max-results) (($# >= 2)) || gws_die "--max-results requires a value"; max=$2; shift 2 ;;
         *) gws_die "unsupported calendar-list argument" ;;
       esac
     done
+    [[ -n "$calendar" ]] || gws_die "calendar-list requires an explicit opaque --calendar binding"
+    gws_calendar_id "$calendar"
     gws_positive_int "$max"
     gws_exec_route "calendar calendarList list" calendar calendarList list --params "{\"maxResults\":$max}" --format json
     ;;
@@ -117,8 +120,9 @@ case "$1" in
     else
       args=(calendar +agenda "--$range" --timezone "$timezone" --format json)
     fi
-    [[ -z "$calendar" ]] || gws_calendar_id "$calendar"
-    [[ -n "$calendar" ]] && args+=(--calendar "$calendar")
+    [[ -n "$calendar" ]] || gws_die "calendar-agenda requires an explicit opaque --calendar binding"
+    gws_calendar_id "$calendar"
+    args+=(--calendar "$calendar")
     gws_exec_route "calendar +agenda" "${args[@]}"
     ;;
 
