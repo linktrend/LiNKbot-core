@@ -1,7 +1,7 @@
 // Browser tests cover pw session.create page.navigation guard plugin behavior.
 import { chromium } from "playwright-core";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { SsrFBlockedError } from "../infra/net/ssrf.js";
+import { SsrFBlockedError, type LookupFn } from "../infra/net/ssrf.js";
 import "../test-support/browser-security.mock.js";
 import * as chromeModule from "./chrome.js";
 import { BrowserTabNotFoundError } from "./errors.js";
@@ -43,6 +43,9 @@ type MockRoute = {
 type MockRequest = {
   isNavigationRequest: () => boolean;
   frame: () => object;
+  method?: () => string;
+  headers?: () => Record<string, string>;
+  postDataBuffer?: () => Buffer | null;
   resourceType?: () => string;
   url: () => string;
 };
@@ -159,6 +162,9 @@ async function dispatchMockNavigation(params: {
   frameError?: Error;
   isNavigationRequest?: boolean;
   resourceType?: string;
+  method?: string;
+  headers?: Record<string, string>;
+  postDataBuffer?: Buffer | null;
   route?: Partial<MockRoute>;
 }) {
   const handler = params.getRouteHandler();
@@ -175,6 +181,11 @@ async function dispatchMockNavigation(params: {
       return params.frame ?? params.mainFrame;
     },
     ...(resourceType ? { resourceType: () => resourceType } : {}),
+    ...(params.method ? { method: () => params.method! } : {}),
+    ...(params.headers ? { headers: () => params.headers! } : {}),
+    ...(params.postDataBuffer !== undefined
+      ? { postDataBuffer: () => params.postDataBuffer ?? null }
+      : {}),
     url: () => params.url,
   });
 }
@@ -691,6 +702,49 @@ describe("pw-session createPageViaPlaywright navigation guard", () => {
         cdpUrl: "http://127.0.0.1:18792",
       }),
     ).rejects.toThrow("Browser target is unavailable after SSRF policy blocked its navigation.");
+  });
+
+  it("binds one checked DNS answer across repeated document requests", async () => {
+    const { page, pageGoto, getRouteHandler, mainFrame } = installBrowserMocks();
+    const lookupFn = vi.fn(async () => [
+      { address: "93.184.216.34", family: 4 },
+    ]) as unknown as LookupFn;
+    const fetchImpl = vi.fn(async () => new Response("<html>ok</html>", { status: 200 }));
+    pageGoto.mockImplementationOnce(async () => {
+      await dispatchMockNavigation({
+        getRouteHandler,
+        mainFrame,
+        resourceType: "document",
+        method: "GET",
+        headers: { accept: "text/html" },
+        url: "https://public.example/start",
+      });
+      await dispatchMockNavigation({
+        getRouteHandler,
+        mainFrame,
+        resourceType: "document",
+        method: "GET",
+        headers: { accept: "text/html" },
+        url: "https://public.example/redirected",
+      });
+      return null;
+    });
+
+    await expect(
+      gotoPageWithNavigationGuard({
+        cdpUrl: "http://127.0.0.1:18792",
+        page,
+        url: "https://public.example/start",
+        timeoutMs: 1000,
+        lookupFn,
+        fetchImpl,
+      }),
+    ).resolves.toBeNull();
+    expect(lookupFn).toHaveBeenCalledTimes(1);
+    expect(fetchImpl).toHaveBeenCalledTimes(2);
+    expect(
+      (fetchImpl.mock.calls[0]?.[1] as { dispatcher?: unknown } | undefined)?.dispatcher,
+    ).toBeTruthy();
   });
 
   it("falls back to caller targetId quarantine when target lookup fails", async () => {

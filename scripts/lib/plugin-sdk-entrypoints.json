@@ -145,6 +145,7 @@
   "access-groups",
   "allow-from",
   "allowlist-config-edit",
+  "browser-policy",
   "browser-config",
   "boolean-param",
   "channel-contract-testing",
