@@ -3407,12 +3407,14 @@ jobs:
         shell: bash
         env:
           BASELINE_REF: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.event.pull_request.base.ref) || 'origin/development' }}
+          BASELINE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.sha }}
         run: |
           set -euo pipefail
           result="$(python3 .github/openclaw_progressive_validation.py \
             --root . \
             --receipt docs/execution/openclaw-prime-lisa/baseline-ci-receipt.json \
             --baseline-ref "${BASELINE_REF}" \
+            --baseline-sha "${BASELINE_SHA}" \
             --candidate-ref HEAD || true)"
           echo "${result}"
           classification="$(jq -r '.classification // "blocking"' <<<"${result}")"
