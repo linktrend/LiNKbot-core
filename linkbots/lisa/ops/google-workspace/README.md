@@ -121,6 +121,14 @@ release and provider receipt are not present; the execution gate is fail-closed
 and cannot activate a guessed skill release. Qualification remains a separate
 human-controlled gate.
 
+The `smoke-gws` wrapper is additionally blocked unless that receipt is an exact
+qualified release receipt with `status=qualified`, `qualification.state=qualified`,
+and `executionGate=enabled`; an unavailable or guessed qualification never runs
+the provider smoke calls.
+The runtime receipt is private metadata at the configured Workspace root
+(`qualified-skills.receipt.json`); wrappers compare its provider and catalogue
+digests to the committed source receipt and require every required skill ID.
+
 `drive-read` is intentionally distinct from Google-native `docs-read`: it reads
 binary Drive media only when the caller supplies a simple `--output-file` name.
 The wrapper maps that name to a new file under `<work-root>/downloads`, rejects

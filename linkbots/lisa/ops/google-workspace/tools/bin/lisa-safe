@@ -98,7 +98,7 @@ case "$1" in
     [[ -n "$calendar" ]] || gws_die "calendar-list requires an explicit opaque --calendar binding"
     gws_calendar_id "$calendar"
     gws_positive_int "$max"
-    gws_exec_route "calendar calendarList list" calendar calendarList list --params "{\"maxResults\":$max}" --format json
+    gws_exec_route "calendar calendarList list" calendar calendarList list --calendar "$calendar" --params "{\"maxResults\":$max}" --format json
     ;;
 
   calendar-agenda)
@@ -467,7 +467,9 @@ case "$1" in
 
   smoke-gws)
     [[ $# -eq 1 ]] || gws_die "smoke-gws takes no arguments"
-    gws_exec_route "calendar +agenda" calendar +agenda --today --timezone Asia/Taipei --format json
+    gws_require_qualified_skills
+    gws_calendar_id opaque_lisa-workspace_calendar_work
+    gws_exec_route "calendar +agenda" calendar +agenda --calendar opaque_lisa-workspace_calendar_work --today --timezone Asia/Taipei --format json
     gws_exec_route "drive files list" drive files list --params '{"pageSize":1}' --format json
     gws_exec_route "gmail +triage" gmail +triage --max 1 --query is:unread --format json
     ;;

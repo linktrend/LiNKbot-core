@@ -43,6 +43,26 @@ function makeFixture() {
       mode: 0o600,
     });
   }
+  const sourceSkillsReceipt = JSON.parse(
+    readFileSync(path.join(root, "receipts/qualified-skills.receipt.json"), "utf8"),
+  ) as {
+    catalogueIndexBinding: { requiredSkillIds: string[]; [key: string]: unknown };
+    [key: string]: unknown;
+  };
+  writeFileSync(
+    path.join(configRoot, "qualified-skills.receipt.json"),
+    JSON.stringify({
+      ...sourceSkillsReceipt,
+      status: "qualified",
+      qualification: { state: "qualified", executionGate: "enabled" },
+      catalogueIndexBinding: {
+        ...sourceSkillsReceipt.catalogueIndexBinding,
+        presentSkillIds: sourceSkillsReceipt.catalogueIndexBinding.requiredSkillIds,
+        status: "qualified",
+      },
+    }),
+    { mode: 0o600 },
+  );
   const fakeGws = path.join(directory, "gws");
   writeFileSync(
     fakeGws,
@@ -106,6 +126,15 @@ describe("VPS Lisa Google Workspace wrappers", () => {
       assert.match(captured, /calendar\n\+insert/);
       assert.match(captured, /--dry-run/);
       assert.doesNotMatch(captured, /homebrew|opt\/homebrew|Applications/);
+
+      const listedCalendars = run(
+        lisaSafe,
+        ["calendar-list", "--calendar", "opaque_lisa-workspace_calendar_work", "--max-results", "1"],
+        fixture,
+      );
+      assert.equal(listedCalendars.status, 0, listedCalendars.stderr);
+      assert.match(listedCalendars.stdout, /calendar\ncalendarList\nlist/);
+      assert.match(listedCalendars.stdout, /--calendar\nopaque_lisa-workspace_calendar_work/);
     } finally {
       rmSync(fixture.directory, { recursive: true, force: true });
     }
@@ -287,6 +316,21 @@ describe("VPS Lisa Google Workspace wrappers", () => {
       assert.equal(missingListBinding.status, 64);
       assert.match(missingListBinding.stderr, /explicit opaque --calendar binding/);
       assert.equal(missingListBinding.stdout, "");
+
+      const unavailableReceiptPath = path.join(
+        fixture.configRoot,
+        "qualified-skills.receipt.json",
+      );
+      const unavailableReceipt = JSON.parse(readFileSync(unavailableReceiptPath, "utf8")) as Record<
+        string,
+        unknown
+      >;
+      unavailableReceipt.status = "qualification-required";
+      writeFileSync(unavailableReceiptPath, JSON.stringify(unavailableReceipt), { mode: 0o600 });
+      const unavailableSmoke = run(lisaSafe, ["smoke-gws"], fixture);
+      assert.equal(unavailableSmoke.status, 64);
+      assert.match(unavailableSmoke.stderr, /qualified Skills receipt prerequisite is unavailable/);
+      assert.equal(unavailableSmoke.stdout, "");
 
       const scopeArgument = run(
         lisaSafe,
