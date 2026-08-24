@@ -18,6 +18,11 @@ import {
   mergeIdentityMarkdownContent,
   sanitizeAgentIdentityLine,
 } from "./identity-file.js";
+import {
+  assertValidProfileManifest,
+  planProfileProvisioning,
+  type ProfileManifest,
+} from "./profile-manifest.js";
 import { DEFAULT_IDENTITY_FILENAME, ensureAgentWorkspace } from "./workspace.js";
 
 type CreateAgentResult =
@@ -38,9 +43,23 @@ type CreateAgentResult =
         | "reserved-id"
         | "already-exists"
         | "invalid-bindings"
+        | "invalid-profile-manifest"
         | "unsafe-identity-file";
       agentId?: string;
       message: string;
+    }
+  | {
+      status: "inactive";
+      agentId: string;
+      profileId: string;
+      bootstrapPending: false;
+      runtimeCreated: false;
+    }
+  | {
+      status: "dry-run";
+      agentId: string;
+      profileId: string;
+      plan: ReturnType<typeof planProfileProvisioning>;
     };
 
 type CreateError = Extract<CreateAgentResult, { status: "error" }>;
@@ -53,6 +72,8 @@ type CreateAgentParams = {
   avatar?: unknown;
   agentDir?: string;
   bindingSpecs?: string[];
+  profileManifest?: unknown;
+  dryRun?: boolean;
   transformConfig?: typeof transformConfigFileWithRetry;
 };
 
@@ -98,6 +119,36 @@ export async function createAgent(params: CreateAgentParams): Promise<CreateAgen
     return createError("reserved-id", `"${agentId}" is reserved`, agentId);
   }
 
+  let profileManifest: ProfileManifest | undefined;
+  if (params.profileManifest !== undefined) {
+    try {
+      profileManifest = assertValidProfileManifest(params.profileManifest);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "invalid profile manifest";
+      return createError("invalid-profile-manifest", message, agentId);
+    }
+    const plan = planProfileProvisioning(profileManifest);
+    if (plan.activation === "inactive") {
+      // Inactive blueprints are data only. Do not create config, workspace,
+      // session, credential, binding, recipient, or scheduled-job state.
+      return {
+        status: "inactive",
+        agentId,
+        profileId: profileManifest.profileId,
+        bootstrapPending: false,
+        runtimeCreated: false,
+      };
+    }
+    if (params.dryRun) {
+      return {
+        status: "dry-run",
+        agentId,
+        profileId: profileManifest.profileId,
+        plan,
+      };
+    }
+  }
+
   const safeName = sanitizeAgentIdentityLine(rawName);
   const model = normalizeOptionalString(params.model);
   const identity = createAgentIdentityConfig({
@@ -133,6 +184,7 @@ export async function createAgent(params: CreateAgentParams): Promise<CreateAgen
             agentDir,
             model,
             identity,
+            profileManifest,
           });
           const bindingParse = parseBindingSpecs({
             agentId,
