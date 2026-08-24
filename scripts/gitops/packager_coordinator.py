@@ -847,6 +847,21 @@ def _unique_phase_commits(
             continue
         if len(parents) == 2 and parents[1] in accepted_shas:
             continue
+        generated_paths = {
+            path
+            for path in _git(
+                repo,
+                "diff-tree",
+                "--no-commit-id",
+                "-r",
+                "--name-only",
+                f"{commit}^",
+                commit,
+            ).splitlines()
+            if path
+        }
+        if generated_paths == {BASELINE_RECEIPT_REL.as_posix()}:
+            continue
         unique.append(commit)
     return unique
 
@@ -876,8 +891,6 @@ def _assemble_in_worktree(
     baseline_sha: str,
 ) -> str:
     remaining = _remaining_sources(repo, start_sha, sources)
-    if not remaining:
-        return normalize_sha(start_sha)
     with tempfile.TemporaryDirectory(prefix="phase-assemble-") as tmp:
         probe = Path(tmp) / "work"
         _git(repo, "worktree", "add", "--detach", str(probe), start_sha)
@@ -1207,16 +1220,13 @@ def assemble_phase(
         start_sha = development_sha
 
     revision = _candidate_revision(repository, phase_branch, development_sha, ordered)
-    identical = not remaining
-    if identical:
-        head = existing_phase or development_sha
-    else:
-        head = _assemble_in_worktree(
-            repo,
-            start_sha=start_sha,
-            sources=ordered,
-            baseline_sha=development_sha,
-        )
+    head = _assemble_in_worktree(
+        repo,
+        start_sha=start_sha,
+        sources=ordered,
+        baseline_sha=development_sha,
+    )
+    identical = existing_phase is not None and head == existing_phase
     tree = _git(repo, "rev-parse", f"{head}^{{tree}}")
     for source in ordered:
         if not _is_ancestor(repo, source.sha, head):

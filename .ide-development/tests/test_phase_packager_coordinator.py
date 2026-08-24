@@ -151,6 +151,41 @@ class PhasePackagerCoordinatorTests(unittest.TestCase):
         self.assertEqual(bound["baselineTree"], base_tree)
         self.assertNotEqual(result["headSha"], git(self.fx.work, "rev-parse", f"{base}^{{commit}}"))
 
+    def test_existing_phase_rebinds_stale_receipt_after_development_moves(self) -> None:
+        receipt_path = coordinator.BASELINE_RECEIPT_REL
+        write(
+            self.fx.work / receipt_path,
+            json.dumps(
+                {
+                    "schemaVersion": 1,
+                    "kind": "openclaw-fork-baseline-ci-receipt",
+                    "repository": "linktrend/openclaw_prime",
+                    "baselineCommit": "0" * 40,
+                    "baselineTree": "0" * 40,
+                }
+            ),
+        )
+        git(self.fx.work, "add", str(receipt_path))
+        git(self.fx.work, "commit", "-qm", "baseline receipt fixture")
+        git(self.fx.work, "push", "-q", "origin", "development")
+        one = self.fx.accept_issue(35, "rebind.txt", "rebind\n")
+        first = self.fx.assemble([one])
+
+        git(self.fx.work, "checkout", "-q", "development")
+        write(self.fx.work / "moving.txt", "protected base moved\n")
+        git(self.fx.work, "add", "moving.txt")
+        git(self.fx.work, "commit", "-qm", "move protected development base")
+        git(self.fx.work, "push", "-q", "origin", "development")
+        moved_base = self.fx.development_sha()
+        moved_tree = git(self.fx.work, "rev-parse", f"{moved_base}^{{tree}}")
+
+        rebound = self.fx.assemble([one])
+        self.assertEqual(rebound["action"], "updated")
+        self.assertNotEqual(rebound["headSha"], first["headSha"])
+        bound = json.loads(git(self.fx.work, "show", f"{rebound['headSha']}:{receipt_path}"))
+        self.assertEqual(bound["baselineCommit"], moved_base)
+        self.assertEqual(bound["baselineTree"], moved_tree)
+
     def test_many_compatible_issues_create_one_ordered_phase(self) -> None:
         first = self.fx.accept_issue(1, "one.txt", "one\n")
         second = self.fx.accept_issue(2, "two.txt", "two\n")
