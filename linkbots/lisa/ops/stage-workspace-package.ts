@@ -25,6 +25,8 @@ import { STAGE_OPS_STAGE_ROOT } from "./stage-ops-command.ts";
 
 export const STAGE_WORKSPACE_PACKAGE_RECEIPT_TYPE =
   "lisa_stage_workspace_package_receipt_v1" as const;
+export const STAGE_WORKSPACE_PACKAGE_SOURCE_RECEIPT_TYPE =
+  "lisa_stage_workspace_package_source_receipt_v1" as const;
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 export const DEFAULT_MANIFEST_PATH = path.join(here, "stage-workspace-package.manifest.json");
@@ -97,6 +99,22 @@ export type StageWorkspacePackageReceipt = {
     defaultMutateStageWorkspace: false;
     liveMutationAllowed: false;
   };
+};
+
+/**
+ * Stable source evidence for an integration packet. Unlike the operational
+ * receipt below, this contains no timestamp, absolute path, or target state.
+ */
+export type StageWorkspacePackageSourceReceipt = {
+  receiptType: typeof STAGE_WORKSPACE_PACKAGE_SOURCE_RECEIPT_TYPE;
+  status: "verified-source" | "blocked-hash-mismatch";
+  packageId: string;
+  manifestSha256: string;
+  fileCount: number;
+  mutableSeeds: false;
+  liveMutationAllowed: false;
+  defaultMutateStageWorkspace: false;
+  sourceRoot: "linkbots/lisa";
 };
 
 function allManifestEntries(
@@ -191,6 +209,34 @@ export function hashStageWorkspacePackageManifest(
   return createHash("sha256")
     .update(canonicalStageWorkspacePackageManifestBytes(manifest))
     .digest("hex");
+}
+
+/** Build deterministic source evidence suitable for a committed packet receipt. */
+export function buildStageWorkspacePackageSourceReceipt(
+  params: {
+    manifest?: StageWorkspacePackageManifest;
+    manifestPath?: string;
+    sourceRoot?: string;
+  } = {},
+): StageWorkspacePackageSourceReceipt {
+  const manifest =
+    params.manifest ??
+    loadStageWorkspacePackageManifest(params.manifestPath ?? DEFAULT_MANIFEST_PATH);
+  const verification = verifyStageWorkspacePackage({
+    manifest,
+    sourceRoot: params.sourceRoot,
+  });
+  return {
+    receiptType: STAGE_WORKSPACE_PACKAGE_SOURCE_RECEIPT_TYPE,
+    status: verification.ok ? "verified-source" : "blocked-hash-mismatch",
+    packageId: manifest.packageId,
+    manifestSha256: hashStageWorkspacePackageManifest(manifest),
+    fileCount: manifest.files.length,
+    mutableSeeds: false,
+    liveMutationAllowed: false,
+    defaultMutateStageWorkspace: false,
+    sourceRoot: "linkbots/lisa",
+  };
 }
 
 export function sha256File(filePath: string): { sha256: string; bytes: number } {

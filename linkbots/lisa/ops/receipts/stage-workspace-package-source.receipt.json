@@ -1,0 +1,11 @@
+{
+  "receiptType": "lisa_stage_workspace_package_source_receipt_v1",
+  "status": "blocked-hash-mismatch",
+  "packageId": "lisa-stage-bounded-procedures-renderer-and-domain-modules",
+  "manifestSha256": "ff6c4fedc6eac45b9b0085f8d22924e226e7f76c289c944652fcea00e33ffbe0",
+  "fileCount": 45,
+  "mutableSeeds": false,
+  "liveMutationAllowed": false,
+  "defaultMutateStageWorkspace": false,
+  "sourceRoot": "linkbots/lisa"
+}
