@@ -54,6 +54,8 @@ jobs:
       PR_NUMBER: ${{ github.event.pull_request.number }}
       EXPECTED_HEAD: ${{ github.event.pull_request.head.sha }}
       SOURCE_BRANCH: ${{ github.event.pull_request.head.ref }}
+      BASELINE_REF: ${{ format('origin/{0}', github.event.pull_request.base.ref) }}
+      BASELINE_SHA: ${{ github.event.pull_request.base.sha }}
     steps:
       - name: Checkout exact Phase PR head
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -95,7 +97,8 @@ jobs:
           python3 .github/openclaw_progressive_validation.py \
             --root . \
             --receipt docs/execution/openclaw-prime-lisa/baseline-ci-receipt.json \
-            --baseline-ref origin/development \
+            --baseline-ref "${BASELINE_REF}" \
+            --baseline-sha "${BASELINE_SHA}" \
             --candidate-ref HEAD
           PYTHONPATH=. python3 test/openclaw_progressive_validation.py
           PYTHONPATH=. python3 .ide-development/tests/test_change_scoped_secret_scan_acceptance.py
