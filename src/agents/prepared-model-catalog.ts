@@ -206,6 +206,17 @@ export async function loadPreparedModelCatalogSnapshot(
   return (await loadPreparedModelCatalogOwnerSnapshot(params)).modelCatalog;
 }
 
+/**
+ * Loads the immutable catalog generation used by a transient route decision.
+ * Routing must consume the same prepared lifecycle snapshot as the run; it must
+ * never discover providers directly or persist a request-time model choice.
+ */
+export async function loadPreparedModelCatalogForRouting(
+  params: LoadPreparedModelCatalogParams = {},
+): Promise<ModelCatalogSnapshot> {
+  return await loadPreparedModelCatalogSnapshot({ ...params, readOnly: true });
+}
+
 export async function loadPreparedModelCatalog(
   params: LoadPreparedModelCatalogParams = {},
 ): Promise<ModelCatalogEntry[]> {

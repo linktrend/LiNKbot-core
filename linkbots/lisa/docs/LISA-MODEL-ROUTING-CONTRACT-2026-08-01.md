@@ -75,3 +75,23 @@ Candidate git rollback: revert the OCP-W30 candidate commit; live Lisa stays unt
 ## Rollout gate
 
 Live profile sync requires a separate human-approved rollout after this RC lands toward `development`. Controlled **first-PDF proof** occurs only during that separately authorized production rollout. Success claims require a first-production-proof receipt. Final acceptance is a further human gate after that receipt. CI/Bugbot remain deferred until explicitly run.
+
+## PKT-04 transient non-coding routing
+
+The source-controlled `nonCodingRouting` fragment is a non-live decision
+authority for one response. Obvious requests use deterministic tags and do not
+call a classifier. Only ambiguous requests may call a classifier, and it sees
+at most 2,000 characters of the request with no transcript, private memory, or
+credentials. Invalid or failed classification fails closed to conversation.
+
+The transient defaults are native Luna High, OpenRouter Luna Medium, direct
+Moonshot Kimi K2.6, and direct Google Gemini 3.1 Flash-Lite. GLM is not a
+non-coding fallback. A request-time model/reasoning override is never persisted
+to Lisa's Telegram, browser, or main-session default. Provider/model failures
+may advance one fallback; infrastructure failures retry the same model, and a
+quality fallback requires a logged quality failure.
+
+The MiniMax-M3 document route remains disabled because its capability is
+`approved_unverified`; it is not a default fallback and requires a separate
+first-production-proof receipt before any success claim. No live profile or
+credential mutation is authorized by this fragment.
