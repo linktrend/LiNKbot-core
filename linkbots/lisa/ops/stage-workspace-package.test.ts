@@ -31,6 +31,7 @@ import {
 import {
   DEFAULT_MANIFEST_PATH,
   FORBIDDEN_STAGE_WORKSPACE,
+  buildStageWorkspacePackageSourceReceipt,
   hashStageWorkspacePackageManifest,
   isForbiddenLiveLisaTarget,
   isForbiddenStageWorkspaceTarget,
@@ -75,6 +76,20 @@ describe("stage-workspace-package", () => {
     assert.ok(files.every((f) => f.ok));
     assert.equal(files.length, 45);
     assert.match(hashStageWorkspacePackageManifest(manifest), /^[a-f0-9]{64}$/);
+  });
+
+  it("emits deterministic source evidence without absolute paths or target state", () => {
+    const first = buildStageWorkspacePackageSourceReceipt();
+    const second = buildStageWorkspacePackageSourceReceipt();
+    assert.equal(first.receiptType, "lisa_stage_workspace_package_source_receipt_v1");
+    assert.equal(first.status, "blocked-hash-mismatch");
+    assert.equal(first.fileCount, 45);
+    assert.equal(first.mutableSeeds, false);
+    assert.equal(first.liveMutationAllowed, false);
+    assert.equal(first.defaultMutateStageWorkspace, false);
+    assert.equal(first.sourceRoot, "linkbots/lisa");
+    assert.deepEqual(first, second);
+    assert.doesNotMatch(JSON.stringify(first), /\/private\/tmp|\.openclaw-lisa|targetDir/);
   });
 
   it("rejects mutable/private profile seeds even in a caller-supplied manifest", () => {

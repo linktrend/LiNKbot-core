@@ -1,0 +1,111 @@
+{
+  "receiptType": "lisa_pkt_11_source_acceptance_receipt_v1",
+  "status": "source-prepared",
+  "packet": {
+    "id": "PKT-11",
+    "issue": "ISS-11",
+    "executionState": "PLAN"
+  },
+  "sourceBase": {
+    "repository": "openclaw/openclaw",
+    "ref": "origin/development",
+    "commit": "90289b832f9d2f9e1f2064ddbf219bdcf0e31433",
+    "tree": "6c7cbc3a83cd03ba2348c62f11dea4bfd4ab1923"
+  },
+  "ownedPaths": [
+    "linkbots/lisa/ops/lisa-vps-reconciliation.mjs",
+    "linkbots/lisa/ops/stage-workspace-package.ts",
+    "linkbots/lisa/ops/receipts",
+    "linkbots/lisa/docs"
+  ],
+  "prohibitedPaths": [
+    "extensions/linkplatform/src",
+    "extensions/linkbrain/src",
+    "extensions/linkskills/src",
+    "extensions/linklibraries/src",
+    "extensions/linkautowork/src"
+  ],
+  "dependencyPackets": {
+    "required": [
+      "PKT-01",
+      "PKT-02",
+      "PKT-03",
+      "PKT-04",
+      "PKT-05",
+      "PKT-06",
+      "PKT-07",
+      "PKT-08",
+      "PKT-09",
+      "PKT-10"
+    ],
+    "reproduced": [],
+    "resolution": "exact accepted commit/tree receipts are consumed from the external runtime authority snapshot"
+  },
+  "artifacts": {
+    "reconciliationTool": {
+      "path": "linkbots/lisa/ops/lisa-vps-reconciliation.mjs",
+      "sourceOnly": true,
+      "liveActions": false
+    },
+    "stageWorkspacePackage": {
+      "sourceReceiptType": "lisa_stage_workspace_package_source_receipt_v1",
+      "status": "blocked-hash-mismatch",
+      "packageId": "lisa-stage-bounded-procedures-renderer-and-domain-modules",
+      "manifestSha256": "ff6c4fedc6eac45b9b0085f8d22924e226e7f76c289c944652fcea00e33ffbe0",
+      "fileCount": 45,
+      "mutableSeeds": false,
+      "liveMutationAllowed": false
+    },
+    "providerQualificationReference": "linkbots/lisa/ops/google-workspace/receipts/qualified-skills.receipt.json"
+  },
+  "gates": {
+    "providerReleaseSetAccepted": {
+      "status": "HOLD",
+      "requiredEvidence": "external:providerReleaseSetAccepted"
+    },
+    "independentTerraVerification": {
+      "status": "HOLD",
+      "requiredEvidence": "external:independentTerraVerification"
+    },
+    "independentReview": {
+      "status": "HOLD",
+      "requiredEvidence": "external:independentReview"
+    },
+    "stageDeployment": {
+      "status": "HOLD",
+      "requiredEvidence": "external:stageDeployment"
+    },
+    "vpsDeployment": {
+      "status": "HOLD",
+      "requiredEvidence": "external:vpsDeployment"
+    },
+    "productionCanary": {
+      "status": "HOLD",
+      "requiredEvidence": "external:productionCanary"
+    },
+    "principalAcceptance": {
+      "status": "HOLD",
+      "requiredEvidence": "external:principalAcceptance"
+    },
+    "rollbackVerification": {
+      "status": "HOLD",
+      "requiredEvidence": "external:rollbackVerification"
+    }
+  },
+  "actions": {
+    "vpsTouched": false,
+    "liveLisaTouched": false,
+    "productionTouched": false,
+    "scheduleChangesApplied": false,
+    "oauthOrLiveGoogleCalls": false,
+    "privateDataRecorded": false
+  },
+  "rollback": {
+    "strategy": "revert-this-source-checkpoint-before-any-promotion",
+    "sourceRevertAvailable": true,
+    "liveRestorePerformed": false,
+    "rollbackVerified": false,
+    "approvalRequired": true
+  },
+  "receiptDigestSha256": "388f1396bd1143784f172abb7cea054458a78358cd94c64419e16115fabfcdc0"
+}
