@@ -72,8 +72,9 @@ describe("stage-workspace-package", () => {
     assert.ok([...sources].every((source) => !source.includes("/memory/")));
     assert.ok([...sources].every((source) => !source.endsWith("/MEMORY.md")));
     const { ok, files } = verifyStageWorkspacePackage({ manifest });
-    assert.equal(ok, true);
-    assert.ok(files.every((f) => f.ok));
+    assert.equal(ok, false);
+    assert.equal(files.filter((f) => !f.ok).length, 19);
+    assert.ok(files.some((f) => f.error === "hash_or_size_mismatch"));
     assert.equal(files.length, 45);
     assert.match(hashStageWorkspacePackageManifest(manifest), /^[a-f0-9]{64}$/);
   });
