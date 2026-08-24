@@ -1,9 +1,10 @@
 /**
  * Lisa's source-only ten-family catalogue.
  *
- * This is an activation input, not an activation mechanism. Every entry is
- * disabled and delivery-free; a later controlled deployment must still prove
- * provider releases and opaque credential bindings before it can do anything.
+ * This is a family-level source inventory, not an activation mechanism. Every
+ * entry is disabled and delivery-free. The deployable 19-declaration desired
+ * state lives in lisa-job-desired-state.ts; keeping the two layers separate
+ * prevents Librarian and systemd-owned backup from becoming cron jobs.
  */
 import { createHash } from "node:crypto";
 import {
@@ -232,6 +233,12 @@ function reportDeadline(time: string): LisaCatalogueDeadlines {
   };
 }
 
+function preparationCron(time: string, leadMinutes = 5): string {
+  const preparationTime = subtractMinutes(time, leadMinutes);
+  const [hours, minutes] = preparationTime.split(":").map(Number);
+  return `${minutes} ${hours} * * *`;
+}
+
 const entries: readonly LisaCatalogueEntry[] = [
   entry({
     id: "librarian-cycle",
@@ -277,7 +284,7 @@ const entries: readonly LisaCatalogueEntry[] = [
     family: "executive_digest",
     label: "Executive Digest morning",
     privacyClass: "work",
-    schedule: { kind: "cron", localTimes: ["07:00"], cron: "0 7 * * *" },
+    schedule: { kind: "cron", localTimes: ["07:00"], cron: "45 6 * * *" },
     deadlines: reportDeadline("07:00"),
     tools: TOOLS.report,
     providerDependencies: [dependency(PROVIDER.reporting), dependency(PROVIDER.librarian)],
@@ -290,7 +297,7 @@ const entries: readonly LisaCatalogueEntry[] = [
     family: "executive_digest",
     label: "Executive Digest evening",
     privacyClass: "work",
-    schedule: { kind: "cron", localTimes: ["17:00"], cron: "0 17 * * *" },
+    schedule: { kind: "cron", localTimes: ["17:00"], cron: "45 16 * * *" },
     deadlines: reportDeadline("17:00"),
     tools: TOOLS.report,
     providerDependencies: [dependency(PROVIDER.reporting)],
@@ -307,7 +314,7 @@ const entries: readonly LisaCatalogueEntry[] = [
       schedule: {
         kind: "cron",
         localTimes: [time],
-        cron: `${Number(time.slice(3))} ${Number(time.slice(0, 2))} * * *`,
+        cron: preparationCron(time),
       },
       deadlines: reportDeadline(time),
       tools: TOOLS.report,

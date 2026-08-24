@@ -1,4 +1,4 @@
-# Monthly Work Report
+**Monthly Work Report**
 
 Report delivery: 16:45 on the last planned workday
 Timezone: Asia/Taipei
@@ -10,15 +10,15 @@ Exact interval since the previous report:
 Expected interval until the next report:
 {{expected_interval_until_next_report}}
 
-## Completed since the previous report
+**Completed since the previous report**
 
 {{completed}}
 
-## Expected until the next report
+**Expected until the next report**
 
 {{expected}}
 
-## Decisions and attention
+**Decisions and attention**
 
 {{approval_blocks}}
 
