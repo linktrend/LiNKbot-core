@@ -19,6 +19,83 @@ function fail(reason) {
   return { ok: false, reason };
 }
 
+const RECEIPT_FIELDS = [
+  "schema",
+  "status",
+  "provider",
+  "catalogueBinding",
+  "catalogueIndexBinding",
+  "qualification",
+  "retrieval",
+  "skills",
+  "unsupportedByDesign",
+  "privacy",
+];
+const PROVIDER_FIELDS = ["repository", "commit", "tree", "releaseIdentity", "skillSetDigest"];
+const CATALOGUE_FIELDS = [
+  "repository",
+  "path",
+  "sha256",
+  "requiredServices",
+  "status",
+  "providerRuntime",
+];
+const CATALOGUE_INDEX_FIELDS = [
+  "repository",
+  "path",
+  "catalogueGitSha",
+  "sourceTreeSha256",
+  "sha256",
+  "requiredSkillIds",
+  "presentSkillIds",
+  "status",
+];
+const QUALIFICATION_FIELDS = [
+  "state",
+  "reason",
+  "exactReleaseRequired",
+  "catalogueDigestRequired",
+  "executionGate",
+];
+const RETRIEVAL_FIELDS = ["mode", "copiedSkillBodies", "localExecution", "providerRuntime"];
+const SKILL_FIELDS = ["id", "source", "sha256"];
+const PRIVACY_FIELDS = ["accountIdentifiers", "credentialValues", "liveGoogleCallsPerformed"];
+
+function validateExactFields(value, fields, label) {
+  if (!isRecord(value)) return null;
+  const actual = new Set(Object.keys(value));
+  for (const key of actual) {
+    if (!fields.includes(key)) return fail(`${label}_unknown_field_${key}`);
+  }
+  for (const key of fields) {
+    if (!actual.has(key)) return fail(`${label}_missing_field_${key}`);
+  }
+  return null;
+}
+
+function validateReceiptShape(receipt, label) {
+  let result = validateExactFields(receipt, RECEIPT_FIELDS, `${label}_top_level`);
+  if (result) return result;
+  for (const [key, fields] of [
+    ["provider", PROVIDER_FIELDS],
+    ["catalogueBinding", CATALOGUE_FIELDS],
+    ["catalogueIndexBinding", CATALOGUE_INDEX_FIELDS],
+    ["qualification", QUALIFICATION_FIELDS],
+    ["retrieval", RETRIEVAL_FIELDS],
+    ["privacy", PRIVACY_FIELDS],
+  ]) {
+    result = validateExactFields(receipt[key], fields, `${label}_${key}`);
+    if (result) return result;
+  }
+  if (Array.isArray(receipt.skills)) {
+    for (let index = 0; index < receipt.skills.length; index += 1) {
+      result = validateExactFields(receipt.skills[index], SKILL_FIELDS, `${label}_skills_${index}`);
+      if (result) return result;
+    }
+  }
+  return null;
+}
+
 /**
  * Validate the provider-supplied runtime receipt against the committed source
  * contract. A source-only or partially copied receipt never enables a wrapper.
@@ -27,6 +104,10 @@ function fail(reason) {
 export function validateQualifiedSkillsReceipt(source, candidate) {
   if (!isRecord(source) || !isRecord(candidate)) return fail("receipt_not_object");
   if (source.schema !== SCHEMA || candidate.schema !== SCHEMA) return fail("schema_mismatch");
+  const sourceShape = validateReceiptShape(source, "source");
+  if (sourceShape) return sourceShape;
+  const candidateShape = validateReceiptShape(candidate, "candidate");
+  if (candidateShape) return candidateShape;
   if (source.status !== "qualification-required") return fail("source_status_mismatch");
 
   const sourceProvider = source.provider;
@@ -45,7 +126,7 @@ export function validateQualifiedSkillsReceipt(source, candidate) {
   if (!isRecord(sourceCatalogue) || !isRecord(candidateCatalogue)) {
     return fail("catalogue_binding_missing");
   }
-  for (const key of ["repository", "path", "sha256", "requiredServices"]) {
+  for (const key of CATALOGUE_FIELDS) {
     if (!sameJson(candidateCatalogue[key], sourceCatalogue[key])) {
       return fail(`catalogue_${key}_mismatch`);
     }
@@ -99,8 +180,13 @@ export function validateQualifiedSkillsReceipt(source, candidate) {
   }
   if (candidateIndex.status !== "qualified") return fail("catalogue_index_not_qualified");
 
+  const sourceQualification = source.qualification;
   const qualification = candidate.qualification;
-  if (!isRecord(qualification)) return fail("qualification_missing");
+  if (!isRecord(sourceQualification) || !isRecord(qualification))
+    return fail("qualification_missing");
+  if (qualification.reason !== sourceQualification.reason) {
+    return fail("qualification_reason_mismatch");
+  }
   if (
     qualification.state !== "qualified" ||
     qualification.executionGate !== "enabled" ||
@@ -112,7 +198,7 @@ export function validateQualifiedSkillsReceipt(source, candidate) {
 
   if (!isRecord(source.retrieval) || !isRecord(candidate.retrieval))
     return fail("retrieval_missing");
-  for (const key of ["mode", "copiedSkillBodies", "providerRuntime"]) {
+  for (const key of RETRIEVAL_FIELDS) {
     if (candidate.retrieval[key] !== source.retrieval[key])
       return fail(`retrieval_${key}_mismatch`);
   }
@@ -137,8 +223,16 @@ export function validateQualifiedSkillsReceipt(source, candidate) {
     }
   }
 
+  if (!sameJson(candidate.unsupportedByDesign, source.unsupportedByDesign)) {
+    return fail("unsupported_by_design_mismatch");
+  }
+
+  if (!isRecord(source.privacy)) return fail("privacy_missing");
   if (!isRecord(candidate.privacy) || candidate.privacy.liveGoogleCallsPerformed !== false) {
     return fail("live_google_calls_claimed");
+  }
+  for (const key of PRIVACY_FIELDS) {
+    if (candidate.privacy[key] !== source.privacy[key]) return fail(`privacy_${key}_mismatch`);
   }
   return { ok: true };
 }

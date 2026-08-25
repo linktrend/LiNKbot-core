@@ -21,11 +21,13 @@ function qualifiedCandidate() {
       presentSkillIds: [...source.catalogueIndexBinding.requiredSkillIds],
       status: "qualified",
     },
+    retrieval: { ...source.retrieval },
     qualification: {
       ...source.qualification,
       state: "qualified",
       executionGate: "enabled",
     },
+    privacy: { ...source.privacy },
   };
 }
 
@@ -50,6 +52,54 @@ describe("PKT-07 qualified Skills receipt validator", () => {
     assert.deepEqual(validateQualifiedSkillsReceipt(source, candidate), {
       ok: false,
       reason: "provider_commit_mismatch",
+    });
+  });
+
+  it("rejects unknown top-level and nested fields", () => {
+    const topLevelExtra = qualifiedCandidate();
+    topLevelExtra.operatorNote = "ignored";
+    assert.deepEqual(validateQualifiedSkillsReceipt(source, topLevelExtra), {
+      ok: false,
+      reason: "candidate_top_level_unknown_field_operatorNote",
+    });
+
+    const nestedExtra = qualifiedCandidate();
+    nestedExtra.qualification.operatorNote = "ignored";
+    assert.deepEqual(validateQualifiedSkillsReceipt(source, nestedExtra), {
+      ok: false,
+      reason: "candidate_qualification_unknown_field_operatorNote",
+    });
+  });
+
+  it("rejects mutations to non-exact qualification and retrieval fields", () => {
+    const reasonDrift = qualifiedCandidate();
+    reasonDrift.qualification.reason = "qualified by an unbound provider";
+    assert.deepEqual(validateQualifiedSkillsReceipt(source, reasonDrift), {
+      ok: false,
+      reason: "qualification_reason_mismatch",
+    });
+
+    const localExecutionDrift = qualifiedCandidate();
+    localExecutionDrift.retrieval.localExecution = "provider runtime";
+    assert.deepEqual(validateQualifiedSkillsReceipt(source, localExecutionDrift), {
+      ok: false,
+      reason: "retrieval_localExecution_mismatch",
+    });
+  });
+
+  it("rejects mutations to privacy and unsupported capability declarations", () => {
+    const privacyDrift = qualifiedCandidate();
+    privacyDrift.privacy.accountIdentifiers = "recorded";
+    assert.deepEqual(validateQualifiedSkillsReceipt(source, privacyDrift), {
+      ok: false,
+      reason: "privacy_accountIdentifiers_mismatch",
+    });
+
+    const unsupportedDrift = qualifiedCandidate();
+    unsupportedDrift.unsupportedByDesign = [...source.unsupportedByDesign, "future operation"];
+    assert.deepEqual(validateQualifiedSkillsReceipt(source, unsupportedDrift), {
+      ok: false,
+      reason: "unsupported_by_design_mismatch",
     });
   });
 
