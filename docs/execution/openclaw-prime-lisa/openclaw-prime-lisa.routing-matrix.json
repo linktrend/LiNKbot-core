@@ -1,0 +1,141 @@
+{
+  "$schema": "./routing-matrix.schema.json",
+  "schemaVersion": 1,
+  "authorityId": "openclaw-prime-lisa-dispatch-authority-v4",
+  "matrixId": "openclaw-prime-lisa-routing-v3",
+  "manifest": "docs/execution/openclaw-prime-lisa/openclaw-prime-lisa.execution-manifest.json",
+  "manifestSha256": "sha256:f1a0351c1e61d1ddf9161d493a2dbf3e913b676678a9bd40dd90616440cea499",
+  "repository": "linktrend/openclaw_prime",
+  "transport": "cursor-sdk",
+  "catalogueState": "VERIFIED_AUTO_COST_UNAVAILABLE_RECLASSIFIED",
+  "accountCapabilityReceiptSha256": "sha256:23a0173dc24e67a86a87aacd7aee8b8ec93719371070a7e26fe7045b33267aeb",
+  "issueCoveragePolicy": "every manifest issue is bound through its sole packet; an additional executable split requires a digest-bound matrix successor",
+  "costForecast": {
+    "primaryRouteCounts": { "auto_cost": 0, "composer_bounded": 3, "grok_complex": 8 },
+    "reviewCounts": { "independent_review": 7, "independent_terra_verification": 11 },
+    "budgetRule": "capture requested selector, effective model, optimization mode, token usage, pool, and actual charge when exposed; HOLD before dispatch if a packet budget or required readback is absent"
+  },
+  "entries": [
+    {
+      "packetId": "PKT-01",
+      "issueIds": ["ISS-01"],
+      "classification": "bounded reconciliation from an existing recoverable branch with exact contract tests",
+      "primaryRoute": "composer_bounded",
+      "fallbackPolicy": "composer_to_grok_one_hop",
+      "requiredReviews": ["independent_terra_verification"],
+      "costPool": "cursor-models",
+      "costPoolReason": "Composer 2.5 is assigned directly because this bounded reversible reconciliation has exact contract tests and the bound account lacks Auto Cost",
+      "dispatchState": "HOLD_UNTIL_EXECUTION_APPROVAL_PREREQUISITES_BUDGET_AND_ROUTE_READBACK"
+    },
+    {
+      "packetId": "PKT-02",
+      "issueIds": ["ISS-02"],
+      "classification": "explicit complex architecture and security-sensitive cloning exclusions",
+      "primaryRoute": "grok_complex",
+      "fallbackPolicy": "grok_to_composer_one_hop",
+      "requiredReviews": ["independent_review", "independent_terra_verification"],
+      "costPool": "cursor-models",
+      "costPoolReason": "Cursor Grok is required for complex foundation design; Opus is limited to independent security review",
+      "dispatchState": "HOLD_UNTIL_EXECUTION_APPROVAL_PREREQUISITES_BUDGET_AND_ROUTE_READBACK"
+    },
+    {
+      "packetId": "PKT-03",
+      "issueIds": ["ISS-03"],
+      "classification": "explicit complex cross-repository authentication, authorization, and exact-release integration",
+      "primaryRoute": "grok_complex",
+      "fallbackPolicy": "grok_to_composer_one_hop",
+      "requiredReviews": ["independent_review", "independent_terra_verification"],
+      "costPool": "cursor-models",
+      "costPoolReason": "Cursor Grok handles multi-provider complexity; third-party Opus is reserved for independent authorization review",
+      "dispatchState": "HOLD_UNTIL_EXECUTION_APPROVAL_PREREQUISITES_BUDGET_AND_ROUTE_READBACK"
+    },
+    {
+      "packetId": "PKT-04",
+      "issueIds": ["ISS-04"],
+      "classification": "explicit complex model evaluation and routing architecture",
+      "primaryRoute": "grok_complex",
+      "fallbackPolicy": "grok_to_composer_one_hop",
+      "requiredReviews": ["independent_terra_verification"],
+      "costPool": "cursor-models",
+      "costPoolReason": "fixed Cursor Grok route makes the routing implementation reproducible without consuming the third-party pool",
+      "dispatchState": "HOLD_UNTIL_EXECUTION_APPROVAL_PREREQUISITES_BUDGET_AND_ROUTE_READBACK"
+    },
+    {
+      "packetId": "PKT-05",
+      "issueIds": ["ISS-05"],
+      "classification": "explicit complex private SQLite state, identity, and migration-sensitive work",
+      "primaryRoute": "grok_complex",
+      "fallbackPolicy": "grok_to_composer_one_hop",
+      "requiredReviews": ["independent_review", "independent_terra_verification"],
+      "costPool": "cursor-models",
+      "costPoolReason": "Cursor Grok handles state design; third-party Opus is limited to independent privacy and migration review",
+      "dispatchState": "HOLD_UNTIL_EXECUTION_APPROVAL_PREREQUISITES_BUDGET_AND_ROUTE_READBACK"
+    },
+    {
+      "packetId": "PKT-06",
+      "issueIds": ["ISS-06"],
+      "classification": "explicit complex browser security and network-containment work",
+      "primaryRoute": "grok_complex",
+      "fallbackPolicy": "grok_to_composer_one_hop",
+      "requiredReviews": ["independent_review", "independent_terra_verification"],
+      "costPool": "cursor-models",
+      "costPoolReason": "Cursor Grok handles the security architecture; third-party Opus is limited to independent threat-boundary review",
+      "dispatchState": "HOLD_UNTIL_EXECUTION_APPROVAL_PREREQUISITES_BUDGET_AND_ROUTE_READBACK"
+    },
+    {
+      "packetId": "PKT-07",
+      "issueIds": ["ISS-07"],
+      "classification": "bounded integration against qualified exact Google skill and wrapper contracts",
+      "primaryRoute": "composer_bounded",
+      "fallbackPolicy": "composer_to_grok_one_hop",
+      "requiredReviews": ["independent_terra_verification"],
+      "costPool": "cursor-models",
+      "costPoolReason": "Composer 2.5 is assigned directly because this bounded contract integration is objectively verified and the bound account lacks Auto Cost",
+      "dispatchState": "HOLD_UNTIL_EXECUTION_APPROVAL_PREREQUISITES_BUDGET_AND_ROUTE_READBACK"
+    },
+    {
+      "packetId": "PKT-08",
+      "issueIds": ["ISS-08"],
+      "classification": "explicit complex cross-provider protocol migration",
+      "primaryRoute": "grok_complex",
+      "fallbackPolicy": "grok_to_composer_one_hop",
+      "requiredReviews": ["independent_review", "independent_terra_verification"],
+      "costPool": "cursor-models",
+      "costPoolReason": "Cursor Grok handles MCP migration complexity; third-party Opus is limited to independent protocol review",
+      "dispatchState": "HOLD_UNTIL_EXECUTION_APPROVAL_PREREQUISITES_BUDGET_AND_ROUTE_READBACK"
+    },
+    {
+      "packetId": "PKT-09",
+      "issueIds": ["ISS-09"],
+      "classification": "explicit complex encryption, backup, restore, infrastructure, and deployment recreation",
+      "primaryRoute": "grok_complex",
+      "fallbackPolicy": "grok_to_composer_one_hop",
+      "requiredReviews": ["independent_review", "independent_terra_verification"],
+      "costPool": "cursor-models",
+      "costPoolReason": "Cursor Grok handles long-running infrastructure work; third-party Opus is limited to independent security and recovery review",
+      "dispatchState": "HOLD_UNTIL_EXECUTION_APPROVAL_PREREQUISITES_BUDGET_AND_ROUTE_READBACK"
+    },
+    {
+      "packetId": "PKT-10",
+      "issueIds": ["ISS-10"],
+      "classification": "fully bounded repetitive schema-backed inactive blueprint creation with objective tests and easy rollback",
+      "primaryRoute": "composer_bounded",
+      "fallbackPolicy": "composer_to_grok_one_hop",
+      "requiredReviews": ["independent_terra_verification"],
+      "costPool": "cursor-models",
+      "costPoolReason": "Composer 2.5 is the lowest-cost exact route for repetitive reversible manifest work",
+      "dispatchState": "HOLD_UNTIL_EXECUTION_APPROVAL_PREREQUISITES_BUDGET_AND_ROUTE_READBACK"
+    },
+    {
+      "packetId": "PKT-11",
+      "issueIds": ["ISS-11"],
+      "classification": "explicit complex long-running integrated acceptance and deployment canary",
+      "primaryRoute": "grok_complex",
+      "fallbackPolicy": "grok_to_composer_one_hop",
+      "requiredReviews": ["independent_review", "independent_terra_verification"],
+      "costPool": "cursor-models",
+      "costPoolReason": "Cursor Grok handles long-running integration; third-party Opus is limited to independent final review before separately approved live action",
+      "dispatchState": "HOLD_UNTIL_EXECUTION_APPROVAL_PREREQUISITES_BUDGET_AND_ROUTE_READBACK"
+    }
+  ]
+}

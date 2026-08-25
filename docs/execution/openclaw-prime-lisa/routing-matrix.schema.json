@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://linktrend.local/openclaw-prime-lisa/routing-matrix.schema.json",
+  "title": "OpenClaw Planning 02 exact packet routing matrix",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schemaVersion",
+    "authorityId",
+    "matrixId",
+    "manifest",
+    "manifestSha256",
+    "repository",
+    "transport",
+    "catalogueState",
+    "accountCapabilityReceiptSha256",
+    "issueCoveragePolicy",
+    "costForecast",
+    "entries"
+  ],
+  "properties": {
+    "$schema": { "type": "string", "const": "./routing-matrix.schema.json" },
+    "schemaVersion": { "type": "integer", "const": 1 },
+    "authorityId": { "type": "string", "const": "openclaw-prime-lisa-dispatch-authority-v4" },
+    "matrixId": { "type": "string", "pattern": "^[a-z0-9-]+-routing-v3$" },
+    "manifest": { "type": "string", "minLength": 1 },
+    "manifestSha256": { "$ref": "#/$defs/sha256" },
+    "repository": { "type": "string", "pattern": "^[^/\\s]+/[^/\\s]+$" },
+    "transport": { "type": "string", "const": "cursor-sdk" },
+    "catalogueState": {
+      "type": "string",
+      "const": "VERIFIED_AUTO_COST_UNAVAILABLE_RECLASSIFIED"
+    },
+    "accountCapabilityReceiptSha256": {
+      "type": "string",
+      "const": "sha256:23a0173dc24e67a86a87aacd7aee8b8ec93719371070a7e26fe7045b33267aeb"
+    },
+    "issueCoveragePolicy": {
+      "type": "string",
+      "const": "every manifest issue is bound through its sole packet; an additional executable split requires a digest-bound matrix successor"
+    },
+    "costForecast": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["primaryRouteCounts", "reviewCounts", "budgetRule"],
+      "properties": {
+        "primaryRouteCounts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["auto_cost", "composer_bounded", "grok_complex"],
+          "properties": {
+            "auto_cost": { "type": "integer", "const": 0 },
+            "composer_bounded": { "type": "integer", "minimum": 0 },
+            "grok_complex": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "reviewCounts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["independent_review", "independent_terra_verification"],
+          "properties": {
+            "independent_review": { "type": "integer", "minimum": 0 },
+            "independent_terra_verification": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "budgetRule": {
+          "type": "string",
+          "const": "capture requested selector, effective model, optimization mode, token usage, pool, and actual charge when exposed; HOLD before dispatch if a packet budget or required readback is absent"
+        }
+      }
+    },
+    "entries": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/entry" }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "packetId",
+        "issueIds",
+        "classification",
+        "primaryRoute",
+        "fallbackPolicy",
+        "requiredReviews",
+        "costPool",
+        "costPoolReason",
+        "dispatchState"
+      ],
+      "properties": {
+        "packetId": { "type": "string", "pattern": "^[A-Z][A-Z0-9]*-[0-9]{2,}$" },
+        "issueIds": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "pattern": "^ISS-[0-9]{2,}$" },
+          "uniqueItems": true
+        },
+        "classification": { "type": "string", "minLength": 1 },
+        "primaryRoute": { "type": "string", "enum": ["composer_bounded", "grok_complex"] },
+        "fallbackPolicy": {
+          "type": "string",
+          "enum": ["composer_to_grok_one_hop", "grok_to_composer_one_hop"]
+        },
+        "requiredReviews": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "enum": ["independent_review", "independent_terra_verification"]
+          },
+          "uniqueItems": true,
+          "contains": { "const": "independent_terra_verification" }
+        },
+        "costPool": { "type": "string", "enum": ["auto-cost-bundled", "cursor-models"] },
+        "costPoolReason": { "type": "string", "minLength": 1 },
+        "dispatchState": {
+          "type": "string",
+          "const": "HOLD_UNTIL_EXECUTION_APPROVAL_PREREQUISITES_BUDGET_AND_ROUTE_READBACK"
+        }
+      }
+    }
+  }
+}

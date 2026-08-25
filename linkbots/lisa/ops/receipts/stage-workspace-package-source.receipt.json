@@ -1,0 +1,11 @@
+{
+  "receiptType": "lisa_stage_workspace_package_source_receipt_v1",
+  "status": "verified-source",
+  "packageId": "lisa-stage-bounded-procedures-renderer-and-domain-modules",
+  "manifestSha256": "f723e2d43b63f98acf2ea6487ec8f1c4c547baa2ce93c7fc451b28d141c274c1",
+  "fileCount": 45,
+  "mutableSeeds": false,
+  "liveMutationAllowed": false,
+  "defaultMutateStageWorkspace": false,
+  "sourceRoot": "linkbots/lisa"
+}

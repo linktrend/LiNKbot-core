@@ -39,7 +39,7 @@ describe("unified Lisa source renderer", () => {
         agentExceptions: [],
         decisions: [],
       }),
-    ).toContain("Completed since last digest\nNone.");
+    ).toContain("**Completed since last digest**\nNone.");
     expect(renderLisaJobTemplate("battery-checkpoint", {})).toContain("Battery checkpoint");
   });
 

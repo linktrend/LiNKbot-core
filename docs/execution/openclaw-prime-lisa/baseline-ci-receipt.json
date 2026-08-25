@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "kind": "openclaw-fork-baseline-ci-receipt",
+  "repository": "linktrend/openclaw_prime",
+  "baselineCommit": "c03c10c90cf9cc293927e5860ee38ccfbaf3b583",
+  "baselineTree": "0788a61e93fba49a3d32bf29679013f6fe07ddaf",
+  "workflow": "CI",
+  "runId": 32450511719,
+  "policyId": "openclaw-fork-progressive-validation-v1",
+  "policyDigest": "sha256:fa3f448e33fbc05e4b9676628a8be1f67bb020cc0baf58da6dd8fe720d0c26f0",
+  "inheritedFailures": [
+    {
+      "job": "checks-node-core-test-nondist-shard",
+      "tests": [
+        "test/scripts/check-openclawdevelopmentplan01-section-13.3-ledger.test.ts > pins the frozen plan hash and accepts checked-in plan-derived artifacts",
+        "test/scripts/check-openclawdevelopmentplan01-section-13.3-ledger.test.ts > frozen plan extraction covers every plan section family and required omission class",
+        "test/scripts/check-openclawdevelopmentplan01-section-13.3-ledger.test.ts > write helper regenerates artifacts that validate"
+      ],
+      "changedPathContract": [
+        "test/scripts/check-openclawdevelopmentplan01-section-13.3-ledger.test.ts",
+        "scripts/check-openclawdevelopmentplan01-section-13.3-ledger.mjs",
+        "docs/execution/openclawdevelopmentplan01/section-13.3"
+      ]
+    }
+  ],
+  "baselineChecks": {
+    "checkDocs": "success",
+    "checksNodeCoreTestNondistShard": "failure"
+  },
+  "reuse": "exact baseline commit/tree, policy digest, workflow and unchanged failure contract only",
+  "changedFailuresBlock": true,
+  "scope": "fork-only",
+  "upstreamMutation": false
+}

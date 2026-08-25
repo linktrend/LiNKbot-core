@@ -49,6 +49,10 @@ export {
 } from "./src/stores.js";
 export {
   LINKSKILLS_MCP_TOOL_ALLOWLIST,
+  LINKSKILLS_MCP_V2_TOOLS,
+  LINKSKILLS_MCP_MANAGED_TOOL_ALLOWLIST,
+  buildLinkskillsV2McpToolFilter,
+  LINKSKILLS_LEGACY_MCP_COMPATIBILITY_CONTRACT,
   buildLinkskillsMcpToolFilter,
   isAllowedLinkskillsMcpTool,
   assertAllowedLinkskillsMcpTool,

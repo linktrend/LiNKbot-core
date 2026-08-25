@@ -69,17 +69,9 @@ except ModuleNotFoundError:  # pragma: no cover - script-style execution
     )
 
 try:
-    from scripts.gitops.bugbot_user_credentials import (
-        BugbotUserCredentialsError,
-        require_bugbot_user_token,
-    )
     from scripts.gitops.github_auth import GitHubAuthError, resolve_phase_api_token
     from scripts.gitops.issue_checkpoint import bind_issue_completion, parse_immutable_evidence_payload
 except ModuleNotFoundError:  # pragma: no cover - script-style execution
-    from bugbot_user_credentials import (  # type: ignore
-        BugbotUserCredentialsError,
-        require_bugbot_user_token,
-    )
     from github_auth import GitHubAuthError, resolve_phase_api_token  # type: ignore
     from issue_checkpoint import bind_issue_completion, parse_immutable_evidence_payload  # type: ignore
 
@@ -89,6 +81,9 @@ HANDOFF_REL = Path(".linktrend/phase-handoff.json")
 COORDINATOR_STATE_REL = Path("ide-development/phase-packager")
 PROTECTED_BRANCHES = frozenset({"development", "staging", "main"})
 ISSUE_BRANCH_RE = re.compile(r"^issue/([1-9][0-9]{0,8})-[a-z0-9]+(?:-[a-z0-9]+)*$")
+GOVERNED_ISSUE_BRANCH_RE = re.compile(r"^issue/[a-z0-9]+(?:-[a-z0-9]+)*$")
+PACKET_ID_RE = re.compile(r"^[A-Z][A-Z0-9]*-[0-9]{2,}$")
+ISSUE_ID_RE = re.compile(r"^ISS-[0-9]{2,}$")
 ACCEPT_RE = re.compile(r"^([^@=]+)[@=]([0-9a-fA-F]{40})$")
 LIVE_PR_URL_RE = re.compile(r"^https://github\.com/[^/]+/[^/]+/pull/[1-9][0-9]*$")
 AGENT_ENV_KEYS = (
@@ -101,6 +96,7 @@ AGENT_ENV_KEYS = (
 )
 FAST_WORKFLOW_REL = Path("core/github/managed-workflows/linktrend-review-packager.yml")
 FULL_WORKFLOW_REL = Path("core/github/managed-workflows/linktrend-integrator-merge.yml")
+BASELINE_RECEIPT_REL = Path("docs/execution/openclaw-prime-lisa/baseline-ci-receipt.json")
 
 
 class CoordinatorError(ValueError):
@@ -314,6 +310,9 @@ class LiveGitHub:
             "isDraft": bool(draft),
             "head": (payload.get("head") or {}).get("ref") if isinstance(payload.get("head"), Mapping) else payload.get("head"),
             "base": (payload.get("base") or {}).get("ref") if isinstance(payload.get("base"), Mapping) else payload.get("base"),
+            "baseSha": normalize_sha(str((payload.get("base") or {}).get("sha") or ""))
+            if isinstance(payload.get("base"), Mapping)
+            else "",
             "headSha": normalize_sha(str((payload.get("head") or {}).get("sha") or payload.get("headSha") or "")),
             "created": created,
         }
@@ -363,7 +362,7 @@ class LiveGitHub:
             if not isinstance(updated, Mapping):
                 updated = existing
             identity = self._pr_identity(updated if isinstance(updated, Mapping) else existing, created=False)
-            return self._bound_live_pr(identity, head_sha)
+            return self._bound_live_pr(identity, head_sha, expected_base_sha=str(record.get("baseSha") or ""))
         created = self._request(
             "POST",
             f"https://api.github.com/repos/{repository}/pulls",
@@ -379,15 +378,19 @@ class LiveGitHub:
         if not isinstance(created, Mapping):
             raise CoordinatorError("invalid_phase_pr", "create response was not an object")
         identity = self._pr_identity(created, created=True)
-        return self._bound_live_pr(identity, head_sha)
+        return self._bound_live_pr(identity, head_sha, expected_base_sha=str(record.get("baseSha") or ""))
 
-    def _bound_live_pr(self, identity: dict[str, Any], head_sha: str) -> dict[str, Any]:
+    def _bound_live_pr(self, identity: dict[str, Any], head_sha: str, *, expected_base_sha: str = "") -> dict[str, Any]:
         """Keep GitHub's draft/URL identity; never forge a successful draft PR."""
 
         expected = normalize_sha(head_sha)
         reported = normalize_sha(str(identity.get("headSha") or ""))
         if is_valid_sha(reported) and reported != expected:
             raise CoordinatorError("unverified_phase_ref", f"pr_head={reported}:expected={expected}")
+        expected_base = normalize_sha(expected_base_sha)
+        reported_base = normalize_sha(str(identity.get("baseSha") or ""))
+        if is_valid_sha(expected_base) and is_valid_sha(reported_base) and reported_base != expected_base:
+            raise CoordinatorError("phase_base_drift", f"pr_base={reported_base}:expected={expected_base}")
         if not identity.get("isDraft"):
             raise CoordinatorError("phase_pr_not_draft", str(identity.get("number")))
         identity["headSha"] = expected
@@ -443,12 +446,8 @@ def resolve_production_adapters(repository: str) -> tuple[LiveGitHub, GitPushAda
         token, _source = resolve_phase_api_token()
     except GitHubAuthError as exc:
         raise CoordinatorError(exc.code, exc.detail) from exc
-    try:
-        carlos = require_bugbot_user_token("pr_create")
-    except BugbotUserCredentialsError as exc:
-        raise CoordinatorError("missing_github_credentials", str(exc)) from exc
     return (
-        LiveGitHub(repository=repository, automation_token=token, **{"user_token": carlos}),
+        LiveGitHub(repository=repository, automation_token=token, user_token=token),
         GitPushAdapter(),
     )
 
@@ -469,9 +468,16 @@ class AcceptedSource:
     branch: str
     sha: str
     order: int
+    packet_id: str | None = None
+    issue_id: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
-        return {"branch": self.branch, "sha": normalize_sha(self.sha), "order": self.order}
+        result: dict[str, Any] = {"branch": self.branch, "sha": normalize_sha(self.sha), "order": self.order}
+        if self.packet_id is not None:
+            result["packetId"] = self.packet_id
+        if self.issue_id is not None:
+            result["issueId"] = self.issue_id
+        return result
 
 
 def _git(repo: Path, *args: str, check: bool = True) -> str:
@@ -488,18 +494,117 @@ def _git(repo: Path, *args: str, check: bool = True) -> str:
     return (result.stdout or "").strip()
 
 
-def parse_accept(raw: str, order: int) -> AcceptedSource:
+def _governed_branch_tokens(branch: str) -> tuple[str, str | None]:
+    if not GOVERNED_ISSUE_BRANCH_RE.fullmatch(branch):
+        raise CoordinatorError("invalid_issue_branch", branch)
+    slug = branch.split("/", 1)[1]
+    issue_tokens = re.findall(r"iss-[0-9]+", slug)
+    packet_tokens = re.findall(r"pkt-[0-9]+", slug)
+    if len(issue_tokens) != 1 or len(packet_tokens) > 1:
+        raise CoordinatorError("ambiguous_issue_identity", branch)
+    return issue_tokens[0].upper(), packet_tokens[0].upper() if packet_tokens else None
+
+
+def _manifest_identity(
+    manifest: Mapping[str, Any],
+    branch: str,
+    *,
+    validate_branch: bool = True,
+) -> tuple[str, str]:
+    issue_token, packet_token = _governed_branch_tokens(branch)
+    issues = manifest.get("issues")
+    packets = manifest.get("packets")
+    if not isinstance(issues, list) or not isinstance(packets, list):
+        raise CoordinatorError("manifest_identity_missing", branch)
+    issue_rows = [row for row in issues if isinstance(row, Mapping) and row.get("id") == issue_token]
+    if len(issue_rows) != 1:
+        raise CoordinatorError("manifest_identity_missing", branch)
+    packet_id = str(issue_rows[0].get("packetId") or "")
+    if not ISSUE_ID_RE.fullmatch(issue_token) or not PACKET_ID_RE.fullmatch(packet_id):
+        raise CoordinatorError("manifest_identity_invalid", branch)
+    packet_rows = [row for row in packets if isinstance(row, Mapping) and row.get("id") == packet_id]
+    if len(packet_rows) != 1 or issue_token not in (packet_rows[0].get("issues") or []):
+        raise CoordinatorError("manifest_identity_missing", branch)
+    if validate_branch and packet_token and packet_token != packet_id:
+        raise CoordinatorError("packet_identity_mismatch", branch)
+    return packet_id, issue_token
+
+
+def _handoff_identity(
+    handoff: Mapping[str, Any],
+    branch: str,
+    *,
+    validate_branch: bool = True,
+) -> tuple[str, str]:
+    rows = handoff.get("acceptedCommits")
+    if not isinstance(rows, list):
+        raise CoordinatorError("handoff_identity_missing", branch)
+    matches = [row for row in rows if isinstance(row, Mapping) and row.get("branch") == branch]
+    if len(matches) != 1:
+        raise CoordinatorError("handoff_identity_missing", branch)
+    packet_id = str(matches[0].get("packetId") or "")
+    issue_id = str(matches[0].get("issueId") or "")
+    if not PACKET_ID_RE.fullmatch(packet_id) or not ISSUE_ID_RE.fullmatch(issue_id):
+        raise CoordinatorError("handoff_identity_invalid", branch)
+    issue_token, packet_token = _governed_branch_tokens(branch)
+    if validate_branch and (issue_id != issue_token or (packet_token and packet_id != packet_token)):
+        raise CoordinatorError("handoff_identity_mismatch", branch)
+    return packet_id, issue_id
+
+
+def _resolve_branch_identity(
+    branch: str,
+    *,
+    execution_manifest: Mapping[str, Any] | None = None,
+    handoff: Mapping[str, Any] | None = None,
+) -> tuple[str, str]:
+    """Bind internal packet branches to one exact manifest or handoff identity."""
+
+    _governed_branch_tokens(branch)
+    if execution_manifest is not None and handoff is not None:
+        manifest_candidate = _manifest_identity(manifest=execution_manifest, branch=branch, validate_branch=False)
+        handoff_candidate = _handoff_identity(handoff=handoff, branch=branch, validate_branch=False)
+        if manifest_candidate != handoff_candidate:
+            raise CoordinatorError("ambiguous_issue_identity", branch)
+        # Preserve source-specific fail-closed errors after convergence is proven.
+        _manifest_identity(manifest=execution_manifest, branch=branch)
+        _handoff_identity(handoff=handoff, branch=branch)
+        return manifest_candidate
+    candidates: list[tuple[str, str]] = []
+    if execution_manifest is not None:
+        candidates.append(_manifest_identity(execution_manifest, branch))
+    if handoff is not None:
+        candidates.append(_handoff_identity(handoff, branch))
+    if not candidates:
+        raise CoordinatorError("identity_evidence_required", branch)
+    if len(set(candidates)) != 1:
+        raise CoordinatorError("ambiguous_issue_identity", branch)
+    return candidates[0]
+
+
+def parse_accept(
+    raw: str,
+    order: int,
+    *,
+    execution_manifest: Mapping[str, Any] | None = None,
+    handoff: Mapping[str, Any] | None = None,
+) -> AcceptedSource:
     match = ACCEPT_RE.fullmatch((raw or "").strip())
     if not match:
         raise CoordinatorError("invalid_accept", raw)
     branch, sha = match.group(1), normalize_sha(match.group(2))
-    if not ISSUE_BRANCH_RE.fullmatch(branch) and not is_issue_branch(branch):
-        raise CoordinatorError("invalid_issue_branch", branch)
+    packet_id = issue_id = None
     if not ISSUE_BRANCH_RE.fullmatch(branch):
-        raise CoordinatorError("invalid_issue_branch", branch)
+        if not is_issue_branch(branch):
+            raise CoordinatorError("invalid_issue_branch", branch)
+        packet_id, issue_id = _resolve_branch_identity(
+            branch,
+            execution_manifest=execution_manifest,
+            handoff=handoff,
+        )
     if not is_valid_sha(sha):
         raise CoordinatorError("invalid_sha", sha)
-    return AcceptedSource(branch=branch, sha=sha, order=order)
+    return AcceptedSource(branch=branch, sha=sha, order=order, packet_id=packet_id, issue_id=issue_id)
 
 
 def parse_fast_trigger_contract(text: str) -> dict[str, Any]:
@@ -742,6 +847,24 @@ def _unique_phase_commits(
             continue
         if len(parents) == 2 and parents[1] in accepted_shas:
             continue
+        # Older Phase branches may contain the receipt-only repin commit that
+        # preceded execution-time binding. It carries no product work and must
+        # remain tolerated while all other unexpected Phase commits block.
+        generated_paths = {
+            path
+            for path in _git(
+                repo,
+                "diff-tree",
+                "--no-commit-id",
+                "-r",
+                "--name-only",
+                f"{commit}^",
+                commit,
+            ).splitlines()
+            if path
+        }
+        if generated_paths == {BASELINE_RECEIPT_REL.as_posix()}:
+            continue
         unique.append(commit)
     return unique
 
@@ -770,8 +893,6 @@ def _assemble_in_worktree(
     sources: list[AcceptedSource],
 ) -> str:
     remaining = _remaining_sources(repo, start_sha, sources)
-    if not remaining:
-        return normalize_sha(start_sha)
     with tempfile.TemporaryDirectory(prefix="phase-assemble-") as tmp:
         probe = Path(tmp) / "work"
         _git(repo, "worktree", "add", "--detach", str(probe), start_sha)
@@ -948,6 +1069,8 @@ def assemble_phase(
     pusher: PushPort | None = None,
     require_live_pr: bool = False,
     evidence_payloads: Mapping[str, Any] | None = None,
+    execution_manifest: Mapping[str, Any] | None = None,
+    handoff: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Create or update exactly one Phase branch and draft PR representation."""
 
@@ -971,19 +1094,44 @@ def assemble_phase(
     seen_shas: set[str] = set()
     ordered: list[AcceptedSource] = []
     for source in sources:
-        issue = IssueTip(source.branch, source.sha, acceptance_sha=source.sha, live_sha=source.sha)
+        bound = source
+        if not ISSUE_BRANCH_RE.fullmatch(source.branch):
+            packet_id, issue_id = _resolve_branch_identity(
+                source.branch,
+                execution_manifest=execution_manifest,
+                handoff=handoff,
+            )
+            if source.packet_id is not None and source.packet_id != packet_id:
+                raise CoordinatorError("packet_identity_mismatch", source.branch)
+            if source.issue_id is not None and source.issue_id != issue_id:
+                raise CoordinatorError("issue_identity_mismatch", source.branch)
+            bound = AcceptedSource(
+                branch=source.branch,
+                sha=source.sha,
+                order=source.order,
+                packet_id=packet_id,
+                issue_id=issue_id,
+            )
+        issue = IssueTip(
+            bound.branch,
+            bound.sha,
+            acceptance_sha=bound.sha,
+            live_sha=bound.sha,
+            packet_id=bound.packet_id,
+            issue_id=bound.issue_id,
+        )
         number = issue.issue_number
-        if source.branch in seen_branches or number in seen_numbers:
-            raise CoordinatorError("duplicate_issue", source.branch)
-        if source.sha in seen_shas:
-            raise CoordinatorError("duplicate_issue_sha", source.sha)
-        seen_branches.add(source.branch)
+        if bound.branch in seen_branches or number in seen_numbers:
+            raise CoordinatorError("duplicate_issue", bound.branch)
+        if bound.sha in seen_shas:
+            raise CoordinatorError("duplicate_issue_sha", bound.sha)
+        seen_branches.add(bound.branch)
         seen_numbers.add(number)
-        seen_shas.add(source.sha)
-        ordered.append(source)
+        seen_shas.add(bound.sha)
+        ordered.append(bound)
         _validate_source(
             repo,
-            source,
+            bound,
             github=github,
             remote=remote,
             require_evidence=require_evidence,
@@ -1029,11 +1177,12 @@ def assemble_phase(
         start_sha = development_sha
 
     revision = _candidate_revision(repository, phase_branch, development_sha, ordered)
-    identical = not remaining
-    if identical:
-        head = existing_phase or development_sha
-    else:
-        head = _assemble_in_worktree(repo, start_sha=start_sha, sources=ordered)
+    head = _assemble_in_worktree(
+        repo,
+        start_sha=start_sha,
+        sources=ordered,
+    )
+    identical = existing_phase is not None and head == existing_phase
     tree = _git(repo, "rev-parse", f"{head}^{{tree}}")
     for source in ordered:
         if not _is_ancestor(repo, source.sha, head):
@@ -1045,6 +1194,16 @@ def assemble_phase(
         verified = pusher.push_phase_ref(repo, remote, phase_branch, head)
     if verified != normalize_sha(head):
         raise CoordinatorError("unverified_phase_ref", f"{phase_branch}:remote={verified}:expected={head}")
+
+    # Do not create a PR whose moving development base differs from the
+    # receipt-bound base. The next invocation can assemble against the new
+    # protected tip without a predecessor repin merge.
+    latest_development = _remote_sha(repo, remote, development)
+    if latest_development != normalize_sha(development_sha):
+        raise CoordinatorError(
+            "base_moved_during_assembly",
+            f"{development}:assembled={development_sha}:latest={latest_development}",
+        )
 
     current = _git(repo, "rev-parse", "--abbrev-ref", "HEAD", check=False)
     if current != phase_branch:
@@ -1142,6 +1301,16 @@ def invalidate_handoff_if_head_changed(handoff: Mapping[str, Any], *, live_head:
     return result
 
 
+def _load_json_object(path: str, *, label: str) -> dict[str, Any]:
+    try:
+        payload = json.loads(Path(path).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise CoordinatorError(f"{label}_invalid", str(exc)) from exc
+    if not isinstance(payload, dict):
+        raise CoordinatorError(f"{label}_invalid", "JSON object required")
+    return payload
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("command", choices=["assemble", "consume-handoff", "full-may-start", "fast-contract"])
@@ -1152,6 +1321,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--remote", default="origin")
     parser.add_argument("--accept", action="append", default=[])
     parser.add_argument("--handoff", default="")
+    parser.add_argument(
+        "--execution-manifest",
+        default="",
+        help="Execution manifest binding governed internal packet branches to exact packet/issue IDs",
+    )
     parser.add_argument("--live-head", default="")
     parser.add_argument("--fast-status", default="")
     parser.add_argument("--required-ci", default="{}")
@@ -1193,7 +1367,22 @@ def main(argv: list[str] | None = None) -> int:
     if not args.repository or not args.accept:
         print("assemble requires --repository and one or more --accept branch@sha", file=sys.stderr)
         return 2
-    sources = [parse_accept(raw, order) for order, raw in enumerate(args.accept, start=1)]
+    try:
+        execution_manifest = _load_json_object(args.execution_manifest, label="execution_manifest") if args.execution_manifest else None
+        handoff = _load_json_object(args.handoff, label="handoff") if args.handoff else None
+        sources = [
+            parse_accept(
+                raw,
+                order,
+                execution_manifest=execution_manifest,
+                handoff=handoff,
+            )
+            for order, raw in enumerate(args.accept, start=1)
+        ]
+    except CoordinatorError as exc:
+        json.dump({"ok": False, **exc.to_dict()}, sys.stdout, sort_keys=True)
+        sys.stdout.write("\n")
+        return 2
     evidence_payloads: dict[str, Any] | None = None
     if args.evidence_json:
         try:
@@ -1228,6 +1417,8 @@ def main(argv: list[str] | None = None) -> int:
             expected_repository=args.repository,
             require_live_pr=True,
             evidence_payloads=evidence_payloads,
+            execution_manifest=execution_manifest,
+            handoff=handoff,
         )
     except (CoordinatorError, PhaseLifecycleError) as exc:
         payload = exc.to_dict() if hasattr(exc, "to_dict") else {"code": "failed", "detail": str(exc)}

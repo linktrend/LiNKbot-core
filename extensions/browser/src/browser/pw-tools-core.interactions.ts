@@ -71,6 +71,8 @@ function interactionNavigationPolicy(
 ): BrowserNavigationPolicyOptions {
   return withBrowserNavigationPolicy(opts.ssrfPolicy, {
     browserProxyMode: opts.browserProxyMode,
+    lookupFn: opts.lookupFn,
+    fetchImpl: opts.fetchImpl,
   });
 }
 

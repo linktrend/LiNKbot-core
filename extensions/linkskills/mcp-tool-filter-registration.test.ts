@@ -5,7 +5,7 @@ import { createTestPluginApi } from "openclaw/plugin-sdk/plugin-test-api";
  */
 import { describe, expect, it } from "vitest";
 import linkskillsPlugin from "./index.js";
-import { LINKSKILLS_MCP_TOOL_ALLOWLIST } from "./mcp-tool-filter.js";
+import { LINKSKILLS_MCP_MANAGED_TOOL_ALLOWLIST } from "./mcp-tool-filter.js";
 import { parseLinkskillsConfig } from "./src/config.js";
 import { buildLinkskillsFlaggedMcpToolFilter } from "./src/feature-flags.js";
 
@@ -39,7 +39,8 @@ describe("linkskills managed MCP toolFilter registration (extension scope)", () 
       telemetryDrain: false,
     });
     const partial = resolve?.();
-    expect(partial?.include).toContain("skills_list");
+    expect(partial?.include).toContain("skills_catalog_list");
+    expect(partial?.include).not.toContain("skills_list");
     expect(partial?.include).not.toContain("skills_run_start");
 
     Object.assign(liveConfig, {
@@ -48,10 +49,10 @@ describe("linkskills managed MCP toolFilter registration (extension scope)", () 
       telemetryEnqueue: true,
       telemetryDrain: true,
     });
-    expect(resolve?.()?.include?.length).toBe(LINKSKILLS_MCP_TOOL_ALLOWLIST.length);
+    expect(resolve?.()?.include?.length).toBe(LINKSKILLS_MCP_MANAGED_TOOL_ALLOWLIST.length);
     expect(
       buildLinkskillsFlaggedMcpToolFilter(parseLinkskillsConfig(liveConfig))?.include.length,
-    ).toBe(LINKSKILLS_MCP_TOOL_ALLOWLIST.length);
+    ).toBe(LINKSKILLS_MCP_MANAGED_TOOL_ALLOWLIST.length);
   });
 
   it("exposes unregisterMcpServerToolFilter on the test API surface", () => {

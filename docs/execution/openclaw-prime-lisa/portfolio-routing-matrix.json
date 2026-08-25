@@ -1,0 +1,206 @@
+{
+  "$schema": "./portfolio-routing-matrix.schema.json",
+  "schemaVersion": 1,
+  "authorityId": "openclaw-prime-lisa-dispatch-authority-v4",
+  "matrixId": "openclaw-planning-02-portfolio-routing-v2",
+  "programRunIdentity": {
+    "state": "BOUND_TO_PORTFOLIO_SINGLE_CURSOR_ACCOUNT",
+    "principalBinding": "exactly-one-cursor-account-for-entire-portfolio",
+    "apiKeyName": "LiNKdeveloper",
+    "userId": 348277621,
+    "userEmail": "product@linktrend.media",
+    "sdkVersion": "1.0.28",
+    "identitySearchPerformed": false
+  },
+  "accountCapabilityReceipt": {
+    "sha256": "sha256:23a0173dc24e67a86a87aacd7aee8b8ec93719371070a7e26fe7045b33267aeb",
+    "applicability": "APPLIES_TO_THIS_PROGRAM_RUN",
+    "modelCount": 36,
+    "autoSmartPresent": false,
+    "optimizeForCostPresent": false,
+    "genericAutoOnly": true
+  },
+  "permanentProtocol": {
+    "autoCostPreference": "preferred-only-when-exact-account-team-capability-preflight-passes",
+    "capabilityPreflightCadence": "once-per-program-run",
+    "currentRunPreflightState": "SATISFIED_BY_BOUND_ACCOUNT_RECEIPT",
+    "genericAutoAllowed": false,
+    "fastAllowed": false
+  },
+  "currentAssignmentCounts": {
+    "auto_cost": 0,
+    "composer_bounded": 3,
+    "grok_complex": 10,
+    "independent_review": 9,
+    "independent_terra_verification": 13
+  },
+  "boundMatrices": {
+    "openclaw": {
+      "path": "docs/execution/openclaw-prime-lisa/openclaw-prime-lisa.routing-matrix.json",
+      "sha256": "sha256:5d887710f65ab164ce72cc59e2515be416929c8b6208c5c21bc622cebbe0c236"
+    },
+    "platform": {
+      "path": "docs/execution/openclaw-prime-lisa/linkplatform-agent-foundation.routing-matrix.json",
+      "sha256": "sha256:2cf4b82c8caf1ce270db9fe4c38096b2c00bb938e5974b5b9c26c5b2dbe4072d"
+    },
+    "autowork": {
+      "path": "docs/execution/openclaw-prime-lisa/linkautowork-skill-watcher.routing-matrix.json",
+      "sha256": "sha256:632624765aa98e17f4e1c9bf8599557c56045121dd9fb677828ebcc36ed358a1"
+    }
+  },
+  "supersededPreparedIntents": [
+    {
+      "preparedIntentIdentity": "openclaw-prime-lisa-dispatch-authority-v3:PKT-01:auto_cost",
+      "packetId": "PKT-01",
+      "priorAuthorityId": "openclaw-prime-lisa-dispatch-authority-v3",
+      "priorRoute": "auto_cost",
+      "successorRoute": "composer_bounded",
+      "state": "IMMUTABLE_SUPERSEDED_INELIGIBLE",
+      "dispatchEligible": false,
+      "mutable": false
+    },
+    {
+      "preparedIntentIdentity": "openclaw-prime-lisa-dispatch-authority-v3:PKT-07:auto_cost",
+      "packetId": "PKT-07",
+      "priorAuthorityId": "openclaw-prime-lisa-dispatch-authority-v3",
+      "priorRoute": "auto_cost",
+      "successorRoute": "composer_bounded",
+      "state": "IMMUTABLE_SUPERSEDED_INELIGIBLE",
+      "dispatchEligible": false,
+      "mutable": false
+    }
+  ],
+  "entries": [
+    {
+      "packetId": "PKT-01",
+      "manifest": "openclaw",
+      "issueIds": ["ISS-01"],
+      "classification": "bounded reversible reconciliation from an existing branch with exact contract tests",
+      "primaryRoute": "composer_bounded",
+      "fallbackPolicy": "composer_to_grok_one_hop",
+      "requiredReviews": ["independent_terra_verification"],
+      "costPool": "cursor-models"
+    },
+    {
+      "packetId": "PKT-02",
+      "manifest": "openclaw",
+      "issueIds": ["ISS-02"],
+      "classification": "complex security-sensitive common-foundation architecture",
+      "primaryRoute": "grok_complex",
+      "fallbackPolicy": "grok_to_composer_one_hop",
+      "requiredReviews": ["independent_review", "independent_terra_verification"],
+      "costPool": "cursor-models"
+    },
+    {
+      "packetId": "PKT-03",
+      "manifest": "openclaw",
+      "issueIds": ["ISS-03"],
+      "classification": "complex cross-repository authentication authorization and exact-release integration",
+      "primaryRoute": "grok_complex",
+      "fallbackPolicy": "grok_to_composer_one_hop",
+      "requiredReviews": ["independent_review", "independent_terra_verification"],
+      "costPool": "cursor-models"
+    },
+    {
+      "packetId": "PKT-04",
+      "manifest": "openclaw",
+      "issueIds": ["ISS-04"],
+      "classification": "complex model evaluation and non-coding routing architecture",
+      "primaryRoute": "grok_complex",
+      "fallbackPolicy": "grok_to_composer_one_hop",
+      "requiredReviews": ["independent_terra_verification"],
+      "costPool": "cursor-models"
+    },
+    {
+      "packetId": "PKT-05",
+      "manifest": "openclaw",
+      "issueIds": ["ISS-05"],
+      "classification": "complex private SQLite identity and migration-sensitive state work",
+      "primaryRoute": "grok_complex",
+      "fallbackPolicy": "grok_to_composer_one_hop",
+      "requiredReviews": ["independent_review", "independent_terra_verification"],
+      "costPool": "cursor-models"
+    },
+    {
+      "packetId": "PKT-06",
+      "manifest": "openclaw",
+      "issueIds": ["ISS-06"],
+      "classification": "complex browser security and network containment",
+      "primaryRoute": "grok_complex",
+      "fallbackPolicy": "grok_to_composer_one_hop",
+      "requiredReviews": ["independent_review", "independent_terra_verification"],
+      "costPool": "cursor-models"
+    },
+    {
+      "packetId": "PKT-07",
+      "manifest": "openclaw",
+      "issueIds": ["ISS-07"],
+      "classification": "bounded reversible integration against qualified exact Google skill and wrapper contracts",
+      "primaryRoute": "composer_bounded",
+      "fallbackPolicy": "composer_to_grok_one_hop",
+      "requiredReviews": ["independent_terra_verification"],
+      "costPool": "cursor-models"
+    },
+    {
+      "packetId": "PKT-08",
+      "manifest": "openclaw",
+      "issueIds": ["ISS-08"],
+      "classification": "complex cross-provider MCP protocol migration",
+      "primaryRoute": "grok_complex",
+      "fallbackPolicy": "grok_to_composer_one_hop",
+      "requiredReviews": ["independent_review", "independent_terra_verification"],
+      "costPool": "cursor-models"
+    },
+    {
+      "packetId": "PKT-09",
+      "manifest": "openclaw",
+      "issueIds": ["ISS-09"],
+      "classification": "complex encryption backup restore infrastructure and deployment recreation",
+      "primaryRoute": "grok_complex",
+      "fallbackPolicy": "grok_to_composer_one_hop",
+      "requiredReviews": ["independent_review", "independent_terra_verification"],
+      "costPool": "cursor-models"
+    },
+    {
+      "packetId": "PKT-10",
+      "manifest": "openclaw",
+      "issueIds": ["ISS-10"],
+      "classification": "bounded repetitive schema-backed inactive blueprints with objective tests and easy rollback",
+      "primaryRoute": "composer_bounded",
+      "fallbackPolicy": "composer_to_grok_one_hop",
+      "requiredReviews": ["independent_terra_verification"],
+      "costPool": "cursor-models"
+    },
+    {
+      "packetId": "PKT-11",
+      "manifest": "openclaw",
+      "issueIds": ["ISS-11"],
+      "classification": "complex long-running integrated acceptance and deployment canary",
+      "primaryRoute": "grok_complex",
+      "fallbackPolicy": "grok_to_composer_one_hop",
+      "requiredReviews": ["independent_review", "independent_terra_verification"],
+      "costPool": "cursor-models"
+    },
+    {
+      "packetId": "LP-01",
+      "manifest": "platform",
+      "issueIds": ["ISS-01"],
+      "classification": "complex authentication authorization approval evidence and possible schema migration",
+      "primaryRoute": "grok_complex",
+      "fallbackPolicy": "grok_to_composer_one_hop",
+      "requiredReviews": ["independent_review", "independent_terra_verification"],
+      "costPool": "cursor-models"
+    },
+    {
+      "packetId": "AW-01",
+      "manifest": "autowork",
+      "issueIds": ["ISS-01"],
+      "classification": "complex signed cross-provider contract durable idempotency and recovery work",
+      "primaryRoute": "grok_complex",
+      "fallbackPolicy": "grok_to_composer_one_hop",
+      "requiredReviews": ["independent_review", "independent_terra_verification"],
+      "costPool": "cursor-models"
+    }
+  ],
+  "dispatchState": "HOLD_UNTIL_EXECUTION_APPROVAL_PREREQUISITES_BUDGET_AND_FIXED_ROUTE_READBACK"
+}
