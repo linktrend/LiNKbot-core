@@ -847,6 +847,9 @@ def _unique_phase_commits(
             continue
         if len(parents) == 2 and parents[1] in accepted_shas:
             continue
+        # Older Phase branches may contain the receipt-only repin commit that
+        # preceded execution-time binding. It carries no product work and must
+        # remain tolerated while all other unexpected Phase commits block.
         generated_paths = {
             path
             for path in _git(
@@ -888,7 +891,6 @@ def _assemble_in_worktree(
     *,
     start_sha: str,
     sources: list[AcceptedSource],
-    baseline_sha: str,
 ) -> str:
     remaining = _remaining_sources(repo, start_sha, sources)
     with tempfile.TemporaryDirectory(prefix="phase-assemble-") as tmp:
@@ -920,7 +922,6 @@ def _assemble_in_worktree(
                         check=False,
                     )
                     raise CoordinatorError("conflicting_commits", source.branch)
-            _bind_phase_baseline_receipt(probe, baseline_sha)
             head = normalize_sha(_git(probe, "rev-parse", "HEAD"))
             _git(repo, "update-ref", "refs/phase-packager/assemble", head)
         finally:
@@ -932,50 +933,6 @@ def _assemble_in_worktree(
                 check=False,
             )
     return head
-
-
-def _bind_phase_baseline_receipt(repo: Path, baseline_sha: str) -> None:
-    """Bind the generated fork receipt to this Phase PR's immutable base."""
-
-    path = repo / BASELINE_RECEIPT_REL
-    if not path.is_file():
-        return
-    try:
-        payload = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError) as exc:
-        raise CoordinatorError("baseline_receipt_invalid", str(exc)) from exc
-    if not isinstance(payload, dict):
-        raise CoordinatorError("baseline_receipt_invalid", "JSON object required")
-    baseline = normalize_sha(baseline_sha)
-    if not is_valid_sha(baseline):
-        raise CoordinatorError("baseline_commit_invalid", baseline_sha)
-    baseline_tree = normalize_sha(_git(repo, "rev-parse", f"{baseline}^{{tree}}"))
-    if not is_valid_sha(baseline_tree):
-        raise CoordinatorError("baseline_tree_invalid", baseline_tree)
-    if payload.get("baselineCommit") == baseline and payload.get("baselineTree") == baseline_tree:
-        return
-    payload["baselineCommit"] = baseline
-    payload["baselineTree"] = baseline_tree
-    path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
-    _git(repo, "add", str(BASELINE_RECEIPT_REL))
-    commit = subprocess.run(
-        [
-            "git",
-            "-c",
-            "user.name=Linktrend Phase Packager",
-            "-c",
-            "user.email=phase-packager@linktrend.invalid",
-            "commit",
-            "-m",
-            "phase: bind baseline receipt to protected base",
-        ],
-        cwd=repo,
-        text=True,
-        capture_output=True,
-        check=False,
-    )
-    if commit.returncode:
-        raise CoordinatorError("baseline_receipt_commit_failed", (commit.stderr or commit.stdout).strip())
 
 
 def _write_isolated_state(repo: Path, phase_branch: str, record: Mapping[str, Any], handoff: Mapping[str, Any]) -> Path:
@@ -1224,7 +1181,6 @@ def assemble_phase(
         repo,
         start_sha=start_sha,
         sources=ordered,
-        baseline_sha=development_sha,
     )
     identical = existing_phase is not None and head == existing_phase
     tree = _git(repo, "rev-parse", f"{head}^{{tree}}")
