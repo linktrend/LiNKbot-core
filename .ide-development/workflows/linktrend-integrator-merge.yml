@@ -67,10 +67,26 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  mode-guard:
+    name: Reject unknown Full Suite dispatch mode
+    if: >-
+      github.event_name == 'workflow_dispatch' &&
+      inputs.mode != 'phase' && inputs.mode != 'recovery' && inputs.mode != 'reconciled'
+    runs-on: ubuntu-24.04-arm
+    permissions: {}
+    steps:
+      - name: Fail closed on unknown dispatch mode
+        env:
+          DISPATCH_MODE: ${{ inputs.mode }}
+        run: |
+          echo "full_suite_dispatch_mode_invalid=${DISPATCH_MODE}"
+          exit 1
+
   full:
     name: Linktrend Full Suite
     if: >-
-      ((github.event_name == 'workflow_dispatch' && inputs.mode != 'reconciled' && inputs.mode != 'recovery') || github.event.label.name == 'linktrend-full-suite') &&
+      ((github.event_name == 'workflow_dispatch' && inputs.mode == 'phase') ||
+      (github.event_name == 'pull_request' && github.event.label.name == 'linktrend-full-suite')) &&
       (github.event_name == 'workflow_dispatch' || (startsWith(github.event.pull_request.head.ref, 'phase/') && github.event.pull_request.head.repo.full_name == github.repository))
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 60
@@ -356,10 +372,10 @@ jobs:
     permissions:
       contents: read
       actions: read
-      pull-requests: read
     env:
       EXPECTED_COMMIT: ${{ inputs.expected_commit }}
       EXPECTED_TREE: ${{ inputs.expected_tree }}
+      EXPECTED_REF: ${{ github.ref_name }}
       PACKAGE_VERSION: ${{ inputs.package_version }}
       INSTALLED_STATE_DIGEST: ${{ inputs.installed_state_digest }}
       DEPENDENCY_DIGEST: ${{ inputs.dependency_digest }}
@@ -372,7 +388,7 @@ jobs:
       - name: Checkout exact development ref (no PR, no empty commit)
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          ref: development
+          ref: ${{ github.ref_name }}
           fetch-depth: 0
           persist-credentials: false
 
@@ -381,8 +397,17 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
+          [[ "${EXPECTED_REF}" == "development" ]] || { echo recovery_ref_invalid:expected=development:actual="${EXPECTED_REF}"; exit 1; }
           [[ "${EXPECTED_COMMIT}" =~ ^[0-9a-f]{40}$ ]] || { echo recovery_commit_invalid; exit 1; }
           [[ "${EXPECTED_TREE}" =~ ^[0-9a-f]{40}$ ]] || { echo recovery_tree_invalid; exit 1; }
+          actual_commit="$(git rev-parse HEAD)"
+          actual_tree="$(git rev-parse 'HEAD^{tree}')"
+          test "${actual_commit}" = "${EXPECTED_COMMIT}" || {
+            echo "recovery_stale_commit:actual=${actual_commit}:expected=${EXPECTED_COMMIT}"; exit 1;
+          }
+          test "${actual_tree}" = "${EXPECTED_TREE}" || {
+            echo "recovery_tree_mismatch:actual=${actual_tree}:expected=${EXPECTED_TREE}"; exit 1;
+          }
           [[ "${DEPENDENCY_DIGEST}" =~ ^sha256:[0-9a-f]{64}$ ]] || { echo recovery_dependency_digest_invalid; exit 1; }
           test -n "${SECURITY_WORKFLOW_NAME}" || { echo recovery_security_workflow_missing; exit 1; }
           python3 scripts/gitops/require_exact_ci_success.py --repository "${GITHUB_REPOSITORY}" --head "${EXPECTED_COMMIT}" --config-key fastWorkflowName
@@ -403,7 +428,7 @@ jobs:
             | tee "${RUNNER_TEMP}/recovery-plan.json"
           test "$(jq -r .opensPullRequest "${RUNNER_TEMP}/recovery-plan.json")" = "false"
           test "$(jq -r .createsCommit "${RUNNER_TEMP}/recovery-plan.json")" = "false"
-          printf 'SOURCE_BRANCH=development\nEXPECTED_HEAD=%s\n' "${EXPECTED_COMMIT}" >> "$GITHUB_ENV"
+          printf 'SOURCE_BRANCH=development\n' >> "$GITHUB_ENV"
 
       - name: Run full profile for recovery receipt
         env:
@@ -413,7 +438,7 @@ jobs:
           python3 scripts/gitops/generated_output_closure.py --finalize
           python3 scripts/gitops/run_delivery_profile.py full
           python3 scripts/gitops/require_exact_ci_success.py \
-            --repository "${GITHUB_REPOSITORY}" --head "${EXPECTED_HEAD}"
+            --repository "${GITHUB_REPOSITORY}" --head "${EXPECTED_COMMIT}"
 
       - name: Write exact recovery full-suite receipt
         if: success()
@@ -451,6 +476,14 @@ jobs:
               profile_files=[str(config_path.relative_to(Path.cwd()))],
               source_branch=os.environ["SOURCE_BRANCH"],
           )
+          if identity.head_commit != os.environ["EXPECTED_COMMIT"]:
+              raise SystemExit(
+                  f"recovery_receipt_stale_commit:{identity.head_commit}:{os.environ['EXPECTED_COMMIT']}"
+              )
+          if identity.git_tree != os.environ["EXPECTED_TREE"]:
+              raise SystemExit(
+                  f"recovery_receipt_tree_mismatch:{identity.git_tree}:{os.environ['EXPECTED_TREE']}"
+              )
           summary = Path("full-suite-summary.txt")
           summary.write_text(
               "workflow=Linktrend Recovery Receipt\n"
