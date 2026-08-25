@@ -18,6 +18,7 @@ on:
       - "docs/execution/openclaw-prime-lisa/baseline-ci-receipt.json"
       - "apps/**"
       - "extensions/**"
+      - "linkbots/**"
       - "packages/**"
       - "scripts/**"
       - "security/opengrep/**"
