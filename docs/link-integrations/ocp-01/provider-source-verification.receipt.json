@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "kind": "openclaw-ocp-01-provider-source-verification",
+  "status": "source_verified_external_qualification_hold",
+  "repository": "linktrend/openclaw_prime",
+  "consumerBase": {
+    "commit": "c75c8fb8f7d2e0b0ef801cef03e7cbc70bbb85f7",
+    "tree": "1072bcbdd236e2bcb0a67e7556cb35adbf0ff157"
+  },
+  "verificationCheckpoint": {
+    "commit": "eeb0d4feff94c0d2513e16f0236ba85a994b20cb",
+    "tree": "cc22a957eb650b05d50f9ae5f4bd2d75aaf7ab21",
+    "changedPaths": ["docs/link-integrations/ocp-01/verify-provider-pins.mjs"]
+  },
+  "pinManifest": {
+    "path": "docs/link-integrations/ocp-01/provider-pins.json",
+    "sha256": "sha256:f5f3099fcb9427e76257eda515a2afcf354c82cc043f9c880cea1ffca4c0df53",
+    "providerCount": 5,
+    "artifactDigestCount": 20
+  },
+  "adapterPinSources": {
+    "platform": ["extensions/linkplatform/src/claims.ts"],
+    "brain": ["extensions/linkbrain/src/v2.ts", "extensions/linkbrain/src/v2-pins.ts"],
+    "skills": ["extensions/linkskills/src/exact-release.ts"],
+    "libraries": [
+      "extensions/linklibraries/src/revision2.ts",
+      "extensions/linklibraries/src/revision2-pins.ts"
+    ],
+    "autowork": [
+      "extensions/linkautowork/src/contract.ts",
+      "extensions/linkautowork/src/contract-pins.ts"
+    ]
+  },
+  "checks": {
+    "providerPinVerifier": "PASS: five providers and twenty artifact digests resolve against the exact manifest",
+    "consumerPinBinding": "PASS: canonical adapter and pin modules contain exact commit/tree/contract/schema identities",
+    "replacementRefProtection": "PASS: verifier uses git --no-replace-objects for provider tree and artifact bytes",
+    "syntax": "PASS: node --check docs/link-integrations/ocp-01/verify-provider-pins.mjs",
+    "diffCheck": "PASS: git diff --check",
+    "providerQualification": "HOLD: qualification and accepted provider-release receipts remain external evidence",
+    "runtimeOrLiveProviderCalls": false
+  },
+  "externalHolds": [
+    "LiNKplatform LP-01 accepted release/provider receipt",
+    "LiNKbrain accepted provider release receipt",
+    "LiNKskills qualified exact release and provider receipt where required",
+    "LiNKlibraries explicit no-current-requirement closure",
+    "LiNKautowork accepted provider contract/release receipt where included"
+  ],
+  "safety": {
+    "providerRepositoriesMutated": false,
+    "upstreamOpenClawMutated": false,
+    "runtimeOrVpsMutated": false,
+    "credentialsOrPrivateDataRecorded": false,
+    "liveActivationClaimed": false
+  }
+}
