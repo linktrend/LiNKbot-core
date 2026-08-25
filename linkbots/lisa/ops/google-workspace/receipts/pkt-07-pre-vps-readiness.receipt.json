@@ -70,6 +70,11 @@
   "openclawOwnedProof": {
     "workspaceContract": "pass",
     "negativeAccessAndScopeAssertions": "pass",
+    "canonicalFocusedTest": {
+      "command": "node scripts/run-vitest.mjs linkbots/lisa/ops/google-workspace/google-workspace.test.ts",
+      "status": "blocked-before-test",
+      "reason": "ERR_MODULE_NOT_FOUND: p-map is unavailable in the isolated worktree"
+    },
     "offlineFocusedTests": { "command": "node --test linkbots/lisa/ops/google-workspace/google-workspace.test.ts", "passed": 18, "failed": 0 },
     "shellSyntax": { "scripts": 5, "passed": 5, "failed": 0 },
     "providerRuntimeExecuted": false,
