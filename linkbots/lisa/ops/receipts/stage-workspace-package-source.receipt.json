@@ -1,8 +1,8 @@
 {
   "receiptType": "lisa_stage_workspace_package_source_receipt_v1",
-  "status": "blocked-hash-mismatch",
+  "status": "verified-source",
   "packageId": "lisa-stage-bounded-procedures-renderer-and-domain-modules",
-  "manifestSha256": "ff6c4fedc6eac45b9b0085f8d22924e226e7f76c289c944652fcea00e33ffbe0",
+  "manifestSha256": "f723e2d43b63f98acf2ea6487ec8f1c4c547baa2ce93c7fc451b28d141c274c1",
   "fileCount": 45,
   "mutableSeeds": false,
   "liveMutationAllowed": false,
