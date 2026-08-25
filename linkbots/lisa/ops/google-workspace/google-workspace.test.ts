@@ -1008,5 +1008,62 @@ describe("VPS Lisa Google Workspace wrappers", () => {
     assert.equal(realCliProof.summary.successfulExitCount, emittedRoutes.size);
     assert.equal(realCliProof.summary.failedExitCount, 0);
     assert.ok(realCliProof.acceptedCommands.every((item) => item.exitStatus === 0));
+
+    const preVpsReadiness = JSON.parse(
+      readFileSync(path.join(root, "receipts/pkt-07-pre-vps-readiness.receipt.json"), "utf8"),
+    ) as {
+      status: string;
+      consumer: { commit: string; tree: string; ownedPath: string };
+      providerObservations: Array<{
+        ref: string;
+        commit: string;
+        tree: string;
+        catalogue: {
+          requiredSkillIds: string[];
+          presentSkillIds: string[];
+          qualificationState: string;
+        };
+      }>;
+      openclawOwnedProof: {
+        offlineFocusedTests: { passed: number; failed: number };
+        shellSyntax: { passed: number; failed: number };
+        oauthPerformed: boolean;
+        liveGoogleCallsPerformed: boolean;
+        vpsTouched: boolean;
+        productionTouched: boolean;
+      };
+      qualification: { required: boolean; state: string; executionGate: string };
+    };
+    assert.equal(preVpsReadiness.status, "external-hold");
+    assert.equal(preVpsReadiness.consumer.commit, "c75c8fb8f7d2e0b0ef801cef03e7cbc70bbb85f7");
+    assert.equal(preVpsReadiness.consumer.tree, "1072bcbdd236e2bcb0a67e7556cb35adbf0ff157");
+    assert.equal(preVpsReadiness.consumer.ownedPath, "linkbots/lisa/ops/google-workspace");
+    assert.deepEqual(
+      preVpsReadiness.providerObservations.map((observation) => observation.ref),
+      ["refs/heads/development", "refs/heads/main"],
+    );
+    assert.ok(
+      preVpsReadiness.providerObservations.every((observation) =>
+        observation.catalogue.requiredSkillIds.every(
+          (skillId) => !observation.catalogue.presentSkillIds.includes(skillId),
+        ),
+      ),
+    );
+    assert.ok(
+      preVpsReadiness.providerObservations.every(
+        (observation) => observation.catalogue.qualificationState === "required-entries-absent",
+      ),
+    );
+    assert.equal(preVpsReadiness.openclawOwnedProof.offlineFocusedTests.passed, 18);
+    assert.equal(preVpsReadiness.openclawOwnedProof.offlineFocusedTests.failed, 0);
+    assert.equal(preVpsReadiness.openclawOwnedProof.shellSyntax.passed, 5);
+    assert.equal(preVpsReadiness.openclawOwnedProof.shellSyntax.failed, 0);
+    assert.equal(preVpsReadiness.openclawOwnedProof.oauthPerformed, false);
+    assert.equal(preVpsReadiness.openclawOwnedProof.liveGoogleCallsPerformed, false);
+    assert.equal(preVpsReadiness.openclawOwnedProof.vpsTouched, false);
+    assert.equal(preVpsReadiness.openclawOwnedProof.productionTouched, false);
+    assert.equal(preVpsReadiness.qualification.required, true);
+    assert.equal(preVpsReadiness.qualification.state, "unavailable");
+    assert.match(preVpsReadiness.qualification.executionGate, /fail-closed/);
   });
 });
