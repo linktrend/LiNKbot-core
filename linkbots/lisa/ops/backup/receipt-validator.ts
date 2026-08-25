@@ -5,6 +5,8 @@ const RELATIVE_PATH_PATTERN = /^[^/\\][^\\]*$/u;
 const SECRET_NAME_PATTERN = /^[A-Za-z0-9._:/-]{1,256}$/u;
 const VERSION_PATTERN = /^[A-Za-z0-9._:-]{1,64}$/u;
 const DESTINATION_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]{1,127}$/u;
+const URI_PATTERN = /^[A-Za-z][A-Za-z0-9+.-]*:[A-Za-z0-9\-._~:/?#[\]@!$&'()*+,;=%]*$/u;
+const INVALID_PERCENT_ESCAPE_PATTERN = /%(?![0-9a-f]{2})/iu;
 
 export type ReceiptValidation = Readonly<{
   valid: boolean;
@@ -44,6 +46,17 @@ function hasExactKeys(
 
 function isSafeHash(value: unknown): value is string {
   return typeof value === "string" && HASH_PATTERN.test(value);
+}
+
+function isSchemaUri(value: unknown): value is string {
+  // Match backup-receipt.schema.json's `format: uri`; URL.canParse alone normalizes
+  // raw spaces/backslashes and accepts malformed percent escapes.
+  return (
+    typeof value === "string" &&
+    URI_PATTERN.test(value) &&
+    !INVALID_PERCENT_ESCAPE_PATTERN.test(value) &&
+    URL.canParse(value)
+  );
 }
 
 function isNonNegativeInteger(value: unknown): value is number {
@@ -223,10 +236,7 @@ function validatePrivateSnapshot(value: unknown, issues: string[]): void {
   ) {
     addIssue(issues, `${referencePath}.version:reference`);
   }
-  if (
-    typeof value.keyReference.workloadIdentityAudience !== "string" ||
-    !value.keyReference.workloadIdentityAudience.startsWith("https://")
-  ) {
+  if (!isSchemaUri(value.keyReference.workloadIdentityAudience)) {
     addIssue(issues, `${referencePath}.workloadIdentityAudience:reference`);
   }
 }

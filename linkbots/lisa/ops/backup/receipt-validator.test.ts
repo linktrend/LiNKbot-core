@@ -19,14 +19,14 @@ const REFERENCE = {
     "https://iam.googleapis.com/projects/synthetic/locations/global/workloadIdentityPools/lisa",
 };
 
-async function makeReceipt() {
+async function makeReceipt(reference = REFERENCE) {
   const sourceArchive = createSourceArchive([
     { path: "config/openclaw.json", kind: "source", bytes: new TextEncoder().encode("config") },
     { path: "ops/procedure.md", kind: "procedure", bytes: new TextEncoder().encode("procedure") },
   ]);
   const snapshot = await encryptPrivateSnapshot({
     plaintext: new TextEncoder().encode("SQLite format 3\0synthetic"),
-    keyReference: REFERENCE,
+    keyReference: reference,
     nonce: NONCE,
     resolveKey: async () => KEY,
   });
@@ -100,5 +100,39 @@ describe("PKT-09 offline receipt validator", () => {
         "retention:promotion",
       ]),
     );
+  });
+
+  it.each([
+    "https://",
+    "https://?audience=lisa",
+    "https://#audience",
+    "https://[invalid-host",
+    "https://iam.googleapis.com/%zz",
+    "https://iam.googleapis.com/path with spaces",
+    "not a uri",
+  ])("rejects malformed workload identity audience URI: %s", async (audience) => {
+    const receipt = await makeReceipt();
+    const result = validateBackupReceipt({
+      ...receipt,
+      privateSnapshot: {
+        ...receipt.privateSnapshot,
+        keyReference: {
+          ...receipt.privateSnapshot.keyReference,
+          workloadIdentityAudience: audience,
+        },
+      },
+    });
+    expect(result.valid).toBe(false);
+    expect(result.issues).toContain(
+      "privateSnapshot.keyReference.workloadIdentityAudience:reference",
+    );
+  });
+
+  it.each([
+    "https://iam.googleapis.com/projects/synthetic/locations/global/workloadIdentityPools/lisa",
+    "https://iam.googleapis.com/audience?profile=lisa#v1",
+  ])("accepts schema-valid workload identity audience URI: %s", async (audience) => {
+    const receipt = await makeReceipt({ ...REFERENCE, workloadIdentityAudience: audience });
+    expect(validateBackupReceipt(receipt)).toEqual({ valid: true, issues: [] });
   });
 });
