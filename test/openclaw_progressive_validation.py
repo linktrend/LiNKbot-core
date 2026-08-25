@@ -25,22 +25,22 @@ def git(root: Path, *args: str) -> str:
 
 def receipt(root: Path) -> dict[str, object]:
     return {
-        "schemaVersion": 1,
+        "schemaVersion": 2,
         "kind": MODULE.BASELINE_RECEIPT_KIND,
         "repository": "linktrend/openclaw_prime",
         "baselineCommit": git(root, "rev-parse", "HEAD"),
         "baselineTree": git(root, "rev-parse", "HEAD^{tree}"),
         "workflow": "CI",
-        "runId": 1,
+        "baselineRunId": MODULE.BASELINE_RUN_ID,
         "policyId": MODULE.BASELINE_RECEIPT_POLICY_ID,
         "policyDigest": MODULE.BASELINE_RECEIPT_POLICY_DIGEST,
-        "inheritedFailures": [{
-            "job": MODULE.BASELINE_RECEIPT_JOB,
-            "tests": list(MODULE.BASELINE_RECEIPT_TESTS),
-            "changedPathContract": list(MODULE.BASELINE_RECEIPT_CHANGED_PATH_CONTRACT),
-        }],
-        "baselineChecks": {"checkDocs": "success", "checksNodeCoreTestNondistShard": "failure"},
-        "reuse": "exact baseline commit/tree, policy digest, workflow and unchanged failure contract only",
+        "inheritedFailures": MODULE._canonical_failure_contract(),
+        "baselineChecks": {
+            "failedJobs": sorted(MODULE.INHERITED_FAILURE_JOBS),
+            "failureCount": len(MODULE.INHERITED_FAILURE_JOBS),
+            "failedContexts": list(MODULE.INHERITED_FAILURE_CONTEXTS),
+        },
+        "reuse": "exact baseline commit/tree, policy digest, workflow, run and complete unchanged failure contract only",
         "changedFailuresBlock": True,
         "scope": "fork-only",
         "upstreamMutation": False,
@@ -136,9 +136,9 @@ class ProgressiveValidationTests(unittest.TestCase):
             baseline_tree=execution_tree,
             candidate_ref=candidate,
         )
-        self.assertTrue(result["ok"], result)
-        self.assertEqual(result["baselineCommit"], execution_base)
-        self.assertEqual(result["baselineTree"], execution_tree)
+        self.assertFalse(result["ok"], result)
+        self.assertIn("baseline_commit", result["errors"])
+        self.assertIn("baseline_tree", result["errors"])
         self.assertEqual(result["receiptBaselineCommit"], receipt_baseline)
 
     def test_stale_receipt_rebind_still_blocks_changed_failure_contract(self):
@@ -184,6 +184,69 @@ class ProgressiveValidationTests(unittest.TestCase):
         result = MODULE.validate_baseline_ci_receipt(root=root, receipt=rec)
         self.assertTrue(result["ok"], result)
         self.assertTrue(result["generatedOnly"])
+
+    def test_complete_failure_contract_requires_exact_set(self):
+        tmp, root, rec = self.fixture(); self.addCleanup(tmp.cleanup)
+        exact = MODULE.validate_baseline_ci_receipt(
+            root=root,
+            receipt=rec,
+            observed_failures=list(sorted(MODULE.INHERITED_FAILURE_CONTEXTS)),
+        )
+        self.assertTrue(exact["ok"], exact)
+        self.assertFalse(
+            MODULE.validate_baseline_ci_receipt(
+                root=root,
+                receipt=rec,
+                observed_failures=list(sorted(MODULE.INHERITED_FAILURE_CONTEXTS))[:-1],
+            )["protectedAdmission"]
+        )
+        self.assertFalse(
+            MODULE.validate_baseline_ci_receipt(
+                root=root,
+                receipt=rec,
+                observed_failures=list(sorted(MODULE.INHERITED_FAILURE_CONTEXTS)) + ["new-failure"],
+            )["protectedAdmission"]
+        )
+
+    def test_changed_failure_contract_path_blocks_even_with_exact_failures(self):
+        tmp, root, rec = self.fixture(); self.addCleanup(tmp.cleanup)
+        changed = root / "src" / "state" / "lisa-principal-task-store.ts"
+        changed.parent.mkdir(parents=True); changed.write_text("changed\n", encoding="utf-8")
+        git(root, "add", str(changed.relative_to(root))); git(root, "commit", "-qm", "contract change")
+        result = MODULE.validate_baseline_ci_receipt(
+            root=root,
+            receipt=rec,
+            observed_failures=list(sorted(MODULE.INHERITED_FAILURE_JOBS)),
+        )
+        self.assertFalse(result["ok"])
+        self.assertIn("changed_failure_contract", result["errors"])
+        self.assertFalse(result["protectedAdmission"])
+
+    def test_protected_admission_allows_only_controller_and_receipt_scope(self):
+        result = {
+            "ok": True,
+            "classification": "inherited_baseline_failure",
+            "baselineCommit": MODULE.BASELINE_COMMIT,
+            "baselineTree": MODULE.BASELINE_TREE,
+            "receiptBaselineCommit": MODULE.BASELINE_COMMIT,
+            "receiptBaselineTree": MODULE.BASELINE_TREE,
+            "changedFailureContractPaths": [],
+            "changedPaths": sorted({
+                ".github/openclaw_progressive_validation.py",
+                ".github/workflows/ci.yml",
+                "test/openclaw_progressive_validation.py",
+                MODULE.BASELINE_RECEIPT_PATH,
+                MODULE.BASELINE_RECEIPT_DOC_PATH,
+            }),
+            "errors": [],
+        }
+        self.assertTrue(
+            MODULE.protected_inherited_failure_admissible(
+                result, observed_failures=sorted(MODULE.INHERITED_FAILURE_CONTEXTS)
+            )
+        )
+        result["changedPaths"].append("README.md")
+        self.assertFalse(MODULE.protected_inherited_failure_admissible(result))
 
 
 if __name__ == "__main__":

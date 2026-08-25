@@ -3408,17 +3408,28 @@ jobs:
         env:
           BASELINE_REF: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.event.pull_request.base.ref) || 'origin/development' }}
           BASELINE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.sha }}
+          OBSERVED_RESULTS: |
+            check-additional-shard=${{ needs.check-additional-shard.result }}
+            check-docs=${{ needs.check-docs.result }}
+            check-shard=${{ needs.check-shard.result }}
+            checks-fast-core=${{ needs.checks-fast-core.result }}
+            checks-fast-plugin-contracts-shard=${{ needs.checks-fast-plugin-contracts-shard.result }}
+            checks-node-core-test-nondist-shard=${{ needs.checks-node-core-test-nondist-shard.result }}
         run: |
           set -euo pipefail
+          observed_failures="$(printf '%s\n' "${OBSERVED_RESULTS}" | awk -F= '$2 == "failure" { print $1 }' | sort | jq -Rsc 'split("\n") | map(select(length > 0))')"
           result="$(python3 .github/openclaw_progressive_validation.py \
             --root . \
             --receipt docs/execution/openclaw-prime-lisa/baseline-ci-receipt.json \
             --baseline-ref "${BASELINE_REF}" \
             --baseline-sha "${BASELINE_SHA}" \
-            --candidate-ref HEAD || true)"
+            --candidate-ref HEAD \
+            --observed-failures "${observed_failures}" || true)"
           echo "${result}"
           classification="$(jq -r '.classification // "blocking"' <<<"${result}")"
+          protected_admission="$(jq -r '.protectedAdmission // false' <<<"${result}")"
           echo "classification=${classification}" >> "${GITHUB_OUTPUT}"
+          echo "protected_admission=${protected_admission}" >> "${GITHUB_OUTPUT}"
 
       - name: Verify selected CI lanes
         shell: bash
@@ -3457,7 +3468,7 @@ jobs:
             result="${entry#*=}"
             echo "${name}: ${result}"
             if [[ "$result" != "success" ]]; then
-              if [[ "$name" == "checks-node-core-test-nondist-shard" && "$result" == "failure" && "${{ steps.inherited-baseline.outputs.classification }}" == "inherited_baseline_failure" ]]; then
+              if [[ "$result" == "failure" && "${{ steps.inherited-baseline.outputs.protected_admission }}" == "true" ]]; then
                 echo "::warning title=Inherited baseline failure::${name} is unchanged and bound to the exact baseline receipt"
                 continue
               fi
@@ -3474,7 +3485,7 @@ jobs:
             case "$result" in
               success | skipped) ;;
               *)
-                if [[ "$name" == "checks-node-core-test-nondist-shard" && "$result" == "failure" && "${{ steps.inherited-baseline.outputs.classification }}" == "inherited_baseline_failure" ]]; then
+                if [[ "$result" == "failure" && "${{ steps.inherited-baseline.outputs.protected_admission }}" == "true" ]]; then
                   echo "::warning title=Inherited baseline failure::${name} is unchanged and bound to the exact baseline receipt"
                   continue
                 fi

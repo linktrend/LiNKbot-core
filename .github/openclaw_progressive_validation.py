@@ -16,6 +16,9 @@ from pathlib import Path
 
 POLICY_ID = "openclaw-fork-progressive-validation-v1"
 POLICY_DIGEST = "sha256:fa3f448e33fbc05e4b9676628a8be1f67bb020cc0baf58da6dd8fe720d0c26f0"
+BASELINE_RUN_ID = 32905475467
+BASELINE_COMMIT = "88b3c767f5bab799228deb4c7371c9f80cca7121"
+BASELINE_TREE = "016416564d5064f2ce500522d6d63a0b98565b1f"
 FAILURE_JOB = "checks-node-core-test-nondist-shard"
 BASELINE_RECEIPT_KIND = "openclaw-fork-baseline-ci-receipt"
 BASELINE_RECEIPT_POLICY_ID = POLICY_ID
@@ -32,14 +35,121 @@ BASELINE_RECEIPT_CHANGED_PATH_CONTRACT = (
     "scripts/check-openclawdevelopmentplan01-section-13.3-ledger.mjs",
     "docs/execution/openclawdevelopmentplan01/section-13.3",
 )
-FAILURE_PATHS = frozenset(
+# This is the complete failure contract observed in Full run 32905475467.
+# Every row is retained so a missing or newly introduced failure cannot be
+# mistaken for inherited evidence. Paths are the source/test contracts named
+# by the failing job output; they remain blocking when changed.
+INHERITED_FAILURE_CONTRACT = (
     {
-        "test/scripts/check-openclawdevelopmentplan01-section-13.3-ledger.test.ts",
-        "scripts/check-openclawdevelopmentplan01-section-13.3-ledger.mjs",
-        "docs/execution/openclawdevelopmentplan01/section-13.3",
-    }
+        "job": "checks-fast-contracts-plugins-b",
+        "tests": ("src/plugins/contracts/plugin-sdk-package-contract-guardrails.test.ts",),
+        "changedPathContract": (
+            "src/plugins/contracts/plugin-sdk-package-contract-guardrails.test.ts",
+            "src/plugin-sdk/browser-policy.ts",
+        ),
+    },
+    {
+        "job": "checks-fast-max-lines-ratchet",
+        "tests": ("src/state/lisa-principal-task-store.ts",),
+        "changedPathContract": ("src/state/lisa-principal-task-store.ts",),
+    },
+    {
+        "job": "check-docs",
+        "tests": ("format:check",),
+        "changedPathContract": (
+            "linkbots/lisa/ops/deployment/pkt11-source-base-preflight.mjs",
+            "linkbots/lisa/ops/deployment/pkt11-source-base-preflight.test.mjs",
+            "linkbots/lisa/ops/deployment/pre-vps-rehearsal.test.mjs",
+            "linkbots/lisa/ops/google-workspace/google-workspace.test.ts",
+        ),
+    },
+    {
+        "job": "check-additional-extension-package-boundary",
+        "tests": ("plugin-sdk boundary dts",),
+        "changedPathContract": (
+            "src/agents/profile-manifest.ts",
+            "src/gateway/server-methods/agents.ts",
+            "src/system-agent/operations-execute.ts",
+        ),
+    },
+    {
+        "job": "check-test-types",
+        "tests": ("tsgo:test:root",),
+        "changedPathContract": (
+            "linkbots/blueprints/business-plan-workflow.ts",
+            "src/agents/profile-manifest.ts",
+            "src/agents/sandbox/browser-policy.test.ts",
+            "src/commands/agents.commands.add.ts",
+            "src/gateway/server-methods/agents.ts",
+            "src/system-agent/operations-execute.ts",
+        ),
+    },
+    {
+        "job": "check-dependencies",
+        "tests": ("deadcode:full",),
+        "changedPathContract": (
+            "extensions/browser/src/browser/navigation-guard.ts",
+            "src/agents/noncoding-route.ts",
+            "src/agents/prepared-model-runtime.ts",
+            "src/agents/profile-manifest.ts",
+            "src/agents/sandbox/browser-policy.ts",
+            "src/state/lisa-principal-task-schema.ts",
+            "src/state/lisa-principal-task-store.ts",
+        ),
+    },
+    {
+        "job": "check-prod-types",
+        "tests": ("tsgo:core",),
+        "changedPathContract": (
+            "src/agents/profile-manifest.ts",
+            "src/commands/agents.commands.add.ts",
+            "src/gateway/server-methods/agents.ts",
+            "src/system-agent/operations-execute.ts",
+        ),
+    },
+    {
+        "job": "check-lint",
+        "tests": ("run-lint",),
+        "changedPathContract": (
+            "src/agents/profile-manifest.ts",
+            "src/gateway/server-methods/agents.ts",
+            "src/system-agent/operations-execute.ts",
+        ),
+    },
+    {
+        "job": "checks-node-core-tooling-4",
+        "tests": (
+            "test/scripts/check-openclawdevelopmentplan01-section-13.3-ledger.test.ts",
+            "test/scripts/plugin-sdk-surface-report.test.ts",
+        ),
+        "changedPathContract": (
+            "test/scripts/check-openclawdevelopmentplan01-section-13.3-ledger.test.ts",
+            "scripts/check-openclawdevelopmentplan01-section-13.3-ledger.mjs",
+            "docs/execution/openclawdevelopmentplan01/section-13.3",
+            "test/scripts/plugin-sdk-surface-report.test.ts",
+        ),
+    },
+    {
+        "job": "checks-node-agentic-agents-core-runtime",
+        "tests": ("src/agents/agent-bundle-mcp-runtime.mcp-tool-filter.plugin-registry.test.ts",),
+        "changedPathContract": (
+            "src/agents/agent-bundle-mcp-runtime.mcp-tool-filter.plugin-registry.test.ts",
+            "src/agents/agent-bundle-mcp-runtime.ts",
+        ),
+    },
 )
+INHERITED_FAILURE_JOBS = tuple(row["job"] for row in INHERITED_FAILURE_CONTRACT)
+INHERITED_FAILURE_CONTEXTS = (
+    "check-additional-shard",
+    "check-docs",
+    "check-shard",
+    "checks-fast-core",
+    "checks-fast-plugin-contracts-shard",
+    "checks-node-core-test-nondist-shard",
+)
+FAILURE_PATHS = frozenset(path for row in INHERITED_FAILURE_CONTRACT for path in row["changedPathContract"])
 BASELINE_RECEIPT_PATH = "docs/execution/openclaw-prime-lisa/baseline-ci-receipt.json"
+BASELINE_RECEIPT_DOC_PATH = "docs/execution/openclaw-prime-lisa/BASELINE-CI-RECEIPT.md"
 CLASSIFIER_PATHS = frozenset(
     {
         ".github/workflows/ci.yml",
@@ -47,6 +157,56 @@ CLASSIFIER_PATHS = frozenset(
         ".github/openclaw_progressive_validation.py",
     }
 )
+
+
+def _canonical_failure_contract() -> list[dict[str, object]]:
+    return [
+        {"job": row["job"], "tests": list(row["tests"]), "changedPathContract": list(row["changedPathContract"])}
+        for row in INHERITED_FAILURE_CONTRACT
+    ]
+
+
+def protected_inherited_failure_admissible(
+    result: object,
+    *,
+    observed_failures: object = None,
+) -> bool:
+    """Allow only the exact controller/receipt scope with the full failure set."""
+    if not isinstance(result, dict):
+        return False
+    if result.get("ok") is not True or result.get("classification") != "inherited_baseline_failure":
+        return False
+    if result.get("errors") != [] or result.get("changedFailureContractPaths") != []:
+        return False
+    if result.get("baselineCommit") != BASELINE_COMMIT or result.get("baselineTree") != BASELINE_TREE:
+        return False
+    if result.get("receiptBaselineCommit") != BASELINE_COMMIT or result.get("receiptBaselineTree") != BASELINE_TREE:
+        return False
+    changed_paths = result.get("changedPaths")
+    if not isinstance(changed_paths, list) or len(changed_paths) != len(set(changed_paths)):
+        return False
+    changed_path_set = set(changed_paths)
+    allowed = {BASELINE_RECEIPT_PATH, BASELINE_RECEIPT_DOC_PATH}
+    if changed_path_set == allowed:
+        pass
+    elif changed_path_set == {
+        ".github/openclaw_progressive_validation.py",
+        ".github/workflows/ci.yml",
+        "test/openclaw_progressive_validation.py",
+        BASELINE_RECEIPT_PATH,
+        BASELINE_RECEIPT_DOC_PATH,
+    }:
+        pass
+    else:
+        return False
+    if observed_failures is not None:
+        if not isinstance(observed_failures, (list, tuple)) or any(
+            not isinstance(item, str) for item in observed_failures
+        ):
+            return False
+        if sorted(observed_failures) != sorted(INHERITED_FAILURE_CONTEXTS):
+            return False
+    return True
 
 
 def git(root: Path, *args: str) -> str:
@@ -78,22 +238,26 @@ def validate(
     candidate_ref: str,
     baseline_sha: str | None = None,
     baseline_tree: str | None = None,
+    observed_failures: list[str] | None = None,
 ) -> dict[str, object]:
     receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
     errors: list[str] = []
-    if receipt.get("schemaVersion") != 1 or receipt.get("kind") != "openclaw-fork-baseline-ci-receipt": errors.append("schema")
+    if receipt.get("schemaVersion") != 2 or receipt.get("kind") != "openclaw-fork-baseline-ci-receipt": errors.append("schema")
     if receipt.get("repository") != "linktrend/openclaw_prime": errors.append("repository")
     if receipt.get("workflow") != "CI": errors.append("workflow")
+    if receipt.get("baselineRunId") != BASELINE_RUN_ID: errors.append("baseline_run")
     if receipt.get("policyId") != POLICY_ID or receipt.get("policyDigest") != POLICY_DIGEST: errors.append("policy")
-    if receipt.get("reuse") != "exact baseline commit/tree, policy digest, workflow and unchanged failure contract only": errors.append("reuse")
+    if receipt.get("reuse") != "exact baseline commit/tree, policy digest, workflow, run and complete unchanged failure contract only": errors.append("reuse")
     if receipt.get("changedFailuresBlock") is not True or receipt.get("scope") != "fork-only" or receipt.get("upstreamMutation") is not False: errors.append("scope")
-    failures = receipt.get("inheritedFailures")
-    if not isinstance(failures, list) or len(failures) != 1 or not isinstance(failures[0], dict):
-        errors.append("failure_contract")
-    else:
-        row = failures[0]
-        if row.get("job") != FAILURE_JOB or tuple(row.get("tests", ())) != FAILURE_TESTS or set(row.get("changedPathContract", ())) != FAILURE_PATHS: errors.append("failure_contract")
-    if receipt.get("baselineChecks") != {"checkDocs": "success", "checksNodeCoreTestNondistShard": "failure"}: errors.append("baseline_checks")
+    if receipt.get("inheritedFailures") != _canonical_failure_contract(): errors.append("failure_contract")
+    baseline_checks = receipt.get("baselineChecks")
+    if (
+        not isinstance(baseline_checks, dict)
+        or baseline_checks.get("failedJobs") != sorted(INHERITED_FAILURE_JOBS)
+        or baseline_checks.get("failureCount") != len(INHERITED_FAILURE_JOBS)
+        or baseline_checks.get("failedContexts") != list(INHERITED_FAILURE_CONTEXTS)
+    ):
+        errors.append("baseline_checks")
     if baseline_sha is not None and not _is_sha(baseline_sha): errors.append("baseline_sha")
     if baseline_tree is not None and not _is_sha(baseline_tree): errors.append("baseline_tree")
     receipt_baseline = str(receipt.get("baselineCommit") or "")
@@ -105,23 +269,8 @@ def validate(
         if baseline_tree is not None and baseline_tree != resolved_tree:
             errors.append("baseline_tree_mismatch")
         candidate = git(root, "rev-parse", f"{candidate_ref}^{{commit}}")
-        if baseline_sha is None:
-            if receipt_baseline != baseline: errors.append("baseline_commit")
-            if receipt_tree != resolved_tree: errors.append("baseline_tree")
-        elif receipt_baseline != baseline or receipt_tree != resolved_tree:
-            # A retained receipt is immutable evidence of the inherited
-            # failure contract. Its base coordinates are rebound in memory to
-            # the atomic pull_request.base identity; never rewrite the Phase
-            # branch with a receipt-only repin. Rebinding is accepted only
-            # from a real, internally consistent ancestor baseline.
-            if not _is_sha(receipt_baseline) or not _is_sha(receipt_tree):
-                errors.append("baseline_receipt_identity")
-            else:
-                receipt_resolved_tree = git(root, "rev-parse", f"{receipt_baseline}^{{tree}}")
-                if receipt_tree != receipt_resolved_tree:
-                    errors.append("baseline_receipt_tree")
-                elif not _is_ancestor(root, receipt_baseline, baseline):
-                    errors.append("baseline_receipt_not_ancestor")
+        if receipt_baseline != baseline: errors.append("baseline_commit")
+        if receipt_tree != resolved_tree: errors.append("baseline_tree")
         changed = tuple(p for p in git(root, "diff", "--name-only", f"{baseline}..{candidate}").splitlines() if p)
     except (RuntimeError, OSError):
         baseline = resolved_tree = candidate = ""
@@ -131,7 +280,9 @@ def validate(
     classifier = sorted(set(changed) & CLASSIFIER_PATHS)
     if changed_failure: errors.append("changed_failure_contract")
     generated_only = bool(changed) and set(changed) <= {BASELINE_RECEIPT_PATH}
-    return {"ok": not errors, "classification": "inherited_baseline_failure" if not errors else "blocking", "baselineRef": baseline_ref, "baselineCommit": baseline, "baselineTree": resolved_tree, "receiptBaselineCommit": receipt_baseline, "receiptBaselineTree": receipt_tree, "candidateCommit": candidate, "changedPaths": list(changed), "changedFailureContractPaths": changed_failure, "classifierPathsRequiringFocusedChecks": classifier, "generatedOnly": generated_only, "errors": sorted(set(errors))}
+    result = {"ok": not errors, "classification": "inherited_baseline_failure" if not errors else "blocking", "baselineRef": baseline_ref, "baselineCommit": baseline, "baselineTree": resolved_tree, "receiptBaselineCommit": receipt_baseline, "receiptBaselineTree": receipt_tree, "candidateCommit": candidate, "changedPaths": list(changed), "changedFailureContractPaths": changed_failure, "classifierPathsRequiringFocusedChecks": classifier, "generatedOnly": generated_only, "errors": sorted(set(errors))}
+    result["protectedAdmission"] = protected_inherited_failure_admissible(result, observed_failures=observed_failures)
+    return result
 
 
 def validate_baseline_ci_receipt(
@@ -142,12 +293,13 @@ def validate_baseline_ci_receipt(
     candidate_ref: str = "HEAD",
     baseline_sha: str | None = None,
     baseline_tree: str | None = None,
+    observed_failures: list[str] | None = None,
 ) -> dict[str, object]:
     """Compatibility-shaped entry point used by the focused consumer tests."""
     with tempfile.NamedTemporaryFile("w", suffix=".json") as temp:
         json.dump(receipt, temp)
         temp.flush()
-        return validate(root, Path(temp.name), baseline_ref, candidate_ref, baseline_sha, baseline_tree)
+        return validate(root, Path(temp.name), baseline_ref, candidate_ref, baseline_sha, baseline_tree, observed_failures)
 
 
 def main() -> int:
@@ -158,6 +310,7 @@ def main() -> int:
     parser.add_argument("--baseline-sha", default="")
     parser.add_argument("--baseline-tree", default="")
     parser.add_argument("--candidate-ref", default="HEAD")
+    parser.add_argument("--observed-failures", default="")
     args = parser.parse_args()
     try:
         result = validate(
@@ -167,6 +320,7 @@ def main() -> int:
             args.candidate_ref,
             args.baseline_sha or None,
             args.baseline_tree or None,
+            json.loads(args.observed_failures) if args.observed_failures else None,
         )
     except (OSError, ValueError, RuntimeError) as exc:
         result = {"ok": False, "classification": "blocking", "errors": [str(exc)]}
