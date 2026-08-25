@@ -118,6 +118,73 @@ class ProgressiveValidationTests(unittest.TestCase):
         self.assertFalse(stale["ok"])
         self.assertIn("baseline_commit", stale["errors"])
 
+    def test_stale_receipt_rebinds_to_atomic_execution_base(self):
+        tmp, root, rec = self.fixture(); self.addCleanup(tmp.cleanup)
+        receipt_baseline = str(rec["baselineCommit"])
+        git(root, "checkout", "-q", "-b", "phase-base")
+        (root / "base-metadata.txt").write_text("protected base moved\n", encoding="utf-8")
+        git(root, "add", "base-metadata.txt"); git(root, "commit", "-qm", "move protected base")
+        execution_base = git(root, "rev-parse", "HEAD")
+        execution_tree = git(root, "rev-parse", "HEAD^{tree}")
+        (root / "candidate.txt").write_text("phase candidate\n", encoding="utf-8")
+        git(root, "add", "candidate.txt"); git(root, "commit", "-qm", "phase candidate")
+        candidate = git(root, "rev-parse", "HEAD")
+        result = MODULE.validate_baseline_ci_receipt(
+            root=root,
+            receipt=rec,
+            baseline_sha=execution_base,
+            baseline_tree=execution_tree,
+            candidate_ref=candidate,
+        )
+        self.assertTrue(result["ok"], result)
+        self.assertEqual(result["baselineCommit"], execution_base)
+        self.assertEqual(result["baselineTree"], execution_tree)
+        self.assertEqual(result["receiptBaselineCommit"], receipt_baseline)
+
+    def test_stale_receipt_rebind_still_blocks_changed_failure_contract(self):
+        tmp, root, rec = self.fixture(); self.addCleanup(tmp.cleanup)
+        git(root, "checkout", "-q", "-b", "phase-base")
+        (root / "base-metadata.txt").write_text("protected base moved\n", encoding="utf-8")
+        git(root, "add", "base-metadata.txt"); git(root, "commit", "-qm", "move protected base")
+        execution_base = git(root, "rev-parse", "HEAD")
+        execution_tree = git(root, "rev-parse", "HEAD^{tree}")
+        changed = root / "scripts" / "check-openclawdevelopmentplan01-section-13.3-ledger.mjs"
+        changed.parent.mkdir(parents=True); changed.write_text("changed contract\n", encoding="utf-8")
+        git(root, "add", str(changed.relative_to(root))); git(root, "commit", "-qm", "change inherited failure contract")
+        result = MODULE.validate_baseline_ci_receipt(
+            root=root,
+            receipt=rec,
+            baseline_sha=execution_base,
+            baseline_tree=execution_tree,
+        )
+        self.assertFalse(result["ok"])
+        self.assertIn("changed_failure_contract", result["errors"])
+
+    def test_execution_base_tree_mismatch_rejects_rebinding(self):
+        tmp, root, rec = self.fixture(); self.addCleanup(tmp.cleanup)
+        git(root, "checkout", "-q", "-b", "phase-base")
+        (root / "base-metadata.txt").write_text("protected base moved\n", encoding="utf-8")
+        git(root, "add", "base-metadata.txt"); git(root, "commit", "-qm", "move protected base")
+        execution_base = git(root, "rev-parse", "HEAD")
+        result = MODULE.validate_baseline_ci_receipt(
+            root=root,
+            receipt=rec,
+            baseline_sha=execution_base,
+            baseline_tree="0" * 40,
+        )
+        self.assertFalse(result["ok"])
+        self.assertIn("baseline_tree_mismatch", result["errors"])
+
+    def test_generated_only_receipt_path_change_is_tolerated(self):
+        tmp, root, rec = self.fixture(); self.addCleanup(tmp.cleanup)
+        generated = root / MODULE.BASELINE_RECEIPT_PATH
+        generated.parent.mkdir(parents=True)
+        generated.write_text("generated\n", encoding="utf-8")
+        git(root, "add", str(generated.relative_to(root))); git(root, "commit", "-qm", "generated receipt")
+        result = MODULE.validate_baseline_ci_receipt(root=root, receipt=rec)
+        self.assertTrue(result["ok"], result)
+        self.assertTrue(result["generatedOnly"])
+
 
 if __name__ == "__main__":
     unittest.main()

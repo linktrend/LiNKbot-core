@@ -124,7 +124,7 @@ class PhasePackagerCoordinatorTests(unittest.TestCase):
         self.assertFalse(result["record"]["sealed"])
         self.assertFalse(result["fullDispatchAllowed"])
 
-    def test_phase_binds_baseline_receipt_to_immutable_development_base(self) -> None:
+    def test_phase_records_base_without_receipt_only_repin(self) -> None:
         receipt_path = coordinator.BASELINE_RECEIPT_REL
         write(
             self.fx.work / receipt_path,
@@ -147,11 +147,12 @@ class PhasePackagerCoordinatorTests(unittest.TestCase):
 
         result = self.fx.assemble([one])
         bound = json.loads(git(self.fx.work, "show", f"{result['headSha']}:{receipt_path}"))
-        self.assertEqual(bound["baselineCommit"], base)
-        self.assertEqual(bound["baselineTree"], base_tree)
+        self.assertEqual(result["record"]["baseSha"], base)
+        self.assertEqual(bound["baselineCommit"], "0" * 40)
+        self.assertEqual(bound["baselineTree"], "0" * 40)
         self.assertNotEqual(result["headSha"], git(self.fx.work, "rev-parse", f"{base}^{{commit}}"))
 
-    def test_existing_phase_rebinds_stale_receipt_after_development_moves(self) -> None:
+    def test_existing_phase_keeps_receipt_immutable_after_development_moves(self) -> None:
         receipt_path = coordinator.BASELINE_RECEIPT_REL
         write(
             self.fx.work / receipt_path,
@@ -177,14 +178,14 @@ class PhasePackagerCoordinatorTests(unittest.TestCase):
         git(self.fx.work, "commit", "-qm", "move protected development base")
         git(self.fx.work, "push", "-q", "origin", "development")
         moved_base = self.fx.development_sha()
-        moved_tree = git(self.fx.work, "rev-parse", f"{moved_base}^{{tree}}")
 
         rebound = self.fx.assemble([one])
-        self.assertEqual(rebound["action"], "updated")
-        self.assertNotEqual(rebound["headSha"], first["headSha"])
+        self.assertEqual(rebound["action"], "reused")
+        self.assertEqual(rebound["headSha"], first["headSha"])
+        self.assertEqual(rebound["record"]["baseSha"], moved_base)
         bound = json.loads(git(self.fx.work, "show", f"{rebound['headSha']}:{receipt_path}"))
-        self.assertEqual(bound["baselineCommit"], moved_base)
-        self.assertEqual(bound["baselineTree"], moved_tree)
+        self.assertEqual(bound["baselineCommit"], "0" * 40)
+        self.assertEqual(bound["baselineTree"], "0" * 40)
 
     def test_many_compatible_issues_create_one_ordered_phase(self) -> None:
         first = self.fx.accept_issue(1, "one.txt", "one\n")

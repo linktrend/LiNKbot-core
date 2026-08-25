@@ -11,6 +11,7 @@ import argparse
 import json
 import re
 import subprocess
+import tempfile
 from pathlib import Path
 
 POLICY_ID = "openclaw-fork-progressive-validation-v1"
@@ -38,6 +39,7 @@ FAILURE_PATHS = frozenset(
         "docs/execution/openclawdevelopmentplan01/section-13.3",
     }
 )
+BASELINE_RECEIPT_PATH = "docs/execution/openclaw-prime-lisa/baseline-ci-receipt.json"
 CLASSIFIER_PATHS = frozenset(
     {
         ".github/workflows/ci.yml",
@@ -54,12 +56,28 @@ def git(root: Path, *args: str) -> str:
     return result.stdout.strip()
 
 
+def _is_sha(value: object) -> bool:
+    return bool(re.fullmatch(r"[0-9a-f]{40}", str(value or "")))
+
+
+def _is_ancestor(root: Path, ancestor: str, descendant: str) -> bool:
+    result = subprocess.run(
+        ["git", "merge-base", "--is-ancestor", ancestor, descendant],
+        cwd=root,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    return result.returncode == 0
+
+
 def validate(
     root: Path,
     receipt_path: Path,
     baseline_ref: str,
     candidate_ref: str,
     baseline_sha: str | None = None,
+    baseline_tree: str | None = None,
 ) -> dict[str, object]:
     receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
     errors: list[str] = []
@@ -76,22 +94,44 @@ def validate(
         row = failures[0]
         if row.get("job") != FAILURE_JOB or tuple(row.get("tests", ())) != FAILURE_TESTS or set(row.get("changedPathContract", ())) != FAILURE_PATHS: errors.append("failure_contract")
     if receipt.get("baselineChecks") != {"checkDocs": "success", "checksNodeCoreTestNondistShard": "failure"}: errors.append("baseline_checks")
-    if baseline_sha is not None and not re.fullmatch(r"[0-9a-f]{40}", baseline_sha): errors.append("baseline_sha")
+    if baseline_sha is not None and not _is_sha(baseline_sha): errors.append("baseline_sha")
+    if baseline_tree is not None and not _is_sha(baseline_tree): errors.append("baseline_tree")
+    receipt_baseline = str(receipt.get("baselineCommit") or "")
+    receipt_tree = str(receipt.get("baselineTree") or "")
+    baseline = resolved_tree = candidate = ""
     try:
         baseline = git(root, "rev-parse", f"{baseline_sha or baseline_ref}^{{commit}}")
-        baseline_tree = git(root, "rev-parse", f"{baseline_sha or baseline_ref}^{{tree}}")
+        resolved_tree = git(root, "rev-parse", f"{baseline_sha or baseline_ref}^{{tree}}")
+        if baseline_tree is not None and baseline_tree != resolved_tree:
+            errors.append("baseline_tree_mismatch")
         candidate = git(root, "rev-parse", f"{candidate_ref}^{{commit}}")
-        if receipt.get("baselineCommit") != baseline: errors.append("baseline_commit")
-        if receipt.get("baselineTree") != baseline_tree: errors.append("baseline_tree")
+        if baseline_sha is None:
+            if receipt_baseline != baseline: errors.append("baseline_commit")
+            if receipt_tree != resolved_tree: errors.append("baseline_tree")
+        elif receipt_baseline != baseline or receipt_tree != resolved_tree:
+            # A retained receipt is immutable evidence of the inherited
+            # failure contract. Its base coordinates are rebound in memory to
+            # the atomic pull_request.base identity; never rewrite the Phase
+            # branch with a receipt-only repin. Rebinding is accepted only
+            # from a real, internally consistent ancestor baseline.
+            if not _is_sha(receipt_baseline) or not _is_sha(receipt_tree):
+                errors.append("baseline_receipt_identity")
+            else:
+                receipt_resolved_tree = git(root, "rev-parse", f"{receipt_baseline}^{{tree}}")
+                if receipt_tree != receipt_resolved_tree:
+                    errors.append("baseline_receipt_tree")
+                elif not _is_ancestor(root, receipt_baseline, baseline):
+                    errors.append("baseline_receipt_not_ancestor")
         changed = tuple(p for p in git(root, "diff", "--name-only", f"{baseline}..{candidate}").splitlines() if p)
     except (RuntimeError, OSError):
-        baseline = baseline_tree = candidate = ""
+        baseline = resolved_tree = candidate = ""
         changed = ()
         errors.append("git_identity")
     changed_failure = sorted(set(changed) & FAILURE_PATHS)
     classifier = sorted(set(changed) & CLASSIFIER_PATHS)
     if changed_failure: errors.append("changed_failure_contract")
-    return {"ok": not errors, "classification": "inherited_baseline_failure" if not errors else "blocking", "baselineRef": baseline_ref, "baselineCommit": receipt.get("baselineCommit"), "baselineTree": receipt.get("baselineTree"), "candidateCommit": candidate, "changedPaths": list(changed), "changedFailureContractPaths": changed_failure, "classifierPathsRequiringFocusedChecks": classifier, "errors": sorted(set(errors))}
+    generated_only = bool(changed) and set(changed) <= {BASELINE_RECEIPT_PATH}
+    return {"ok": not errors, "classification": "inherited_baseline_failure" if not errors else "blocking", "baselineRef": baseline_ref, "baselineCommit": baseline, "baselineTree": resolved_tree, "receiptBaselineCommit": receipt_baseline, "receiptBaselineTree": receipt_tree, "candidateCommit": candidate, "changedPaths": list(changed), "changedFailureContractPaths": changed_failure, "classifierPathsRequiringFocusedChecks": classifier, "generatedOnly": generated_only, "errors": sorted(set(errors))}
 
 
 def validate_baseline_ci_receipt(
@@ -101,14 +141,13 @@ def validate_baseline_ci_receipt(
     baseline_ref: str = "origin/development",
     candidate_ref: str = "HEAD",
     baseline_sha: str | None = None,
+    baseline_tree: str | None = None,
 ) -> dict[str, object]:
     """Compatibility-shaped entry point used by the focused consumer tests."""
-    temp = root / ".git" / "openclaw-progressive-receipt.json"
-    temp.write_text(json.dumps(receipt), encoding="utf-8")
-    try:
-        return validate(root, temp, baseline_ref, candidate_ref, baseline_sha)
-    finally:
-        temp.unlink(missing_ok=True)
+    with tempfile.NamedTemporaryFile("w", suffix=".json") as temp:
+        json.dump(receipt, temp)
+        temp.flush()
+        return validate(root, Path(temp.name), baseline_ref, candidate_ref, baseline_sha, baseline_tree)
 
 
 def main() -> int:
@@ -117,6 +156,7 @@ def main() -> int:
     parser.add_argument("--receipt", type=Path, required=True)
     parser.add_argument("--baseline-ref", default="origin/development")
     parser.add_argument("--baseline-sha", default="")
+    parser.add_argument("--baseline-tree", default="")
     parser.add_argument("--candidate-ref", default="HEAD")
     args = parser.parse_args()
     try:
@@ -126,6 +166,7 @@ def main() -> int:
             args.baseline_ref,
             args.candidate_ref,
             args.baseline_sha or None,
+            args.baseline_tree or None,
         )
     except (OSError, ValueError, RuntimeError) as exc:
         result = {"ok": False, "classification": "blocking", "errors": [str(exc)]}
