@@ -15,8 +15,8 @@
     {
       "source": "ops/jobs/lisa-job-catalogue.ts",
       "destination": "ops/jobs/lisa-job-catalogue.ts",
-      "sha256": "39669ef7a3090577145181a64916c98537dcd3d20b8351f0452d5c1e53d9efd6",
-      "bytes": 25286
+      "sha256": "5785e874049ef4430a3044a89df0fcd3526c3455f614ebe6a343d2df1c93d13b",
+      "bytes": 25558
     },
     {
       "source": "ops/jobs/lisa-job-contracts.ts",
@@ -51,14 +51,14 @@
     {
       "source": "ops/jobs/maintenance/templates/digest-status.md",
       "destination": "ops/jobs/maintenance/templates/digest-status.md",
-      "sha256": "e4e273859d0522f0085374c0f77f21c3be568bda38376ac79e0771155194db9a",
-      "bytes": 652
+      "sha256": "eda4f43e47aa419f11c131bb30ada01e7dab446a7bf99ab1cbb7ab32af16d631",
+      "bytes": 654
     },
     {
       "source": "ops/jobs/maintenance/templates/restore-verification.md",
       "destination": "ops/jobs/maintenance/templates/restore-verification.md",
-      "sha256": "b59d1f2ff9e000a832f1fa93a7fdbf9eee218e2cb0f99110769a38291edb4910",
-      "bytes": 380
+      "sha256": "80971dc305f203b1078795cefa526c02a724be360f262f6f0e22f20b46b12f78",
+      "bytes": 382
     },
     {
       "source": "ops/jobs/reporting/reporting-contracts.ts",
@@ -69,26 +69,26 @@
     {
       "source": "ops/jobs/reporting/reporting.ts",
       "destination": "ops/jobs/reporting/reporting.ts",
-      "sha256": "8731409898574b6570447b1412bda2e5f38861aee2d9b7c35a2ec2a3e669b1b5",
-      "bytes": 10009
+      "sha256": "1720c86bf4db3ce2fce806a5d176931e125dd345e26373ec639a81b8ccbfde83",
+      "bytes": 10021
     },
     {
       "source": "ops/jobs/reporting/procedure.md",
       "destination": "ops/jobs/reporting/procedure.md",
-      "sha256": "2201cddf4657aa1c0ba0b025bef5658daa59ba873a5b21898156607b3084d379",
-      "bytes": 914
+      "sha256": "7a856e967d7880c350d98757701ce786c254aec2513b56bb1c35f67028271299",
+      "bytes": 1102
     },
     {
       "source": "ops/jobs/reporting/templates/executive-digest.md",
       "destination": "ops/jobs/reporting/templates/executive-digest.md",
-      "sha256": "2c32230e75d3a3fc5bd688010c77824341ec54f7d8fb1ded1bb91d830f19480b",
-      "bytes": 373
+      "sha256": "1c8196bc1438a9c7ec0daf07a369ec41c1dfc28f6c25aae40051b53c95d2015d",
+      "bytes": 413
     },
     {
       "source": "ops/jobs/reporting/templates/flash-report.md",
       "destination": "ops/jobs/reporting/templates/flash-report.md",
-      "sha256": "af1a54879fad41dea2a57b96e2d40f39cc81c1684882d4d8efa63eac597cc131",
-      "bytes": 258
+      "sha256": "8528c1df1edb835d325dc7e9a6d540fc1510748700ee94ac29cd87f4371d58b7",
+      "bytes": 290
     },
     {
       "source": "ops/jobs/compliance/compliance-contracts.ts",
@@ -117,20 +117,20 @@
     {
       "source": "ops/jobs/compliance/templates/combined-1745.md",
       "destination": "ops/jobs/compliance/templates/combined-1745.md",
-      "sha256": "0362ba2104fb17efd5c36253d2f12753c4df9d59e617355795e9a70fe3185309",
-      "bytes": 114
+      "sha256": "d4f9b5373d731c78ac52286ca81b9b97c1e518a28cc493d06ca94c679b6a2656",
+      "bytes": 118
     },
     {
       "source": "ops/jobs/compliance/templates/battery-35-alert.md",
       "destination": "ops/jobs/compliance/templates/battery-35-alert.md",
-      "sha256": "9d8c849685750272637786db698ebc23c7c48f1dcc2f4490499f78fb9433f799",
-      "bytes": 116
+      "sha256": "e663c5748f6d4ae339e9a3e1b161484d49961f48476f9dc8841cf1f488d074ef",
+      "bytes": 120
     },
     {
       "source": "ops/jobs/compliance/templates/conditional-2145.md",
       "destination": "ops/jobs/compliance/templates/conditional-2145.md",
-      "sha256": "eba451bb97ea6fd78b47a8f009d12e82198b16fb6f96aa3c0ea849e69200edd0",
-      "bytes": 84
+      "sha256": "2f3b78fd2a183abba17b22c2af994a22fd56221bb227436e1a9eb45552d5690c",
+      "bytes": 88
     },
     {
       "source": "ops/jobs/compliance/templates/selfie-acknowledgment.md",
@@ -141,14 +141,14 @@
     {
       "source": "ops/jobs/compliance/templates/battery-checkpoint.md",
       "destination": "ops/jobs/compliance/templates/battery-checkpoint.md",
-      "sha256": "3d8bc32cd5b6a6dd3380864a756315fb0a3f9d16ee47899d60d8767ab04c7b0b",
-      "bytes": 140
+      "sha256": "7e3b5fd1d73775e9308fc03e3fde1e95dea1116b3a7fcbc5a431dc188ef80001",
+      "bytes": 144
     },
     {
       "source": "ops/jobs/time-management/time-contracts.ts",
       "destination": "ops/jobs/time-management/time-contracts.ts",
-      "sha256": "183a1177dd3d8a6e6c4280c87e20b06ff6ef815d8f5fb080049fd5cb9e9cc340",
-      "bytes": 8345
+      "sha256": "6c86af7ae515e371e13effc7af43274155f426d1a1803b39c4206961bffc0e23",
+      "bytes": 8488
     },
     {
       "source": "ops/jobs/time-management/intake.ts",
@@ -171,20 +171,20 @@
     {
       "source": "ops/jobs/time-management/templates/weekly-plan.md",
       "destination": "ops/jobs/time-management/templates/weekly-plan.md",
-      "sha256": "66739a90252d50c0d4037284d944857369161040ed68f9d0abcf18a6f643ba14",
-      "bytes": 502
+      "sha256": "7548f369ec953757d450bda7e08bd605acc9f389393f3e3083877a36589e6833",
+      "bytes": 507
     },
     {
       "source": "ops/jobs/time-management/templates/monthly-work-report.md",
       "destination": "ops/jobs/time-management/templates/monthly-work-report.md",
-      "sha256": "7d6c3c0b19eea368a57ea6a7fe6e74148ccdf557caab7ab0881a0c3a09b64fed",
-      "bytes": 618
+      "sha256": "46bb24d5a72e3968bcd308b393c6add8a99feeec1d384d9f52e713f685e30c31",
+      "bytes": 623
     },
     {
       "source": "ops/jobs/time-management/templates/review.md",
       "destination": "ops/jobs/time-management/templates/review.md",
-      "sha256": "c124ad61ce693cab1c0568ba1c8a2fd088ecf417541ace33d928063c76adc7e8",
-      "bytes": 531
+      "sha256": "7906b8e0a140703e1a7e7e3b6b3290df7e44c15b5ce81b102f21f08fe4883489",
+      "bytes": 536
     },
     {
       "source": "ops/jobs/health/health-contracts.ts",
@@ -207,26 +207,26 @@
     {
       "source": "ops/jobs/health/templates/check-in.md",
       "destination": "ops/jobs/health/templates/check-in.md",
-      "sha256": "af448a678e137b8007c97ec0834281d4b342cfb4cead75db110088feb428cd57",
-      "bytes": 823
+      "sha256": "52dd3e5584699db68d39d7bf404a57513f26929b0ce1e8e3026387ca84635162",
+      "bytes": 905
     },
     {
       "source": "ops/jobs/health/templates/monthly-report.md",
       "destination": "ops/jobs/health/templates/monthly-report.md",
-      "sha256": "19cd68bd92b691c53b8ae42b26eb96f872b5e775c6675fb77e3b5bcc4b67f036",
-      "bytes": 518
+      "sha256": "e7a60b1d16205d964bf950cb444f8bfbed50a5bf0bbb62676cc046b45cf31f35",
+      "bytes": 520
     },
     {
       "source": "ops/jobs/health/templates/appointment-follow-up.md",
       "destination": "ops/jobs/health/templates/appointment-follow-up.md",
-      "sha256": "94fb7a1f114f5e1da5abdbd5bfd77e566e09fdcad1b85a472442f035b5d92889",
-      "bytes": 375
+      "sha256": "80235a5928f4a6a7544daf5f4dacd8d401ff9c73714980b4808c889bf80cc469",
+      "bytes": 377
     },
     {
       "source": "ops/jobs/health/templates/export-plan.md",
       "destination": "ops/jobs/health/templates/export-plan.md",
-      "sha256": "0379a5a7934c02e20d3735cb383c25c7d3395232826391cd79761cb84ac5bf7b",
-      "bytes": 471
+      "sha256": "cbe9d918bee63a614be32066848c8a276d0d6da84bb01475660bd86f1d1cb272",
+      "bytes": 473
     },
     {
       "source": "Personality files/HEARTBEAT.md",

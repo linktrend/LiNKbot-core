@@ -9,8 +9,8 @@
   "sourceBase": {
     "repository": "openclaw/openclaw",
     "ref": "origin/development",
-    "commit": "90289b832f9d2f9e1f2064ddbf219bdcf0e31433",
-    "tree": "6c7cbc3a83cd03ba2348c62f11dea4bfd4ab1923"
+    "commit": "b870c944f20c148a6e12627b4c80f75703316e6b",
+    "tree": "6e4424857cbd4ee4c782b6a8d2f2da24bd46cf9f"
   },
   "ownedPaths": [
     "linkbots/lisa/ops/lisa-vps-reconciliation.mjs",
@@ -49,9 +49,9 @@
     },
     "stageWorkspacePackage": {
       "sourceReceiptType": "lisa_stage_workspace_package_source_receipt_v1",
-      "status": "blocked-hash-mismatch",
+      "status": "verified-source",
       "packageId": "lisa-stage-bounded-procedures-renderer-and-domain-modules",
-      "manifestSha256": "ff6c4fedc6eac45b9b0085f8d22924e226e7f76c289c944652fcea00e33ffbe0",
+      "manifestSha256": "f723e2d43b63f98acf2ea6487ec8f1c4c547baa2ce93c7fc451b28d141c274c1",
       "fileCount": 45,
       "mutableSeeds": false,
       "liveMutationAllowed": false
@@ -107,5 +107,5 @@
     "rollbackVerified": false,
     "approvalRequired": true
   },
-  "receiptDigestSha256": "388f1396bd1143784f172abb7cea054458a78358cd94c64419e16115fabfcdc0"
+  "receiptDigestSha256": "a63342edd0a6459915556c2a055d3238675ef5b0255c3035562fb01bece71e24"
 }

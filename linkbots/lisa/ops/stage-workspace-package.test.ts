@@ -72,9 +72,9 @@ describe("stage-workspace-package", () => {
     assert.ok([...sources].every((source) => !source.includes("/memory/")));
     assert.ok([...sources].every((source) => !source.endsWith("/MEMORY.md")));
     const { ok, files } = verifyStageWorkspacePackage({ manifest });
-    assert.equal(ok, false);
-    assert.equal(files.filter((f) => !f.ok).length, 19);
-    assert.ok(files.some((f) => f.error === "hash_or_size_mismatch"));
+    assert.equal(ok, true);
+    assert.equal(files.filter((f) => !f.ok).length, 0);
+    assert.ok(files.every((f) => f.error === undefined));
     assert.equal(files.length, 45);
     assert.match(hashStageWorkspacePackageManifest(manifest), /^[a-f0-9]{64}$/);
   });
@@ -83,7 +83,7 @@ describe("stage-workspace-package", () => {
     const first = buildStageWorkspacePackageSourceReceipt();
     const second = buildStageWorkspacePackageSourceReceipt();
     assert.equal(first.receiptType, "lisa_stage_workspace_package_source_receipt_v1");
-    assert.equal(first.status, "blocked-hash-mismatch");
+    assert.equal(first.status, "verified-source");
     assert.equal(first.fileCount, 45);
     assert.equal(first.mutableSeeds, false);
     assert.equal(first.liveMutationAllowed, false);
