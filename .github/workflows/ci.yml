@@ -3364,6 +3364,7 @@ jobs:
 
   ci-gate:
     permissions:
+      actions: read
       contents: read
     name: openclaw/ci-gate
     needs:
@@ -3408,23 +3409,25 @@ jobs:
         env:
           BASELINE_REF: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.event.pull_request.base.ref) || 'origin/development' }}
           BASELINE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.sha }}
-          OBSERVED_RESULTS: |
-            check-additional-shard=${{ needs.check-additional-shard.result }}
-            check-docs=${{ needs.check-docs.result }}
-            check-shard=${{ needs.check-shard.result }}
-            checks-fast-core=${{ needs.checks-fast-core.result }}
-            checks-fast-plugin-contracts-shard=${{ needs.checks-fast-plugin-contracts-shard.result }}
-            checks-node-core-test-nondist-shard=${{ needs.checks-node-core-test-nondist-shard.result }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          observed_failures="$(printf '%s\n' "${OBSERVED_RESULTS}" | awk -F= '$2 == "failure" { print $1 }' | sort | jq -Rsc 'split("\n") | map(select(length > 0))')"
+          # Read concrete matrix job names from Actions. Aggregate needs
+          # contexts cannot distinguish a failing matrix row from its parent.
+          observed_failures="$(
+            gh api --paginate \
+              "repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/jobs?per_page=100" \
+              --jq '.jobs[] | select(.conclusion == "failure" and .name != "openclaw/ci-gate") | .name' |
+              sort |
+              jq -Rsc 'split("\n") | map(select(length > 0))'
+          )"
           result="$(python3 .github/openclaw_progressive_validation.py \
             --root . \
             --receipt docs/execution/openclaw-prime-lisa/baseline-ci-receipt.json \
             --baseline-ref "${BASELINE_REF}" \
             --baseline-sha "${BASELINE_SHA}" \
             --candidate-ref HEAD \
-            --observed-failures "${observed_failures}" || true)"
+            --observed-failure-identities "${observed_failures}" || true)"
           echo "${result}"
           classification="$(jq -r '.classification // "blocking"' <<<"${result}")"
           protected_admission="$(jq -r '.protectedAdmission // false' <<<"${result}")"

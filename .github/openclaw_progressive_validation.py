@@ -139,14 +139,10 @@ INHERITED_FAILURE_CONTRACT = (
     },
 )
 INHERITED_FAILURE_JOBS = tuple(row["job"] for row in INHERITED_FAILURE_CONTRACT)
-INHERITED_FAILURE_CONTEXTS = (
-    "check-additional-shard",
-    "check-docs",
-    "check-shard",
-    "checks-fast-core",
-    "checks-fast-plugin-contracts-shard",
-    "checks-node-core-test-nondist-shard",
-)
+# Matrix jobs expose their concrete `name` through the Actions jobs API. The
+# aggregate `needs.<job>.result` contexts are intentionally not admissible:
+# they cannot identify which matrix row failed.
+INHERITED_FAILURE_IDENTITIES = tuple(sorted(INHERITED_FAILURE_JOBS))
 FAILURE_PATHS = frozenset(path for row in INHERITED_FAILURE_CONTRACT for path in row["changedPathContract"])
 BASELINE_RECEIPT_PATH = "docs/execution/openclaw-prime-lisa/baseline-ci-receipt.json"
 BASELINE_RECEIPT_DOC_PATH = "docs/execution/openclaw-prime-lisa/BASELINE-CI-RECEIPT.md"
@@ -199,13 +195,12 @@ def protected_inherited_failure_admissible(
         pass
     else:
         return False
-    if observed_failures is not None:
-        if not isinstance(observed_failures, (list, tuple)) or any(
-            not isinstance(item, str) for item in observed_failures
-        ):
-            return False
-        if sorted(observed_failures) != sorted(INHERITED_FAILURE_CONTEXTS):
-            return False
+    if not isinstance(observed_failures, (list, tuple)) or any(
+        not isinstance(item, str) for item in observed_failures
+    ):
+        return False
+    if sorted(observed_failures) != list(INHERITED_FAILURE_IDENTITIES):
+        return False
     return True
 
 
@@ -253,9 +248,8 @@ def validate(
     baseline_checks = receipt.get("baselineChecks")
     if (
         not isinstance(baseline_checks, dict)
-        or baseline_checks.get("failedJobs") != sorted(INHERITED_FAILURE_JOBS)
         or baseline_checks.get("failureCount") != len(INHERITED_FAILURE_JOBS)
-        or baseline_checks.get("failedContexts") != list(INHERITED_FAILURE_CONTEXTS)
+        or baseline_checks.get("failedJobs") != list(INHERITED_FAILURE_IDENTITIES)
     ):
         errors.append("baseline_checks")
     if baseline_sha is not None and not _is_sha(baseline_sha): errors.append("baseline_sha")
@@ -310,7 +304,7 @@ def main() -> int:
     parser.add_argument("--baseline-sha", default="")
     parser.add_argument("--baseline-tree", default="")
     parser.add_argument("--candidate-ref", default="HEAD")
-    parser.add_argument("--observed-failures", default="")
+    parser.add_argument("--observed-failure-identities", "--observed-failures", dest="observed_failure_identities", default="")
     args = parser.parse_args()
     try:
         result = validate(
@@ -320,7 +314,7 @@ def main() -> int:
             args.candidate_ref,
             args.baseline_sha or None,
             args.baseline_tree or None,
-            json.loads(args.observed_failures) if args.observed_failures else None,
+            json.loads(args.observed_failure_identities) if args.observed_failure_identities else None,
         )
     except (OSError, ValueError, RuntimeError) as exc:
         result = {"ok": False, "classification": "blocking", "errors": [str(exc)]}

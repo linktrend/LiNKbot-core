@@ -36,9 +36,8 @@ def receipt(root: Path) -> dict[str, object]:
         "policyDigest": MODULE.BASELINE_RECEIPT_POLICY_DIGEST,
         "inheritedFailures": MODULE._canonical_failure_contract(),
         "baselineChecks": {
-            "failedJobs": sorted(MODULE.INHERITED_FAILURE_JOBS),
+            "failedJobs": list(MODULE.INHERITED_FAILURE_IDENTITIES),
             "failureCount": len(MODULE.INHERITED_FAILURE_JOBS),
-            "failedContexts": list(MODULE.INHERITED_FAILURE_CONTEXTS),
         },
         "reuse": "exact baseline commit/tree, policy digest, workflow, run and complete unchanged failure contract only",
         "changedFailuresBlock": True,
@@ -190,23 +189,65 @@ class ProgressiveValidationTests(unittest.TestCase):
         exact = MODULE.validate_baseline_ci_receipt(
             root=root,
             receipt=rec,
-            observed_failures=list(sorted(MODULE.INHERITED_FAILURE_CONTEXTS)),
+            observed_failures=list(MODULE.INHERITED_FAILURE_IDENTITIES),
         )
         self.assertTrue(exact["ok"], exact)
-        self.assertFalse(
-            MODULE.validate_baseline_ci_receipt(
-                root=root,
-                receipt=rec,
-                observed_failures=list(sorted(MODULE.INHERITED_FAILURE_CONTEXTS))[:-1],
-            )["protectedAdmission"]
+        protected = {
+            **exact,
+            "baselineCommit": MODULE.BASELINE_COMMIT,
+            "baselineTree": MODULE.BASELINE_TREE,
+            "receiptBaselineCommit": MODULE.BASELINE_COMMIT,
+            "receiptBaselineTree": MODULE.BASELINE_TREE,
+            "changedPaths": sorted(
+                {
+                    ".github/openclaw_progressive_validation.py",
+                    ".github/workflows/ci.yml",
+                    "test/openclaw_progressive_validation.py",
+                    MODULE.BASELINE_RECEIPT_PATH,
+                    MODULE.BASELINE_RECEIPT_DOC_PATH,
+                }
+            ),
+        }
+        self.assertTrue(
+            MODULE.protected_inherited_failure_admissible(
+                protected, observed_failures=list(MODULE.INHERITED_FAILURE_IDENTITIES)
+            )
         )
         self.assertFalse(
-            MODULE.validate_baseline_ci_receipt(
-                root=root,
-                receipt=rec,
-                observed_failures=list(sorted(MODULE.INHERITED_FAILURE_CONTEXTS)) + ["new-failure"],
-            )["protectedAdmission"]
+            MODULE.protected_inherited_failure_admissible(
+                protected, observed_failures=list(MODULE.INHERITED_FAILURE_IDENTITIES)[:-1]
+            )
         )
+        self.assertFalse(
+            MODULE.protected_inherited_failure_admissible(
+                protected, observed_failures=list(MODULE.INHERITED_FAILURE_IDENTITIES) + ["new-failure"]
+            )
+        )
+        self.assertFalse(
+            MODULE.protected_inherited_failure_admissible(
+                protected,
+                observed_failures=list(MODULE.INHERITED_FAILURE_IDENTITIES)
+                + [MODULE.INHERITED_FAILURE_IDENTITIES[0]],
+            )
+        )
+
+    def test_aggregate_matrix_parent_is_not_an_exact_failure_identity(self):
+        tmp, root, rec = self.fixture(); self.addCleanup(tmp.cleanup)
+        aggregate_contexts = [
+            "check-additional-shard",
+            "check-docs",
+            "check-shard",
+            "checks-fast-core",
+            "checks-fast-plugin-contracts-shard",
+            "checks-node-core-test-nondist-shard",
+        ]
+        result = MODULE.validate_baseline_ci_receipt(
+            root=root,
+            receipt=rec,
+            observed_failures=aggregate_contexts,
+        )
+        self.assertTrue(result["ok"], result)
+        self.assertFalse(result["protectedAdmission"])
 
     def test_changed_failure_contract_path_blocks_even_with_exact_failures(self):
         tmp, root, rec = self.fixture(); self.addCleanup(tmp.cleanup)
@@ -242,7 +283,7 @@ class ProgressiveValidationTests(unittest.TestCase):
         }
         self.assertTrue(
             MODULE.protected_inherited_failure_admissible(
-                result, observed_failures=sorted(MODULE.INHERITED_FAILURE_CONTEXTS)
+                result, observed_failures=list(MODULE.INHERITED_FAILURE_IDENTITIES)
             )
         )
         result["changedPaths"].append("README.md")
