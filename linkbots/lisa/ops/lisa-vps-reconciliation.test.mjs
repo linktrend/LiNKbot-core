@@ -495,7 +495,7 @@ describe("WP-02 deterministic Local/VPS reconciliation", () => {
     const receipt = JSON.parse(readFileSync(receiptPath, "utf8"));
     validateSourceAcceptanceReceipt(receipt);
     assert.equal(receipt.status, "source-prepared");
-    assert.equal(receipt.artifacts.stageWorkspacePackage.status, "blocked-hash-mismatch");
+    assert.equal(receipt.artifacts.stageWorkspacePackage.status, "verified-source");
     assert.ok(Object.values(receipt.gates).every((gate) => gate.status === "HOLD"));
   });
 });

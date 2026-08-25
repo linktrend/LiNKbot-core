@@ -21,12 +21,10 @@ gate claim, action flag, or rollback claim.
 ## Current source posture
 
 `linkbots/lisa/ops/receipts/stage-workspace-package-source.receipt.json` is
-`blocked-hash-mismatch`. The stage package manifest is still useful as the
-source contract, but the current protected tree contains source bytes that do
-not match its committed hashes. PKT-11 therefore keeps stage deployment on
-HOLD; it must not silently regenerate or weaken the manifest. A package owner
-must refresh the manifest in its declared scope, then rerun the source receipt
-before staging is considered.
+`verified-source` after the package owner refreshed only the 19 stale hash/byte
+declarations in the manifest. The receipt is bound to the exact protected
+`origin/development` base recorded in the PKT-11 source receipt. This source
+repair does not deploy or authorize staging; all external gates remain HOLD.
 
 The reconciliation tool accepts sanitized Local/VPS inventories only. It
 keeps VPS authoritative, retains conflicts as evidence, requires explicit
