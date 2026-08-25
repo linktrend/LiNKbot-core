@@ -32,6 +32,30 @@ destinations for Local-only records, and requires final-delta gates before a
 final reconciliation can be complete. It performs no VPS, profile, service,
 credential, channel, schedule, or deletion action.
 
+## Pre-VPS qualification receipt
+
+`linkbots/lisa/ops/receipts/pkt-11-pre-vps-qualification.receipt.json` is a
+separate, path-free source receipt for the bounded package harness. It binds
+to protected development `e29a24a84737fd2e0af5acff9a4ccedb0ca647c` and tree
+`209423a74715df675b1dd03cdfed1cc9b86bcb4b`, installs the 45-file package only
+into a disposable target, requires network/delivery/OAuth/schedules/live
+mutation to be disabled, and assembles discard-based offline rollback proof.
+Its `offline-qualified` status is not stage, VPS, E2E, provider, or production
+proof: every external gate remains `HOLD`, and the source acceptance receipt
+above remains the controlling PKT-11 handoff.
+
+The harness and validator are additive exports from
+`linkbots/lisa/ops/stage-workspace-package.ts`:
+
+- `validatePkt11OfflineCanaryConfig` rejects enabled, live, stage, and Lisa
+  targets before a copy plan is built.
+- `runPkt11OfflineCanary` performs only a hermetic package copy and records
+  no target path or external result.
+- `buildPkt11OfflineRollbackEvidence` requires all installed files to be
+  removed from the disposable target and never claims live restore.
+- `validatePkt11PreVpsQualificationReceipt` rejects sensitive fields, digest
+  tampering, missing package proof, non-HOLD gates, and any live-action flag.
+
 ## External gates remain separate
 
 Every gate in the PKT-11 receipt is `HOLD`:

@@ -1,0 +1,63 @@
+{
+  "receiptType": "lisa_pkt_11_pre_vps_qualification_receipt_v1",
+  "status": "offline-qualified",
+  "packet": {
+    "id": "PKT-11",
+    "issue": "ISS-11",
+    "executionState": "PLAN"
+  },
+  "sourceBase": {
+    "repository": "openclaw/openclaw",
+    "ref": "origin/development",
+    "commit": "e29a24a84737fd2e0af5acff9a4ccedb0ca647c7",
+    "tree": "209423a74715df675b1dd03cdfed1cc9b86bcb4b"
+  },
+  "package": {
+    "packageId": "lisa-stage-bounded-procedures-renderer-and-domain-modules",
+    "manifestSha256": "f723e2d43b63f98acf2ea6487ec8f1c4c547baa2ce93c7fc451b28d141c274c1",
+    "fileCount": 45,
+    "status": "verified-source",
+    "mutableSeeds": false,
+    "liveMutationAllowed": false
+  },
+  "offlineCanary": {
+    "status": "passed",
+    "packageStatus": "installed",
+    "networkAccess": "disabled",
+    "delivery": "none",
+    "oauthEnabled": false,
+    "schedulesEnabled": false,
+    "liveMutationAllowed": false,
+    "liveLisaTouched": false,
+    "stageWorkspaceMutated": false,
+    "installedFileCount": 45
+  },
+  "rollback": {
+    "status": "verified-offline",
+    "strategy": "discard-hermetic-target",
+    "installedFileCount": 45,
+    "removedFileCount": 45,
+    "liveRestorePerformed": false,
+    "rollbackVerified": true,
+    "approvalRequired": true
+  },
+  "gates": {
+    "providerReleaseSetAccepted": { "status": "HOLD", "requiredEvidence": "external:providerReleaseSetAccepted" },
+    "independentTerraVerification": { "status": "HOLD", "requiredEvidence": "external:independentTerraVerification" },
+    "independentReview": { "status": "HOLD", "requiredEvidence": "external:independentReview" },
+    "stageDeployment": { "status": "HOLD", "requiredEvidence": "external:stageDeployment" },
+    "vpsDeployment": { "status": "HOLD", "requiredEvidence": "external:vpsDeployment" },
+    "productionCanary": { "status": "HOLD", "requiredEvidence": "external:productionCanary" },
+    "principalAcceptance": { "status": "HOLD", "requiredEvidence": "external:principalAcceptance" },
+    "rollbackVerification": { "status": "HOLD", "requiredEvidence": "external:rollbackVerification" }
+  },
+  "actions": {
+    "vpsTouched": false,
+    "liveLisaTouched": false,
+    "productionTouched": false,
+    "scheduleChangesApplied": false,
+    "oauthOrLiveGoogleCalls": false,
+    "privateDataRecorded": false
+  },
+  "receiptDigestSha256": "50babd3ecc80c38b9a4742b6c7a3b81eb0315590a9892e0a4322b203f7efa2d4"
+}
