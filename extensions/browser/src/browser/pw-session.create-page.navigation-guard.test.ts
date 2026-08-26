@@ -709,7 +709,9 @@ describe("pw-session createPageViaPlaywright navigation guard", () => {
     const lookupFn = vi.fn(async () => [
       { address: "93.184.216.34", family: 4 },
     ]) as unknown as LookupFn;
-    const fetchImpl = vi.fn(async () => new Response("<html>ok</html>", { status: 200 }));
+    const fetchImpl = vi.fn<typeof fetch>(
+      async () => new Response("<html>ok</html>", { status: 200 }),
+    );
     pageGoto.mockImplementationOnce(async () => {
       await dispatchMockNavigation({
         getRouteHandler,
