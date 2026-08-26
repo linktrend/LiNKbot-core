@@ -146,6 +146,24 @@ INHERITED_FAILURE_IDENTITIES = tuple(sorted(INHERITED_FAILURE_JOBS))
 FAILURE_PATHS = frozenset(path for row in INHERITED_FAILURE_CONTRACT for path in row["changedPathContract"])
 BASELINE_RECEIPT_PATH = "docs/execution/openclaw-prime-lisa/baseline-ci-receipt.json"
 BASELINE_RECEIPT_DOC_PATH = "docs/execution/openclaw-prime-lisa/BASELINE-CI-RECEIPT.md"
+# The recovery/bootstrap controller and its exact receipt contract were
+# already integrated together on the protected development base. Admission
+# must bind this complete scope: accepting a subset would make an omitted
+# controller, workflow, or test change indistinguishable from a new product
+# change, while accepting an extra path would create a waiver boundary.
+PROTECTED_RECOVERY_SCOPE_PATHS = frozenset(
+    {
+        ".github/openclaw_progressive_validation.py",
+        ".github/workflows/ci.yml",
+        ".ide-development/tests/test_delivery_controller.py",
+        ".ide-development/tests/test_receipt_seal_and_recovery.py",
+        ".ide-development/workflows/linktrend-integrator-merge.yml",
+        BASELINE_RECEIPT_DOC_PATH,
+        BASELINE_RECEIPT_PATH,
+        "scripts/gitops/delivery_controller.py",
+        "test/openclaw_progressive_validation.py",
+    }
+)
 CLASSIFIER_PATHS = frozenset(
     {
         ".github/workflows/ci.yml",
@@ -182,18 +200,7 @@ def protected_inherited_failure_admissible(
     if not isinstance(changed_paths, list) or len(changed_paths) != len(set(changed_paths)):
         return False
     changed_path_set = set(changed_paths)
-    allowed = {BASELINE_RECEIPT_PATH, BASELINE_RECEIPT_DOC_PATH}
-    if changed_path_set == allowed:
-        pass
-    elif changed_path_set == {
-        ".github/openclaw_progressive_validation.py",
-        ".github/workflows/ci.yml",
-        "test/openclaw_progressive_validation.py",
-        BASELINE_RECEIPT_PATH,
-        BASELINE_RECEIPT_DOC_PATH,
-    }:
-        pass
-    else:
+    if changed_path_set != PROTECTED_RECOVERY_SCOPE_PATHS:
         return False
     if not isinstance(observed_failures, (list, tuple)) or any(
         not isinstance(item, str) for item in observed_failures
