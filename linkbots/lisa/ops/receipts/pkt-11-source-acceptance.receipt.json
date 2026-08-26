@@ -9,8 +9,8 @@
   "sourceBase": {
     "repository": "openclaw/openclaw",
     "ref": "origin/development",
-    "commit": "b870c944f20c148a6e12627b4c80f75703316e6b",
-    "tree": "6e4424857cbd4ee4c782b6a8d2f2da24bd46cf9f"
+    "commit": "1b4c849a3b972feaaa278e3fca6ea52074919d96",
+    "tree": "189272158b10ab4679bfaf0cd773a89ce84c41e7"
   },
   "ownedPaths": [
     "linkbots/lisa/ops/lisa-vps-reconciliation.mjs",
@@ -107,5 +107,5 @@
     "rollbackVerified": false,
     "approvalRequired": true
   },
-  "receiptDigestSha256": "a63342edd0a6459915556c2a055d3238675ef5b0255c3035562fb01bece71e24"
+  "receiptDigestSha256": "0b04987fad2cdab293e9afb24f345103088a795620b6013267447e61a214991c"
 }
