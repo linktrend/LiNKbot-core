@@ -138,7 +138,8 @@ export function readPluginSdkSurfaceBudgets(env = process.env) {
       // +1: session-discussion binds one external discussion provider to sessions.
       // +1: machine-token-runtime PACI/client_credentials seam.
       // +1: mcp-http-fetch guarded MCP transport fetch for plugins.
-      142,
+      // +1: current public package entrypoint count after later additive SDK surface.
+      143,
       env,
     ),
     publicExports: readPluginSdkSurfaceBudgetEnv(
