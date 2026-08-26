@@ -147,7 +147,7 @@
       "repository": "linktrend/openclaw_prime",
       "baselineCommit": "e3e837225651d151136af16bb81b5ad0d5ed0df5",
       "baselineTree": "381cd799a52834b14f9317d2c20b640880d47737",
-      "sha256": "sha256:f1a0351c1e61d1ddf9161d493a2dbf3e913b676678a9bd40dd90616440cea499",
+      "sha256": "sha256:1319d2f57828391beeb33e6001ccf92465ae30c32ea27dbe9686b48a228442ac",
       "targetRelease": "openclaw-prime-lisa-dispatch-authority-v4"
     },
     "platform": {
@@ -155,7 +155,7 @@
       "repository": "linktrend/LiNKplatform",
       "baselineCommit": "76caa010acb09722218dd691e42756bc8cd351ec",
       "baselineTree": "1cb6da7fed41b5a36fbf6c3914b12a1194a4282b",
-      "sha256": "sha256:f2b3afc698ae94551e41ec9a0687ceb78604cf3359f9fbeffe0bc836beaa3c63",
+      "sha256": "sha256:4a194548e72104a7789997554a9cd7e810895f7c46072aa9792af1d49c4b6060",
       "targetRelease": "openclaw-prime-lisa-dispatch-authority-v4"
     },
     "autowork": {
@@ -163,7 +163,7 @@
       "repository": "linktrend/LiNKautowork",
       "baselineCommit": "ee54d9c00c3659c950e8d2beaeb804131b0d0e8b",
       "baselineTree": "0502aa8cabe145925b234ced55993f8bb89710d7",
-      "sha256": "sha256:bfdbc517cf6aa330a69d066be70611db0e469bf7807fbf112c9bd165df4fb42a",
+      "sha256": "sha256:ad8d67d768b47e8528975080cd79709e5dc71fb16dfeb2759dda773098213678",
       "targetRelease": "openclaw-prime-lisa-dispatch-authority-v4"
     }
   },

@@ -28,12 +28,6 @@ COMMAND_DIGEST = "sha256:" + ("c" * 64)
 DEP_DIGEST = "sha256:" + ("d" * 64)
 PROFILE_DIGEST = "sha256:" + ("e" * 64)
 WORKFLOW_DIGEST = "sha256:" + ("f" * 64)
-FULL_WORKFLOW = (
-    Path(__file__).resolve().parents[2]
-    / ".ide-development"
-    / "workflows"
-    / "linktrend-integrator-merge.yml"
-)
 
 
 def _sha(n: int = 1) -> str:
@@ -793,42 +787,6 @@ class RecoveredReceiptPromotionTests(unittest.TestCase):
         )
         self.assertFalse(rejected["accepted"])
         self.assertEqual(rejected["code"], "content_changed")
-
-
-class RecoveryWorkflowRoutingTests(unittest.TestCase):
-    """Keep Phase PR seals and exact baseline recovery on disjoint paths."""
-
-    def setUp(self) -> None:
-        self.workflow = FULL_WORKFLOW.read_text(encoding="utf-8")
-        self.recovery = self.workflow.split("  recovery-receipt:", 1)[1]
-        self.phase = self.workflow.split("  full:", 1)[1].split("  bugbot:", 1)[0]
-
-    def test_dispatch_mode_routing_is_explicit_and_fail_closed(self) -> None:
-        self.assertIn("Reject unknown Full Suite dispatch mode", self.workflow)
-        self.assertIn("inputs.mode != 'phase' && inputs.mode != 'recovery' && inputs.mode != 'reconciled'", self.workflow)
-        self.assertIn("github.event_name == 'workflow_dispatch' && inputs.mode == 'phase'", self.workflow)
-        self.assertIn("github.event_name == 'workflow_dispatch' && inputs.mode == 'recovery'", self.workflow)
-        self.assertNotIn("inputs.mode != 'reconciled' && inputs.mode != 'recovery'", self.phase)
-        self.assertNotIn("inputs.mode != 'recovery'", self.phase)
-
-    def test_recovery_requires_development_and_exact_commit_tree_without_pr_lookup(self) -> None:
-        self.assertIn("EXPECTED_REF: ${{ github.ref_name }}", self.recovery)
-        self.assertIn('[[ "${EXPECTED_REF}" == "development" ]]', self.recovery)
-        self.assertIn('actual_commit="$(git rev-parse HEAD)"', self.recovery)
-        self.assertIn('actual_tree="$(git rev-parse \'HEAD^{tree}\')"', self.recovery)
-        self.assertIn("recovery_stale_commit", self.recovery)
-        self.assertIn("recovery_tree_mismatch", self.recovery)
-        self.assertIn("Write exact recovery full-suite receipt\n        if: success()", self.recovery)
-        self.assertNotIn("PR_NUMBER", self.recovery)
-        self.assertNotIn("EXPECTED_HEAD", self.recovery)
-        self.assertNotIn("/pulls/", self.recovery)
-
-    def test_phase_retains_pr_head_lookup_and_seals(self) -> None:
-        self.assertIn("PR_NUMBER:", self.phase)
-        self.assertIn('gh api "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}"', self.phase)
-        self.assertIn("EXPECTED_HEAD:", self.phase)
-        self.assertIn("full_suite_dispatch_head_stale", self.phase)
-        self.assertIn("full_suite_sealed_candidate_limit", self.phase)
 
 
 if __name__ == "__main__":

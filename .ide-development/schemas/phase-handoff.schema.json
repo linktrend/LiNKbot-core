@@ -27,17 +27,9 @@
       "additionalProperties": false,
       "required": ["branch", "sha", "order"],
       "properties": {
-        "branch": {
-          "type": "string",
-          "anyOf": [
-            { "pattern": "^issue/[1-9][0-9]{0,8}-[a-z0-9]+(?:-[a-z0-9]+)*$" },
-            { "pattern": "^issue/[a-z0-9]+(?:-[a-z0-9]+)*$" }
-          ]
-        },
+        "branch": { "type": "string", "pattern": "^issue/[1-9][0-9]{0,8}-[a-z0-9]+(?:-[a-z0-9]+)*$" },
         "sha": { "$ref": "#/$defs/sha40" },
-        "order": { "type": "integer", "minimum": 1 },
-        "packetId": { "type": "string", "pattern": "^[A-Z][A-Z0-9]*-[0-9]{2,}$" },
-        "issueId": { "type": "string", "pattern": "^ISS-[0-9]{2,}$" }
+        "order": { "type": "integer", "minimum": 1 }
       }
     }
   },
