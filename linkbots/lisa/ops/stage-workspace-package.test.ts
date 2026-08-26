@@ -131,8 +131,8 @@ describe("stage-workspace-package", () => {
         sourceBase: {
           repository: "openclaw/openclaw",
           ref: "origin/development",
-          commit: "e29a24a84737fd2e0af5acff9a4ccedb0ca647c7",
-          tree: "209423a74715df675b1dd03cdfed1cc9b86bcb4b",
+          commit: "428c6bc9ba21b2358934aa0d311911791fa3fd21",
+          tree: "a29648096f9872a7f3d727aef79b0cb63a31ff07",
         },
         stageWorkspacePackage: {
           packageId: packageReceipt.packageId,
@@ -210,8 +210,8 @@ describe("stage-workspace-package", () => {
       readFileSync("linkbots/lisa/ops/receipts/pkt-11-pre-vps-qualification.receipt.json", "utf8"),
     );
     validatePkt11PreVpsQualificationReceipt(receipt);
-    assert.equal(receipt.sourceBase.commit, "e29a24a84737fd2e0af5acff9a4ccedb0ca647c7");
-    assert.equal(receipt.sourceBase.tree, "209423a74715df675b1dd03cdfed1cc9b86bcb4b");
+    assert.equal(receipt.sourceBase.commit, "428c6bc9ba21b2358934aa0d311911791fa3fd21");
+    assert.equal(receipt.sourceBase.tree, "a29648096f9872a7f3d727aef79b0cb63a31ff07");
     assert.equal(receipt.offlineCanary.networkAccess, "disabled");
     assert.equal(receipt.rollback.rollbackVerified, true);
     assert.ok(Object.values(receipt.gates).every((gate) => gate.status === "HOLD"));

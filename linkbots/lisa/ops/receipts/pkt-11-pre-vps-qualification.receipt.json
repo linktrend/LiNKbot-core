@@ -9,8 +9,8 @@
   "sourceBase": {
     "repository": "openclaw/openclaw",
     "ref": "origin/development",
-    "commit": "e29a24a84737fd2e0af5acff9a4ccedb0ca647c7",
-    "tree": "209423a74715df675b1dd03cdfed1cc9b86bcb4b"
+    "commit": "428c6bc9ba21b2358934aa0d311911791fa3fd21",
+    "tree": "a29648096f9872a7f3d727aef79b0cb63a31ff07"
   },
   "package": {
     "packageId": "lisa-stage-bounded-procedures-renderer-and-domain-modules",
@@ -59,5 +59,5 @@
     "oauthOrLiveGoogleCalls": false,
     "privateDataRecorded": false
   },
-  "receiptDigestSha256": "50babd3ecc80c38b9a4742b6c7a3b81eb0315590a9892e0a4322b203f7efa2d4"
+  "receiptDigestSha256": "cc17c71e6d3d5d6891abb6591be71432609b505ae4e88abb04a00a1a5d9c929f"
 }
