@@ -31,12 +31,17 @@ import {
 import {
   DEFAULT_MANIFEST_PATH,
   FORBIDDEN_STAGE_WORKSPACE,
+  buildPkt11OfflineRollbackEvidence,
+  buildPkt11PreVpsQualificationReceipt,
   buildStageWorkspacePackageSourceReceipt,
   hashStageWorkspacePackageManifest,
   isForbiddenLiveLisaTarget,
   isForbiddenStageWorkspaceTarget,
   loadStageWorkspacePackageManifest,
   planStageWorkspacePackage,
+  runPkt11OfflineCanary,
+  validatePkt11OfflineCanaryConfig,
+  validatePkt11PreVpsQualificationReceipt,
   verifyStageWorkspacePackage,
 } from "./stage-workspace-package.ts";
 
@@ -91,6 +96,149 @@ describe("stage-workspace-package", () => {
     assert.equal(first.sourceRoot, "linkbots/lisa");
     assert.deepEqual(first, second);
     assert.doesNotMatch(JSON.stringify(first), /\/private\/tmp|\.openclaw-lisa|targetDir/);
+  });
+
+  it("qualifies a hermetic PKT-11 pre-VPS canary and assembles offline rollback evidence", () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "pkt11-pre-vps-"));
+    const targetDir = path.join(dir, "target");
+    const outputDir = path.join(dir, "receipt");
+    mkdirSync(targetDir, { recursive: true });
+    try {
+      const config = {
+        targetDir,
+        outputDir,
+        action: "install" as const,
+        networkAccess: "disabled" as const,
+        delivery: "none" as const,
+        oauthEnabled: false as const,
+        schedulesEnabled: false as const,
+        liveMutationAllowed: false as const,
+      };
+      validatePkt11OfflineCanaryConfig(config);
+      const canary = runPkt11OfflineCanary(config);
+      assert.equal(canary.status, "passed");
+      assert.equal(canary.installedFileCount, 45);
+      assert.equal(canary.liveLisaTouched, false);
+      assert.equal(canary.stageWorkspaceMutated, false);
+
+      rmSync(targetDir, { recursive: true, force: true });
+      const rollback = buildPkt11OfflineRollbackEvidence({
+        installedFileCount: canary.installedFileCount,
+        removedFileCount: canary.installedFileCount,
+      });
+      const packageReceipt = buildStageWorkspacePackageSourceReceipt();
+      const receipt = buildPkt11PreVpsQualificationReceipt({
+        sourceBase: {
+          repository: "openclaw/openclaw",
+          ref: "origin/development",
+          commit: "1b4c849a3b972feaaa278e3fca6ea52074919d96",
+          tree: "189272158b10ab4679bfaf0cd773a89ce84c41e7",
+        },
+        stageWorkspacePackage: {
+          packageId: packageReceipt.packageId,
+          manifestSha256: packageReceipt.manifestSha256,
+          fileCount: packageReceipt.fileCount,
+          status: packageReceipt.status,
+        },
+        offlineCanary: canary,
+        rollback,
+      });
+      validatePkt11PreVpsQualificationReceipt(receipt);
+      assert.equal(receipt.status, "offline-qualified");
+      assert.ok(Object.values(receipt.gates).every((gate) => gate.status === "HOLD"));
+      assert.ok(Object.values(receipt.actions).every((action) => action === false));
+      assert.equal(receipt.rollback.liveRestorePerformed, false);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("fails closed when the offline harness is given an enabled or live configuration", () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "pkt11-pre-vps-config-"));
+    const targetDir = path.join(dir, "target");
+    mkdirSync(targetDir, { recursive: true });
+    try {
+      assert.throws(
+        () =>
+          validatePkt11OfflineCanaryConfig({
+            targetDir,
+            outputDir: path.join(dir, "out"),
+            action: "install",
+            networkAccess: "disabled",
+            delivery: "none",
+            oauthEnabled: false,
+            schedulesEnabled: true,
+            liveMutationAllowed: false,
+          }),
+        /pkt11_pre_vps_config_schedules/,
+      );
+      assert.throws(
+        () =>
+          validatePkt11OfflineCanaryConfig({
+            targetDir: FORBIDDEN_STAGE_WORKSPACE,
+            outputDir: path.join(dir, "out"),
+            action: "install",
+            networkAccess: "disabled",
+            delivery: "none",
+            oauthEnabled: false,
+            schedulesEnabled: false,
+            liveMutationAllowed: false,
+          }),
+        /pkt11_pre_vps_config_forbidden_target/,
+      );
+      assert.throws(
+        () =>
+          validatePkt11OfflineCanaryConfig({
+            targetDir,
+            outputDir: path.join(targetDir, "nested-output"),
+            action: "install",
+            networkAccess: "disabled",
+            delivery: "none",
+            oauthEnabled: false,
+            schedulesEnabled: false,
+            liveMutationAllowed: false,
+          }),
+        /pkt11_pre_vps_config_source_or_nested_paths/,
+      );
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("validates the committed PKT-11 pre-VPS receipt without live evidence", () => {
+    const receipt = JSON.parse(
+      readFileSync("linkbots/lisa/ops/receipts/pkt-11-pre-vps-qualification.receipt.json", "utf8"),
+    );
+    validatePkt11PreVpsQualificationReceipt(receipt);
+    assert.equal(receipt.sourceBase.commit, "1b4c849a3b972feaaa278e3fca6ea52074919d96");
+    assert.equal(receipt.sourceBase.tree, "189272158b10ab4679bfaf0cd773a89ce84c41e7");
+    assert.equal(receipt.offlineCanary.networkAccess, "disabled");
+    assert.equal(receipt.rollback.rollbackVerified, true);
+    assert.ok(Object.values(receipt.gates).every((gate) => gate.status === "HOLD"));
+  });
+
+  it("rejects pre-VPS receipt claims that cross a gate or alter its digest", () => {
+    const receipt = JSON.parse(
+      readFileSync("linkbots/lisa/ops/receipts/pkt-11-pre-vps-qualification.receipt.json", "utf8"),
+    );
+    const gateClaim = structuredClone(receipt);
+    gateClaim.gates.vpsDeployment.status = "PASS";
+    assert.throws(
+      () => validatePkt11PreVpsQualificationReceipt(gateClaim),
+      /pkt11_pre_vps_receipt_gate:vpsDeployment/,
+    );
+    const actionClaim = structuredClone(receipt);
+    actionClaim.actions.vpsTouched = true;
+    assert.throws(
+      () => validatePkt11PreVpsQualificationReceipt(actionClaim),
+      /pkt11_pre_vps_receipt_action:vpsTouched/,
+    );
+    const digestTamper = structuredClone(receipt);
+    digestTamper.receiptDigestSha256 = "0".repeat(64);
+    assert.throws(
+      () => validatePkt11PreVpsQualificationReceipt(digestTamper),
+      /pkt11_pre_vps_receipt_digest/,
+    );
   });
 
   it("rejects mutable/private profile seeds even in a caller-supplied manifest", () => {
