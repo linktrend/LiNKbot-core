@@ -11,11 +11,8 @@ are WAIVED_LEGACY_GATE, never PASS, and never bypass substantive proof.
 from __future__ import annotations
 
 import hashlib
-import importlib.util
 import json
 import re
-import sys
-from pathlib import Path
 from typing import Any, Mapping
 
 try:
@@ -26,25 +23,14 @@ try:
         classify_legacy_publisher_gate,
         evaluate_issue_checkpoint,
     )
-except ModuleNotFoundError:  # pragma: no cover - legacy core is absent
-    _canonical_protocol_path = (
-        Path(__file__).resolve().parents[2] / ".ide-development" / "execution" / "protocol.py"
+except ModuleNotFoundError:  # pragma: no cover - script-style execution
+    from execution.protocol import (  # type: ignore
+        AMENDMENT_ID,
+        ISSUE_CHECKPOINT_EVIDENCE,
+        WAIVED_LEGACY_GATE,
+        classify_legacy_publisher_gate,
+        evaluate_issue_checkpoint,
     )
-    _canonical_protocol_spec = importlib.util.spec_from_file_location(
-        "openclaw_canonical_execution_protocol", _canonical_protocol_path
-    )
-    if _canonical_protocol_spec is None or _canonical_protocol_spec.loader is None:
-        raise ModuleNotFoundError(
-            f"canonical execution protocol unavailable: {_canonical_protocol_path}"
-        )
-    _canonical_protocol = importlib.util.module_from_spec(_canonical_protocol_spec)
-    sys.modules[_canonical_protocol_spec.name] = _canonical_protocol
-    _canonical_protocol_spec.loader.exec_module(_canonical_protocol)
-    AMENDMENT_ID = _canonical_protocol.AMENDMENT_ID
-    ISSUE_CHECKPOINT_EVIDENCE = _canonical_protocol.ISSUE_CHECKPOINT_EVIDENCE
-    WAIVED_LEGACY_GATE = _canonical_protocol.WAIVED_LEGACY_GATE
-    classify_legacy_publisher_gate = _canonical_protocol.classify_legacy_publisher_gate
-    evaluate_issue_checkpoint = _canonical_protocol.evaluate_issue_checkpoint
 
 try:
     from scripts.gitops.github_auth import (

@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "packageName": "ide-development-managed-core",
   "packageVersion": "2.5.1",
-  "installedAt": "2026-08-22T07:14:00Z",
+  "installedAt": "2026-08-26T08:52:58Z",
   "files": {
     ".agents/skills-loader.mjs": {
       "id": "codex-non-skill-skills-loader-mjs",
@@ -356,36 +356,6 @@
       "id": "library-cursor-schemas-library-entry-schema-json",
       "sourceHash": "sha256:7097b8e8b390410865891978c2c68f0ee75c5599c1651ff1e22e168e0234e457",
       "contentHash": "sha256:7097b8e8b390410865891978c2c68f0ee75c5599c1651ff1e22e168e0234e457",
-      "mode": "0644"
-    },
-    ".cursor/library/vendor/NOTICE.md": {
-      "id": "library-cursor-vendor-notice-md",
-      "sourceHash": "sha256:8bb0aa96c38ee65660037f50f4768f08861bc00665fe3efd284aea5ca57f4b0e",
-      "contentHash": "sha256:8bb0aa96c38ee65660037f50f4768f08861bc00665fe3efd284aea5ca57f4b0e",
-      "mode": "0644"
-    },
-    ".cursor/library/vendor/spdx-exceptions.json": {
-      "id": "library-cursor-vendor-spdx-exceptions-json",
-      "sourceHash": "sha256:05079063787565a9c14278d09144df3430cd353aab5c2db2a372b9230cf04594",
-      "contentHash": "sha256:05079063787565a9c14278d09144df3430cd353aab5c2db2a372b9230cf04594",
-      "mode": "0644"
-    },
-    ".cursor/library/vendor/spdx-expression-validate.mjs": {
-      "id": "library-cursor-vendor-spdx-expression-validate-mjs",
-      "sourceHash": "sha256:b159caceed95671aacfa6adb939856cd9df800b327cf01590f0f439b73075d9c",
-      "contentHash": "sha256:b159caceed95671aacfa6adb939856cd9df800b327cf01590f0f439b73075d9c",
-      "mode": "0644"
-    },
-    ".cursor/library/vendor/spdx-license-ids-deprecated.json": {
-      "id": "library-cursor-vendor-spdx-license-ids-deprecated-json",
-      "sourceHash": "sha256:58657e9b38a85b4ab2ea56115738590ee06d28c87667efaa5b83737657d43094",
-      "contentHash": "sha256:58657e9b38a85b4ab2ea56115738590ee06d28c87667efaa5b83737657d43094",
-      "mode": "0644"
-    },
-    ".cursor/library/vendor/spdx-license-ids.json": {
-      "id": "library-cursor-vendor-spdx-license-ids-json",
-      "sourceHash": "sha256:01229f894127ed2c09222de370817e7128340d89fc10a521f0d309dd89647873",
-      "contentHash": "sha256:01229f894127ed2c09222de370817e7128340d89fc10a521f0d309dd89647873",
       "mode": "0644"
     },
     ".cursor/rules/00-bootstrap.mdc": {
@@ -1094,36 +1064,6 @@
       "id": "library-package-tests-library-client-test-mjs",
       "sourceHash": "sha256:9cef721e8be8dcd11c9bce6e220cf90c19c0218844eafcc1b74e4270aac023ce",
       "contentHash": "sha256:9cef721e8be8dcd11c9bce6e220cf90c19c0218844eafcc1b74e4270aac023ce",
-      "mode": "0644"
-    },
-    ".ide-development/library/vendor/NOTICE.md": {
-      "id": "library-package-vendor-notice-md",
-      "sourceHash": "sha256:8bb0aa96c38ee65660037f50f4768f08861bc00665fe3efd284aea5ca57f4b0e",
-      "contentHash": "sha256:8bb0aa96c38ee65660037f50f4768f08861bc00665fe3efd284aea5ca57f4b0e",
-      "mode": "0644"
-    },
-    ".ide-development/library/vendor/spdx-exceptions.json": {
-      "id": "library-package-vendor-spdx-exceptions-json",
-      "sourceHash": "sha256:05079063787565a9c14278d09144df3430cd353aab5c2db2a372b9230cf04594",
-      "contentHash": "sha256:05079063787565a9c14278d09144df3430cd353aab5c2db2a372b9230cf04594",
-      "mode": "0644"
-    },
-    ".ide-development/library/vendor/spdx-expression-validate.mjs": {
-      "id": "library-package-vendor-spdx-expression-validate-mjs",
-      "sourceHash": "sha256:b159caceed95671aacfa6adb939856cd9df800b327cf01590f0f439b73075d9c",
-      "contentHash": "sha256:b159caceed95671aacfa6adb939856cd9df800b327cf01590f0f439b73075d9c",
-      "mode": "0644"
-    },
-    ".ide-development/library/vendor/spdx-license-ids-deprecated.json": {
-      "id": "library-package-vendor-spdx-license-ids-deprecated-json",
-      "sourceHash": "sha256:58657e9b38a85b4ab2ea56115738590ee06d28c87667efaa5b83737657d43094",
-      "contentHash": "sha256:58657e9b38a85b4ab2ea56115738590ee06d28c87667efaa5b83737657d43094",
-      "mode": "0644"
-    },
-    ".ide-development/library/vendor/spdx-license-ids.json": {
-      "id": "library-package-vendor-spdx-license-ids-json",
-      "sourceHash": "sha256:01229f894127ed2c09222de370817e7128340d89fc10a521f0d309dd89647873",
-      "contentHash": "sha256:01229f894127ed2c09222de370817e7128340d89fc10a521f0d309dd89647873",
       "mode": "0644"
     },
     ".ide-development/migrations/README.md": {

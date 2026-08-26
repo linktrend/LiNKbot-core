@@ -41,7 +41,6 @@
     { "id": "ISS-01", "packetId": "AW-01", "title": "Produce signed idempotent Skills update candidates without release authority" }
   ],
   "controls": {
-    "validationPolicyDigest": "sha256:fa3f448e33fbc05e4b9676628a8be1f67bb020cc0baf58da6dd8fe720d0c26f0",
     "exactCandidateInvalidation": { "enabled": true, "identityFields": ["repository", "commit", "tree"] },
     "boundedRetry": { "ordinarySourceRepairs": 3, "infrastructureAttemptsPerCandidate": 2, "codeFailureRetries": 0 },
     "orchestrationLease": { "required": true, "scope": "packet-repository", "ttlSeconds": 3600 },
@@ -85,7 +84,15 @@
       "busyIsNotDiagnosis": true,
       "unknownIsBlocking": true,
       "hostedConcurrencyAuthority": "execution-protocol",
-      "maxAdmittedSlots": { "local": 1, "hosted": 2 },
+      "maxAdmittedSlots": { "local": 1 },
+      "adaptiveConcurrency": {
+        "mode": "minimum_of_live_evidence",
+        "capacityEvidence": "authenticated_cursor_account",
+        "identityFields": ["accountId", "apiKeyName", "teamId", "programRunId"],
+        "spendCeilingEvidence": "required",
+        "safetyConstraintEvidence": "required",
+        "evidenceMaxAgeSeconds": 600
+      },
       "unknownProbeSeconds": 600,
       "backstopSeconds": 600,
       "prioritization": ["priority", "dependencyReady", "fifo"],
