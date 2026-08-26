@@ -16,9 +16,9 @@ from pathlib import Path
 
 POLICY_ID = "openclaw-fork-progressive-validation-v1"
 POLICY_DIGEST = "sha256:fa3f448e33fbc05e4b9676628a8be1f67bb020cc0baf58da6dd8fe720d0c26f0"
-BASELINE_RUN_ID = 32905475467
-BASELINE_COMMIT = "88b3c767f5bab799228deb4c7371c9f80cca7121"
-BASELINE_TREE = "016416564d5064f2ce500522d6d63a0b98565b1f"
+BASELINE_RUN_ID = 32917935092
+BASELINE_COMMIT = "428c6bc9ba21b2358934aa0d311911791fa3fd21"
+BASELINE_TREE = "a29648096f9872a7f3d727aef79b0cb63a31ff07"
 FAILURE_JOB = "checks-node-core-test-nondist-shard"
 BASELINE_RECEIPT_KIND = "openclaw-fork-baseline-ci-receipt"
 BASELINE_RECEIPT_POLICY_ID = POLICY_ID
@@ -35,7 +35,7 @@ BASELINE_RECEIPT_CHANGED_PATH_CONTRACT = (
     "scripts/check-openclawdevelopmentplan01-section-13.3-ledger.mjs",
     "docs/execution/openclawdevelopmentplan01/section-13.3",
 )
-# This is the complete failure contract observed in Full run 32905475467.
+# This is the complete failure contract observed in Full run 32917935092.
 # Every row is retained so a missing or newly introduced failure cannot be
 # mistaken for inherited evidence. Paths are the source/test contracts named
 # by the failing job output; they remain blocking when changed.
@@ -146,6 +146,14 @@ INHERITED_FAILURE_IDENTITIES = tuple(sorted(INHERITED_FAILURE_JOBS))
 FAILURE_PATHS = frozenset(path for row in INHERITED_FAILURE_CONTRACT for path in row["changedPathContract"])
 BASELINE_RECEIPT_PATH = "docs/execution/openclaw-prime-lisa/baseline-ci-receipt.json"
 BASELINE_RECEIPT_DOC_PATH = "docs/execution/openclaw-prime-lisa/BASELINE-CI-RECEIPT.md"
+BASELINE_RECEIPT_REBIND_SCOPE = frozenset(
+    {
+        ".github/openclaw_progressive_validation.py",
+        "test/openclaw_progressive_validation.py",
+        BASELINE_RECEIPT_DOC_PATH,
+        BASELINE_RECEIPT_PATH,
+    }
+)
 CLASSIFIER_PATHS = frozenset(
     {
         ".github/workflows/ci.yml",
@@ -167,7 +175,7 @@ def protected_inherited_failure_admissible(
     *,
     observed_failures: object = None,
 ) -> bool:
-    """Allow only the exact controller/receipt scope with the full failure set."""
+    """Allow only the exact four-path controller/test/receipt scope with the full failure set."""
     if not isinstance(result, dict):
         return False
     if result.get("ok") is not True or result.get("classification") != "inherited_baseline_failure":
@@ -182,18 +190,7 @@ def protected_inherited_failure_admissible(
     if not isinstance(changed_paths, list) or len(changed_paths) != len(set(changed_paths)):
         return False
     changed_path_set = set(changed_paths)
-    allowed = {BASELINE_RECEIPT_PATH, BASELINE_RECEIPT_DOC_PATH}
-    if changed_path_set == allowed:
-        pass
-    elif changed_path_set == {
-        ".github/openclaw_progressive_validation.py",
-        ".github/workflows/ci.yml",
-        "test/openclaw_progressive_validation.py",
-        BASELINE_RECEIPT_PATH,
-        BASELINE_RECEIPT_DOC_PATH,
-    }:
-        pass
-    else:
+    if changed_path_set != BASELINE_RECEIPT_REBIND_SCOPE:
         return False
     if not isinstance(observed_failures, (list, tuple)) or any(
         not isinstance(item, str) for item in observed_failures
