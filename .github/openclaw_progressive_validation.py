@@ -149,6 +149,7 @@ BASELINE_RECEIPT_DOC_PATH = "docs/execution/openclaw-prime-lisa/BASELINE-CI-RECE
 BASELINE_RECEIPT_REBIND_SCOPE = frozenset(
     {
         ".github/openclaw_progressive_validation.py",
+        "test/openclaw_progressive_validation.py",
         BASELINE_RECEIPT_DOC_PATH,
         BASELINE_RECEIPT_PATH,
     }
@@ -174,7 +175,7 @@ def protected_inherited_failure_admissible(
     *,
     observed_failures: object = None,
 ) -> bool:
-    """Allow only the exact controller/receipt scope with the full failure set."""
+    """Allow only the exact four-path controller/test/receipt scope with the full failure set."""
     if not isinstance(result, dict):
         return False
     if result.get("ok") is not True or result.get("classification") != "inherited_baseline_failure":

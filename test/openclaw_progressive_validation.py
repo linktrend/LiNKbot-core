@@ -257,7 +257,7 @@ class ProgressiveValidationTests(unittest.TestCase):
         self.assertIn("changed_failure_contract", result["errors"])
         self.assertFalse(result["protectedAdmission"])
 
-    def test_protected_admission_allows_exact_three_path_rebind_scope(self):
+    def test_protected_admission_allows_exact_four_path_rebind_scope(self):
         result = {
             "ok": True,
             "classification": "inherited_baseline_failure",
@@ -276,6 +276,14 @@ class ProgressiveValidationTests(unittest.TestCase):
         )
         result["changedPaths"] = sorted(
             MODULE.BASELINE_RECEIPT_REBIND_SCOPE - {MODULE.BASELINE_RECEIPT_PATH}
+        )
+        self.assertFalse(
+            MODULE.protected_inherited_failure_admissible(
+                result, observed_failures=list(MODULE.INHERITED_FAILURE_IDENTITIES)
+            )
+        )
+        result["changedPaths"] = sorted(
+            MODULE.BASELINE_RECEIPT_REBIND_SCOPE - {"test/openclaw_progressive_validation.py"}
         )
         self.assertFalse(
             MODULE.protected_inherited_failure_admissible(
