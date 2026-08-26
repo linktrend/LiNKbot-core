@@ -17,8 +17,8 @@ from pathlib import Path
 POLICY_ID = "openclaw-fork-progressive-validation-v1"
 POLICY_DIGEST = "sha256:fa3f448e33fbc05e4b9676628a8be1f67bb020cc0baf58da6dd8fe720d0c26f0"
 BASELINE_RUN_ID = 32917935092
-BASELINE_COMMIT = "9a777369f12c7c9d094c2c2d04f936603843b3a3"
-BASELINE_TREE = "9d1bc438a3fdf209539fdf2f30545c09141b7682"
+BASELINE_COMMIT = "facdd8052b78ea82a7d75d705dc9f6d8fe502137"
+BASELINE_TREE = "1c41031ad085739a701b37ea3279a7a43a6db7bf"
 FAILURE_JOB = "checks-node-core-test-nondist-shard"
 BASELINE_RECEIPT_KIND = "openclaw-fork-baseline-ci-receipt"
 BASELINE_RECEIPT_POLICY_ID = POLICY_ID
