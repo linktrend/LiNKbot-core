@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import subprocess
 import tempfile
 import unittest
@@ -47,6 +48,17 @@ def receipt(root: Path) -> dict[str, object]:
 
 
 class ProgressiveValidationTests(unittest.TestCase):
+    def test_committed_receipt_matches_controller_and_protected_development(self):
+        repo = Path(__file__).resolve().parents[1]
+        committed = json.loads((repo / MODULE.BASELINE_RECEIPT_PATH).read_text(encoding="utf-8"))
+        self.assertEqual(committed["baselineCommit"], MODULE.BASELINE_COMMIT)
+        self.assertEqual(committed["baselineTree"], MODULE.BASELINE_TREE)
+        self.assertEqual(committed["baselineRunId"], MODULE.BASELINE_RUN_ID)
+        self.assertEqual(committed["policyDigest"], MODULE.POLICY_DIGEST)
+        self.assertEqual(committed["inheritedFailures"], MODULE._canonical_failure_contract())
+        self.assertEqual(MODULE.BASELINE_COMMIT, "9a777369f12c7c9d094c2c2d04f936603843b3a3")
+        self.assertEqual(MODULE.BASELINE_TREE, "9d1bc438a3fdf209539fdf2f30545c09141b7682")
+
     def fixture(self):
         tmp = tempfile.TemporaryDirectory(prefix="openclaw-progressive-")
         root = Path(tmp.name) / "repo"
