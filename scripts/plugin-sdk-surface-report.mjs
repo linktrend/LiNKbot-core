@@ -138,7 +138,8 @@ export function readPluginSdkSurfaceBudgets(env = process.env) {
       // +1: session-discussion binds one external discussion provider to sessions.
       // +1: machine-token-runtime PACI/client_credentials seam.
       // +1: mcp-http-fetch guarded MCP transport fetch for plugins.
-      142,
+      // +1: current public package entrypoint count after later additive SDK surface.
+      143,
       env,
     ),
     publicExports: readPluginSdkSurfaceBudgetEnv(
@@ -148,7 +149,8 @@ export function readPluginSdkSurfaceBudgets(env = process.env) {
       // +5: machine-token-runtime consumer types/helpers after host-authority split (was +11).
       // +3: mcp-http-fetch buildPluginMcpHttpFetch + withoutMcpAuthorizationHeader + withSameOriginMcpHttpHeaders.
       // +1: mcp-http-fetch MCP_HTTP_MAX_RESPONSE_BYTES (Wave 4 bounded MCP bodies).
-      4733,
+      // +10: current public package surface after later additive SDK exports.
+      4743,
       env,
     ),
     publicFunctionExports: readPluginSdkSurfaceBudgetEnv(
@@ -157,7 +159,8 @@ export function readPluginSdkSurfaceBudgets(env = process.env) {
       // +1: structured media placeholder formatter for text-only channel carriers.
       // +3: machine-token assertMachineTokenIssuerUrl + authorizationHeaderFromMachineToken + fingerprintMachineTokenKeyRef.
       // +3: mcp-http-fetch guarded fetch helpers for plugin MCP transports.
-      2885,
+      // +4: current public callable surface after later additive SDK exports.
+      2889,
       env,
     ),
     publicDeprecatedExports: readPluginSdkSurfaceBudgetEnv(
