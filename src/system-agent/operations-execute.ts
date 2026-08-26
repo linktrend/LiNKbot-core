@@ -393,8 +393,8 @@ export async function executeSystemAgentOperation(
             case "dry-run":
               throw new Error(`Agent "${result.agentId}" was not created.`);
             default: {
-              const _exhaustive: never = result;
-              throw new Error(`unexpected createAgent status: ${JSON.stringify(_exhaustive)}`);
+              const exhaustive: never = result;
+              throw new Error(`unexpected createAgent status: ${JSON.stringify(exhaustive)}`);
             }
           }
         },

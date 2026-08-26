@@ -193,7 +193,7 @@ export function parseGovernedBrowserUrl(rawUrl: string): URL {
 
 function buildSsrFPolicy(options: GovernedBrowserUrlOptions): SsrFPolicy {
   return {
-    ...(options.policy ?? {}),
+    ...options.policy,
     ...(options.allowPrivateNetwork ? { dangerouslyAllowPrivateNetwork: true } : {}),
     ...(options.allowedHostnames?.length ? { allowedHostnames: options.allowedHostnames } : {}),
     ...(options.hostnameAllowlist?.length ? { hostnameAllowlist: options.hostnameAllowlist } : {}),

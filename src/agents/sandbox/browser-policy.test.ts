@@ -102,7 +102,7 @@ describe("governed browser URL policy", () => {
   it("retains a checked DNS answer for the browser driver boundary", async () => {
     const lookupFn = vi.fn(publicLookup);
     const admitted = await resolveGovernedBrowserUrl("https://public.example", {
-      lookupFn: lookupFn as LookupFn,
+      lookupFn: lookupFn as unknown as LookupFn,
     });
     const rebound = await resolveGovernedBrowserUrl("https://public.example/next", {
       lookupFn: privateLookup,

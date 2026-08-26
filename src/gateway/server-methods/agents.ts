@@ -506,13 +506,13 @@ export const agentsHandlers: GatewayRequestHandlers = {
         );
         return;
       default: {
-        const _exhaustive: never = result;
+        const exhaustive: never = result;
         respond(
           false,
           undefined,
           errorShape(
             ErrorCodes.INVALID_REQUEST,
-            `unexpected createAgent status: ${JSON.stringify(_exhaustive)}`,
+            `unexpected createAgent status: ${JSON.stringify(exhaustive)}`,
           ),
         );
       }

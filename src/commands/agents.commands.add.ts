@@ -156,8 +156,8 @@ export async function agentsAddCommand(
         runtime.exit(1);
         return;
       default: {
-        const _exhaustive: never = created;
-        throw new Error(`unexpected createAgent status: ${JSON.stringify(_exhaustive)}`);
+        const exhaustive: never = created;
+        throw new Error(`unexpected createAgent status: ${JSON.stringify(exhaustive)}`);
       }
     }
 
