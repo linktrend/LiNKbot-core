@@ -119,6 +119,8 @@ const rootEntries = [
   "src/agents/noncoding-route.ts!",
   "src/agents/prepared-model-runtime.ts!",
   "src/agents/prepared-model-runtime.owner.ts!",
+  "src/agents/profile-manifest.ts!",
+  "src/agents/sandbox/browser-policy.ts!",
   "src/state/lisa-principal-task-schema.ts!",
   "src/state/lisa-principal-task-store.ts!",
   // LiNKtrend host contracts are consumed by installed plugins and operations
