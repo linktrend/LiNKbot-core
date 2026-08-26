@@ -1,6 +1,7 @@
-import { mkdtempSync, rmSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { afterEach, describe, expect, it } from "vitest";
 import {
   addLisaPrincipalTaskBrainAdvisoryReference,
@@ -293,5 +294,19 @@ describe("Lisa Principal task state", () => {
       }),
     ).toEqual(resolved);
     expect(listLisaPrincipalTaskEvidence(o, canonical.task.internalId)).toHaveLength(3);
+  });
+
+  it("splits the store below the max-lines budget without a suppression", () => {
+    const dir = dirname(fileURLToPath(import.meta.url));
+    for (const file of [
+      "lisa-principal-task-store.ts",
+      "lisa-principal-task-types.ts",
+      "lisa-principal-task-helpers.ts",
+      "lisa-principal-task-writes.ts",
+    ]) {
+      const source = readFileSync(join(dir, file), "utf8");
+      expect(source, file).not.toMatch(/oxlint-disable(?:-next-line|-line)?[\s\S]{0,80}max-lines/u);
+      expect(source.split("\n").length, file).toBeLessThanOrEqual(700);
+    }
   });
 });
