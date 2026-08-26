@@ -282,6 +282,25 @@ class ProgressiveValidationTests(unittest.TestCase):
                 result, observed_failures=list(MODULE.INHERITED_FAILURE_IDENTITIES)
             )
         )
+
+    def test_pkt11_preflight_scope_is_exact_and_fail_closed(self):
+        result = {
+            "ok": True,
+            "classification": "inherited_baseline_failure",
+            "baselineCommit": MODULE.BASELINE_COMMIT,
+            "baselineTree": MODULE.BASELINE_TREE,
+            "receiptBaselineCommit": MODULE.BASELINE_COMMIT,
+            "receiptBaselineTree": MODULE.BASELINE_TREE,
+            "changedFailureContractPaths": [],
+            "changedPaths": sorted(MODULE.PKT11_PHASE_SCOPE),
+            "errors": [],
+        }
+        failures = list(MODULE.INHERITED_FAILURE_IDENTITIES)
+        self.assertTrue(MODULE.protected_inherited_failure_admissible(result, observed_failures=failures))
+        result["changedPaths"] = sorted(MODULE.PKT11_PHASE_SCOPE - {MODULE.PKT11_SOURCE_PREFLIGHT_TEST})
+        self.assertFalse(MODULE.protected_inherited_failure_admissible(result, observed_failures=failures))
+        result["changedPaths"] = sorted(MODULE.PKT11_PHASE_SCOPE | {"README.md"})
+        self.assertFalse(MODULE.protected_inherited_failure_admissible(result, observed_failures=failures))
         result["changedPaths"] = sorted(
             MODULE.BASELINE_RECEIPT_REBIND_SCOPE - {"test/openclaw_progressive_validation.py"}
         )
