@@ -16,7 +16,7 @@ import {
   type SsrFPolicy,
 } from "../../infra/net/ssrf.js";
 
-export const GOVERNED_BROWSER_CAPABILITY_CLASSES = [
+const GOVERNED_BROWSER_CAPABILITY_CLASSES = [
   "public_read",
   "approved_authenticated_read",
   "navigation",
@@ -29,9 +29,9 @@ export const GOVERNED_BROWSER_CAPABILITY_CLASSES = [
   "external_commitment",
 ] as const;
 
-export type GovernedBrowserCapabilityClass = (typeof GOVERNED_BROWSER_CAPABILITY_CLASSES)[number];
+type GovernedBrowserCapabilityClass = (typeof GOVERNED_BROWSER_CAPABILITY_CLASSES)[number];
 
-export type BrowserPolicyDecision = {
+type BrowserPolicyDecision = {
   status: "allow" | "ask" | "deny";
   capability: GovernedBrowserCapabilityClass;
   reason: string;
@@ -39,14 +39,14 @@ export type BrowserPolicyDecision = {
   pageContentUntrusted: true;
 };
 
-export type BrowserApprovalEvidence = {
+type BrowserApprovalEvidence = {
   approved: boolean;
   /** Only Platform may activate a standing rule or approve a risky action. */
   actor: "platform" | "operator" | "lisa" | "page";
   expiresAtMs?: number;
 };
 
-export type BrowserCapabilityRequest = {
+type BrowserCapabilityRequest = {
   capability: GovernedBrowserCapabilityClass;
   authenticated?: boolean;
   identityUncertain?: boolean;
@@ -144,9 +144,6 @@ export function evaluateBrowserCapability(
   }
   return decision("ask", effectiveCapability, "Platform approval is required before this action");
 }
-
-/** Alias that reads naturally at an action boundary. */
-export const authorizeBrowserCapability = evaluateBrowserCapability;
 
 export type GovernedBrowserUrlOptions = {
   /** Canonical SSRF policy supplied by the browser runtime boundary. */
@@ -292,9 +289,9 @@ export async function assertGovernedBrowserRedirectChain(
   return checked;
 }
 
-export const DEFAULT_BROWSER_MAX_CONCURRENT_SESSIONS = 2;
-export const DEFAULT_BROWSER_MAX_MEMORY_MB = 1_024;
-export const DEFAULT_BROWSER_IDLE_TIMEOUT_MS = 5 * 60 * 1_000;
+const DEFAULT_BROWSER_MAX_CONCURRENT_SESSIONS = 2;
+const DEFAULT_BROWSER_MAX_MEMORY_MB = 1_024;
+const DEFAULT_BROWSER_IDLE_TIMEOUT_MS = 5 * 60 * 1_000;
 
 export type BrowserRuntimeLimits = {
   maxConcurrentSessions: number;
@@ -326,7 +323,7 @@ export function resolveBrowserRuntimeLimits(
   };
 }
 
-export type BrowserSessionAdmission = {
+type BrowserSessionAdmission = {
   activeSessions: number;
   estimatedMemoryMb?: number;
 };

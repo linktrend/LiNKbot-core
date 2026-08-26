@@ -471,21 +471,52 @@ export const agentsHandlers: GatewayRequestHandlers = {
       emoji: params.emoji,
       avatar: params.avatar,
     });
-    if (result.status === "error") {
-      respond(false, undefined, errorShape(ErrorCodes.INVALID_REQUEST, result.message));
-      return;
+    switch (result.status) {
+      case "created":
+        respond(
+          true,
+          {
+            ok: true,
+            agentId: result.agentId,
+            name: result.name,
+            workspace: result.workspace,
+            ...(result.model ? { model: result.model } : {}),
+          },
+          undefined,
+        );
+        return;
+      case "error":
+        respond(false, undefined, errorShape(ErrorCodes.INVALID_REQUEST, result.message));
+        return;
+      case "inactive":
+        respond(
+          false,
+          undefined,
+          errorShape(
+            ErrorCodes.INVALID_REQUEST,
+            `profile "${result.profileId}" is inactive and cannot be provisioned`,
+          ),
+        );
+        return;
+      case "dry-run":
+        respond(
+          false,
+          undefined,
+          errorShape(ErrorCodes.INVALID_REQUEST, `agent "${result.agentId}" was not created`),
+        );
+        return;
+      default: {
+        const _exhaustive: never = result;
+        respond(
+          false,
+          undefined,
+          errorShape(
+            ErrorCodes.INVALID_REQUEST,
+            `unexpected createAgent status: ${JSON.stringify(_exhaustive)}`,
+          ),
+        );
+      }
     }
-    respond(
-      true,
-      {
-        ok: true,
-        agentId: result.agentId,
-        name: result.name,
-        workspace: result.workspace,
-        ...(result.model ? { model: result.model } : {}),
-      },
-      undefined,
-    );
   },
   "agents.update": async ({ params, respond, context }) => {
     if (!validateAgentsUpdateParams(params)) {

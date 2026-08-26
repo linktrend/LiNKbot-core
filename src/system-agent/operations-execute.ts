@@ -373,18 +373,30 @@ export async function executeSystemAgentOperation(
               ...(operation.workspace ? { workspace: operation.workspace } : {}),
             });
           });
-          if (result.status === "error") {
-            throw new Error(result.message);
+          switch (result.status) {
+            case "created":
+              return {
+                summary: `Created agent ${result.agentId}`,
+                bootstrapPending: result.bootstrapPending,
+                agentId: result.agentId,
+                details: {
+                  agentId: result.agentId,
+                  workspace: result.workspace,
+                },
+              };
+            case "error":
+              throw new Error(result.message);
+            case "inactive":
+              throw new Error(
+                `Profile "${result.profileId}" is inactive and cannot be provisioned.`,
+              );
+            case "dry-run":
+              throw new Error(`Agent "${result.agentId}" was not created.`);
+            default: {
+              const _exhaustive: never = result;
+              throw new Error(`unexpected createAgent status: ${JSON.stringify(_exhaustive)}`);
+            }
           }
-          return {
-            summary: `Created agent ${result.agentId}`,
-            bootstrapPending: result.bootstrapPending,
-            agentId: result.agentId,
-            details: {
-              agentId: result.agentId,
-              workspace: result.workspace,
-            },
-          };
         },
       });
     }

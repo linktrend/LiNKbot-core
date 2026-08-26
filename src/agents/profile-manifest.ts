@@ -16,9 +16,9 @@ export const PROFILE_MANIFEST_EXCLUSIONS = [
   "workspace",
 ] as const;
 
-export type ProfileManifestExclusion = (typeof PROFILE_MANIFEST_EXCLUSIONS)[number];
+type ProfileManifestExclusion = (typeof PROFILE_MANIFEST_EXCLUSIONS)[number];
 
-export type ProfileManifestExclusions = {
+type ProfileManifestExclusions = {
   [key in ProfileManifestExclusion]: true;
 };
 
@@ -39,7 +39,7 @@ export type ProfileManifest = {
   exclusions: ProfileManifestExclusions;
 };
 
-export type ProfileManifestValidationResult =
+type ProfileManifestValidationResult =
   | { ok: true; valid: true; manifest: ProfileManifest; errors: [] }
   | { ok: false; valid: false; errors: string[] };
 
@@ -60,7 +60,7 @@ export class InactiveProfileManifestError extends Error {
   }
 }
 
-export type ProfileProvisioningPlan = {
+type ProfileProvisioningPlan = {
   profileId: string;
   activation: ProfileManifest["activation"];
   /** An inactive profile has no actor, credential, grant, or delivery side effect. */
@@ -68,7 +68,7 @@ export type ProfileProvisioningPlan = {
   excluded: readonly ProfileManifestExclusion[];
 };
 
-export type ProfileManifestCloneOptions = {
+type ProfileManifestCloneOptions = {
   profileId: string;
   identityRef?: string;
   roleRefs?: readonly string[];
@@ -216,7 +216,9 @@ export function validateProfileManifest(input: unknown): ProfileManifestValidati
   const identityRef = nonEmptyString(input.identityRef, "identityRef", errors)
     ? input.identityRef
     : "invalid";
-  if (input.activation !== "active" && input.activation !== "inactive") {
+  const activation =
+    input.activation === "active" || input.activation === "inactive" ? input.activation : undefined;
+  if (!activation) {
     errors.push('activation must be "active" or "inactive"');
   }
   const capabilityClasses = stringList(input.capabilityClasses, "capabilityClasses", errors);
@@ -236,7 +238,7 @@ export function validateProfileManifest(input: unknown): ProfileManifestValidati
       : stringList(input.accountBindingRefs, "accountBindingRefs", errors, true);
   const stateOwners = stringMap(input.stateOwners, "stateOwners", errors);
   const exclusions = validateExclusions(input.exclusions, errors);
-  if (errors.length > 0) {
+  if (errors.length > 0 || !activation) {
     return { ok: false, valid: false, errors };
   }
   return {
@@ -248,7 +250,7 @@ export function validateProfileManifest(input: unknown): ProfileManifestValidati
       profileId,
       roleRefs,
       identityRef,
-      activation: input.activation,
+      activation,
       capabilityClasses,
       providerPins,
       skillPins,
