@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
-import { test } from "node:test";
 import { createHash } from "node:crypto";
+import { test } from "node:test";
 import {
   createSourceArchive,
   encryptPrivateSnapshot,
@@ -86,7 +86,10 @@ test("PKT-09 offline rehearsal composes encrypted backup, deployment validation,
   const deployment = buildDeploymentPlan({ paths: PATHS });
   assert.equal(validateDeploymentPlan(deployment).valid, true);
   assert.equal(deployment.units.length, 3);
-  assert.equal(deployment.units.some((unit) => unit.contents.includes("/Users/")), false);
+  assert.equal(
+    deployment.units.some((unit) => unit.contents.includes("/Users/")),
+    false,
+  );
   assert.equal(
     deployment.units.some((unit) => unit.contents.includes("GOOGLE_APPLICATION_CREDENTIALS=")),
     false,

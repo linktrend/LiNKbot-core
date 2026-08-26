@@ -129,7 +129,13 @@ describe("VPS Lisa Google Workspace wrappers", () => {
 
       const listedCalendars = run(
         lisaSafe,
-        ["calendar-list", "--calendar", "opaque_lisa-workspace_calendar_work", "--max-results", "1"],
+        [
+          "calendar-list",
+          "--calendar",
+          "opaque_lisa-workspace_calendar_work",
+          "--max-results",
+          "1",
+        ],
         fixture,
       );
       assert.equal(listedCalendars.status, 0, listedCalendars.stderr);
@@ -166,7 +172,13 @@ describe("VPS Lisa Google Workspace wrappers", () => {
 
       const fetched = run(
         lisaSafe,
-        ["calendar-event-get", "--calendar", "opaque_lisa-workspace_calendar_routine", "--event", "event_1"],
+        [
+          "calendar-event-get",
+          "--calendar",
+          "opaque_lisa-workspace_calendar_routine",
+          "--event",
+          "event_1",
+        ],
         fixture,
       );
       assert.equal(fetched.status, 0, fetched.stderr);
@@ -317,10 +329,7 @@ describe("VPS Lisa Google Workspace wrappers", () => {
       assert.match(missingListBinding.stderr, /explicit opaque --calendar binding/);
       assert.equal(missingListBinding.stdout, "");
 
-      const unavailableReceiptPath = path.join(
-        fixture.configRoot,
-        "qualified-skills.receipt.json",
-      );
+      const unavailableReceiptPath = path.join(fixture.configRoot, "qualified-skills.receipt.json");
       const unavailableReceipt = JSON.parse(readFileSync(unavailableReceiptPath, "utf8")) as Record<
         string,
         unknown
@@ -805,7 +814,9 @@ describe("VPS Lisa Google Workspace wrappers", () => {
         `sha256:${createHash("sha256").update(scopeDigestInput).digest("hex")}`,
       );
       assert.ok(
-        identity.prohibitedScopeUrls.every((scope) => !identity.effectiveExpectedScopeUrls.includes(scope)),
+        identity.prohibitedScopeUrls.every(
+          (scope) => !identity.effectiveExpectedScopeUrls.includes(scope),
+        ),
       );
     }
     assert.equal(
@@ -844,7 +855,10 @@ describe("VPS Lisa Google Workspace wrappers", () => {
         (binding) => binding.bindingRef.startsWith("opaque_") && binding.includeInDigest,
       ),
     );
-    assert.equal(bindings.excludedCalendars[0]?.bindingRef, "opaque_lisa-workspace_calendar_routine");
+    assert.equal(
+      bindings.excludedCalendars[0]?.bindingRef,
+      "opaque_lisa-workspace_calendar_routine",
+    );
     assert.equal(
       bindings.calendarAllowlistDigest,
       `sha256:${createHash("sha256").update(JSON.stringify(bindings.calendarAllowlist)).digest("hex")}`,
@@ -898,7 +912,11 @@ describe("VPS Lisa Google Workspace wrappers", () => {
     assert.match(qualifiedSkills.provider.skillSetDigest, /^sha256:[a-f0-9]{64}$/u);
     assert.equal(qualifiedSkills.catalogueBinding.path, "tools/gws/interface.json");
     assert.match(qualifiedSkills.catalogueBinding.sha256, /^sha256:[a-f0-9]{64}$/u);
-    assert.deepEqual(qualifiedSkills.catalogueBinding.requiredServices, ["docs", "sheets", "slides"]);
+    assert.deepEqual(qualifiedSkills.catalogueBinding.requiredServices, [
+      "docs",
+      "sheets",
+      "slides",
+    ]);
     assert.equal(qualifiedSkills.catalogueBinding.status, "source-catalogue-bound");
     assert.equal(qualifiedSkills.catalogueBinding.providerRuntime, "not executed by OpenClaw");
     assert.equal(qualifiedSkills.catalogueIndexBinding.path, "catalog/index.json");

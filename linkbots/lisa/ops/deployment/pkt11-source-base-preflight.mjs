@@ -32,7 +32,10 @@ export function validatePkt11SourceBaseAlignment({
   if (!sourceReceipt || typeof sourceReceipt !== "object") {
     fail("source_receipt_missing");
   }
-  if (!stageWorkspacePackageSourceReceipt || typeof stageWorkspacePackageSourceReceipt !== "object") {
+  if (
+    !stageWorkspacePackageSourceReceipt ||
+    typeof stageWorkspacePackageSourceReceipt !== "object"
+  ) {
     fail("package_receipt_missing");
   }
   if (!expectedSourceBase || typeof expectedSourceBase !== "object") {
