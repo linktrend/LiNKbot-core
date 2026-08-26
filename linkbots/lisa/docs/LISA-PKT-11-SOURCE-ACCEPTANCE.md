@@ -36,8 +36,8 @@ credential, channel, schedule, or deletion action.
 
 `linkbots/lisa/ops/receipts/pkt-11-pre-vps-qualification.receipt.json` is a
 separate, path-free source receipt for the bounded package harness. It binds
-to protected development `e29a24a84737fd2e0af5acff9a4ccedb0ca647c` and tree
-`209423a74715df675b1dd03cdfed1cc9b86bcb4b`, installs the 45-file package only
+to protected development `1b4c849a3b972feaaa278e3fca6ea52074919d96` and tree
+`189272158b10ab4679bfaf0cd773a89ce84c41e7`, installs the 45-file package only
 into a disposable target, requires network/delivery/OAuth/schedules/live
 mutation to be disabled, and assembles discard-based offline rollback proof.
 Its `offline-qualified` status is not stage, VPS, E2E, provider, or production
