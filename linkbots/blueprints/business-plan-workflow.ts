@@ -327,15 +327,15 @@ export function evaluateBlueprintLaunch(
   if (!launchRecord) {
     reasons.push("separate launch record is required");
   } else {
+    let platformIdentityRef: string | undefined;
+    let grantsDigest: string | undefined;
+    let launchApprovalRef: string | undefined;
     if (launchRecord.approved !== true) reasons.push("launch record approval is required");
     if (launchRecord.blueprintProfileId !== manifest.profileId) {
       reasons.push("launch record must name the exact blueprint profile");
     }
     try {
-      const platformIdentityRef = requiredRef(
-        launchRecord.platformIdentityRef,
-        "platformIdentityRef",
-      );
+      platformIdentityRef = requiredRef(launchRecord.platformIdentityRef, "platformIdentityRef");
       if (!platformIdentityRef.startsWith("platform-identity:")) {
         reasons.push("platformIdentityRef must identify a Platform identity");
       }
@@ -343,25 +343,37 @@ export function evaluateBlueprintLaunch(
       reasons.push(error instanceof Error ? error.message : "invalid platform identity reference");
     }
     try {
-      sha256(launchRecord.grantsDigest, "grantsDigest");
+      grantsDigest = sha256(launchRecord.grantsDigest, "grantsDigest");
     } catch (error) {
       reasons.push(error instanceof Error ? error.message : "invalid grants digest");
     }
     try {
-      requiredRef(launchRecord.launchApprovalRef, "launchApprovalRef");
+      launchApprovalRef = requiredRef(launchRecord.launchApprovalRef, "launchApprovalRef");
     } catch (error) {
       reasons.push(error instanceof Error ? error.message : "invalid launch approval reference");
+    }
+    if (reasons.length === 0) {
+      const validatedRefs = { platformIdentityRef, grantsDigest, launchApprovalRef };
+      if (
+        !validatedRefs.platformIdentityRef ||
+        !validatedRefs.grantsDigest ||
+        !validatedRefs.launchApprovalRef
+      ) {
+        reasons.push("launch record validation did not produce complete authority references");
+      } else {
+        return {
+          status: "launch-authority-verified",
+          profileId: manifest.profileId,
+          activation: "inactive",
+          platformIdentityRef: validatedRefs.platformIdentityRef,
+          grantsDigest: validatedRefs.grantsDigest,
+          actions: [],
+        };
+      }
     }
   }
   if (reasons.length > 0) {
     return { status: "blocked", profileId: manifest.profileId, reasons, actions: [] };
   }
-  return {
-    status: "launch-authority-verified",
-    profileId: manifest.profileId,
-    activation: "inactive",
-    platformIdentityRef: launchRecord.platformIdentityRef as string,
-    grantsDigest: (launchRecord.grantsDigest as string).toLowerCase(),
-    actions: [],
-  };
+  return { status: "blocked", profileId: manifest.profileId, reasons, actions: [] };
 }
