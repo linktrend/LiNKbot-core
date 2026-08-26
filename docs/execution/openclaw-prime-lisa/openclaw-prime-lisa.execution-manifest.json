@@ -302,7 +302,6 @@
     { "id": "ISS-11", "packetId": "PKT-11", "title": "Run Lisa integrated acceptance and approved production canary" }
   ],
   "controls": {
-    "validationPolicyDigest": "sha256:fa3f448e33fbc05e4b9676628a8be1f67bb020cc0baf58da6dd8fe720d0c26f0",
     "exactCandidateInvalidation": {
       "enabled": true,
       "identityFields": ["repository", "commit", "tree"]
@@ -373,7 +372,15 @@
       "busyIsNotDiagnosis": true,
       "unknownIsBlocking": true,
       "hostedConcurrencyAuthority": "execution-protocol",
-      "maxAdmittedSlots": { "local": 1, "hosted": 2 },
+      "maxAdmittedSlots": { "local": 1 },
+      "adaptiveConcurrency": {
+        "mode": "minimum_of_live_evidence",
+        "capacityEvidence": "authenticated_cursor_account",
+        "identityFields": ["accountId", "apiKeyName", "teamId", "programRunId"],
+        "spendCeilingEvidence": "required",
+        "safetyConstraintEvidence": "required",
+        "evidenceMaxAgeSeconds": 600
+      },
       "unknownProbeSeconds": 600,
       "backstopSeconds": 600,
       "prioritization": ["priority", "dependencyReady", "fifo"],

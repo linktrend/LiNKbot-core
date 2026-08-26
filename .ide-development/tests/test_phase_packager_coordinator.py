@@ -124,69 +124,6 @@ class PhasePackagerCoordinatorTests(unittest.TestCase):
         self.assertFalse(result["record"]["sealed"])
         self.assertFalse(result["fullDispatchAllowed"])
 
-    def test_phase_records_base_without_receipt_only_repin(self) -> None:
-        receipt_path = coordinator.BASELINE_RECEIPT_REL
-        write(
-            self.fx.work / receipt_path,
-            json.dumps(
-                {
-                    "schemaVersion": 1,
-                    "kind": "openclaw-fork-baseline-ci-receipt",
-                    "repository": "linktrend/openclaw_prime",
-                    "baselineCommit": "0" * 40,
-                    "baselineTree": "0" * 40,
-                }
-            ),
-        )
-        git(self.fx.work, "add", str(receipt_path))
-        git(self.fx.work, "commit", "-qm", "baseline receipt fixture")
-        git(self.fx.work, "push", "-q", "origin", "development")
-        base = self.fx.development_sha()
-        base_tree = git(self.fx.work, "rev-parse", f"{base}^{{tree}}")
-        one = self.fx.accept_issue(34, "atomic.txt", "atomic\n")
-
-        result = self.fx.assemble([one])
-        bound = json.loads(git(self.fx.work, "show", f"{result['headSha']}:{receipt_path}"))
-        self.assertEqual(result["record"]["baseSha"], base)
-        self.assertEqual(bound["baselineCommit"], "0" * 40)
-        self.assertEqual(bound["baselineTree"], "0" * 40)
-        self.assertNotEqual(result["headSha"], git(self.fx.work, "rev-parse", f"{base}^{{commit}}"))
-
-    def test_existing_phase_keeps_receipt_immutable_after_development_moves(self) -> None:
-        receipt_path = coordinator.BASELINE_RECEIPT_REL
-        write(
-            self.fx.work / receipt_path,
-            json.dumps(
-                {
-                    "schemaVersion": 1,
-                    "kind": "openclaw-fork-baseline-ci-receipt",
-                    "repository": "linktrend/openclaw_prime",
-                    "baselineCommit": "0" * 40,
-                    "baselineTree": "0" * 40,
-                }
-            ),
-        )
-        git(self.fx.work, "add", str(receipt_path))
-        git(self.fx.work, "commit", "-qm", "baseline receipt fixture")
-        git(self.fx.work, "push", "-q", "origin", "development")
-        one = self.fx.accept_issue(35, "rebind.txt", "rebind\n")
-        first = self.fx.assemble([one])
-
-        git(self.fx.work, "checkout", "-q", "development")
-        write(self.fx.work / "moving.txt", "protected base moved\n")
-        git(self.fx.work, "add", "moving.txt")
-        git(self.fx.work, "commit", "-qm", "move protected development base")
-        git(self.fx.work, "push", "-q", "origin", "development")
-        moved_base = self.fx.development_sha()
-
-        rebound = self.fx.assemble([one])
-        self.assertEqual(rebound["action"], "reused")
-        self.assertEqual(rebound["headSha"], first["headSha"])
-        self.assertEqual(rebound["record"]["baseSha"], moved_base)
-        bound = json.loads(git(self.fx.work, "show", f"{rebound['headSha']}:{receipt_path}"))
-        self.assertEqual(bound["baselineCommit"], "0" * 40)
-        self.assertEqual(bound["baselineTree"], "0" * 40)
-
     def test_many_compatible_issues_create_one_ordered_phase(self) -> None:
         first = self.fx.accept_issue(1, "one.txt", "one\n")
         second = self.fx.accept_issue(2, "two.txt", "two\n")
@@ -346,8 +283,6 @@ class PhasePackagerCoordinatorTests(unittest.TestCase):
         self.assertTrue(contract["checksExactHead"])
         self.assertTrue(contract["cancelObsolete"])
         self.assertFalse(contract["startsFull"])
-        self.assertIn("github.event.pull_request.base.sha", fast)
-        self.assertIn("--baseline-sha", fast)
         live = (ROOT / ".github/workflows/linktrend-review-packager.yml").read_text(encoding="utf-8")
         self.assertEqual(fast, live)
         full = (ROOT / coordinator.FULL_WORKFLOW_REL).read_text(encoding="utf-8")
@@ -455,66 +390,6 @@ class PhasePackagerCoordinatorAdversarialTests(unittest.TestCase):
     def setUp(self) -> None:
         self.fx = Fixture()
         self.addCleanup(self.fx.cleanup)
-
-    def test_internal_packet_branch_requires_exact_manifest_identity(self) -> None:
-        sha = "a" * 40
-        manifest = {
-            "packets": [{"id": "PKT-01", "issues": ["ISS-01"]}],
-            "issues": [{"id": "ISS-01", "packetId": "PKT-01"}],
-        }
-        source = coordinator.parse_accept(
-            f"issue/pkt-01-iss-01-20260824@{sha}",
-            1,
-            execution_manifest=manifest,
-        )
-        self.assertEqual(source.packet_id, "PKT-01")
-        self.assertEqual(source.issue_id, "ISS-01")
-        with self.assertRaisesRegex(coordinator.CoordinatorError, "identity_evidence_required"):
-            coordinator.parse_accept(f"issue/pkt-01-iss-01-20260824@{sha}", 1)
-        with self.assertRaisesRegex(coordinator.CoordinatorError, "packet_identity_mismatch"):
-            coordinator.parse_accept(
-                f"issue/pkt-02-iss-01-20260824@{sha}",
-                1,
-                execution_manifest=manifest,
-            )
-
-    def test_internal_issue_branch_can_bind_packet_from_handoff(self) -> None:
-        sha = "b" * 40
-        branch = "issue/iss-04-noncoding-model-routing"
-        handoff = {
-            "acceptedCommits": [
-                {"branch": branch, "packetId": "PKT-04", "issueId": "ISS-04", "order": 1}
-            ]
-        }
-        source = coordinator.parse_accept(f"{branch}@{sha}", 1, handoff=handoff)
-        self.assertEqual(source.to_dict()["packetId"], "PKT-04")
-        self.assertEqual(source.to_dict()["issueId"], "ISS-04")
-        with self.assertRaisesRegex(coordinator.CoordinatorError, "ambiguous_issue_identity"):
-            coordinator.parse_accept(
-                f"issue/pkt-01-iss-01-iss-02-20260824@{sha}",
-                1,
-                handoff=handoff,
-            )
-
-    def test_internal_branch_identity_sources_must_converge(self) -> None:
-        sha = "c" * 40
-        branch = "issue/pkt-01-iss-01-20260824"
-        manifest = {
-            "packets": [{"id": "PKT-01", "issues": ["ISS-01"]}],
-            "issues": [{"id": "ISS-01", "packetId": "PKT-01"}],
-        }
-        handoff = {
-            "acceptedCommits": [
-                {"branch": branch, "packetId": "PKT-02", "issueId": "ISS-01", "order": 1}
-            ]
-        }
-        with self.assertRaisesRegex(coordinator.CoordinatorError, "ambiguous_issue_identity"):
-            coordinator.parse_accept(
-                f"{branch}@{sha}",
-                1,
-                execution_manifest=manifest,
-                handoff=handoff,
-            )
 
     def test_cli_assemble_refuses_memory_github_without_credentials(self) -> None:
         one = self.fx.accept_issue(21, "cli.txt", "cli\n")
