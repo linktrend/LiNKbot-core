@@ -9,8 +9,10 @@ title: "Baseline CI receipt"
 The machine-readable receipt is
 `docs/execution/openclaw-prime-lisa/baseline-ci-receipt.json`. It is reusable
 only when `.github/openclaw_progressive_validation.py`
-matches the live `origin/development` commit and tree, the exact progressive
-validation policy digest, workflow, run `32905475467`, and the complete ten-job
+matches protected `origin/development` commit
+`428c6bc9ba21b2358934aa0d311911791fa3fd21` (tree
+`a29648096f9872a7f3d727aef79b0cb63a31ff07`), the exact progressive
+validation policy digest, workflow, run `32917935092`, and the complete ten-job
 failure contract recorded in the receipt. The six protected CI contexts are
 `checks-fast-core`, `checks-fast-plugin-contracts-shard`,
 `checks-node-core-test-nondist-shard`, `check-shard`, `check-additional-shard`,
