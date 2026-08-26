@@ -199,13 +199,7 @@ class ProgressiveValidationTests(unittest.TestCase):
             "receiptBaselineCommit": MODULE.BASELINE_COMMIT,
             "receiptBaselineTree": MODULE.BASELINE_TREE,
             "changedPaths": sorted(
-                {
-                    ".github/openclaw_progressive_validation.py",
-                    ".github/workflows/ci.yml",
-                    "test/openclaw_progressive_validation.py",
-                    MODULE.BASELINE_RECEIPT_PATH,
-                    MODULE.BASELINE_RECEIPT_DOC_PATH,
-                }
+                MODULE.BASELINE_RECEIPT_REBIND_SCOPE
             ),
         }
         self.assertTrue(
@@ -263,7 +257,7 @@ class ProgressiveValidationTests(unittest.TestCase):
         self.assertIn("changed_failure_contract", result["errors"])
         self.assertFalse(result["protectedAdmission"])
 
-    def test_protected_admission_allows_only_controller_and_receipt_scope(self):
+    def test_protected_admission_allows_exact_three_path_rebind_scope(self):
         result = {
             "ok": True,
             "classification": "inherited_baseline_failure",
@@ -272,13 +266,7 @@ class ProgressiveValidationTests(unittest.TestCase):
             "receiptBaselineCommit": MODULE.BASELINE_COMMIT,
             "receiptBaselineTree": MODULE.BASELINE_TREE,
             "changedFailureContractPaths": [],
-            "changedPaths": sorted({
-                ".github/openclaw_progressive_validation.py",
-                ".github/workflows/ci.yml",
-                "test/openclaw_progressive_validation.py",
-                MODULE.BASELINE_RECEIPT_PATH,
-                MODULE.BASELINE_RECEIPT_DOC_PATH,
-            }),
+            "changedPaths": sorted(MODULE.BASELINE_RECEIPT_REBIND_SCOPE),
             "errors": [],
         }
         self.assertTrue(
@@ -286,8 +274,20 @@ class ProgressiveValidationTests(unittest.TestCase):
                 result, observed_failures=list(MODULE.INHERITED_FAILURE_IDENTITIES)
             )
         )
-        result["changedPaths"].append("README.md")
-        self.assertFalse(MODULE.protected_inherited_failure_admissible(result))
+        result["changedPaths"] = sorted(
+            MODULE.BASELINE_RECEIPT_REBIND_SCOPE - {MODULE.BASELINE_RECEIPT_PATH}
+        )
+        self.assertFalse(
+            MODULE.protected_inherited_failure_admissible(
+                result, observed_failures=list(MODULE.INHERITED_FAILURE_IDENTITIES)
+            )
+        )
+        result["changedPaths"] = sorted(MODULE.BASELINE_RECEIPT_REBIND_SCOPE | {"README.md"})
+        self.assertFalse(
+            MODULE.protected_inherited_failure_admissible(
+                result, observed_failures=list(MODULE.INHERITED_FAILURE_IDENTITIES)
+            )
+        )
 
 
 if __name__ == "__main__":

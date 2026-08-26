@@ -146,6 +146,13 @@ INHERITED_FAILURE_IDENTITIES = tuple(sorted(INHERITED_FAILURE_JOBS))
 FAILURE_PATHS = frozenset(path for row in INHERITED_FAILURE_CONTRACT for path in row["changedPathContract"])
 BASELINE_RECEIPT_PATH = "docs/execution/openclaw-prime-lisa/baseline-ci-receipt.json"
 BASELINE_RECEIPT_DOC_PATH = "docs/execution/openclaw-prime-lisa/BASELINE-CI-RECEIPT.md"
+BASELINE_RECEIPT_REBIND_SCOPE = frozenset(
+    {
+        ".github/openclaw_progressive_validation.py",
+        BASELINE_RECEIPT_DOC_PATH,
+        BASELINE_RECEIPT_PATH,
+    }
+)
 CLASSIFIER_PATHS = frozenset(
     {
         ".github/workflows/ci.yml",
@@ -182,18 +189,7 @@ def protected_inherited_failure_admissible(
     if not isinstance(changed_paths, list) or len(changed_paths) != len(set(changed_paths)):
         return False
     changed_path_set = set(changed_paths)
-    allowed = {BASELINE_RECEIPT_PATH, BASELINE_RECEIPT_DOC_PATH}
-    if changed_path_set == allowed:
-        pass
-    elif changed_path_set == {
-        ".github/openclaw_progressive_validation.py",
-        ".github/workflows/ci.yml",
-        "test/openclaw_progressive_validation.py",
-        BASELINE_RECEIPT_PATH,
-        BASELINE_RECEIPT_DOC_PATH,
-    }:
-        pass
-    else:
+    if changed_path_set != BASELINE_RECEIPT_REBIND_SCOPE:
         return False
     if not isinstance(observed_failures, (list, tuple)) or any(
         not isinstance(item, str) for item in observed_failures
