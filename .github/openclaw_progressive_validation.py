@@ -16,9 +16,9 @@ from pathlib import Path
 
 POLICY_ID = "openclaw-fork-progressive-validation-v1"
 POLICY_DIGEST = "sha256:fa3f448e33fbc05e4b9676628a8be1f67bb020cc0baf58da6dd8fe720d0c26f0"
-BASELINE_RUN_ID = 32905475467
-BASELINE_COMMIT = "88b3c767f5bab799228deb4c7371c9f80cca7121"
-BASELINE_TREE = "016416564d5064f2ce500522d6d63a0b98565b1f"
+BASELINE_RUN_ID = 32917935092
+BASELINE_COMMIT = "428c6bc9ba21b2358934aa0d311911791fa3fd21"
+BASELINE_TREE = "a29648096f9872a7f3d727aef79b0cb63a31ff07"
 FAILURE_JOB = "checks-node-core-test-nondist-shard"
 BASELINE_RECEIPT_KIND = "openclaw-fork-baseline-ci-receipt"
 BASELINE_RECEIPT_POLICY_ID = POLICY_ID
@@ -35,7 +35,7 @@ BASELINE_RECEIPT_CHANGED_PATH_CONTRACT = (
     "scripts/check-openclawdevelopmentplan01-section-13.3-ledger.mjs",
     "docs/execution/openclawdevelopmentplan01/section-13.3",
 )
-# This is the complete failure contract observed in Full run 32905475467.
+# This is the complete failure contract observed in Full run 32917935092.
 # Every row is retained so a missing or newly introduced failure cannot be
 # mistaken for inherited evidence. Paths are the source/test contracts named
 # by the failing job output; they remain blocking when changed.
