@@ -198,15 +198,7 @@ class ProgressiveValidationTests(unittest.TestCase):
             "baselineTree": MODULE.BASELINE_TREE,
             "receiptBaselineCommit": MODULE.BASELINE_COMMIT,
             "receiptBaselineTree": MODULE.BASELINE_TREE,
-            "changedPaths": sorted(
-                {
-                    ".github/openclaw_progressive_validation.py",
-                    ".github/workflows/ci.yml",
-                    "test/openclaw_progressive_validation.py",
-                    MODULE.BASELINE_RECEIPT_PATH,
-                    MODULE.BASELINE_RECEIPT_DOC_PATH,
-                }
-            ),
+            "changedPaths": sorted(MODULE.PROTECTED_RECOVERY_SCOPE_PATHS),
         }
         self.assertTrue(
             MODULE.protected_inherited_failure_admissible(
@@ -272,13 +264,7 @@ class ProgressiveValidationTests(unittest.TestCase):
             "receiptBaselineCommit": MODULE.BASELINE_COMMIT,
             "receiptBaselineTree": MODULE.BASELINE_TREE,
             "changedFailureContractPaths": [],
-            "changedPaths": sorted({
-                ".github/openclaw_progressive_validation.py",
-                ".github/workflows/ci.yml",
-                "test/openclaw_progressive_validation.py",
-                MODULE.BASELINE_RECEIPT_PATH,
-                MODULE.BASELINE_RECEIPT_DOC_PATH,
-            }),
+            "changedPaths": sorted(MODULE.PROTECTED_RECOVERY_SCOPE_PATHS),
             "errors": [],
         }
         self.assertTrue(
@@ -286,8 +272,35 @@ class ProgressiveValidationTests(unittest.TestCase):
                 result, observed_failures=list(MODULE.INHERITED_FAILURE_IDENTITIES)
             )
         )
-        result["changedPaths"].append("README.md")
-        self.assertFalse(MODULE.protected_inherited_failure_admissible(result))
+        for path in (
+            "README.md",
+            ".ide-development/tests/test_delivery_controller.py",
+        ):
+            with self.subTest(path=path):
+                candidate = dict(result, changedPaths=list(result["changedPaths"]))
+                if path == "README.md":
+                    candidate["changedPaths"].append(path)
+                else:
+                    candidate["changedPaths"].remove(path)
+                self.assertFalse(MODULE.protected_inherited_failure_admissible(candidate))
+
+    def test_protected_admission_rejects_product_change_even_with_exact_failures(self):
+        result = {
+            "ok": True,
+            "classification": "inherited_baseline_failure",
+            "baselineCommit": MODULE.BASELINE_COMMIT,
+            "baselineTree": MODULE.BASELINE_TREE,
+            "receiptBaselineCommit": MODULE.BASELINE_COMMIT,
+            "receiptBaselineTree": MODULE.BASELINE_TREE,
+            "changedFailureContractPaths": [],
+            "changedPaths": sorted(MODULE.PROTECTED_RECOVERY_SCOPE_PATHS | {"src/runtime.ts"}),
+            "errors": [],
+        }
+        self.assertFalse(
+            MODULE.protected_inherited_failure_admissible(
+                result, observed_failures=list(MODULE.INHERITED_FAILURE_IDENTITIES)
+            )
+        )
 
 
 if __name__ == "__main__":
