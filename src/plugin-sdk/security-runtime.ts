@@ -54,7 +54,7 @@ export {
   matchesHostnameAllowlist,
   resolvePinnedHostnameWithPolicy,
 } from "../infra/net/ssrf.js";
-export type { LookupFn, SsrFPolicy } from "../infra/net/ssrf.js";
+export type { LookupFn, PinnedHostname, SsrFPolicy } from "../infra/net/ssrf.js";
 export { isPathInside } from "../infra/path-guards.js";
 export {
   canonicalPathFromExistingAncestor,

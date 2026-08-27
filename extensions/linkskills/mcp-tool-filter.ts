@@ -6,6 +6,8 @@
  * It does not import Brain symbols and must not be merged with linkbrain.
  */
 
+import { SKILLS_V2_OPERATIONS } from "./src/v2.js";
+
 /** Discovery family (§9.2). */
 const LINKSKILLS_MCP_DISCOVERY_TOOLS = Object.freeze([
   "skills_list",
@@ -50,9 +52,23 @@ export const LINKSKILLS_MCP_TOOL_ALLOWLIST = Object.freeze([
   ...LINKSKILLS_MCP_EVIDENCE_TOOLS,
 ] as const);
 
-type LinkskillsMcpAllowedTool = (typeof LINKSKILLS_MCP_TOOL_ALLOWLIST)[number];
+/** Standard sessionless Skills operations; legacy v1 stays compatibility-only. */
+export const LINKSKILLS_MCP_V2_TOOLS = Object.freeze([...SKILLS_V2_OPERATIONS] as const);
 
-const allowedSet = new Set<string>(LINKSKILLS_MCP_TOOL_ALLOWLIST);
+export const LINKSKILLS_LEGACY_MCP_COMPATIBILITY_CONTRACT = Object.freeze({
+  id: "linkskills.mcp-legacy/0.2",
+  removal: "after all configured consumers advertise skills.api.v0.2",
+  tools: LINKSKILLS_MCP_TOOL_ALLOWLIST,
+});
+
+/** Production standard surface: v2 only; compatibility is never implicit. */
+export const LINKSKILLS_MCP_MANAGED_TOOL_ALLOWLIST = LINKSKILLS_MCP_V2_TOOLS;
+
+type LinkskillsMcpAllowedTool =
+  | (typeof LINKSKILLS_MCP_TOOL_ALLOWLIST)[number]
+  | (typeof LINKSKILLS_MCP_V2_TOOLS)[number];
+
+const allowedSet = new Set<string>([...LINKSKILLS_MCP_TOOL_ALLOWLIST, ...LINKSKILLS_MCP_V2_TOOLS]);
 
 /**
  * Returns whether a discovered MCP tool name is on the Skills §9.2 allowlist.
@@ -67,9 +83,13 @@ export function isAllowedLinkskillsMcpTool(toolName: string): toolName is Linksk
  * Include-only (no exclude) so unreviewed Skills tools stay denied.
  */
 export function buildLinkskillsMcpToolFilter(): {
-  include: readonly LinkskillsMcpAllowedTool[];
+  include: readonly (typeof LINKSKILLS_MCP_TOOL_ALLOWLIST)[number][];
 } {
   return { include: LINKSKILLS_MCP_TOOL_ALLOWLIST };
+}
+
+export function buildLinkskillsV2McpToolFilter(): { include: readonly string[] } {
+  return { include: LINKSKILLS_MCP_V2_TOOLS };
 }
 
 /**

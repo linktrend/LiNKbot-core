@@ -33,6 +33,10 @@ const BUNDLED_PLUGIN_FACADE_LOADER_PATTERN =
 const PRIVATE_BUNDLED_SDK_SURFACE_PATTERN =
   /\b(?:Private helper surface|Narrow plugin-sdk surface for the bundled|Narrow .*runtime exports used by the bundled)\b/i;
 const GENERIC_CORE_HELPER_FILES = ["src/polls.ts", "src/poll-params.ts"] as const;
+// Generic public SDK seams that share a bundled plugin-id prefix without being
+// owned by that plugin. `browser-policy` is a core URL-policy export for any
+// browser-capable plugin; the prefix heuristic must not treat it as plugin-owned.
+const GENERIC_PUBLIC_SDK_PREFIX_EXCEPTIONS = new Set(["browser-policy"]);
 const GENERIC_CORE_PLUGIN_OWNER_NAME_PATTERN =
   /\b(?:imessage|discord|feishu|googlechat|matrix|mattermost|msteams|slack|telegram|whatsapp|zalo|zalouser)\b/gi;
 const PACKAGE_CONTRACT_SCAN_TIMEOUT_MS = 240_000;
@@ -191,11 +195,14 @@ function collectBundledPluginIds(): string[] {
 function collectPluginOwnedSdkEntrypoints(): string[] {
   const pluginIds = collectBundledPluginIds();
   return pluginSdkEntrypoints
-    .filter((entrypoint) =>
-      pluginIds.some(
+    .filter((entrypoint) => {
+      if (GENERIC_PUBLIC_SDK_PREFIX_EXCEPTIONS.has(entrypoint)) {
+        return false;
+      }
+      return pluginIds.some(
         (pluginId) => entrypoint === pluginId || entrypoint.startsWith(`${pluginId}-`),
-      ),
-    )
+      );
+    })
     .toSorted();
 }
 

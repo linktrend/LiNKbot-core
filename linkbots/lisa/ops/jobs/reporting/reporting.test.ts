@@ -187,8 +187,8 @@ describe("Lisa operational reporting", () => {
       outstanding: [{ ...item("Agent says finished", "agent_report"), verification: "unverified" }],
       agentExceptions: [],
     });
-    expect(output).toContain("Outstanding\n- Awaiting verification: Agent says finished");
-    expect(output).not.toContain("Completed since last digest\n- Agent says finished");
+    expect(output).toContain("**Outstanding**\n- Awaiting verification: Agent says finished");
+    expect(output).not.toContain("**Completed since last digest**\n- Agent says finished");
   });
 
   it("renders every Flash Report field and the 14:45 flexible-period decision", () => {
@@ -205,7 +205,7 @@ describe("Lisa operational reporting", () => {
       flexiblePeriod: "personal",
     });
     expect(output).toBe(golden("flexible-period-1445"));
-    expect(output).toContain("Decisions needed\nNone.");
+    expect(output).toContain("**Decisions needed**\nNone.");
     expect(output).toContain("15:30–17:00 becomes personal time");
   });
 
@@ -320,10 +320,10 @@ describe("Lisa operational reporting", () => {
     expect(
       readFileSync(new URL("./templates/executive-digest.md", import.meta.url), "utf8"),
     ).toContain(
-      "Calendar before next digest\nWork\n{{work_calendar}}\nPersonal\n{{personal_calendar}}",
+      "**Calendar before next digest**\n**Work**\n{{work_calendar}}\n**Personal**\n{{personal_calendar}}",
     );
     expect(readFileSync(new URL("./templates/flash-report.md", import.meta.url), "utf8")).toContain(
-      "Decisions needed\n{{decisions}}\n\nSupervised agents",
+      "**Decisions needed**\n{{decisions}}\n\n**Supervised agents**",
     );
     expect(renderExecutiveDigest(baseDigest)).toBe(golden("morning-digest"));
     expect(
@@ -338,7 +338,7 @@ describe("Lisa operational reporting", () => {
         nextExpectedResult: "Next result",
         batteryStatus: "Fresh",
       }),
-    ).toContain("Next expected result\nNext result");
+    ).toContain("**Next expected result**\nNext result");
     expect(DEFAULT_DIGEST_PERIODS).toEqual({
       morning: { from: "previous 17:00", to: "07:00", nextDigest: "17:00" },
       evening: { from: "07:00", to: "17:00", nextDigest: "next 07:00" },

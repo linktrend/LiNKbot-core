@@ -1,0 +1,16 @@
+[Unit]
+Description=Lisa disposable private-state restore verification
+
+[Service]
+Type=oneshot
+User=openclaw-lisa
+Group=openclaw-lisa
+ExecStart=/usr/local/lib/openclaw/lisa-backup --profile lisa --restore-verify --backup-root /var/backups/openclaw/lisa --receipt-root /var/lib/openclaw/lisa/receipts
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+IPAddressDeny=any
+ReadWritePaths=/var/lib/openclaw/lisa/receipts
+UMask=0077
+TimeoutStartSec=15min

@@ -80,6 +80,9 @@ export type PriorityClass =
 
 export type TimeTask = {
   id: string;
+  /** Durable SQLite identity; `id` remains the mobile-readable display ref for legacy plans. */
+  internalId?: string;
+  displayRef?: string;
   title: string;
   source: TaskSource;
   explicit: boolean;

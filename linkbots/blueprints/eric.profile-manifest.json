@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "profileId": "eric",
+  "roleRefs": ["role:cto", "scope:development", "scope:technical-operations"],
+  "identityRef": "platform-identity:pending:eric",
+  "activation": "inactive",
+  "capabilityClasses": ["development", "technical-operations", "repository-review"],
+  "providerPins": {
+    "platform": "platform-contract:actor-grants-v1",
+    "openclaw": "openclaw-profile-runtime:v1"
+  },
+  "skillPins": {
+    "development": "skills-qualified:development:v1",
+    "repository-review": "skills-qualified:repository-review:v1"
+  },
+  "modelPolicyRef": "model-policy:future:eric",
+  "toolExposure": ["repository.read", "repository.review", "development.plan"],
+  "stateOwners": {
+    "profile": "openclaw-agent-sqlite",
+    "approval": "platform-approval-authority",
+    "work": "repository-domain-authority"
+  },
+  "exclusions": {
+    "credentials": true,
+    "accountIds": true,
+    "privateState": true,
+    "sessions": true,
+    "recipients": true,
+    "schedules": true,
+    "jobs": true,
+    "cookies": true,
+    "downloads": true,
+    "workspace": true
+  }
+}

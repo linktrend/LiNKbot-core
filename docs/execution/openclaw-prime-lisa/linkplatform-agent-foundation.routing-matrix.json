@@ -1,0 +1,31 @@
+{
+  "$schema": "./routing-matrix.schema.json",
+  "schemaVersion": 1,
+  "authorityId": "openclaw-prime-lisa-dispatch-authority-v4",
+  "matrixId": "linkplatform-agent-foundation-routing-v3",
+  "manifest": "docs/execution/openclaw-prime-lisa/linkplatform-agent-foundation.execution-manifest.json",
+  "manifestSha256": "sha256:f2b3afc698ae94551e41ec9a0687ceb78604cf3359f9fbeffe0bc836beaa3c63",
+  "repository": "linktrend/LiNKplatform",
+  "transport": "cursor-sdk",
+  "catalogueState": "VERIFIED_AUTO_COST_UNAVAILABLE_RECLASSIFIED",
+  "accountCapabilityReceiptSha256": "sha256:23a0173dc24e67a86a87aacd7aee8b8ec93719371070a7e26fe7045b33267aeb",
+  "issueCoveragePolicy": "every manifest issue is bound through its sole packet; an additional executable split requires a digest-bound matrix successor",
+  "costForecast": {
+    "primaryRouteCounts": { "auto_cost": 0, "composer_bounded": 0, "grok_complex": 1 },
+    "reviewCounts": { "independent_review": 1, "independent_terra_verification": 1 },
+    "budgetRule": "capture requested selector, effective model, optimization mode, token usage, pool, and actual charge when exposed; HOLD before dispatch if a packet budget or required readback is absent"
+  },
+  "entries": [
+    {
+      "packetId": "LP-01",
+      "issueIds": ["ISS-01"],
+      "classification": "explicit complex authentication, authorization, approval-evidence, and possible schema/migration work",
+      "primaryRoute": "grok_complex",
+      "fallbackPolicy": "grok_to_composer_one_hop",
+      "requiredReviews": ["independent_review", "independent_terra_verification"],
+      "costPool": "cursor-models",
+      "costPoolReason": "Cursor Grok handles security-sensitive contract work; third-party Opus is limited to independent authorization/migration review",
+      "dispatchState": "HOLD_UNTIL_EXECUTION_APPROVAL_PREREQUISITES_BUDGET_AND_ROUTE_READBACK"
+    }
+  ]
+}

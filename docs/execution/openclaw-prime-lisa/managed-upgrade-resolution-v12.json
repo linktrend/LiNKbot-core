@@ -1,0 +1,53 @@
+{
+  "kind": "ide-managed-upgrade-resolution-receipt",
+  "schemaVersion": 1,
+  "consumer": {
+    "preInstallCommit": "4261c66e2e2fda49a81a8a59ef8bfa7f062a7202",
+    "preInstallTree": "680846698dd028fb204a13489652f3cc1e02a601",
+    "postInstallState": "transactional managed worktree; checkpoint pending"
+  },
+  "provider": {
+    "repository": "linktrend/IDE-Development",
+    "integratedDevelopmentCommit": "0c774129b7e0ae39ab10406780a01fa4d9a225ff",
+    "tree": "1287758cfb3e8e3934f789788ef3b97d935cb112",
+    "phasePullRequest": 417,
+    "phaseHead": "e88e036f5a137d4ea1209e0354041cc196cb3255",
+    "fullSuiteRun": 32558970234,
+    "fullSuite": "PASS",
+    "independentTerraReceipt": "sha256:e22769640ff769224e9ac9f4b62de242c9c8bb79b1f97dcdc2f00e060301a5e9"
+  },
+  "resolution": {
+    "decision": "no conflict manifest applied; observed conflicts empty",
+    "transaction": "official IDE 2.5.1 installer with exact preimage backup, rollback journal, and abort-on-conflict",
+    "transactionId": "09c2d85c-620d-412a-992f-a64108551c86",
+    "backupCount": 4,
+    "rollbackAvailable": true,
+    "journal": "/Users/linktrend/Projects/openclaw_prime/.git/worktrees/issue-209-adopt-ide-380-change-scoped-secret-scan/ide-development/last-transaction/journal.json",
+    "appliedPaths": [
+      ".ide-development/MANIFEST.json",
+      ".ide-development/tests/test_fixture_aware_secret_scan.py",
+      "scripts/gitops/secret_scan.py"
+    ]
+  },
+  "validation": {
+    "dryRun": { "actionCount": 438, "mutatingActionCount": 3, "conflictCount": 0, "driftCount": 0 },
+    "verify": "PASS; actionCount=438; mutatingActionCount=0; conflictCount=0; driftCount=0",
+    "changeScopedSecretScan": {
+      "status": "PASS",
+      "findings": 0,
+      "scannedPathCount": 72,
+      "baselineCommit": "455b8c6402a4a6cffc94554addeec7bd07447b67",
+      "baselineTree": "268e627f99919c1d9f86b7eb00bd91bdbb7a545e",
+      "candidateCommit": "4261c66e2e2fda49a81a8a59ef8bfa7f062a7202",
+      "candidateGitTree": "680846698dd028fb204a13489652f3cc1e02a601"
+    },
+    "upstreamMutation": false,
+    "runtimeOrVpsMutation": false
+  },
+  "routingAuthority": {
+    "planningCommit": "2585651508f12a2b7766fd7c74503bb59b572ab1",
+    "planningTree": "5f2123d64acbb735fe86d4fc498b722a1fe1dc4a",
+    "policyDigest": "sha256:fa3f448e33fbc05e4b9676628a8be1f67bb020cc0baf58da6dd8fe720d0c26f0",
+    "executionAuthorizedAtCheckpoint": false
+  }
+}

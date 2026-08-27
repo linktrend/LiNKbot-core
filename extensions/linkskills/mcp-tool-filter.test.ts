@@ -3,7 +3,10 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import {
+  LINKSKILLS_LEGACY_MCP_COMPATIBILITY_CONTRACT,
+  LINKSKILLS_MCP_MANAGED_TOOL_ALLOWLIST,
   LINKSKILLS_MCP_TOOL_ALLOWLIST,
+  LINKSKILLS_MCP_V2_TOOLS,
   assertAllowedLinkskillsMcpTool,
   buildLinkskillsMcpToolFilter,
   isAllowedLinkskillsMcpTool,
@@ -48,6 +51,13 @@ describe("linkskills managed MCP toolFilter (§9.2)", () => {
     expect(isAllowedLinkskillsMcpTool("brain_browse")).toBe(false);
     expect(() => assertAllowedLinkskillsMcpTool("brain_capture_batch")).toThrow(/default-deny/);
     expect(() => assertAllowedLinkskillsMcpTool("skills_mutate_catalog")).toThrow(/§9\.2/);
+  });
+
+  it("keeps legacy execution behind an explicit compatibility contract", () => {
+    expect(LINKSKILLS_MCP_MANAGED_TOOL_ALLOWLIST).toEqual([...LINKSKILLS_MCP_V2_TOOLS]);
+    expect(LINKSKILLS_MCP_MANAGED_TOOL_ALLOWLIST).not.toContain("skills_run_start");
+    expect(LINKSKILLS_LEGACY_MCP_COMPATIBILITY_CONTRACT.id).toBe("linkskills.mcp-legacy/0.2");
+    expect(LINKSKILLS_LEGACY_MCP_COMPATIBILITY_CONTRACT.removal).toMatch(/after all configured/);
   });
 
   it("parses Skills MCP templates with matching include lists and disabled servers", () => {

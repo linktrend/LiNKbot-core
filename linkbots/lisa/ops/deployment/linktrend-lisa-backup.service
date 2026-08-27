@@ -1,0 +1,18 @@
+[Unit]
+Description=Lisa encrypted off-host backup
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=openclaw-lisa
+Group=openclaw-lisa
+ExecStart=/usr/local/lib/openclaw/lisa-backup --profile lisa --checkout /opt/linktrend/openclaw_prime --state /var/lib/openclaw/lisa/state --backup-root /var/backups/openclaw/lisa --receipt-root /var/lib/openclaw/lisa/receipts
+EnvironmentFile=-/etc/openclaw/lisa/backup.env
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/backups/openclaw/lisa /var/lib/openclaw/lisa/receipts
+UMask=0077
+TimeoutStartSec=45min

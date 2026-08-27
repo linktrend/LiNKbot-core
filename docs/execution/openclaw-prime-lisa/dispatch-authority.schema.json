@@ -1,0 +1,354 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://linktrend.local/openclaw-prime-lisa/dispatch-authority.schema.json",
+  "title": "OpenClaw Prime and Lisa cross-repository dispatch authority",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema", "schemaVersion", "authorityId", "mappingStatus", "approvalScope",
+    "executionAuthorizedAtCheckpoint", "protocol", "programRunIdentityBinding", "accountCapabilityReceipt",
+    "dispatchMechanism", "validationPolicy", "dispatchPolicy", "routeCatalog", "fallbackPolicies", "manifests", "routingMatrices", "portfolioRoutingMatrix",
+    "externalPrerequisites", "packets"
+  ],
+  "properties": {
+    "$schema": { "type": "string", "const": "./dispatch-authority.schema.json" },
+    "schemaVersion": { "type": "integer", "const": 1 },
+    "authorityId": { "type": "string", "const": "openclaw-prime-lisa-dispatch-authority-v4" },
+    "mappingStatus": { "type": "string", "const": "APPROVED" },
+    "approvalScope": { "type": "string", "const": "documentation-checkpoint-only" },
+    "executionAuthorizedAtCheckpoint": { "type": "boolean", "const": false },
+    "protocol": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "version", "amendment"],
+      "properties": {
+        "id": { "type": "string", "const": "coding-execution-protocol" },
+        "version": { "type": "string", "const": "1.0.1" },
+        "amendment": { "type": "string", "const": "V25_BOOTSTRAP_LEAN" }
+      }
+    },
+    "programRunIdentityBinding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["state", "principalBinding", "apiKeyName", "userId", "userEmail", "sdkVersion", "identitySearchPerformed"],
+      "properties": {
+        "state": { "type": "string", "const": "BOUND_TO_PORTFOLIO_SINGLE_CURSOR_ACCOUNT" },
+        "principalBinding": { "type": "string", "const": "exactly-one-cursor-account-for-entire-portfolio" },
+        "apiKeyName": { "type": "string", "const": "LiNKdeveloper" },
+        "userId": { "type": "integer", "const": 348277621 },
+        "userEmail": { "type": "string", "const": "product@linktrend.media" },
+        "sdkVersion": { "type": "string", "const": "1.0.28" },
+        "identitySearchPerformed": { "type": "boolean", "const": false }
+      }
+    },
+    "accountCapabilityReceipt": {
+      "type": "object", "additionalProperties": false,
+      "required": ["sha256", "applicability", "modelCount", "autoSmartPresent", "optimizeForCostPresent", "genericAutoOnly"],
+      "properties": {
+        "sha256": { "type": "string", "const": "sha256:23a0173dc24e67a86a87aacd7aee8b8ec93719371070a7e26fe7045b33267aeb" },
+        "applicability": { "type": "string", "const": "APPLIES_TO_THIS_PROGRAM_RUN" },
+        "modelCount": { "type": "integer", "const": 36 },
+        "autoSmartPresent": { "type": "boolean", "const": false },
+        "optimizeForCostPresent": { "type": "boolean", "const": false },
+        "genericAutoOnly": { "type": "boolean", "const": true }
+      }
+    },
+    "dispatchMechanism": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "backend", "sdkLanguage", "catalogueMethod", "catalogueReadbackState",
+        "selectorReadback", "optimizationModeReadback", "effectiveModelReadback",
+        "intentStateBeforeApi", "intentReadbackRequired", "acceptedDispatchReadbackRequired",
+        "cursorDesktopAgentFilesRequired", "cloudApiV1AutoCostAllowed", "fastMode",
+        "forbiddenAutoSubstitutes"
+      ],
+      "properties": {
+        "backend": { "type": "string", "const": "cursor-sdk" },
+        "sdkLanguage": { "type": "string", "const": "python" },
+        "catalogueMethod": { "type": "string", "const": "Cursor.models.list" },
+        "catalogueReadbackState": { "type": "string", "const": "VERIFIED_AUTO_COST_UNAVAILABLE_FIXED_MODELS_REQUIRED" },
+        "selectorReadback": { "type": "string", "const": "run.model-and-result.model" },
+        "optimizationModeReadback": { "type": "string", "const": "result.model.params.optimize_for" },
+        "effectiveModelReadback": { "type": "string", "const": "cloud-agent-metadata:/v1/meta-data/turn/model" },
+        "intentStateBeforeApi": { "type": "string", "const": "PREPARED" },
+        "intentReadbackRequired": { "type": "boolean", "const": true },
+        "acceptedDispatchReadbackRequired": { "type": "boolean", "const": true },
+        "cursorDesktopAgentFilesRequired": { "type": "boolean", "const": false },
+        "cloudApiV1AutoCostAllowed": { "type": "boolean", "const": false },
+        "fastMode": { "type": "string", "const": "disabled" },
+        "forbiddenAutoSubstitutes": {
+          "type": "array",
+          "const": ["auto", "auto-balance", "auto-intelligence", "omitted-model", "unverifiable-auto"]
+        }
+      }
+    },
+    "validationPolicy": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "digest", "mode", "baselineFullSuite", "packetValidation", "phaseValidation", "releaseCandidateValidation", "blocking", "provider", "scope"],
+      "properties": {
+        "id": { "type": "string", "const": "openclaw-fork-progressive-validation-v1" },
+        "digest": { "type": "string", "const": "sha256:fa3f448e33fbc05e4b9676628a8be1f67bb020cc0baf58da6dd8fe720d0c26f0" },
+        "mode": { "type": "string", "const": "fork-progressive" },
+        "baselineFullSuite": {
+          "type": "object", "additionalProperties": false,
+          "required": ["requiredBeforePacketStart", "receiptRequired", "inheritUnchangedFailures"],
+          "properties": {
+            "requiredBeforePacketStart": { "type": "boolean", "const": false },
+            "receiptRequired": { "type": "boolean", "const": true },
+            "inheritUnchangedFailures": { "type": "boolean", "const": true }
+          }
+        },
+        "packetValidation": {
+          "type": "object", "additionalProperties": false,
+          "required": ["profile", "ownedPathsAndDeclaredContractsOnly"],
+          "properties": {
+            "profile": { "type": "string", "const": "focused" },
+            "ownedPathsAndDeclaredContractsOnly": { "type": "boolean", "const": true }
+          }
+        },
+        "phaseValidation": {
+          "type": "object", "additionalProperties": false,
+          "required": ["requiredProfiles", "repositoryWideFullRequired"],
+          "properties": {
+            "requiredProfiles": { "type": "array", "const": ["fast", "change-scoped-integration-contract"] },
+            "repositoryWideFullRequired": { "type": "boolean", "const": false }
+          }
+        },
+        "releaseCandidateValidation": {
+          "type": "object", "additionalProperties": false,
+          "required": ["repositoryWideFullRequired", "rollbackRecoveryProofRequired", "before"],
+          "properties": {
+            "repositoryWideFullRequired": { "type": "boolean", "const": true },
+            "rollbackRecoveryProofRequired": { "type": "boolean", "const": true },
+            "before": { "type": "array", "const": ["staging", "promotion"] }
+          }
+        },
+        "blocking": {
+          "type": "object", "additionalProperties": false,
+          "required": ["changedPathOrCrossContractFailure", "waiveChangedCode"],
+          "properties": {
+            "changedPathOrCrossContractFailure": { "type": "boolean", "const": true },
+            "waiveChangedCode": { "type": "boolean", "const": false }
+          }
+        },
+        "provider": {
+          "type": "object", "additionalProperties": false,
+          "required": ["centralIdeProviderFullRequired"],
+          "properties": { "centralIdeProviderFullRequired": { "type": "boolean", "const": true } }
+        },
+        "scope": {
+          "type": "object", "additionalProperties": false,
+          "required": ["forkOnly", "upstreamMutation"],
+          "properties": {
+            "forkOnly": { "type": "boolean", "const": true },
+            "upstreamMutation": { "type": "boolean", "const": false }
+          }
+        }
+      }
+    },
+    "dispatchPolicy": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "manifestTargetReleaseMustMatchAuthorityId", "manifestDigestMustMatch",
+        "routingMatrixDigestMustMatch", "failClosedOnMissingPrerequisite", "failClosedOnMissingRoute",
+        "failClosedOnMissingCatalogueOrReadback", "requireExecutionApprovalSnapshot",
+        "prerequisiteEvidenceSource", "dispatchIntentMustCarryRoute",
+        "modelQualityFallbackRequiresLoggedFailure", "modelQualityFallbackMaximumHops",
+        "infrastructureFailureChangesModel", "independentReviewUsesSeparateWorker",
+        "terraCheckpointVerificationIsDistinct", "failClosedOnMissingProgramRunIdentityBinding",
+        "capabilityPreflightCadence"
+      ],
+      "properties": {
+        "manifestTargetReleaseMustMatchAuthorityId": { "type": "boolean", "const": true },
+        "manifestDigestMustMatch": { "type": "boolean", "const": true },
+        "routingMatrixDigestMustMatch": { "type": "boolean", "const": true },
+        "failClosedOnMissingPrerequisite": { "type": "boolean", "const": true },
+        "failClosedOnMissingRoute": { "type": "boolean", "const": true },
+        "failClosedOnMissingCatalogueOrReadback": { "type": "boolean", "const": true },
+        "requireExecutionApprovalSnapshot": { "type": "boolean", "const": true },
+        "prerequisiteEvidenceSource": { "type": "string", "const": "runtime-authority-snapshot" },
+        "dispatchIntentMustCarryRoute": { "type": "boolean", "const": true },
+        "modelQualityFallbackRequiresLoggedFailure": { "type": "boolean", "const": true },
+        "modelQualityFallbackMaximumHops": { "type": "integer", "const": 1 },
+        "infrastructureFailureChangesModel": { "type": "boolean", "const": false },
+        "independentReviewUsesSeparateWorker": { "type": "boolean", "const": true },
+        "terraCheckpointVerificationIsDistinct": { "type": "boolean", "const": true },
+        "failClosedOnMissingProgramRunIdentityBinding": { "type": "boolean", "const": true },
+        "capabilityPreflightCadence": { "type": "string", "const": "once-per-program-run" }
+      }
+    },
+    "routeCatalog": {
+      "type": "object", "additionalProperties": false,
+      "required": ["auto_cost", "composer_bounded", "grok_complex", "independent_review", "independent_terra_verification"],
+      "properties": {
+        "auto_cost": { "$ref": "#/$defs/route" },
+        "composer_bounded": { "$ref": "#/$defs/route" },
+        "grok_complex": { "$ref": "#/$defs/route" },
+        "independent_review": { "$ref": "#/$defs/route" },
+        "independent_terra_verification": { "$ref": "#/$defs/route" }
+      }
+    },
+    "fallbackPolicies": {
+      "type": "object", "additionalProperties": false,
+      "required": ["auto_cost_effective_family_one_hop", "composer_to_grok_one_hop", "grok_to_composer_one_hop"],
+      "properties": {
+        "auto_cost_effective_family_one_hop": { "$ref": "#/$defs/autoFallback" },
+        "composer_to_grok_one_hop": { "$ref": "#/$defs/fixedFallback" },
+        "grok_to_composer_one_hop": { "$ref": "#/$defs/fixedFallback" }
+      }
+    },
+    "manifests": { "$ref": "#/$defs/threeBindings" },
+    "routingMatrices": { "$ref": "#/$defs/threeRoutingMatrices" },
+    "portfolioRoutingMatrix": { "$ref": "#/$defs/routingMatrixBinding" },
+    "externalPrerequisites": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "platform_contract_accepted", "brain_provider_contract_accepted", "skills_provider_contract_accepted",
+        "libraries_contract_audit_accepted", "autowork_contract_audit_accepted",
+        "skills_google_workspace_release_qualified", "brain_mcp_v2_contract_accepted",
+        "skills_mcp_v2_contract_accepted", "provider_release_set_accepted", "skills_watcher_contracts_accepted"
+      ],
+      "properties": {
+        "platform_contract_accepted": { "$ref": "#/$defs/prerequisite" },
+        "brain_provider_contract_accepted": { "$ref": "#/$defs/prerequisite" },
+        "skills_provider_contract_accepted": { "$ref": "#/$defs/prerequisite" },
+        "libraries_contract_audit_accepted": { "$ref": "#/$defs/prerequisite" },
+        "autowork_contract_audit_accepted": { "$ref": "#/$defs/prerequisite" },
+        "skills_google_workspace_release_qualified": { "$ref": "#/$defs/prerequisite" },
+        "brain_mcp_v2_contract_accepted": { "$ref": "#/$defs/prerequisite" },
+        "skills_mcp_v2_contract_accepted": { "$ref": "#/$defs/prerequisite" },
+        "provider_release_set_accepted": { "$ref": "#/$defs/prerequisite" },
+        "skills_watcher_contracts_accepted": { "$ref": "#/$defs/prerequisite" }
+      }
+    },
+    "packets": {
+      "type": "object", "additionalProperties": false,
+      "required": ["PKT-01", "PKT-02", "PKT-03", "PKT-04", "PKT-05", "PKT-06", "PKT-07", "PKT-08", "PKT-09", "PKT-10", "PKT-11", "LP-01", "AW-01"],
+      "properties": {
+        "PKT-01": { "$ref": "#/$defs/packet" }, "PKT-02": { "$ref": "#/$defs/packet" },
+        "PKT-03": { "$ref": "#/$defs/packet" }, "PKT-04": { "$ref": "#/$defs/packet" },
+        "PKT-05": { "$ref": "#/$defs/packet" }, "PKT-06": { "$ref": "#/$defs/packet" },
+        "PKT-07": { "$ref": "#/$defs/packet" }, "PKT-08": { "$ref": "#/$defs/packet" },
+        "PKT-09": { "$ref": "#/$defs/packet" }, "PKT-10": { "$ref": "#/$defs/packet" },
+        "PKT-11": { "$ref": "#/$defs/packet" }, "LP-01": { "$ref": "#/$defs/packet" },
+        "AW-01": { "$ref": "#/$defs/packet" }
+      }
+    }
+  },
+  "$defs": {
+    "sha40": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "sha256": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "selectorParam": {
+      "type": "object", "additionalProperties": false, "required": ["id", "value"],
+      "properties": { "id": { "type": "string", "minLength": 1 }, "value": { "type": "string", "minLength": 1 } }
+    },
+    "route": {
+      "type": "object", "additionalProperties": false,
+      "required": ["transport", "selector", "fast", "purpose", "costPool", "fallbackPolicy"],
+      "properties": {
+        "transport": { "type": "string", "const": "cursor-sdk" },
+        "selector": {
+          "type": "object", "additionalProperties": false, "required": ["modelId", "params"],
+          "properties": {
+            "modelId": { "type": "string", "minLength": 1 },
+            "params": { "type": "array", "items": { "$ref": "#/$defs/selectorParam" }, "uniqueItems": true }
+          }
+        },
+        "fast": { "type": "boolean", "const": false },
+        "purpose": { "type": "string", "minLength": 1 },
+        "costPool": { "type": "string", "enum": ["auto-cost-bundled", "cursor-models", "other-models"] },
+        "fallbackPolicy": {
+          "type": ["string", "null"],
+          "enum": ["auto_cost_effective_family_one_hop", "composer_to_grok_one_hop", "grok_to_composer_one_hop", null]
+        }
+      }
+    },
+    "fixedFallback": {
+      "type": "object", "additionalProperties": false,
+      "required": ["trigger", "maximumHops", "fallbackRoute", "infrastructureFailureAction"],
+      "properties": {
+        "trigger": { "type": "string", "const": "logged-model-quality-failure-only" },
+        "maximumHops": { "type": "integer", "const": 1 },
+        "fallbackRoute": { "type": "string", "enum": ["composer_bounded", "grok_complex"] },
+        "infrastructureFailureAction": { "type": "string", "const": "same-model-retry-under-protocol" }
+      }
+    },
+    "autoFallback": {
+      "type": "object", "additionalProperties": false,
+      "required": ["trigger", "maximumHops", "differentFamilySelection", "infrastructureFailureAction"],
+      "properties": {
+        "trigger": { "type": "string", "const": "logged-model-quality-failure-only" },
+        "maximumHops": { "type": "integer", "const": 1 },
+        "differentFamilySelection": {
+          "type": "object", "additionalProperties": false,
+          "required": ["whenEffectiveFamilyIsGrokOrXai", "otherwise"],
+          "properties": {
+            "whenEffectiveFamilyIsGrokOrXai": { "type": "string", "const": "composer_bounded" },
+            "otherwise": { "type": "string", "const": "grok_complex" }
+          }
+        },
+        "infrastructureFailureAction": { "type": "string", "const": "same-model-retry-under-protocol" }
+      }
+    },
+    "manifest": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path", "repository", "baselineCommit", "baselineTree", "sha256", "targetRelease"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "repository": { "type": "string", "pattern": "^[^/\\s]+/[^/\\s]+$" },
+        "baselineCommit": { "$ref": "#/$defs/sha40" }, "baselineTree": { "$ref": "#/$defs/sha40" },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "targetRelease": { "type": "string", "const": "openclaw-prime-lisa-dispatch-authority-v4" }
+      }
+    },
+    "threeBindings": {
+      "type": "object", "additionalProperties": false, "required": ["openclaw", "platform", "autowork"],
+      "properties": { "openclaw": { "$ref": "#/$defs/manifest" }, "platform": { "$ref": "#/$defs/manifest" }, "autowork": { "$ref": "#/$defs/manifest" } }
+    },
+    "routingMatrixBinding": {
+      "type": "object", "additionalProperties": false, "required": ["path", "sha256"],
+      "properties": { "path": { "type": "string", "minLength": 1 }, "sha256": { "$ref": "#/$defs/sha256" } }
+    },
+    "threeRoutingMatrices": {
+      "type": "object", "additionalProperties": false, "required": ["openclaw", "platform", "autowork"],
+      "properties": {
+        "openclaw": { "$ref": "#/$defs/routingMatrixBinding" },
+        "platform": { "$ref": "#/$defs/routingMatrixBinding" },
+        "autowork": { "$ref": "#/$defs/routingMatrixBinding" }
+      }
+    },
+    "prerequisite": {
+      "type": "object", "additionalProperties": false, "required": ["owner", "requirement", "checkpointState", "satisfiedBy"],
+      "properties": {
+        "owner": { "type": "string", "minLength": 1 }, "requirement": { "type": "string", "minLength": 1 },
+        "checkpointState": { "type": "string", "const": "PENDING_RUNTIME_EVIDENCE" },
+        "satisfiedBy": { "type": "string", "const": "exact-commit-tree-contract-receipt-in-runtime-authority-snapshot" }
+      }
+    },
+    "packet": {
+      "type": "object", "additionalProperties": false,
+      "required": ["manifest", "localDependencies", "externalPrerequisites", "primaryRoute", "requiredReviews", "dispatchState"],
+      "properties": {
+        "manifest": { "type": "string", "enum": ["openclaw", "platform", "autowork"] },
+        "localDependencies": { "type": "array", "items": { "type": "string", "pattern": "^[A-Z][A-Z0-9]*-[0-9]{2,}$" }, "uniqueItems": true },
+        "externalPrerequisites": {
+          "type": "array", "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "platform_contract_accepted", "brain_provider_contract_accepted", "skills_provider_contract_accepted",
+              "libraries_contract_audit_accepted", "autowork_contract_audit_accepted",
+              "skills_google_workspace_release_qualified", "brain_mcp_v2_contract_accepted",
+              "skills_mcp_v2_contract_accepted", "provider_release_set_accepted", "skills_watcher_contracts_accepted"
+            ]
+          }
+        },
+        "primaryRoute": { "type": "string", "enum": ["composer_bounded", "grok_complex"] },
+        "requiredReviews": {
+          "type": "array", "minItems": 1, "uniqueItems": true,
+          "items": { "type": "string", "enum": ["independent_review", "independent_terra_verification"] },
+          "contains": { "const": "independent_terra_verification" }
+        },
+        "dispatchState": { "type": "string", "const": "HOLD_UNTIL_EXECUTION_APPROVAL_PREREQUISITES_BUDGET_AND_ROUTE_READBACK" }
+      }
+    }
+  }
+}

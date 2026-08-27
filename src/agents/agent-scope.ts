@@ -30,6 +30,8 @@ import {
   resolveAgentWorkspaceDir,
   resolveDefaultAgentId,
 } from "./agent-scope-config.js";
+import { validateProfileManifest } from "./profile-manifest.js";
+export type { ProfileManifest } from "./profile-manifest.js";
 export {
   listAgentEntries,
   listAgentIds,
@@ -41,6 +43,16 @@ export {
   resolveDefaultAgentId,
   type ResolvedAgentConfig,
 } from "./agent-scope-config.js";
+
+/** Resolve profile activation without allowing malformed manifests to route. */
+export function resolveAgentProfileActivation(input: unknown): "active" | "inactive" | "invalid" {
+  const result = validateProfileManifest(input);
+  return result.ok ? result.manifest.activation : "invalid";
+}
+
+export function isAgentProfileActive(input: unknown): boolean {
+  return resolveAgentProfileActivation(input) === "active";
+}
 
 /** Strip null bytes from paths to prevent ENOTDIR errors. */
 function stripNullBytes(s: string): string {

@@ -1,8 +1,27 @@
 # Lisa jobs source operations
 
-The ten logical job families are defined in `ops/jobs/lisa-job-catalogue.ts`. Embedded checkpoints and hooks remain catalogue entries, not duplicate timers.
+The ten logical job families are defined in `ops/jobs/lisa-job-catalogue.ts`. The
+deployable desired state is defined separately in
+`ops/jobs/lisa-job-desired-state.ts`: it contains exactly 19 stable operational
+declaration keys and one separately registered Memory Dreaming dependency.
+Embedded checkpoints are represented by their owning declaration, not by
+duplicate timers.
 
-Production activation is recorded separately in the live cron store. The 19 approved operational declarations execute as `lisa-cron` but must be owned by `main`, so Lisa can list and manage them.
+Librarian is provider-owned and Memory Dreaming is registered as a separate
+OpenClaw item. General backup is systemd-owned. Neither is an OpenClaw cron
+declaration. The source manifest is `ops/lisa-profile-manifest.json` and keeps
+source schedules disabled until a separate apply authority is approved.
+
+Production activation is recorded separately in the live cron store. The 19
+approved operational declarations execute as `lisa-cron` but must be owned by
+`main`, so Lisa can list and manage them. Each declaration carries its stable
+instance identity, preparation trigger, visible deadline, privacy class,
+delivery intent, opaque binding references, exact skill/schema reference,
+dependencies, bounded retry policy, idempotency key, and receipt requirements.
+
+`diffLisaJobDesiredState` compares a read-only live-format export against the
+source declarations. It returns missing, unexpected, and drifted keys and has
+no apply or mutation path.
 
 ## Ownership repair
 
@@ -17,7 +36,7 @@ The command fails closed if the approved declaration set is incomplete, disabled
 
 ## Evidence boundary
 
-- Source evidence consists of catalogue validation, renderer coverage, deterministic package verification, and ownership-migration coverage.
+- Source evidence consists of desired-state validation, catalogue validation, renderer coverage, deterministic package verification, and ownership-migration coverage.
 - Production evidence additionally requires the database backup, migrated job count, removed retired-job check, service health, and a real Lisa main-agent cron listing.
 - The profile bundle and immutable live-comparison receipt may be refreshed only after the exact stable files have been deployed and hash-compared with VPS Lisa.
 - Provider release and opaque credential bindings remain independently governed; this repair does not grant provider authority or expose credentials.

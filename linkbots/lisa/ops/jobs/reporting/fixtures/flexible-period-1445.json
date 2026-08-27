@@ -1,4 +1,4 @@
 {
   "name": "14:45 flexible period",
-  "expected": "Decision needed\nCompleted\n- Synthetic completion\n\nIn progress\n- Synthetic work\n\nIssues\n- Synthetic blocker\n\nDecisions needed\nNone.\n\nSupervised agents\n- Awaiting agent evidence\n\nNext expected result\nEvidence bundle by 17:00\n\nBattery Status\nLast observed: 82% plugged; estimate fresh; next routine charge tonight.\n15:30–17:00 becomes personal time"
+  "expected": "**Decision needed**\n**Completed**\n- Synthetic completion\n\n**In progress**\n- Synthetic work\n\n**Issues**\n- Synthetic blocker\n\n**Decisions needed**\nNone.\n\n**Supervised agents**\n- Awaiting agent evidence\n\n**Next expected result**\nEvidence bundle by 17:00\n\n**Battery Status**\nLast observed: 82% plugged; estimate fresh; next routine charge tonight.\n15:30–17:00 becomes personal time"
 }

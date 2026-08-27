@@ -1,0 +1,62 @@
+{
+  "schema": "lisa_google_workspace_qualified_skills_receipt_v1",
+  "status": "qualification-required",
+  "provider": {
+    "repository": "linktrend/LiNKskills",
+    "commit": "2896fd89726f0b20258ec5a7bba55ccc6299ceb6",
+    "tree": "727694a95c83678bd6c7be7da2c5b26127b49e6e",
+    "releaseIdentity": "LiNKskills@2896fd89726f0b20258ec5a7bba55ccc6299ceb6",
+    "skillSetDigest": "sha256:1b4e13835dd8b19b56d060d1e29d77f6d5019a879e92f6fb8d78740e8a248fe8"
+  },
+  "catalogueBinding": {
+    "repository": "linktrend/LiNKskills",
+    "path": "tools/gws/interface.json",
+    "sha256": "sha256:65e8d5ac49cbc15cf93347d4fa85c65187ce9d4a55116ab95dcc2e99babe8637",
+    "requiredServices": ["docs", "sheets", "slides"],
+    "status": "source-catalogue-bound",
+    "providerRuntime": "not executed by OpenClaw"
+  },
+  "catalogueIndexBinding": {
+    "repository": "linktrend/LiNKskills",
+    "path": "catalog/index.json",
+    "catalogueGitSha": "af70f7ff04b2f148d04fe450a4e20c88df06fc36",
+    "sourceTreeSha256": "fd4e17edf08e88ff976f504749f0f0235c4b4b53db02db24260c07d1f25e1788",
+    "sha256": "sha256:1c2292ed5aa28d06097749eac5c8dcd5ee34891ac973df9b1a7351ea607967e3",
+    "requiredSkillIds": ["gws-shared", "gws-docs", "gws-docs-write", "gws-sheets", "gws-sheets-read", "gws-sheets-append", "gws-slides"],
+    "presentSkillIds": [],
+    "status": "required-entries-absent; qualification-unavailable"
+  },
+  "qualification": {
+    "state": "unavailable",
+    "reason": "exact qualified Skills release and provider receipt are not present",
+    "exactReleaseRequired": true,
+    "catalogueDigestRequired": true,
+    "executionGate": "fail-closed; no provider skill activation"
+  },
+  "retrieval": {
+    "mode": "exact-release-and-digest",
+    "copiedSkillBodies": false,
+    "localExecution": "authorized Lisa wrapper only",
+    "providerRuntime": "not executed by OpenClaw"
+  },
+  "skills": [
+    { "id": "gws-shared", "source": "tools/gws/vendor/link-gws-cli/skills/gws-shared/SKILL.md", "sha256": "b22a7817480a48ac03e1d086cdb5047e1f55c7299a028192dd6138c82fb5d569" },
+    { "id": "gws-docs", "source": "tools/gws/vendor/link-gws-cli/skills/gws-docs/SKILL.md", "sha256": "449b32ad53e889e44278343997e886f5fdb892f9aa90769fcabc6800983a174a" },
+    { "id": "gws-docs-write", "source": "tools/gws/vendor/link-gws-cli/skills/gws-docs-write/SKILL.md", "sha256": "beed0deac0bf543bf4a05f124461cbcb48d5e488a114d7b6be38574c3aa7d819" },
+    { "id": "gws-sheets", "source": "tools/gws/vendor/link-gws-cli/skills/gws-sheets/SKILL.md", "sha256": "31c92ae4b8572e96b49157be41880b35509eb52a59930dec2992e32ab5102f85" },
+    { "id": "gws-sheets-read", "source": "tools/gws/vendor/link-gws-cli/skills/gws-sheets-read/SKILL.md", "sha256": "ece438ead0d676fa246183caf95194f4786095eb80ef2c7bd7f9de22a24cc920" },
+    { "id": "gws-sheets-append", "source": "tools/gws/vendor/link-gws-cli/skills/gws-sheets-append/SKILL.md", "sha256": "475aa1201991d6d4b604b785a1dbd404294741bd4a2e32a20b5353a161a4ef0f" },
+    { "id": "gws-slides", "source": "tools/gws/vendor/link-gws-cli/skills/gws-slides/SKILL.md", "sha256": "e9600f047c546f0f33065f646e8e3f06bd2e475b95389471fa6603ea865bda98" }
+  ],
+  "unsupportedByDesign": [
+    "generic gws service selection",
+    "raw Sheets batchUpdate",
+    "raw Slides batchUpdate",
+    "browser-only Workspace automation"
+  ],
+  "privacy": {
+    "accountIdentifiers": "not recorded",
+    "credentialValues": "not recorded",
+    "liveGoogleCallsPerformed": false
+  }
+}

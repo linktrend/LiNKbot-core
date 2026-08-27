@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "packageName": "ide-development-managed-core",
   "packageVersion": "2.5.1",
-  "installedAt": "2026-08-21T07:12:08Z",
+  "installedAt": "2026-08-22T07:14:00Z",
   "files": {
     ".agents/skills-loader.mjs": {
       "id": "codex-non-skill-skills-loader-mjs",
@@ -714,14 +714,14 @@
     },
     ".ide-development/INDEX.yaml": {
       "id": "core-index-yaml",
-      "sourceHash": "sha256:5122831c0bd6ecde2b863e95fd05b7ea788c72a834e7c179ef52c166d648fbf8",
-      "contentHash": "sha256:5122831c0bd6ecde2b863e95fd05b7ea788c72a834e7c179ef52c166d648fbf8",
+      "sourceHash": "sha256:4c12ef8ddbeeb09ba12c68be840e979acc48d13b825bb397024552a6bf095ee3",
+      "contentHash": "sha256:4c12ef8ddbeeb09ba12c68be840e979acc48d13b825bb397024552a6bf095ee3",
       "mode": "0644"
     },
     ".ide-development/MANIFEST.json": {
       "id": "package-manifest",
-      "sourceHash": "sha256:77f48090e5eaf8b1852f7012640beffa404fc58c43e16ad3209a060a8974300c",
-      "contentHash": "sha256:77f48090e5eaf8b1852f7012640beffa404fc58c43e16ad3209a060a8974300c",
+      "sourceHash": "sha256:87f333da52a3fd990e36627748f8093feccc2bbf73f8c8076e7b9259304fb229",
+      "contentHash": "sha256:87f333da52a3fd990e36627748f8093feccc2bbf73f8c8076e7b9259304fb229",
       "mode": "0644"
     },
     ".ide-development/README.md": {
@@ -756,8 +756,14 @@
     },
     ".ide-development/content/config/continuous-utilization.json": {
       "id": "config-continuous-utilization-json",
-      "sourceHash": "sha256:637cc6d5e688eb3b183d8e07d84cfb9a82571b723d0c6ce11ca19f82a36b4321",
-      "contentHash": "sha256:637cc6d5e688eb3b183d8e07d84cfb9a82571b723d0c6ce11ca19f82a36b4321",
+      "sourceHash": "sha256:f3c2acedb1c32c8acb512be9f6be3a49bdd42230a8f311aa6890c6d9b064430b",
+      "contentHash": "sha256:f3c2acedb1c32c8acb512be9f6be3a49bdd42230a8f311aa6890c6d9b064430b",
+      "mode": "0644"
+    },
+    ".ide-development/content/config/cursor-cloud-dispatch.json": {
+      "id": "revision-60-final-controls-ide-development-content-config-cursor-cloud-dispatch-json",
+      "sourceHash": "sha256:1096f37bafd05ed4c25d46f938a24c6265f29d28071277d5ed259f303707a1f0",
+      "contentHash": "sha256:1096f37bafd05ed4c25d46f938a24c6265f29d28071277d5ed259f303707a1f0",
       "mode": "0644"
     },
     ".ide-development/content/config/manifest-persistence.json": {
@@ -780,8 +786,8 @@
     },
     ".ide-development/content/doctrine/0003-autonomous-ship-pull-promote.md": {
       "id": "doctrine-0003-autonomous-ship-pull-promote-md",
-      "sourceHash": "sha256:d0a5989a83ebeff7c4447966e67a8b72004da73dc124f54c67025f7ec0906bd5",
-      "contentHash": "sha256:d0a5989a83ebeff7c4447966e67a8b72004da73dc124f54c67025f7ec0906bd5",
+      "sourceHash": "sha256:394c6e1a891cfbcff783c54f848f6cf0013dff396670b49880af0852382829e3",
+      "contentHash": "sha256:394c6e1a891cfbcff783c54f848f6cf0013dff396670b49880af0852382829e3",
       "mode": "0644"
     },
     ".ide-development/content/doctrine/0004-portable-managed-core-v2.md": {
@@ -798,14 +804,14 @@
     },
     ".ide-development/content/doctrine/AGENT-COMPLETION.md": {
       "id": "doctrine-agent-completion-md",
-      "sourceHash": "sha256:b01aa0e86dfaa9a8014d73fc86c22d1494bdfde12bab08ad614e775d9d22598a",
-      "contentHash": "sha256:b01aa0e86dfaa9a8014d73fc86c22d1494bdfde12bab08ad614e775d9d22598a",
+      "sourceHash": "sha256:61f0170abbbb3e1fd8595817fa17f1b7ff9bb69e8596d70fa9a130059da1205e",
+      "contentHash": "sha256:61f0170abbbb3e1fd8595817fa17f1b7ff9bb69e8596d70fa9a130059da1205e",
       "mode": "0644"
     },
     ".ide-development/content/doctrine/ATOMIC-WORKFLOW-RULESET-MIGRATION.md": {
       "id": "doctrine-atomic-workflow-ruleset-migration-md",
-      "sourceHash": "sha256:61c04a5e0827db08afba464be246b1b7ce0a13269802ff6cb413de523c12cc17",
-      "contentHash": "sha256:61c04a5e0827db08afba464be246b1b7ce0a13269802ff6cb413de523c12cc17",
+      "sourceHash": "sha256:8fb846c9701d011686063abd08f4b1111c44734be4bc9c5872dc28ddea76c04e",
+      "contentHash": "sha256:8fb846c9701d011686063abd08f4b1111c44734be4bc9c5872dc28ddea76c04e",
       "mode": "0644"
     },
     ".ide-development/content/doctrine/AUTONOMOUS-GIT-OPERATIONS.md": {
@@ -816,8 +822,14 @@
     },
     ".ide-development/content/doctrine/CODING-EXECUTION-PROTOCOL.md": {
       "id": "doctrine-coding-execution-protocol-md",
-      "sourceHash": "sha256:9ea9019e864f9f4a8cc10bdb8995ad7e98699b3da6fc489d0397217b021eb9ff",
-      "contentHash": "sha256:9ea9019e864f9f4a8cc10bdb8995ad7e98699b3da6fc489d0397217b021eb9ff",
+      "sourceHash": "sha256:57ced8207133240abb35db889eca55051d12bd61d4b6651393a39cff2265ebf8",
+      "contentHash": "sha256:57ced8207133240abb35db889eca55051d12bd61d4b6651393a39cff2265ebf8",
+      "mode": "0644"
+    },
+    ".ide-development/content/doctrine/CURSOR-CLOUD-DISPATCH-CONTRACT.md": {
+      "id": "revision-60-final-controls-ide-development-content-doctrine-cursor-cloud-dispatch-contract-md",
+      "sourceHash": "sha256:4a1b68140ac567e4cc16c5f48089bcb6560e4bb5e9798e5ae6d103a8a0b54108",
+      "contentHash": "sha256:4a1b68140ac567e4cc16c5f48089bcb6560e4bb5e9798e5ae6d103a8a0b54108",
       "mode": "0644"
     },
     ".ide-development/content/doctrine/DELIVERY-MODES.md": {
@@ -834,8 +846,8 @@
     },
     ".ide-development/content/doctrine/HOSTED-CAPACITY-SCHEDULER.md": {
       "id": "doctrine-hosted-capacity-scheduler-md",
-      "sourceHash": "sha256:58ff1d5cafe737d91f7badbff0629f7c15582e5c8deacc80117690cb4d0fa4a0",
-      "contentHash": "sha256:58ff1d5cafe737d91f7badbff0629f7c15582e5c8deacc80117690cb4d0fa4a0",
+      "sourceHash": "sha256:bf91c0ba63b0016ac9fb3c82f6c89c9c6f6f02b36183d40669f950de2e331154",
+      "contentHash": "sha256:bf91c0ba63b0016ac9fb3c82f6c89c9c6f6f02b36183d40669f950de2e331154",
       "mode": "0644"
     },
     ".ide-development/content/doctrine/LINKTREND-REVIEW-GATE.md": {
@@ -846,8 +858,8 @@
     },
     ".ide-development/content/doctrine/MANAGED-CORE-V2.md": {
       "id": "doctrine-managed-core-v2-md",
-      "sourceHash": "sha256:c72a77f30554286da1648fb9cbffcc6c66e8e1a14c82b96c47ea648b76240fbe",
-      "contentHash": "sha256:c72a77f30554286da1648fb9cbffcc6c66e8e1a14c82b96c47ea648b76240fbe",
+      "sourceHash": "sha256:0271fe5f9992fc710b4e5c2ad27c943eb5212e89dd167758ea5660097199c983",
+      "contentHash": "sha256:0271fe5f9992fc710b4e5c2ad27c943eb5212e89dd167758ea5660097199c983",
       "mode": "0644"
     },
     ".ide-development/content/doctrine/MANIFEST-PERSISTENCE-RECOVERY.md": {
@@ -876,14 +888,14 @@
     },
     ".ide-development/content/doctrine/REPOSITORY-PROTECTION.md": {
       "id": "doctrine-repository-protection-md",
-      "sourceHash": "sha256:b2c6d32b537da3d97db1d7fa10557a002ff04b10c304ec42b0e9ccca11665f19",
-      "contentHash": "sha256:b2c6d32b537da3d97db1d7fa10557a002ff04b10c304ec42b0e9ccca11665f19",
+      "sourceHash": "sha256:4b9f9979b09acb4b945e025c1cebd80891dd0123b3d7f26032f4299682975ec9",
+      "contentHash": "sha256:4b9f9979b09acb4b945e025c1cebd80891dd0123b3d7f26032f4299682975ec9",
       "mode": "0644"
     },
     ".ide-development/content/doctrine/SECRET-SCAN-FIXTURES.md": {
       "id": "doctrine-secret-scan-fixtures-md",
-      "sourceHash": "sha256:d7ba78a03cfa30c24a616fa73515e85dd83a8c2ecc20fea16b7480f1ece2636a",
-      "contentHash": "sha256:d7ba78a03cfa30c24a616fa73515e85dd83a8c2ecc20fea16b7480f1ece2636a",
+      "sourceHash": "sha256:f41387807db3d613165cdaaa667a549ea49a877128ba5624714c0165df336f09",
+      "contentHash": "sha256:f41387807db3d613165cdaaa667a549ea49a877128ba5624714c0165df336f09",
       "mode": "0644"
     },
     ".ide-development/content/doctrine/STREAMLINED-DELIVERY.md": {
@@ -904,16 +916,22 @@
       "contentHash": "sha256:ccb084b827666af76915f88dabcf7da6c3691baa510d6ee4c931f4369ba2b93a",
       "mode": "0644"
     },
+    ".ide-development/contracts/CURSOR-CLOUD-DISPATCH-CONTRACT.md": {
+      "id": "revision-60-final-controls-ide-development-contracts-cursor-cloud-dispatch-contract-md",
+      "sourceHash": "sha256:b9097dcf535666e4bc700e264049f628ea7ba9f83739abcd196528b2edd91bf9",
+      "contentHash": "sha256:b9097dcf535666e4bc700e264049f628ea7ba9f83739abcd196528b2edd91bf9",
+      "mode": "0644"
+    },
     ".ide-development/contracts/EXECUTION-CONTROL-CONTRACT.md": {
       "id": "execution-runtime-execution-control-contract-md",
-      "sourceHash": "sha256:4cc2c4f70002fd207a76627251800d23aa74d0c1892721fb6941336f3e028641",
-      "contentHash": "sha256:4cc2c4f70002fd207a76627251800d23aa74d0c1892721fb6941336f3e028641",
+      "sourceHash": "sha256:67c799098a98e4285bcfa6cf14d42348c01de132007cef14759800239eb79cae",
+      "contentHash": "sha256:67c799098a98e4285bcfa6cf14d42348c01de132007cef14759800239eb79cae",
       "mode": "0644"
     },
     ".ide-development/contracts/EXECUTION-MANIFEST.schema.json": {
       "id": "execution-runtime-execution-manifest-schema-json",
-      "sourceHash": "sha256:ef1f289de17262fe66c2a0870b1dce8575809fa2bc8d926a43530f42b715b78b",
-      "contentHash": "sha256:ef1f289de17262fe66c2a0870b1dce8575809fa2bc8d926a43530f42b715b78b",
+      "sourceHash": "sha256:de39297785ad0aa542a51838fce4647f717f646488a67ccd7b31f6a03873e63a",
+      "contentHash": "sha256:de39297785ad0aa542a51838fce4647f717f646488a67ccd7b31f6a03873e63a",
       "mode": "0644"
     },
     ".ide-development/contracts/PKT08-REVISION-60-FINAL-CONTROLS.md": {
@@ -936,8 +954,8 @@
     },
     ".ide-development/examples/continuous-utilization.example.json": {
       "id": "example-continuous-utilization-example-json",
-      "sourceHash": "sha256:637cc6d5e688eb3b183d8e07d84cfb9a82571b723d0c6ce11ca19f82a36b4321",
-      "contentHash": "sha256:637cc6d5e688eb3b183d8e07d84cfb9a82571b723d0c6ce11ca19f82a36b4321",
+      "sourceHash": "sha256:f3c2acedb1c32c8acb512be9f6be3a49bdd42230a8f311aa6890c6d9b064430b",
+      "contentHash": "sha256:f3c2acedb1c32c8acb512be9f6be3a49bdd42230a8f311aa6890c6d9b064430b",
       "mode": "0644"
     },
     ".ide-development/examples/verification-run.example.json": {
@@ -948,14 +966,20 @@
     },
     ".ide-development/execution/CODING-EXECUTION-PROTOCOL.md": {
       "id": "execution-runtime-coding-execution-protocol-md",
-      "sourceHash": "sha256:9ea9019e864f9f4a8cc10bdb8995ad7e98699b3da6fc489d0397217b021eb9ff",
-      "contentHash": "sha256:9ea9019e864f9f4a8cc10bdb8995ad7e98699b3da6fc489d0397217b021eb9ff",
+      "sourceHash": "sha256:57ced8207133240abb35db889eca55051d12bd61d4b6651393a39cff2265ebf8",
+      "contentHash": "sha256:57ced8207133240abb35db889eca55051d12bd61d4b6651393a39cff2265ebf8",
       "mode": "0644"
     },
     ".ide-development/execution/__init__.py": {
       "id": "execution-runtime-init-py",
-      "sourceHash": "sha256:cdd0a84103bb95d9f63d831ff996d99055f9972c316fdab9d4920eba408f492c",
-      "contentHash": "sha256:cdd0a84103bb95d9f63d831ff996d99055f9972c316fdab9d4920eba408f492c",
+      "sourceHash": "sha256:e6d1a66df2916372ff900f579318217405ceaaa11a854e15ab489862f529046d",
+      "contentHash": "sha256:e6d1a66df2916372ff900f579318217405ceaaa11a854e15ab489862f529046d",
+      "mode": "0644"
+    },
+    ".ide-development/execution/cursor_cloud_dispatch.py": {
+      "id": "execution-runtime-cursor-cloud-dispatch-py",
+      "sourceHash": "sha256:e0f8a3d9dd130c7bf5709df657605dd6a58647211c51753868165560e4579456",
+      "contentHash": "sha256:e0f8a3d9dd130c7bf5709df657605dd6a58647211c51753868165560e4579456",
       "mode": "0644"
     },
     ".ide-development/execution/examples/verification-run.example.json": {
@@ -990,8 +1014,8 @@
     },
     ".ide-development/execution/scheduler.py": {
       "id": "execution-runtime-scheduler-py",
-      "sourceHash": "sha256:cf44018687d332f0b59341e039c040856b6e3b8b1258a0bf68bb6b3ff7de6a51",
-      "contentHash": "sha256:cf44018687d332f0b59341e039c040856b6e3b8b1258a0bf68bb6b3ff7de6a51",
+      "sourceHash": "sha256:fcd8e926efd7758595234d6707a39c1d729fdc1308a57adc749cf9820632036a",
+      "contentHash": "sha256:fcd8e926efd7758595234d6707a39c1d729fdc1308a57adc749cf9820632036a",
       "mode": "0644"
     },
     ".ide-development/execution/transactional_dispatch.py": {
@@ -1068,8 +1092,8 @@
     },
     ".ide-development/library/tests/library-client.test.mjs": {
       "id": "library-package-tests-library-client-test-mjs",
-      "sourceHash": "sha256:92844efa59f70d42b7b9018230ceba6343099074afa083b190654ca17edcf926",
-      "contentHash": "sha256:92844efa59f70d42b7b9018230ceba6343099074afa083b190654ca17edcf926",
+      "sourceHash": "sha256:9cef721e8be8dcd11c9bce6e220cf90c19c0218844eafcc1b74e4270aac023ce",
+      "contentHash": "sha256:9cef721e8be8dcd11c9bce6e220cf90c19c0218844eafcc1b74e4270aac023ce",
       "mode": "0644"
     },
     ".ide-development/library/vendor/NOTICE.md": {
@@ -1402,6 +1426,12 @@
       "contentHash": "sha256:bc18576ee92c6513ee149b8ea3cbadfcbfd23d97059bb2d063cbd0f1e6727366",
       "mode": "0644"
     },
+    ".ide-development/schemas/change-scoped-secret-scan.schema.json": {
+      "id": "core-schemas-change-scoped-secret-scan-schema-json",
+      "sourceHash": "sha256:11c794af334e5c72db0ec63b156b8626b463a1c342f8dc47a581c617cda954ae",
+      "contentHash": "sha256:11c794af334e5c72db0ec63b156b8626b463a1c342f8dc47a581c617cda954ae",
+      "mode": "0644"
+    },
     ".ide-development/schemas/ci-component-manifest.schema.json": {
       "id": "core-schemas-ci-component-manifest-schema-json",
       "sourceHash": "sha256:1ad34c0a76fa046311d325bef0104266936b882746f0ad8c0f65a343a8c55a4b",
@@ -1416,8 +1446,14 @@
     },
     ".ide-development/schemas/continuous-utilization.schema.json": {
       "id": "schema-continuous-utilization-schema-json",
-      "sourceHash": "sha256:243b8479084cea00aabcbb3545e5e52d308e1bc19e475941a8f032da7a494d4a",
-      "contentHash": "sha256:243b8479084cea00aabcbb3545e5e52d308e1bc19e475941a8f032da7a494d4a",
+      "sourceHash": "sha256:3863713da8a1a9c3696d00ee5b82baecc7977c90c3e818478469a3ce085598b2",
+      "contentHash": "sha256:3863713da8a1a9c3696d00ee5b82baecc7977c90c3e818478469a3ce085598b2",
+      "mode": "0644"
+    },
+    ".ide-development/schemas/cursor-cloud-dispatch.schema.json": {
+      "id": "revision-60-final-controls-ide-development-schemas-cursor-cloud-dispatch-schema-json",
+      "sourceHash": "sha256:ced3f9c0a56e127688045f1f7aabf90bdf2e8f36c6557abb3d72ffadf8fc0e9e",
+      "contentHash": "sha256:ced3f9c0a56e127688045f1f7aabf90bdf2e8f36c6557abb3d72ffadf8fc0e9e",
       "mode": "0644"
     },
     ".ide-development/schemas/delivery-modes.schema.json": {
@@ -1492,6 +1528,12 @@
       "contentHash": "sha256:3d14f7c14a33a7fa10165703f5408e54c7f5842f4be3e70440f229f21412cca5",
       "mode": "0644"
     },
+    ".ide-development/schemas/managed-upgrade-resolution.schema.json": {
+      "id": "core-schemas-managed-upgrade-resolution-schema-json",
+      "sourceHash": "sha256:60dcb8c2ab830dabdac0da4f80af19e4ec299a4adac926ba95d5909ce00c9735",
+      "contentHash": "sha256:60dcb8c2ab830dabdac0da4f80af19e4ec299a4adac926ba95d5909ce00c9735",
+      "mode": "0644"
+    },
     ".ide-development/schemas/manifest-persistence.schema.json": {
       "id": "core-schemas-manifest-persistence-schema-json",
       "sourceHash": "sha256:604e6bfb963308fce44327dc6bc0762f5bdace566023f8749517a37494cf31db",
@@ -1548,8 +1590,8 @@
     },
     ".ide-development/schemas/secret-scan-result.schema.json": {
       "id": "core-schemas-secret-scan-result-schema-json",
-      "sourceHash": "sha256:283bcbbc8f83f9085dce8ac5343ed3fb95a8e16878994eca56d67ffca9da6a42",
-      "contentHash": "sha256:283bcbbc8f83f9085dce8ac5343ed3fb95a8e16878994eca56d67ffca9da6a42",
+      "sourceHash": "sha256:27635ae8f5ca77fc78fb9f23ca6722b5f794fa7db052ac23b5d8e7c0cc2e93a6",
+      "contentHash": "sha256:27635ae8f5ca77fc78fb9f23ca6722b5f794fa7db052ac23b5d8e7c0cc2e93a6",
       "mode": "0644"
     },
     ".ide-development/schemas/transaction.schema.json": {
@@ -1836,14 +1878,14 @@
     },
     ".ide-development/tests/test_atomic_workflow_ruleset_migration.py": {
       "id": "test-test-atomic-workflow-ruleset-migration-py",
-      "sourceHash": "sha256:bf6a89c696aade2f96f8e8caf021e3be8f51a68e956b463deb826b07a073ccc8",
-      "contentHash": "sha256:bf6a89c696aade2f96f8e8caf021e3be8f51a68e956b463deb826b07a073ccc8",
+      "sourceHash": "sha256:a18837396aa500c83d86ec55c643078764ee99a77950db6389d387dd4f60f25d",
+      "contentHash": "sha256:a18837396aa500c83d86ec55c643078764ee99a77950db6389d387dd4f60f25d",
       "mode": "0644"
     },
     ".ide-development/tests/test_candidate_baseline_resolution.py": {
       "id": "test-test-candidate-baseline-resolution-py",
-      "sourceHash": "sha256:f8d65eb09e6bacabbfa63948c003931e310efe47a9db739678c141657dd8a651",
-      "contentHash": "sha256:f8d65eb09e6bacabbfa63948c003931e310efe47a9db739678c141657dd8a651",
+      "sourceHash": "sha256:fa79c2e29b00098fb7ed680a8ef2db66d9c471d7022d0d58d7af33f548a8adfe",
+      "contentHash": "sha256:fa79c2e29b00098fb7ed680a8ef2db66d9c471d7022d0d58d7af33f548a8adfe",
       "mode": "0644"
     },
     ".ide-development/tests/test_candidate_lifecycle.py": {
@@ -1854,14 +1896,14 @@
     },
     ".ide-development/tests/test_delivery_controller.py": {
       "id": "test-test-delivery-controller-py",
-      "sourceHash": "sha256:1142efc5d0d23da6a9ac85d8d24f66b4ef7bd244889f53a7865d129d7f142a04",
-      "contentHash": "sha256:1142efc5d0d23da6a9ac85d8d24f66b4ef7bd244889f53a7865d129d7f142a04",
+      "sourceHash": "sha256:7e8f37b0041bf26797bebd739c5b242f3be4d8f43c68c31a937292b907ee8ba3",
+      "contentHash": "sha256:7e8f37b0041bf26797bebd739c5b242f3be4d8f43c68c31a937292b907ee8ba3",
       "mode": "0644"
     },
     ".ide-development/tests/test_fixture_aware_secret_scan.py": {
       "id": "test-test-fixture-aware-secret-scan-py",
-      "sourceHash": "sha256:c148e484011674690c19c5cab7331b69d8ae54c42dab347eedd939b0bd7dc7f5",
-      "contentHash": "sha256:c148e484011674690c19c5cab7331b69d8ae54c42dab347eedd939b0bd7dc7f5",
+      "sourceHash": "sha256:86cf461837094798632977ec0fc128d8993fee461bc803a0e97f0bf75f0cf225",
+      "contentHash": "sha256:86cf461837094798632977ec0fc128d8993fee461bc803a0e97f0bf75f0cf225",
       "mode": "0644"
     },
     ".ide-development/tests/test_gate_receipts.py": {
@@ -1884,14 +1926,14 @@
     },
     ".ide-development/tests/test_linktrend_review_gate.py": {
       "id": "test-test-linktrend-review-gate-py",
-      "sourceHash": "sha256:94dfd6a2f7e13eee84caaed0e86f4505d895ab753270bbdd66cc3a00194e9260",
-      "contentHash": "sha256:94dfd6a2f7e13eee84caaed0e86f4505d895ab753270bbdd66cc3a00194e9260",
+      "sourceHash": "sha256:2dee76ea320a7fd835f37b51745ebcf819d43ad216499e4990ed59468e3d7add",
+      "contentHash": "sha256:2dee76ea320a7fd835f37b51745ebcf819d43ad216499e4990ed59468e3d7add",
       "mode": "0644"
     },
     ".ide-development/tests/test_manifest_persistence_recovery.py": {
       "id": "test-test-manifest-persistence-recovery-py",
-      "sourceHash": "sha256:2b1ef4c38afed404c85c4209fa632f1c3c965f700c92a98d96efb7bc5a4477aa",
-      "contentHash": "sha256:2b1ef4c38afed404c85c4209fa632f1c3c965f700c92a98d96efb7bc5a4477aa",
+      "sourceHash": "sha256:7cbe87fa76b0da706cd8f1eb385af2896573a3e4f28d5b055791ca9ba1d42174",
+      "contentHash": "sha256:7cbe87fa76b0da706cd8f1eb385af2896573a3e4f28d5b055791ca9ba1d42174",
       "mode": "0644"
     },
     ".ide-development/tests/test_phase_batch_lifecycle.py": {
@@ -1908,8 +1950,8 @@
     },
     ".ide-development/tests/test_promotion_receipt_gate.py": {
       "id": "test-test-promotion-receipt-gate-py",
-      "sourceHash": "sha256:87f670d569d2701451f3ee809e7770c76f905b33295de4cb170942843b175824",
-      "contentHash": "sha256:87f670d569d2701451f3ee809e7770c76f905b33295de4cb170942843b175824",
+      "sourceHash": "sha256:98bd5d07072df0881ccfe75902bb7eef0143390dd2dcb3ff886af61c1cfe3487",
+      "contentHash": "sha256:98bd5d07072df0881ccfe75902bb7eef0143390dd2dcb3ff886af61c1cfe3487",
       "mode": "0644"
     },
     ".ide-development/tests/test_receipt_seal_and_recovery.py": {
@@ -1980,8 +2022,14 @@
     },
     "core/execution/__init__.py": {
       "id": "gitops-core-execution-init-py",
-      "sourceHash": "sha256:cdd0a84103bb95d9f63d831ff996d99055f9972c316fdab9d4920eba408f492c",
-      "contentHash": "sha256:cdd0a84103bb95d9f63d831ff996d99055f9972c316fdab9d4920eba408f492c",
+      "sourceHash": "sha256:e6d1a66df2916372ff900f579318217405ceaaa11a854e15ab489862f529046d",
+      "contentHash": "sha256:e6d1a66df2916372ff900f579318217405ceaaa11a854e15ab489862f529046d",
+      "mode": "0644"
+    },
+    "core/execution/cursor_cloud_dispatch.py": {
+      "id": "gitops-core-execution-cursor-cloud-dispatch-py",
+      "sourceHash": "sha256:e0f8a3d9dd130c7bf5709df657605dd6a58647211c51753868165560e4579456",
+      "contentHash": "sha256:e0f8a3d9dd130c7bf5709df657605dd6a58647211c51753868165560e4579456",
       "mode": "0644"
     },
     "core/execution/lifecycle.py": {
@@ -2010,8 +2058,8 @@
     },
     "core/execution/scheduler.py": {
       "id": "gitops-core-execution-scheduler-py",
-      "sourceHash": "sha256:cf44018687d332f0b59341e039c040856b6e3b8b1258a0bf68bb6b3ff7de6a51",
-      "contentHash": "sha256:cf44018687d332f0b59341e039c040856b6e3b8b1258a0bf68bb6b3ff7de6a51",
+      "sourceHash": "sha256:fcd8e926efd7758595234d6707a39c1d729fdc1308a57adc749cf9820632036a",
+      "contentHash": "sha256:fcd8e926efd7758595234d6707a39c1d729fdc1308a57adc749cf9820632036a",
       "mode": "0644"
     },
     "core/execution/transactional_dispatch.py": {
@@ -2026,6 +2074,12 @@
       "contentHash": "sha256:1994c76fc1c9de44602844854a1ca4eb41b432b96cb84223900279f63a0162a9",
       "mode": "0644"
     },
+    "core/managed-core/content/config/cursor-cloud-dispatch.json": {
+      "id": "gitops-core-managed-core-content-config-cursor-cloud-dispatch-json",
+      "sourceHash": "sha256:1096f37bafd05ed4c25d46f938a24c6265f29d28071277d5ed259f303707a1f0",
+      "contentHash": "sha256:1096f37bafd05ed4c25d46f938a24c6265f29d28071277d5ed259f303707a1f0",
+      "mode": "0644"
+    },
     "core/managed-core/content/config/manifest-persistence.json": {
       "id": "gitops-core-managed-core-content-config-manifest-persistence-json",
       "sourceHash": "sha256:051b63d3bf3ba888ab60855566ef777963f16d07a794a225b54ca876ca731f86",
@@ -2036,6 +2090,12 @@
       "id": "gitops-core-managed-core-content-config-transactional-dispatch-json",
       "sourceHash": "sha256:73417b2ee3280e96b0181748c39454289c3af104dd1f7b6a9a574a6ded8f2c7c",
       "contentHash": "sha256:73417b2ee3280e96b0181748c39454289c3af104dd1f7b6a9a574a6ded8f2c7c",
+      "mode": "0644"
+    },
+    "core/managed-core/schemas/cursor-cloud-dispatch.schema.json": {
+      "id": "gitops-core-managed-core-schemas-cursor-cloud-dispatch-schema-json",
+      "sourceHash": "sha256:ced3f9c0a56e127688045f1f7aabf90bdf2e8f36c6557abb3d72ffadf8fc0e9e",
+      "contentHash": "sha256:ced3f9c0a56e127688045f1f7aabf90bdf2e8f36c6557abb3d72ffadf8fc0e9e",
       "mode": "0644"
     },
     "core/managed-core/schemas/manifest-persistence.schema.json": {
@@ -2064,8 +2124,8 @@
     },
     "scripts/gitops/atomic_workflow_ruleset_migration.py": {
       "id": "gitops-scripts-gitops-atomic-workflow-ruleset-migration-py",
-      "sourceHash": "sha256:499c41a9eef6ec7907d1916b7fd187e024560bff5522866581271aeb113fc8fa",
-      "contentHash": "sha256:499c41a9eef6ec7907d1916b7fd187e024560bff5522866581271aeb113fc8fa",
+      "sourceHash": "sha256:455eb9e438d799e5f0ccdf5f7e5a6a0db8516e7e73bfdabb2efa92e5b12bd971",
+      "contentHash": "sha256:455eb9e438d799e5f0ccdf5f7e5a6a0db8516e7e73bfdabb2efa92e5b12bd971",
       "mode": "0644"
     },
     "scripts/gitops/bugbot_user_credentials.py": {
@@ -2082,8 +2142,8 @@
     },
     "scripts/gitops/completion_gate.py": {
       "id": "gitops-scripts-gitops-completion-gate-py",
-      "sourceHash": "sha256:4cadabf4474013520cbc3177b847018c792491937af1c62dee986c83fef65a25",
-      "contentHash": "sha256:4cadabf4474013520cbc3177b847018c792491937af1c62dee986c83fef65a25",
+      "sourceHash": "sha256:91f74a93303813666ac83de2adb06f91cbb4c15e429560ea62829f41a70a8dcd",
+      "contentHash": "sha256:91f74a93303813666ac83de2adb06f91cbb4c15e429560ea62829f41a70a8dcd",
       "mode": "0755"
     },
     "scripts/gitops/conflict_task.py": {
@@ -2130,8 +2190,8 @@
     },
     "scripts/gitops/delivery_controller.py": {
       "id": "gitops-scripts-gitops-delivery-controller-py",
-      "sourceHash": "sha256:0c8876e291f330add519ff78c5d156913755a8d651d10015b213cb20e546c2c8",
-      "contentHash": "sha256:0c8876e291f330add519ff78c5d156913755a8d651d10015b213cb20e546c2c8",
+      "sourceHash": "sha256:e6c789f7c1892eb793b46f5d698939095d42b85e358cf3fa3807f17ad317f48c",
+      "contentHash": "sha256:e6c789f7c1892eb793b46f5d698939095d42b85e358cf3fa3807f17ad317f48c",
       "mode": "0644"
     },
     "scripts/gitops/delivery_modes.py": {
@@ -2142,8 +2202,8 @@
     },
     "scripts/gitops/external_state_audit.py": {
       "id": "gitops-scripts-gitops-external-state-audit-py",
-      "sourceHash": "sha256:3337b59d72318006ce2b51f51d9ed3ef7d20a9b71f63787dffea36ce9bebac91",
-      "contentHash": "sha256:3337b59d72318006ce2b51f51d9ed3ef7d20a9b71f63787dffea36ce9bebac91",
+      "sourceHash": "sha256:dffc0c39afbc963be4f94872f755052857a170ffa71cd9f900f23a32af61648b",
+      "contentHash": "sha256:dffc0c39afbc963be4f94872f755052857a170ffa71cd9f900f23a32af61648b",
       "mode": "0755"
     },
     "scripts/gitops/gate_receipt.py": {
@@ -2154,8 +2214,8 @@
     },
     "scripts/gitops/generated_output_closure.py": {
       "id": "gitops-scripts-gitops-generated-output-closure-py",
-      "sourceHash": "sha256:aabcbac485d74821d8288b89ea6d35c608e3776226059f7db467581dc4889d62",
-      "contentHash": "sha256:aabcbac485d74821d8288b89ea6d35c608e3776226059f7db467581dc4889d62",
+      "sourceHash": "sha256:8ef23dcdd55c85e7094290169cbe5266e8c64f8d986533fd269035c7800bbdf6",
+      "contentHash": "sha256:8ef23dcdd55c85e7094290169cbe5266e8c64f8d986533fd269035c7800bbdf6",
       "mode": "0644"
     },
     "scripts/gitops/github_auth.py": {
@@ -2232,8 +2292,8 @@
     },
     "scripts/gitops/promotion_receipt_gate.py": {
       "id": "gitops-scripts-gitops-promotion-receipt-gate-py",
-      "sourceHash": "sha256:09fedecd95874114eb1bf936dd60fa9433043ab8359c1a2d8afba639ac839739",
-      "contentHash": "sha256:09fedecd95874114eb1bf936dd60fa9433043ab8359c1a2d8afba639ac839739",
+      "sourceHash": "sha256:ddbcc0584277c075444df2e31654c579e24063711e9fe0b0ab247e0fedd4a85d",
+      "contentHash": "sha256:ddbcc0584277c075444df2e31654c579e24063711e9fe0b0ab247e0fedd4a85d",
       "mode": "0755"
     },
     "scripts/gitops/readiness_status.py": {
@@ -2268,8 +2328,8 @@
     },
     "scripts/gitops/repository_protection.py": {
       "id": "gitops-scripts-gitops-repository-protection-py",
-      "sourceHash": "sha256:2fcf391dcd8ef93106d87011a95ffadb09d2759b913d33797171736c9ab872e8",
-      "contentHash": "sha256:2fcf391dcd8ef93106d87011a95ffadb09d2759b913d33797171736c9ab872e8",
+      "sourceHash": "sha256:3d6bfddda74d6540e6544b03c17415ea7dcd590f20b71f6cd9be324ee45ac6c0",
+      "contentHash": "sha256:3d6bfddda74d6540e6544b03c17415ea7dcd590f20b71f6cd9be324ee45ac6c0",
       "mode": "0755"
     },
     "scripts/gitops/require_exact_ci_success.py": {
@@ -2304,8 +2364,8 @@
     },
     "scripts/gitops/ruleset_plan.py": {
       "id": "gitops-scripts-gitops-ruleset-plan-py",
-      "sourceHash": "sha256:65acee38db1a5f3c7d42e01ceeecd5594c367bb83c69ffd75173056d4c5fe639",
-      "contentHash": "sha256:65acee38db1a5f3c7d42e01ceeecd5594c367bb83c69ffd75173056d4c5fe639",
+      "sourceHash": "sha256:fcf99a6c38028cf3725b2186140de6271983d353d768dc30813261db26551ff2",
+      "contentHash": "sha256:fcf99a6c38028cf3725b2186140de6271983d353d768dc30813261db26551ff2",
       "mode": "0755"
     },
     "scripts/gitops/run_delivery_profile.py": {
@@ -2316,8 +2376,8 @@
     },
     "scripts/gitops/secret_scan.py": {
       "id": "gitops-scripts-gitops-secret-scan-py",
-      "sourceHash": "sha256:016b0368225d01b0bba916b6e42daf65ed605bc6c67d4b2d50ce165e7d05e31c",
-      "contentHash": "sha256:016b0368225d01b0bba916b6e42daf65ed605bc6c67d4b2d50ce165e7d05e31c",
+      "sourceHash": "sha256:107c8188b8598278da116a2bbc1aa621328aa3298adc3af1c9a2bce024c2092f",
+      "contentHash": "sha256:107c8188b8598278da116a2bbc1aa621328aa3298adc3af1c9a2bce024c2092f",
       "mode": "0644"
     },
     "scripts/gitops/secret_scan_migrate.py": {
@@ -2376,26 +2436,26 @@
     },
     "scripts/ide_development/build_manifest.py": {
       "id": "installer-scripts-ide-development-build-manifest-py",
-      "sourceHash": "sha256:0f19ea4581288296b54748c0f7243a2367ec97a309148204eb68bc75d4cfb415",
-      "contentHash": "sha256:0f19ea4581288296b54748c0f7243a2367ec97a309148204eb68bc75d4cfb415",
+      "sourceHash": "sha256:e1e5d9dc473af8fbc2855959ad88a2c6580a777ed0fc9ea84c8b55209860774c",
+      "contentHash": "sha256:e1e5d9dc473af8fbc2855959ad88a2c6580a777ed0fc9ea84c8b55209860774c",
       "mode": "0644"
     },
     "scripts/ide_development/cli.py": {
       "id": "installer-scripts-ide-development-cli-py",
-      "sourceHash": "sha256:b9a795fcfd4bbc3df8ea20e3dfd81a04b912c91302a8c08c60ade35e0b597e53",
-      "contentHash": "sha256:b9a795fcfd4bbc3df8ea20e3dfd81a04b912c91302a8c08c60ade35e0b597e53",
+      "sourceHash": "sha256:cbbbfa13c9078775dfc93551736b29e6c33d165c0168ed8c99092c07bd7c91ed",
+      "contentHash": "sha256:cbbbfa13c9078775dfc93551736b29e6c33d165c0168ed8c99092c07bd7c91ed",
       "mode": "0644"
     },
     "scripts/ide_development/constants.py": {
       "id": "installer-scripts-ide-development-constants-py",
-      "sourceHash": "sha256:3a36829c16ac80cbf9b12889030c020b37f30e67d74e9c1d84194af7ea6c25f2",
-      "contentHash": "sha256:3a36829c16ac80cbf9b12889030c020b37f30e67d74e9c1d84194af7ea6c25f2",
+      "sourceHash": "sha256:9074938001f9cd7a49112e51175431db14b54e2cc29c245fa5f2b2592c596b25",
+      "contentHash": "sha256:9074938001f9cd7a49112e51175431db14b54e2cc29c245fa5f2b2592c596b25",
       "mode": "0644"
     },
     "scripts/ide_development/engine.py": {
       "id": "installer-scripts-ide-development-engine-py",
-      "sourceHash": "sha256:91a78fce69ad7d1008d450139a98005394baea4b0b3b8071912cac2bae453862",
-      "contentHash": "sha256:91a78fce69ad7d1008d450139a98005394baea4b0b3b8071912cac2bae453862",
+      "sourceHash": "sha256:5ae602765d8ed0ca1bed11e65dd0dc2ac6e13494202ce05194b7d59a014719e8",
+      "contentHash": "sha256:5ae602765d8ed0ca1bed11e65dd0dc2ac6e13494202ce05194b7d59a014719e8",
       "mode": "0644"
     },
     "scripts/ide_development/errors.py": {
@@ -2442,14 +2502,20 @@
     },
     "scripts/ide_development/plan.py": {
       "id": "installer-scripts-ide-development-plan-py",
-      "sourceHash": "sha256:13aa9f1c178f9eef2929bb7d248b5fc108edc7737f3ab38f3d1d8dac5f5895c1",
-      "contentHash": "sha256:13aa9f1c178f9eef2929bb7d248b5fc108edc7737f3ab38f3d1d8dac5f5895c1",
+      "sourceHash": "sha256:2f214e4d407efc7cd4a9e9ac251ff1104dca5459ec35712d9073b6f408068e8d",
+      "contentHash": "sha256:2f214e4d407efc7cd4a9e9ac251ff1104dca5459ec35712d9073b6f408068e8d",
       "mode": "0644"
     },
     "scripts/ide_development/release_candidate.py": {
       "id": "installer-scripts-ide-development-release-candidate-py",
-      "sourceHash": "sha256:a07b1062be82f5c1dae62984a6cdc76d75ef16b7125af2ffe13d4d84f1e53839",
-      "contentHash": "sha256:a07b1062be82f5c1dae62984a6cdc76d75ef16b7125af2ffe13d4d84f1e53839",
+      "sourceHash": "sha256:21f99261016d06536e7eb3d1e39f93b27f730c2491ae1cceda7dae7e79b9e331",
+      "contentHash": "sha256:21f99261016d06536e7eb3d1e39f93b27f730c2491ae1cceda7dae7e79b9e331",
+      "mode": "0644"
+    },
+    "scripts/ide_development/resolution.py": {
+      "id": "installer-scripts-ide-development-resolution-py",
+      "sourceHash": "sha256:9c0c4dbe8f3c76546b46c0e3e8607e005b87fe8827fa0b8107949dfef1ac427c",
+      "contentHash": "sha256:9c0c4dbe8f3c76546b46c0e3e8607e005b87fe8827fa0b8107949dfef1ac427c",
       "mode": "0644"
     },
     "scripts/ide_development/state.py": {
@@ -2466,8 +2532,8 @@
     },
     "scripts/ide_development/transaction.py": {
       "id": "installer-scripts-ide-development-transaction-py",
-      "sourceHash": "sha256:71a121a21d588576fc0e8c86103c906834b7335e98ff3357083b3bb61f98872c",
-      "contentHash": "sha256:71a121a21d588576fc0e8c86103c906834b7335e98ff3357083b3bb61f98872c",
+      "sourceHash": "sha256:d61fe6b521967e7e998512d155d841a72ca85635962f23c53ac90e56816729ce",
+      "contentHash": "sha256:d61fe6b521967e7e998512d155d841a72ca85635962f23c53ac90e56816729ce",
       "mode": "0644"
     },
     "scripts/install-git-hooks.sh": {

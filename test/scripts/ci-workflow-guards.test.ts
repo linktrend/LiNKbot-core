@@ -58,11 +58,20 @@ function readCiWorkflow() {
   return parse(readFileSync(".github/workflows/ci.yml", "utf8"));
 }
 
+function interpolateCiGateVerifyScript(run: string, protectedAdmission = "false"): string {
+  // Local fixtures cannot evaluate GitHub Actions expressions. Substitute the
+  // inherited-admission flag so bash exercises the fail-closed verify path.
+  return run.replaceAll(
+    "${{ steps.inherited-baseline.outputs.protected_admission }}",
+    protectedAdmission,
+  );
+}
+
 function runCiGateFixture(requiredResults: string, selectedResults: string) {
   const gateStep = readCiWorkflow().jobs["ci-gate"].steps.find(
     (step: WorkflowStep) => step.name === "Verify selected CI lanes",
   );
-  return spawnSync("bash", ["-c", gateStep.run], {
+  return spawnSync("bash", ["-c", interpolateCiGateVerifyScript(gateStep.run)], {
     encoding: "utf8",
     env: {
       ...process.env,
@@ -4462,7 +4471,7 @@ printf '%s\n' "\${CURL_SUCCESS_IP:-203.0.113.7}"
       "${{ always() && (github.event_name != 'pull_request' || !github.event.pull_request.draft) }}",
     );
     expect(gate["runs-on"]).toBe("ubuntu-24.04");
-    expect(gate.permissions).toEqual({ contents: "read" });
+    expect(gate.permissions).toEqual({ actions: "read", contents: "read" });
 
     const verifyStep = gate.steps.find(
       (step: WorkflowStep) => step.name === "Verify selected CI lanes",
