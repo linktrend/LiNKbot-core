@@ -54,13 +54,46 @@ jobs:
       PR_NUMBER: ${{ github.event.pull_request.number }}
       EXPECTED_HEAD: ${{ github.event.pull_request.head.sha }}
       SOURCE_BRANCH: ${{ github.event.pull_request.head.ref }}
+      BASELINE_REF: ${{ format('origin/{0}', github.event.pull_request.base.ref) }}
+      BASELINE_SHA: ${{ github.event.pull_request.base.sha }}
     steps:
       - name: Checkout exact Phase PR head
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-          fetch-depth: 0
-          persist-credentials: false
+          fetch-depth: 1
+          # Keep checkout's token-backed origin configuration for the bounded
+          # baseline fetch below; do not reconstruct authentication in shell.
+          persist-credentials: true
+
+      - name: Fetch bounded baseline history
+        env:
+          BASELINE_REFSPEC: ${{ format('+refs/heads/{0}:refs/remotes/origin/{0}', github.event.pull_request.base.ref) }}
+          PHASE_REFSPEC: ${{ format('+refs/heads/{0}:refs/remotes/origin/{0}', github.event.pull_request.head.ref) }}
+        run: |
+          set -euo pipefail
+          # actions/checkout configured origin with the scoped GitHub token.
+          cleanup_checkout_credentials() {
+            local key="http.https://github.com/.extraheader"
+            local config_status
+            if git config --local --get-all "${key}" >/dev/null; then
+              git config --local --unset-all "${key}"
+            else
+              config_status=$?
+              test "${config_status}" -eq 1 || return "${config_status}"
+            fi
+            if git config --local --get-all "${key}" >/dev/null; then
+              echo "checkout_credentials_cleanup_failed" >&2
+              return 1
+            else
+              config_status=$?
+              test "${config_status}" -eq 1 || return "${config_status}"
+            fi
+          }
+          trap cleanup_checkout_credentials EXIT
+          git fetch --no-tags --depth=64 origin "${BASELINE_REFSPEC}" "${PHASE_REFSPEC}"
+          cleanup_checkout_credentials
+          trap - EXIT
 
       - name: Reject stale or non-Phase dispatch
         env:
@@ -70,19 +103,43 @@ jobs:
           pr="$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}")"
           live_branch="$(jq -r .head.ref <<<"${pr}")"
           live="$(jq -r .head.sha <<<"${pr}")"
+          live_base="$(jq -r .base.sha <<<"${pr}")"
           case "${live_branch}" in phase/*) ;; *) echo "fast_checks_require_phase_branch: ${live_branch}"; exit 1;; esac
           test "${live}" = "${EXPECTED_HEAD}" || { echo "fast_checks_stale_pr_head: expected=${EXPECTED_HEAD} live=${live}"; exit 1; }
+          test "${live_base}" = "${BASELINE_SHA}" || { echo "fast_checks_stale_pr_base: expected=${BASELINE_SHA} live=${live_base}"; exit 1; }
           actual="$(git rev-parse HEAD)"
           test "${actual}" = "${EXPECTED_HEAD}" || {
             echo "fast_checks_head_mismatch: expected=${EXPECTED_HEAD} actual=${actual}"
             exit 1
           }
+          [[ "${BASELINE_SHA}" =~ ^[0-9a-f]{40}$ ]] || { echo "fast_checks_base_sha_invalid"; exit 1; }
+          BASELINE_TREE="$(git rev-parse "${BASELINE_SHA}^{tree}")"
+          [[ "${BASELINE_TREE}" =~ ^[0-9a-f]{40}$ ]] || { echo "fast_checks_base_tree_invalid"; exit 1; }
+          printf 'BASELINE_TREE=%s\n' "${BASELINE_TREE}" >> "${GITHUB_ENV}"
 
       - name: Run fast profile
         run: |
           set -euo pipefail
           git diff --check
-          python3 scripts/gitops/run_delivery_profile.py fast
+          # OpenClaw-fork progressive validation: packet/Phase admission uses
+          # focused and change-scoped contract checks.  The repository-wide
+          # Full profile remains reserved for the final release candidate;
+          # changed-path and cross-contract workflows remain blocking.
+          python3 -m py_compile \
+            scripts/gitops/run_delivery_profile.py \
+            scripts/gitops/gate_receipt.py \
+            scripts/gitops/secret_scan.py \
+            scripts/gitops/repository_ci_contract.py \
+            scripts/gitops/receipt_seal.py
+          python3 .github/openclaw_progressive_validation.py \
+            --root . \
+            --receipt docs/execution/openclaw-prime-lisa/baseline-ci-receipt.json \
+            --baseline-ref "${BASELINE_REF}" \
+            --baseline-sha "${BASELINE_SHA}" \
+            --baseline-tree "${BASELINE_TREE}" \
+            --candidate-ref HEAD
+          PYTHONPATH=. python3 test/openclaw_progressive_validation.py
+          PYTHONPATH=. python3 .ide-development/tests/test_change_scoped_secret_scan_acceptance.py
 
       - name: Retain fast-check evidence
         if: always()

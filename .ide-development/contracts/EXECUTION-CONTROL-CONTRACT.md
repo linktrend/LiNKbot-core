@@ -19,6 +19,18 @@ A candidate identity is the tuple:
 
 A later head, tree, repository, or bound digest **invalidates** the previous candidate. Seals, reviews, receipts, and late success for the previous identity must be rejected. Checkpoints may record Git state without sealing.
 
+## Planner routing and Cursor Cloud controls
+
+Newer planners may include the explicit `packetRouting` and
+`cursorCloudExecution` controls in the manifest. They are digest-bound
+surfaces: routing records the approved route matrix and third-party exception
+boundary; Cloud execution records pre-dispatch advertised-ref validation,
+governed missing-ref rebaseline/hold behavior, immutable prepared-intent
+supersession, and effective-model readback. Each object is closed-schema and
+rejects unknown fields. These properties are optional for legacy manifests so
+older protocol documents remain readable; a planner that emits either control
+must satisfy the complete schema and cannot use a generic extension bag.
+
 ## Bounded retry
 
 | Failure class | Attempts | Next |
@@ -80,7 +92,9 @@ Silent retry on the same repository/commit/tree after exhaustion is forbidden (`
 Hosted scheduling is a **deterministic runtime** (`core/execution/scheduler.py`) bound to the packaged continuous-utilization config:
 
 - `hostedConcurrencyAuthority` is `execution-protocol` (not GitHub, paid models, or Fast).
-- Canonical slot maxima are local `1` and hosted `2`.
+- Local admission remains capped at `1`; hosted admission is adaptive and is the minimum of live authenticated Cursor account capacity, dependency-ready disjoint work, the configured spend/credit ceiling, and explicit repository or external-resource safety limits. No fixed hosted maximum is encoded.
+- Every admission report must distinguish provider capacity, spend ceiling, safety limit, dependency/path constraints, admitted workers, issued workers, and running workers.
+- Missing, stale, unauthenticated, or mismatched capacity/spend/safety evidence blocks hosted admission. Evidence must also match the exact account, API-key name, team, and Program Run identity supplied to the scheduler. Before dispatch, every uncompleted PREPARED intent bound to the obsolete fixed-capacity policy is atomically superseded and recomputed under the adaptive authority; completed evidence is preserved.
 - Incomplete snapshots stay `resource_uncertain`. Allocator `busy` / `exhausted` in that state is not `capacity_exhausted`.
 - Unknown probes do not occupy slots. After 600 seconds the runtime recovers and recomputes.
 - Free slots with waiting runnable work emit `UTILIZATION_GAP`; repair recomputes after a complete snapshot.

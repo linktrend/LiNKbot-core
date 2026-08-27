@@ -1,4 +1,4 @@
-# Disposable restore verification
+**Disposable restore verification**
 
 - Restore directory: `<fresh temporary directory>`
 - Network: disabled

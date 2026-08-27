@@ -12,11 +12,15 @@ on:
     types: [opened, synchronize, reopened, ready_for_review]
     paths:
       - ".github/actions/ensure-base-commit/**"
+      - ".github/openclaw_progressive_validation.py"
+      - ".github/workflows/linktrend-review-packager.yml"
       - ".github/workflows/opengrep-precise.yml"
       - ".github/workflows/opengrep-precise-full.yml"
       - ".semgrepignore"
+      - "docs/execution/openclaw-prime-lisa/baseline-ci-receipt.json"
       - "apps/**"
       - "extensions/**"
+      - "linkbots/**"
       - "packages/**"
       - "scripts/**"
       - "security/opengrep/**"

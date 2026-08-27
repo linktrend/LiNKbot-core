@@ -114,6 +114,15 @@ const rootEntries = [
   "src/entry.ts!",
   "src/cli/daemon-cli.ts!",
   "src/agents/code-mode.worker.ts!",
+  // These agent/runtime contracts are consumed through operation and lifecycle
+  // seams that Knip cannot reconstruct from the static production graph.
+  "src/agents/noncoding-route.ts!",
+  "src/agents/prepared-model-runtime.ts!",
+  "src/agents/prepared-model-runtime.owner.ts!",
+  "src/agents/profile-manifest.ts!",
+  "src/agents/sandbox/browser-policy.ts!",
+  "src/state/lisa-principal-task-schema.ts!",
+  "src/state/lisa-principal-task-store.ts!",
   // LiNKtrend host contracts are consumed by installed plugins and operations
   // outside this repository's static graph. Model them as public entries while
   // retaining unused-internal analysis within each module.
@@ -641,6 +650,9 @@ const config = {
       "browser-host-inspection.ts!",
       "browser-maintenance.ts!",
       "browser-profiles.ts!",
+      // Navigation policy is a plugin-owned runtime boundary shared by the
+      // browser routes and Playwright session lifecycle.
+      "src/browser/navigation-guard.ts!",
       // Chrome manifest/package scripts load these without TypeScript imports.
       "chrome-extension/background.js!",
       "chrome-extension/popup.js!",

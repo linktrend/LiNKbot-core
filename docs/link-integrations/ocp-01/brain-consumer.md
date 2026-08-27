@@ -5,8 +5,8 @@ This page records the reusable OpenClaw consumer boundary for the final LiNKbrai
 ## Immutable provider identity
 
 - Provider repository: `LiNKbrain`
-- Final main commit: `8ce1d737f8870a479f07b1741c58d6681cd07aa1`
-- Git tree: `0cae42d612342f5e52c7e2e0e76cb6fc2f6d81f3`
+- Final main commit: `7eb19cec8ae3cf61b0369167dd3f699675546b28`
+- Git tree: `c489ed4de06790ef1daade75688b818ff62c7a4f`
 - Contract: `brain.v2/2.0.0` (`2.0.0` schema)
 - MCP protocol: `2026-07-28`, sessionless modern negotiation
 - Provider artifacts and SHA-256 digests: `provider-pins.json`

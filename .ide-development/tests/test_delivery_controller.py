@@ -204,7 +204,7 @@ class DeliveryControllerTests(unittest.TestCase):
 
     def test_failed_missing_or_skipped_gates_are_rejected(self) -> None:
         missing = dict(_named_checks(self.head))
-        del missing["Linktrend Review Gate"]
+        del missing["Linktrend Full Suite"]
         with self.assertRaisesRegex(controller.ControllerError, "required_gate_missing"):
             controller.verify_development_eligibility(
                 handoff=self.handoff,
@@ -263,6 +263,95 @@ class DeliveryControllerTests(unittest.TestCase):
                 receipt=forged,
                 candidate_identity=self.identity,
             )
+
+    def test_recovery_controller_bootstrap_admits_only_declared_checkpoint(self) -> None:
+        admitted = controller.admit_recovery_controller_bootstrap(
+            base_ref=controller.RECOVERY_BOOTSTRAP_BASE_REF,
+            base_commit=controller.RECOVERY_BOOTSTRAP_BASE_COMMIT,
+            base_tree=controller.RECOVERY_BOOTSTRAP_BASE_TREE,
+            changed_paths=controller.RECOVERY_BOOTSTRAP_PATHS,
+            failures=[
+                {
+                    "job": "checks-node-core-test-nondist-shard",
+                    "classification": "inherited_baseline",
+                }
+            ],
+            required_checks={"preflight": "success", "security": "success"},
+        )
+        self.assertTrue(admitted["accepted"])
+        self.assertEqual(admitted["mode"], "recovery-bootstrap")
+        self.assertEqual(admitted["receipt"], "required-after-integration")
+
+        cases = [
+            (
+                {"base_commit": _sha(9)},
+                "recovery_bootstrap_commit_mismatch",
+            ),
+            (
+                {"base_ref": "phase/recovery"},
+                "recovery_bootstrap_ref_mismatch",
+            ),
+            (
+                {"base_tree": _sha(9)},
+                "recovery_bootstrap_tree_mismatch",
+            ),
+            (
+                {"changed_paths": ["src/runtime.ts"]},
+                "recovery_bootstrap_paths_forbidden",
+            ),
+            (
+                {"failures": [{"job": "check-lint", "classification": "inherited_baseline"}]},
+                "recovery_bootstrap_failure_not_declared",
+            ),
+            (
+                {"failures": [{"job": "checks-node-core-test-nondist-shard", "classification": "changed"}]},
+                "recovery_bootstrap_failure_changed",
+            ),
+            (
+                {"required_checks": {"preflight": "success", "security": "failure"}},
+                "recovery_bootstrap_required_check_failed",
+            ),
+            (
+                {"receipt": self.receipt},
+                "recovery_bootstrap_receipt_forbidden",
+            ),
+        ]
+        defaults = {
+            "base_ref": controller.RECOVERY_BOOTSTRAP_BASE_REF,
+            "base_commit": controller.RECOVERY_BOOTSTRAP_BASE_COMMIT,
+            "base_tree": controller.RECOVERY_BOOTSTRAP_BASE_TREE,
+            "changed_paths": controller.RECOVERY_BOOTSTRAP_PATHS,
+            "failures": [
+                {
+                    "job": "checks-node-core-test-nondist-shard",
+                    "classification": "inherited_baseline",
+                }
+            ],
+            "required_checks": {"preflight": "success", "security": "success"},
+        }
+        for overrides, code in cases:
+            with self.subTest(code=code):
+                kwargs = {**defaults, **overrides}
+                with self.assertRaisesRegex(controller.ControllerError, code):
+                    controller.admit_recovery_controller_bootstrap(**kwargs)
+
+    def test_recovery_bootstrap_is_used_only_when_exact_receipt_is_absent(self) -> None:
+        bootstrap = {
+            "base_ref": controller.RECOVERY_BOOTSTRAP_BASE_REF,
+            "base_commit": controller.RECOVERY_BOOTSTRAP_BASE_COMMIT,
+            "base_tree": controller.RECOVERY_BOOTSTRAP_BASE_TREE,
+            "changed_paths": controller.RECOVERY_BOOTSTRAP_PATHS,
+            "failures": [],
+            "required_checks": {"preflight": "success", "security": "success"},
+        }
+        result = self._verify(receipt=None, recovery_bootstrap=bootstrap)
+        self.assertTrue(result["eligible"])
+        self.assertEqual(result["receiptDigest"], None)
+        self.assertEqual(result["recoveryBootstrap"]["mode"], "recovery-bootstrap")
+
+        normal = self._verify(receipt=self.receipt, recovery_bootstrap=bootstrap)
+        self.assertTrue(normal["eligible"])
+        self.assertIsNone(normal["recoveryBootstrap"])
 
     def test_staging_reuses_exact_receipt_without_full_rerun(self) -> None:
         result = controller.promote_to_staging(

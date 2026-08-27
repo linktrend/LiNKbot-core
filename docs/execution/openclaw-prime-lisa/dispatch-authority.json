@@ -1,0 +1,373 @@
+{
+  "$schema": "./dispatch-authority.schema.json",
+  "schemaVersion": 1,
+  "authorityId": "openclaw-prime-lisa-dispatch-authority-v4",
+  "mappingStatus": "APPROVED",
+  "approvalScope": "documentation-checkpoint-only",
+  "executionAuthorizedAtCheckpoint": false,
+  "protocol": {
+    "id": "coding-execution-protocol",
+    "version": "1.0.1",
+    "amendment": "V25_BOOTSTRAP_LEAN"
+  },
+  "programRunIdentityBinding": {
+    "state": "BOUND_TO_PORTFOLIO_SINGLE_CURSOR_ACCOUNT",
+    "principalBinding": "exactly-one-cursor-account-for-entire-portfolio",
+    "apiKeyName": "LiNKdeveloper",
+    "userId": 348277621,
+    "userEmail": "product@linktrend.media",
+    "sdkVersion": "1.0.28",
+    "identitySearchPerformed": false
+  },
+  "accountCapabilityReceipt": {
+    "sha256": "sha256:23a0173dc24e67a86a87aacd7aee8b8ec93719371070a7e26fe7045b33267aeb",
+    "applicability": "APPLIES_TO_THIS_PROGRAM_RUN",
+    "modelCount": 36,
+    "autoSmartPresent": false,
+    "optimizeForCostPresent": false,
+    "genericAutoOnly": true
+  },
+  "dispatchMechanism": {
+    "backend": "cursor-sdk",
+    "sdkLanguage": "python",
+    "catalogueMethod": "Cursor.models.list",
+    "catalogueReadbackState": "VERIFIED_AUTO_COST_UNAVAILABLE_FIXED_MODELS_REQUIRED",
+    "selectorReadback": "run.model-and-result.model",
+    "optimizationModeReadback": "result.model.params.optimize_for",
+    "effectiveModelReadback": "cloud-agent-metadata:/v1/meta-data/turn/model",
+    "intentStateBeforeApi": "PREPARED",
+    "intentReadbackRequired": true,
+    "acceptedDispatchReadbackRequired": true,
+    "cursorDesktopAgentFilesRequired": false,
+    "cloudApiV1AutoCostAllowed": false,
+    "fastMode": "disabled",
+    "forbiddenAutoSubstitutes": ["auto", "auto-balance", "auto-intelligence", "omitted-model", "unverifiable-auto"]
+  },
+  "validationPolicy": {
+    "id": "openclaw-fork-progressive-validation-v1",
+    "digest": "sha256:fa3f448e33fbc05e4b9676628a8be1f67bb020cc0baf58da6dd8fe720d0c26f0",
+    "mode": "fork-progressive",
+    "baselineFullSuite": { "requiredBeforePacketStart": false, "receiptRequired": true, "inheritUnchangedFailures": true },
+    "packetValidation": { "profile": "focused", "ownedPathsAndDeclaredContractsOnly": true },
+    "phaseValidation": { "requiredProfiles": ["fast", "change-scoped-integration-contract"], "repositoryWideFullRequired": false },
+    "releaseCandidateValidation": { "repositoryWideFullRequired": true, "rollbackRecoveryProofRequired": true, "before": ["staging", "promotion"] },
+    "blocking": { "changedPathOrCrossContractFailure": true, "waiveChangedCode": false },
+    "provider": { "centralIdeProviderFullRequired": true },
+    "scope": { "forkOnly": true, "upstreamMutation": false }
+  },
+  "dispatchPolicy": {
+    "manifestTargetReleaseMustMatchAuthorityId": true,
+    "manifestDigestMustMatch": true,
+    "routingMatrixDigestMustMatch": true,
+    "failClosedOnMissingPrerequisite": true,
+    "failClosedOnMissingRoute": true,
+    "failClosedOnMissingCatalogueOrReadback": true,
+    "requireExecutionApprovalSnapshot": true,
+    "prerequisiteEvidenceSource": "runtime-authority-snapshot",
+    "dispatchIntentMustCarryRoute": true,
+    "modelQualityFallbackRequiresLoggedFailure": true,
+    "modelQualityFallbackMaximumHops": 1,
+    "infrastructureFailureChangesModel": false,
+    "independentReviewUsesSeparateWorker": true,
+    "terraCheckpointVerificationIsDistinct": true,
+    "failClosedOnMissingProgramRunIdentityBinding": true,
+    "capabilityPreflightCadence": "once-per-program-run"
+  },
+  "routeCatalog": {
+    "auto_cost": {
+      "transport": "cursor-sdk",
+      "selector": {
+        "modelId": "auto-smart",
+        "params": [{ "id": "optimize_for", "value": "cost" }]
+      },
+      "fast": false,
+      "purpose": "preferred automatic cost-optimized route for bounded normal work",
+      "costPool": "auto-cost-bundled",
+      "fallbackPolicy": "auto_cost_effective_family_one_hop"
+    },
+    "composer_bounded": {
+      "transport": "cursor-sdk",
+      "selector": { "modelId": "composer-2.5", "params": [] },
+      "fast": false,
+      "purpose": "fully bounded simple, repetitive, objectively verified, reversible work",
+      "costPool": "cursor-models",
+      "fallbackPolicy": "composer_to_grok_one_hop"
+    },
+    "grok_complex": {
+      "transport": "cursor-sdk",
+      "selector": { "modelId": "cursor-grok-4.6-medium", "params": [] },
+      "fast": false,
+      "purpose": "explicit complex or long-running work",
+      "costPool": "cursor-models",
+      "fallbackPolicy": "grok_to_composer_one_hop"
+    },
+    "independent_review": {
+      "transport": "cursor-sdk",
+      "selector": { "modelId": "claude-opus-4-8-thinking-medium", "params": [] },
+      "fast": false,
+      "purpose": "separate consequential security, authorization, migration, infrastructure, or final integration review",
+      "costPool": "other-models",
+      "fallbackPolicy": null
+    },
+    "independent_terra_verification": {
+      "transport": "cursor-sdk",
+      "selector": { "modelId": "gpt-5.6-terra-high", "params": [] },
+      "fast": false,
+      "purpose": "independent IDE v2.5.1 Issue-checkpoint verification bound to the exact candidate",
+      "costPool": "other-models",
+      "fallbackPolicy": null
+    }
+  },
+  "fallbackPolicies": {
+    "auto_cost_effective_family_one_hop": {
+      "trigger": "logged-model-quality-failure-only",
+      "maximumHops": 1,
+      "differentFamilySelection": {
+        "whenEffectiveFamilyIsGrokOrXai": "composer_bounded",
+        "otherwise": "grok_complex"
+      },
+      "infrastructureFailureAction": "same-model-retry-under-protocol"
+    },
+    "composer_to_grok_one_hop": {
+      "trigger": "logged-model-quality-failure-only",
+      "maximumHops": 1,
+      "fallbackRoute": "grok_complex",
+      "infrastructureFailureAction": "same-model-retry-under-protocol"
+    },
+    "grok_to_composer_one_hop": {
+      "trigger": "logged-model-quality-failure-only",
+      "maximumHops": 1,
+      "fallbackRoute": "composer_bounded",
+      "infrastructureFailureAction": "same-model-retry-under-protocol"
+    }
+  },
+  "manifests": {
+    "openclaw": {
+      "path": "docs/execution/openclaw-prime-lisa/openclaw-prime-lisa.execution-manifest.json",
+      "repository": "linktrend/openclaw_prime",
+      "baselineCommit": "e3e837225651d151136af16bb81b5ad0d5ed0df5",
+      "baselineTree": "381cd799a52834b14f9317d2c20b640880d47737",
+      "sha256": "sha256:f1a0351c1e61d1ddf9161d493a2dbf3e913b676678a9bd40dd90616440cea499",
+      "targetRelease": "openclaw-prime-lisa-dispatch-authority-v4"
+    },
+    "platform": {
+      "path": "docs/execution/openclaw-prime-lisa/linkplatform-agent-foundation.execution-manifest.json",
+      "repository": "linktrend/LiNKplatform",
+      "baselineCommit": "76caa010acb09722218dd691e42756bc8cd351ec",
+      "baselineTree": "1cb6da7fed41b5a36fbf6c3914b12a1194a4282b",
+      "sha256": "sha256:f2b3afc698ae94551e41ec9a0687ceb78604cf3359f9fbeffe0bc836beaa3c63",
+      "targetRelease": "openclaw-prime-lisa-dispatch-authority-v4"
+    },
+    "autowork": {
+      "path": "docs/execution/openclaw-prime-lisa/linkautowork-skill-watcher.execution-manifest.json",
+      "repository": "linktrend/LiNKautowork",
+      "baselineCommit": "ee54d9c00c3659c950e8d2beaeb804131b0d0e8b",
+      "baselineTree": "0502aa8cabe145925b234ced55993f8bb89710d7",
+      "sha256": "sha256:bfdbc517cf6aa330a69d066be70611db0e469bf7807fbf112c9bd165df4fb42a",
+      "targetRelease": "openclaw-prime-lisa-dispatch-authority-v4"
+    }
+  },
+  "routingMatrices": {
+    "openclaw": {
+      "path": "docs/execution/openclaw-prime-lisa/openclaw-prime-lisa.routing-matrix.json",
+      "sha256": "sha256:5d887710f65ab164ce72cc59e2515be416929c8b6208c5c21bc622cebbe0c236"
+    },
+    "platform": {
+      "path": "docs/execution/openclaw-prime-lisa/linkplatform-agent-foundation.routing-matrix.json",
+      "sha256": "sha256:2cf4b82c8caf1ce270db9fe4c38096b2c00bb938e5974b5b9c26c5b2dbe4072d"
+    },
+    "autowork": {
+      "path": "docs/execution/openclaw-prime-lisa/linkautowork-skill-watcher.routing-matrix.json",
+      "sha256": "sha256:632624765aa98e17f4e1c9bf8599557c56045121dd9fb677828ebcc36ed358a1"
+    }
+  },
+  "portfolioRoutingMatrix": {
+    "path": "docs/execution/openclaw-prime-lisa/portfolio-routing-matrix.json",
+    "sha256": "sha256:c50f2daec747aababab7209e6167ab370af312ee2ad5be53a67348f9e98463d3"
+  },
+  "externalPrerequisites": {
+    "platform_contract_accepted": {
+      "owner": "linktrend/LiNKplatform LP-01",
+      "requirement": "accepted exact Platform actor identity, grant, claim, and approval-evidence contract",
+      "checkpointState": "PENDING_RUNTIME_EVIDENCE",
+      "satisfiedBy": "exact-commit-tree-contract-receipt-in-runtime-authority-snapshot"
+    },
+    "brain_provider_contract_accepted": {
+      "owner": "separate LiNKbrain provider program",
+      "requirement": "accepted exact Brain governed read/write and standard MCP lifecycle/content contract",
+      "checkpointState": "PENDING_RUNTIME_EVIDENCE",
+      "satisfiedBy": "exact-commit-tree-contract-receipt-in-runtime-authority-snapshot"
+    },
+    "skills_provider_contract_accepted": {
+      "owner": "separate LiNKskills provider program",
+      "requirement": "accepted exact Skills discovery, qualification, exact-release, and standard MCP contract",
+      "checkpointState": "PENDING_RUNTIME_EVIDENCE",
+      "satisfiedBy": "exact-commit-tree-contract-receipt-in-runtime-authority-snapshot"
+    },
+    "libraries_contract_audit_accepted": {
+      "owner": "LiNKlibraries audit",
+      "requirement": "accepted exact current Libraries contract and explicit no-current-provider-work conclusion",
+      "checkpointState": "PENDING_RUNTIME_EVIDENCE",
+      "satisfiedBy": "exact-commit-tree-contract-receipt-in-runtime-authority-snapshot"
+    },
+    "autowork_contract_audit_accepted": {
+      "owner": "linktrend/LiNKautowork audit",
+      "requirement": "accepted exact current Autowork request/status/receipt consumer contract",
+      "checkpointState": "PENDING_RUNTIME_EVIDENCE",
+      "satisfiedBy": "exact-commit-tree-contract-receipt-in-runtime-authority-snapshot"
+    },
+    "skills_google_workspace_release_qualified": {
+      "owner": "separate LiNKskills provider program",
+      "requirement": "qualified exact Google Workspace skill release with Docs, Sheets, and Slides contracts",
+      "checkpointState": "PENDING_RUNTIME_EVIDENCE",
+      "satisfiedBy": "exact-commit-tree-contract-receipt-in-runtime-authority-snapshot"
+    },
+    "brain_mcp_v2_contract_accepted": {
+      "owner": "separate LiNKbrain provider program",
+      "requirement": "accepted exact Brain standard MCP v2 lifecycle/content contract",
+      "checkpointState": "PENDING_RUNTIME_EVIDENCE",
+      "satisfiedBy": "exact-commit-tree-contract-receipt-in-runtime-authority-snapshot"
+    },
+    "skills_mcp_v2_contract_accepted": {
+      "owner": "separate LiNKskills provider program",
+      "requirement": "accepted exact Skills standard MCP v2 lifecycle/content contract",
+      "checkpointState": "PENDING_RUNTIME_EVIDENCE",
+      "satisfiedBy": "exact-commit-tree-contract-receipt-in-runtime-authority-snapshot"
+    },
+    "provider_release_set_accepted": {
+      "owner": "OpenClaw integration packager",
+      "requirement": "accepted mutually compatible exact Platform, Brain, Skills, Libraries, and Autowork releases and OpenClaw pins",
+      "checkpointState": "PENDING_RUNTIME_EVIDENCE",
+      "satisfiedBy": "exact-commit-tree-contract-receipt-in-runtime-authority-snapshot"
+    },
+    "skills_watcher_contracts_accepted": {
+      "owner": "separate LiNKskills provider program",
+      "requirement": "accepted immutable source-assignment input and signed idempotent candidate-intake output contracts",
+      "checkpointState": "PENDING_RUNTIME_EVIDENCE",
+      "satisfiedBy": "exact-commit-tree-contract-receipt-in-runtime-authority-snapshot"
+    }
+  },
+  "packets": {
+    "PKT-01": {
+      "manifest": "openclaw",
+      "localDependencies": [],
+      "externalPrerequisites": [],
+      "primaryRoute": "composer_bounded",
+      "requiredReviews": ["independent_terra_verification"],
+      "dispatchState": "HOLD_UNTIL_EXECUTION_APPROVAL_PREREQUISITES_BUDGET_AND_ROUTE_READBACK"
+    },
+    "PKT-02": {
+      "manifest": "openclaw",
+      "localDependencies": [],
+      "externalPrerequisites": ["platform_contract_accepted"],
+      "primaryRoute": "grok_complex",
+      "requiredReviews": ["independent_terra_verification", "independent_review"],
+      "dispatchState": "HOLD_UNTIL_EXECUTION_APPROVAL_PREREQUISITES_BUDGET_AND_ROUTE_READBACK"
+    },
+    "PKT-03": {
+      "manifest": "openclaw",
+      "localDependencies": ["PKT-02"],
+      "externalPrerequisites": [
+        "platform_contract_accepted",
+        "brain_provider_contract_accepted",
+        "skills_provider_contract_accepted",
+        "libraries_contract_audit_accepted",
+        "autowork_contract_audit_accepted"
+      ],
+      "primaryRoute": "grok_complex",
+      "requiredReviews": ["independent_terra_verification", "independent_review"],
+      "dispatchState": "HOLD_UNTIL_EXECUTION_APPROVAL_PREREQUISITES_BUDGET_AND_ROUTE_READBACK"
+    },
+    "PKT-04": {
+      "manifest": "openclaw",
+      "localDependencies": [],
+      "externalPrerequisites": [],
+      "primaryRoute": "grok_complex",
+      "requiredReviews": ["independent_terra_verification"],
+      "dispatchState": "HOLD_UNTIL_EXECUTION_APPROVAL_PREREQUISITES_BUDGET_AND_ROUTE_READBACK"
+    },
+    "PKT-05": {
+      "manifest": "openclaw",
+      "localDependencies": ["PKT-01"],
+      "externalPrerequisites": [],
+      "primaryRoute": "grok_complex",
+      "requiredReviews": ["independent_terra_verification", "independent_review"],
+      "dispatchState": "HOLD_UNTIL_EXECUTION_APPROVAL_PREREQUISITES_BUDGET_AND_ROUTE_READBACK"
+    },
+    "PKT-06": {
+      "manifest": "openclaw",
+      "localDependencies": ["PKT-03"],
+      "externalPrerequisites": [],
+      "primaryRoute": "grok_complex",
+      "requiredReviews": ["independent_terra_verification", "independent_review"],
+      "dispatchState": "HOLD_UNTIL_EXECUTION_APPROVAL_PREREQUISITES_BUDGET_AND_ROUTE_READBACK"
+    },
+    "PKT-07": {
+      "manifest": "openclaw",
+      "localDependencies": ["PKT-03"],
+      "externalPrerequisites": ["skills_google_workspace_release_qualified"],
+      "primaryRoute": "composer_bounded",
+      "requiredReviews": ["independent_terra_verification"],
+      "dispatchState": "HOLD_UNTIL_EXECUTION_APPROVAL_PREREQUISITES_BUDGET_AND_ROUTE_READBACK"
+    },
+    "PKT-08": {
+      "manifest": "openclaw",
+      "localDependencies": ["PKT-03"],
+      "externalPrerequisites": ["brain_mcp_v2_contract_accepted", "skills_mcp_v2_contract_accepted"],
+      "primaryRoute": "grok_complex",
+      "requiredReviews": ["independent_terra_verification", "independent_review"],
+      "dispatchState": "HOLD_UNTIL_EXECUTION_APPROVAL_PREREQUISITES_BUDGET_AND_ROUTE_READBACK"
+    },
+    "PKT-09": {
+      "manifest": "openclaw",
+      "localDependencies": ["PKT-01", "PKT-05"],
+      "externalPrerequisites": [],
+      "primaryRoute": "grok_complex",
+      "requiredReviews": ["independent_terra_verification", "independent_review"],
+      "dispatchState": "HOLD_UNTIL_EXECUTION_APPROVAL_PREREQUISITES_BUDGET_AND_ROUTE_READBACK"
+    },
+    "PKT-10": {
+      "manifest": "openclaw",
+      "localDependencies": ["PKT-02", "PKT-03"],
+      "externalPrerequisites": [],
+      "primaryRoute": "composer_bounded",
+      "requiredReviews": ["independent_terra_verification"],
+      "dispatchState": "HOLD_UNTIL_EXECUTION_APPROVAL_PREREQUISITES_BUDGET_AND_ROUTE_READBACK"
+    },
+    "PKT-11": {
+      "manifest": "openclaw",
+      "localDependencies": [
+        "PKT-01",
+        "PKT-02",
+        "PKT-03",
+        "PKT-04",
+        "PKT-05",
+        "PKT-06",
+        "PKT-07",
+        "PKT-08",
+        "PKT-09",
+        "PKT-10"
+      ],
+      "externalPrerequisites": ["provider_release_set_accepted"],
+      "primaryRoute": "grok_complex",
+      "requiredReviews": ["independent_terra_verification", "independent_review"],
+      "dispatchState": "HOLD_UNTIL_EXECUTION_APPROVAL_PREREQUISITES_BUDGET_AND_ROUTE_READBACK"
+    },
+    "LP-01": {
+      "manifest": "platform",
+      "localDependencies": [],
+      "externalPrerequisites": [],
+      "primaryRoute": "grok_complex",
+      "requiredReviews": ["independent_terra_verification", "independent_review"],
+      "dispatchState": "HOLD_UNTIL_EXECUTION_APPROVAL_PREREQUISITES_BUDGET_AND_ROUTE_READBACK"
+    },
+    "AW-01": {
+      "manifest": "autowork",
+      "localDependencies": [],
+      "externalPrerequisites": ["platform_contract_accepted", "skills_watcher_contracts_accepted"],
+      "primaryRoute": "grok_complex",
+      "requiredReviews": ["independent_terra_verification", "independent_review"],
+      "dispatchState": "HOLD_UNTIL_EXECUTION_APPROVAL_PREREQUISITES_BUDGET_AND_ROUTE_READBACK"
+    }
+  }
+}

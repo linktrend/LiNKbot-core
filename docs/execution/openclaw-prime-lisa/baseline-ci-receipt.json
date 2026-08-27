@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 2,
+  "kind": "openclaw-fork-baseline-ci-receipt",
+  "repository": "linktrend/openclaw_prime",
+  "baselineCommit": "c98757b598e753ce0344037a3f0ae6321121f6c6",
+  "baselineTree": "76dd3b81b3db9ffaff614ca3d0561b26a7fb5705",
+  "workflow": "CI",
+  "baselineRunId": 32917935092,
+  "policyId": "openclaw-fork-progressive-validation-v1",
+  "policyDigest": "sha256:fa3f448e33fbc05e4b9676628a8be1f67bb020cc0baf58da6dd8fe720d0c26f0",
+  "inheritedFailures": [
+    {"job":"checks-fast-contracts-plugins-b","tests":["src/plugins/contracts/plugin-sdk-package-contract-guardrails.test.ts"],"changedPathContract":["src/plugins/contracts/plugin-sdk-package-contract-guardrails.test.ts","src/plugin-sdk/browser-policy.ts"]},
+    {"job":"checks-fast-max-lines-ratchet","tests":["src/state/lisa-principal-task-store.ts"],"changedPathContract":["src/state/lisa-principal-task-store.ts"]},
+    {"job":"check-docs","tests":["format:check"],"changedPathContract":["linkbots/lisa/ops/deployment/pkt11-source-base-preflight.mjs","linkbots/lisa/ops/deployment/pkt11-source-base-preflight.test.mjs","linkbots/lisa/ops/deployment/pre-vps-rehearsal.test.mjs","linkbots/lisa/ops/google-workspace/google-workspace.test.ts"]},
+    {"job":"check-additional-extension-package-boundary","tests":["plugin-sdk boundary dts"],"changedPathContract":["src/agents/profile-manifest.ts","src/gateway/server-methods/agents.ts","src/system-agent/operations-execute.ts"]},
+    {"job":"check-test-types","tests":["tsgo:test:root"],"changedPathContract":["linkbots/blueprints/business-plan-workflow.ts","src/agents/profile-manifest.ts","src/agents/sandbox/browser-policy.test.ts","src/commands/agents.commands.add.ts","src/gateway/server-methods/agents.ts","src/system-agent/operations-execute.ts"]},
+    {"job":"check-dependencies","tests":["deadcode:full"],"changedPathContract":["extensions/browser/src/browser/navigation-guard.ts","src/agents/noncoding-route.ts","src/agents/prepared-model-runtime.ts","src/agents/profile-manifest.ts","src/agents/sandbox/browser-policy.ts","src/state/lisa-principal-task-schema.ts","src/state/lisa-principal-task-store.ts"]},
+    {"job":"check-prod-types","tests":["tsgo:core"],"changedPathContract":["src/agents/profile-manifest.ts","src/commands/agents.commands.add.ts","src/gateway/server-methods/agents.ts","src/system-agent/operations-execute.ts"]},
+    {"job":"check-lint","tests":["run-lint"],"changedPathContract":["src/agents/profile-manifest.ts","src/gateway/server-methods/agents.ts","src/system-agent/operations-execute.ts"]},
+    {"job":"checks-node-core-tooling-4","tests":["test/scripts/check-openclawdevelopmentplan01-section-13.3-ledger.test.ts","test/scripts/plugin-sdk-surface-report.test.ts"],"changedPathContract":["test/scripts/check-openclawdevelopmentplan01-section-13.3-ledger.test.ts","scripts/check-openclawdevelopmentplan01-section-13.3-ledger.mjs","docs/execution/openclawdevelopmentplan01/section-13.3","test/scripts/plugin-sdk-surface-report.test.ts"]},
+    {"job":"checks-node-agentic-agents-core-runtime","tests":["src/agents/agent-bundle-mcp-runtime.mcp-tool-filter.plugin-registry.test.ts"],"changedPathContract":["src/agents/agent-bundle-mcp-runtime.mcp-tool-filter.plugin-registry.test.ts","src/agents/agent-bundle-mcp-runtime.ts"]}
+  ],
+  "baselineChecks": {
+    "failedJobs": ["check-additional-extension-package-boundary","check-dependencies","check-docs","check-lint","check-prod-types","check-test-types","checks-fast-contracts-plugins-b","checks-fast-max-lines-ratchet","checks-node-agentic-agents-core-runtime","checks-node-core-tooling-4"],
+    "failureCount": 10,
+    "failedContexts": ["check-additional-shard","check-docs","check-shard","checks-fast-core","checks-fast-plugin-contracts-shard","checks-node-core-test-nondist-shard"]
+  },
+  "reuse": "exact baseline commit/tree, policy digest, workflow, run and complete unchanged failure contract only",
+  "changedFailuresBlock": true,
+  "scope": "fork-only",
+  "upstreamMutation": false
+}

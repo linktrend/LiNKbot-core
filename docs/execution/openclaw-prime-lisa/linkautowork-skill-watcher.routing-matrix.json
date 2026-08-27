@@ -1,0 +1,31 @@
+{
+  "$schema": "./routing-matrix.schema.json",
+  "schemaVersion": 1,
+  "authorityId": "openclaw-prime-lisa-dispatch-authority-v4",
+  "matrixId": "linkautowork-skill-watcher-routing-v3",
+  "manifest": "docs/execution/openclaw-prime-lisa/linkautowork-skill-watcher.execution-manifest.json",
+  "manifestSha256": "sha256:bfdbc517cf6aa330a69d066be70611db0e469bf7807fbf112c9bd165df4fb42a",
+  "repository": "linktrend/LiNKautowork",
+  "transport": "cursor-sdk",
+  "catalogueState": "VERIFIED_AUTO_COST_UNAVAILABLE_RECLASSIFIED",
+  "accountCapabilityReceiptSha256": "sha256:23a0173dc24e67a86a87aacd7aee8b8ec93719371070a7e26fe7045b33267aeb",
+  "issueCoveragePolicy": "every manifest issue is bound through its sole packet; an additional executable split requires a digest-bound matrix successor",
+  "costForecast": {
+    "primaryRouteCounts": { "auto_cost": 0, "composer_bounded": 0, "grok_complex": 1 },
+    "reviewCounts": { "independent_review": 1, "independent_terra_verification": 1 },
+    "budgetRule": "capture requested selector, effective model, optimization mode, token usage, pool, and actual charge when exposed; HOLD before dispatch if a packet budget or required readback is absent"
+  },
+  "entries": [
+    {
+      "packetId": "AW-01",
+      "issueIds": ["ISS-01"],
+      "classification": "explicit complex signed cross-provider contract, durable idempotency, and recovery work",
+      "primaryRoute": "grok_complex",
+      "fallbackPolicy": "grok_to_composer_one_hop",
+      "requiredReviews": ["independent_review", "independent_terra_verification"],
+      "costPool": "cursor-models",
+      "costPoolReason": "Cursor Grok handles cross-provider durability; third-party Opus is limited to independent authority and recovery review",
+      "dispatchState": "HOLD_UNTIL_EXECUTION_APPROVAL_PREREQUISITES_BUDGET_AND_ROUTE_READBACK"
+    }
+  ]
+}

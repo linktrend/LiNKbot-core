@@ -18,8 +18,8 @@ describe("usage-helpers", () => {
 
   it("matches key: glob filters against session keys", () => {
     const session = {
-      key: "agent:main:cron:16234bc?token=dev-token",
-      label: "agent:main:cron:16234bc?token=dev-token",
+      key: "agent:main:cron:16234bc?marker=fixture",
+      label: "agent:main:cron:16234bc?marker=fixture",
       usage: { totalTokens: 100, totalCost: 0 },
     };
     const matches = filterSessionsByQuery([session], "key:agent:main:cron*");

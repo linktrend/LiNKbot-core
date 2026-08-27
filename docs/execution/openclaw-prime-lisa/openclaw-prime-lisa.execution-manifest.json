@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 1,
+  "protocol": {
+    "id": "coding-execution-protocol",
+    "version": "1.0.1",
+    "amendment": "V25_BOOTSTRAP_LEAN"
+  },
+  "program": {
+    "id": "openclaw-prime-lisa-common-agent-foundation",
+    "name": "OpenClaw Prime and Lisa Common Agent Foundation",
+    "targetRelease": "openclaw-prime-lisa-dispatch-authority-v4"
+  },
+  "baseline": {
+    "repository": "linktrend/openclaw_prime",
+    "commit": "e3e837225651d151136af16bb81b5ad0d5ed0df5",
+    "tree": "381cd799a52834b14f9317d2c20b640880d47737",
+    "ref": "refs/heads/main"
+  },
+  "packets": [
+    {
+      "id": "PKT-01",
+      "title": "Reconcile Lisa delivery contracts and canonical job desired state",
+      "issues": ["ISS-01"],
+      "ownedPaths": [
+        "linkbots/lisa/ops/jobs",
+        "linkbots/lisa/ops/templates",
+        "linkbots/lisa/ops/lisa-profile-manifest.json",
+        "linkbots/lisa/docs/LISA-JOBS-SOURCE-OPERATIONS.md"
+      ],
+      "prohibitedPaths": [
+        "extensions/linkplatform",
+        "extensions/linkbrain",
+        "extensions/linkskills",
+        "extensions/linklibraries",
+        "extensions/linkautowork"
+      ],
+      "verificationCommands": [
+        ["node", "scripts/run-vitest.mjs", "linkbots/lisa/ops/jobs"],
+        ["node", "scripts/run-vitest.mjs", "linkbots/lisa/ops/templates"],
+        ["git", "diff", "--check"]
+      ],
+      "executionState": "PLAN"
+    },
+    {
+      "id": "PKT-02",
+      "title": "Common profile manifest, safe provisioning, and cloning exclusions",
+      "issues": ["ISS-02"],
+      "ownedPaths": [
+        "src/agents/agent-create.ts",
+        "src/agents/agent-scope.ts",
+        "src/agents/profile-manifest.ts",
+        "src/agents/profile-manifest.test.ts",
+        "src/commands/agents.config.ts"
+      ],
+      "prohibitedPaths": [
+        "linkbots/lisa/ops/jobs",
+        "linkbots/lisa/ops/google-workspace"
+      ],
+      "verificationCommands": [
+        ["node", "scripts/run-vitest.mjs", "src/agents/agent-create.test.ts"],
+        ["node", "scripts/run-vitest.mjs", "src/agents/profile-manifest.test.ts"],
+        ["git", "diff", "--check"]
+      ],
+      "executionState": "PLAN"
+    },
+    {
+      "id": "PKT-03",
+      "title": "Three-gate provider consumers, exact pins, and capability exposure",
+      "issues": ["ISS-03"],
+      "ownedPaths": [
+        "extensions/linkplatform",
+        "extensions/linkbrain",
+        "extensions/linkskills",
+        "extensions/linklibraries",
+        "extensions/linkautowork",
+        "docs/link-integrations/ocp-01/provider-pins.json"
+      ],
+      "prohibitedPaths": [
+        "linkbots/lisa/ops/jobs",
+        "linkbots/lisa/ops/backup"
+      ],
+      "verificationCommands": [
+        ["node", "scripts/run-vitest.mjs", "extensions/linkplatform"],
+        ["node", "scripts/run-vitest.mjs", "extensions/linkbrain"],
+        ["node", "scripts/run-vitest.mjs", "extensions/linkskills"],
+        ["node", "scripts/run-vitest.mjs", "extensions/linklibraries"],
+        ["node", "scripts/run-vitest.mjs", "extensions/linkautowork"],
+        ["git", "diff", "--check"]
+      ],
+      "dependencies": ["PKT-02"],
+      "executionState": "PLAN"
+    },
+    {
+      "id": "PKT-04",
+      "title": "Non-coding model evaluation, transient router, and fallback migration",
+      "issues": ["ISS-04"],
+      "ownedPaths": [
+        "src/agents/noncoding-route.ts",
+        "src/agents/noncoding-route.test.ts",
+        "src/agents/prepared-model-catalog.ts",
+        "src/agents/prepared-model-runtime.ts",
+        "linkbots/lisa/ops/model-routing.contract.json",
+        "linkbots/lisa/ops/model-routing.ts",
+        "linkbots/lisa/docs/LISA-MODEL-ROUTING-CONTRACT-2026-08-01.md"
+      ],
+      "prohibitedPaths": [
+        "src/agents/agent-create.ts",
+        "linkbots/lisa/ops/jobs"
+      ],
+      "verificationCommands": [
+        ["node", "scripts/run-vitest.mjs", "src/agents/noncoding-route.test.ts"],
+        ["node", "scripts/run-vitest.mjs", "src/agents/prepared-model-runtime.test.ts"],
+        ["node", "scripts/run-vitest.mjs", "linkbots/lisa/ops/model-routing.test.ts"],
+        ["git", "diff", "--check"]
+      ],
+      "executionState": "PLAN"
+    },
+    {
+      "id": "PKT-05",
+      "title": "Principal task ledger, T-IDs, time management, and private compliance state",
+      "issues": ["ISS-05"],
+      "ownedPaths": [
+        "linkbots/lisa/ops/jobs/time-management",
+        "src/state/lisa-compliance-state-schema.ts",
+        "src/state/lisa-compliance-state-store.ts",
+        "src/state/lisa-principal-task-schema.ts",
+        "src/state/lisa-principal-task-store.ts"
+      ],
+      "prohibitedPaths": [
+        "src/tasks",
+        "extensions/linkbrain",
+        "extensions/linkskills",
+        "extensions/linklibraries",
+        "extensions/linkautowork"
+      ],
+      "verificationCommands": [
+        ["node", "scripts/run-vitest.mjs", "linkbots/lisa/ops/jobs/time-management"],
+        ["node", "scripts/run-vitest.mjs", "src/state/lisa-compliance-state-store.test.ts"],
+        ["node", "scripts/run-vitest.mjs", "src/state/lisa-principal-task-store.test.ts"],
+        ["git", "diff", "--check"]
+      ],
+      "dependencies": ["PKT-01"],
+      "executionState": "PLAN"
+    },
+    {
+      "id": "PKT-06",
+      "title": "Governed browser and web research runtime",
+      "issues": ["ISS-06"],
+      "ownedPaths": [
+        "src/agents/tools/web-fetch.ts",
+        "src/agents/tools/web-search.ts",
+        "src/agents/sandbox/browser-policy.ts",
+        "src/web-fetch",
+        "src/web-search",
+        "linkbots/lisa/ops/browser"
+      ],
+      "prohibitedPaths": [
+        "linkbots/lisa/ops/google-workspace",
+        "extensions/linkplatform"
+      ],
+      "verificationCommands": [
+        ["node", "scripts/run-vitest.mjs", "src/web-fetch"],
+        ["node", "scripts/run-vitest.mjs", "src/web-search"],
+        ["node", "scripts/run-vitest.mjs", "src/agents/sandbox/browser-policy.test.ts"],
+        ["git", "diff", "--check"]
+      ],
+      "dependencies": ["PKT-03"],
+      "executionState": "PLAN"
+    },
+    {
+      "id": "PKT-07",
+      "title": "Workspace Docs, Sheets, and Slides operations with exact Skills consumption",
+      "issues": ["ISS-07"],
+      "ownedPaths": [
+        "linkbots/lisa/ops/google-workspace"
+      ],
+      "prohibitedPaths": [
+        "extensions/linkskills/src",
+        "linkbots/lisa/ops/jobs"
+      ],
+      "verificationCommands": [
+        ["node", "scripts/run-vitest.mjs", "linkbots/lisa/ops/google-workspace/google-workspace.test.ts"],
+        ["git", "diff", "--check"]
+      ],
+      "dependencies": ["PKT-03"],
+      "executionState": "PLAN"
+    },
+    {
+      "id": "PKT-08",
+      "title": "Standard MCP v2 Brain and Skills consumer migration",
+      "issues": ["ISS-08"],
+      "ownedPaths": [
+        "src/agents/agent-bundle-mcp-runtime.ts",
+        "extensions/linkbrain",
+        "extensions/linkskills"
+      ],
+      "prohibitedPaths": [
+        "linkbots/lisa/ops/jobs",
+        "extensions/linklibraries",
+        "extensions/linkautowork"
+      ],
+      "verificationCommands": [
+        ["node", "scripts/run-vitest.mjs", "src/agents/agent-bundle-mcp-runtime.test.ts"],
+        ["node", "scripts/run-vitest.mjs", "extensions/linkbrain"],
+        ["node", "scripts/run-vitest.mjs", "extensions/linkskills"],
+        ["git", "diff", "--check"]
+      ],
+      "dependencies": ["PKT-03"],
+      "executionState": "PLAN"
+    },
+    {
+      "id": "PKT-09",
+      "title": "VPS backup, private-health encryption, and deployment recreation",
+      "issues": ["ISS-09"],
+      "ownedPaths": [
+        "linkbots/lisa/ops/backup",
+        "linkbots/lisa/ops/deployment",
+        "linkbots/lisa/docs"
+      ],
+      "prohibitedPaths": [
+        "extensions/linkplatform",
+        "extensions/linkskills",
+        "linkbots/lisa/ops/jobs/time-management"
+      ],
+      "verificationCommands": [
+        ["node", "scripts/run-vitest.mjs", "linkbots/lisa/ops/backup"],
+        ["node", "scripts/run-vitest.mjs", "linkbots/lisa/ops/deployment"],
+        ["git", "diff", "--check"]
+      ],
+      "dependencies": ["PKT-01", "PKT-05"],
+      "executionState": "PLAN"
+    },
+    {
+      "id": "PKT-10",
+      "title": "Inactive executive blueprints and business-plan workflow shell",
+      "issues": ["ISS-10"],
+      "ownedPaths": [
+        "linkbots/blueprints",
+        "src/agents/profile-manifest.test.ts"
+      ],
+      "prohibitedPaths": [
+        "linkbots/lisa/ops/jobs",
+        "linkbots/lisa/ops/google-workspace",
+        "src/config/credentials"
+      ],
+      "verificationCommands": [
+        ["node", "scripts/run-vitest.mjs", "src/agents/profile-manifest.test.ts"],
+        ["node", "scripts/run-vitest.mjs", "linkbots/blueprints"],
+        ["git", "diff", "--check"]
+      ],
+      "dependencies": ["PKT-02", "PKT-03"],
+      "executionState": "PLAN"
+    },
+    {
+      "id": "PKT-11",
+      "title": "Lisa integrated acceptance, deployment, and production canary",
+      "issues": ["ISS-11"],
+      "ownedPaths": [
+        "linkbots/lisa/ops/lisa-vps-reconciliation.mjs",
+        "linkbots/lisa/ops/stage-workspace-package.ts",
+        "linkbots/lisa/ops/receipts",
+        "linkbots/lisa/docs"
+      ],
+      "prohibitedPaths": [
+        "extensions/linkplatform/src",
+        "extensions/linkbrain/src",
+        "extensions/linkskills/src",
+        "extensions/linklibraries/src",
+        "extensions/linkautowork/src"
+      ],
+      "verificationCommands": [
+        ["node", "scripts/run-vitest.mjs", "linkbots/lisa/ops"],
+        ["node", "scripts/check-changed.mjs", "--", "linkbots/lisa"],
+        ["git", "diff", "--check"]
+      ],
+      "dependencies": [
+        "PKT-01",
+        "PKT-02",
+        "PKT-03",
+        "PKT-04",
+        "PKT-05",
+        "PKT-06",
+        "PKT-07",
+        "PKT-08",
+        "PKT-09",
+        "PKT-10"
+      ],
+      "executionState": "PLAN"
+    }
+  ],
+  "issues": [
+    { "id": "ISS-01", "packetId": "PKT-01", "title": "Reconcile Lisa delivery contracts and desired jobs" },
+    { "id": "ISS-02", "packetId": "PKT-02", "title": "Implement common inactive profile manifests and safe cloning" },
+    { "id": "ISS-03", "packetId": "PKT-03", "title": "Enforce three provider and profile capability gates" },
+    { "id": "ISS-04", "packetId": "PKT-04", "title": "Evaluate and implement transient non-coding routing" },
+    { "id": "ISS-05", "packetId": "PKT-05", "title": "Implement permanent Principal task IDs and private state" },
+    { "id": "ISS-06", "packetId": "PKT-06", "title": "Implement governed VPS browser and web runtime" },
+    { "id": "ISS-07", "packetId": "PKT-07", "title": "Expand safe Workspace operations for qualified Google skills" },
+    { "id": "ISS-08", "packetId": "PKT-08", "title": "Migrate Brain and Skills consumers to standard MCP v2" },
+    { "id": "ISS-09", "packetId": "PKT-09", "title": "Codify VPS backup and encrypted private-health restore" },
+    { "id": "ISS-10", "packetId": "PKT-10", "title": "Create inactive executive blueprints and plan workflow shell" },
+    { "id": "ISS-11", "packetId": "PKT-11", "title": "Run Lisa integrated acceptance and approved production canary" }
+  ],
+  "controls": {
+    "validationPolicyDigest": "sha256:fa3f448e33fbc05e4b9676628a8be1f67bb020cc0baf58da6dd8fe720d0c26f0",
+    "exactCandidateInvalidation": {
+      "enabled": true,
+      "identityFields": ["repository", "commit", "tree"]
+    },
+    "boundedRetry": {
+      "ordinarySourceRepairs": 3,
+      "infrastructureAttemptsPerCandidate": 2,
+      "codeFailureRetries": 0
+    },
+    "orchestrationLease": {
+      "required": true,
+      "scope": "packet-repository",
+      "ttlSeconds": 3600
+    },
+    "resourceUncertainty": {
+      "failClosed": true,
+      "unknownIsBlocking": true
+    },
+    "automaticApproval": {
+      "checkpoint": "automatic",
+      "stagingPromote": "automatic-on-receipt-identity",
+      "reservedActions": ["main_promote", "publish_release", "deploy_production", "github_protection_change", "provider_live_mutation"],
+      "forbiddenActors": ["self_review", "self_merge", "prefer_incoming"]
+    },
+    "gitAuthority": {
+      "workBranchPattern": "issue/<n>-<slug>",
+      "protectedRefs": ["development", "staging", "main"],
+      "implementerMayOpenPr": false,
+      "implementerMayMerge": false,
+      "nestedSelfInstall": false
+    },
+    "publisherAuthority": {
+      "canonicalForV25": "none",
+      "legacyPublishers": ["linktrend-review-ready-publisher", "mark-review-ready.sh-as-publisher", "review-ready.json", "user-pat-publisher"],
+      "missingOrFailedClassification": "WAIVED_LEGACY_GATE"
+    },
+    "autoworkDiscovery": {
+      "requiredWhenCallable": true,
+      "unavailableIsHold": true
+    },
+    "issueCheckpoint": {
+      "acceptWithoutReviewReady": true,
+      "acceptWithoutToken": true,
+      "requiredEvidence": ["exact_pushed_commit_tree", "scoped_diff", "focused_tests", "independent_terra_verification", "manifest_evidence"]
+    },
+    "administratorRecovery": {
+      "namedExceptionOnly": true,
+      "afterReplacementProof": true,
+      "allowedOperations": ["protection_snapshot", "restore", "readback"]
+    },
+    "durableHeartbeat": {
+      "writeReadbackRequired": true,
+      "persistBeforeMutation": true
+    },
+    "checkoutBoundVerification": {
+      "bindToCheckout": true,
+      "forbidMergeRefIdentity": true
+    },
+    "retryExhaustion": {
+      "diagnoseBeforeRecovery": true,
+      "forbidSilentRetry": true,
+      "ordinaryRecovery": "new_identity",
+      "infrastructureRecovery": "hold",
+      "codeFailureRecovery": "new_identity"
+    },
+    "hostedCapacityScheduler": {
+      "requireCompleteSnapshot": true,
+      "busyIsNotDiagnosis": true,
+      "unknownIsBlocking": true,
+      "hostedConcurrencyAuthority": "execution-protocol",
+      "maxAdmittedSlots": { "local": 1, "hosted": 2 },
+      "unknownProbeSeconds": 600,
+      "backstopSeconds": 600,
+      "prioritization": ["priority", "dependencyReady", "fifo"],
+      "utilizationGapEvent": "UTILIZATION_GAP",
+      "recomputeOnEvents": ["admission", "completion", "invalidation", "probe_timeout", "api_rejection", "utilization_gap_repair"]
+    }
+  }
+}

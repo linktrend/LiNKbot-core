@@ -1,4 +1,4 @@
-# Overnight maintenance digest status
+**Overnight maintenance digest status**
 
 Use exactly one approved line when applicable:
 

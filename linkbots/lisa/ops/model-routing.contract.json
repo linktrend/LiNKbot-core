@@ -71,5 +71,37 @@
     "userVisible": false,
     "toolsAllowed": false,
     "failClosed": true
+  },
+  "nonCodingRouting": {
+    "version": "2026-08-24-transient-noncoding-routing-v1",
+    "liveMutationAllowed": false,
+    "classifier": {
+      "obviousRequestsSkipClassifier": true,
+      "ambiguousRequestsOnly": true,
+      "maxContextChars": 2000,
+      "invalidOrFailedClassification": "conversation"
+    },
+    "defaults": {
+      "primary": "openai/gpt-5.6-luna",
+      "reasoningEffort": "high",
+      "fallbacks": [
+        "openrouter/openai/gpt-5.6-luna",
+        "moonshot/kimi-k2.6",
+        "google/gemini-3.1-flash-lite"
+      ]
+    },
+    "documentCandidate": {
+      "ref": "openrouter/minimax/minimax-m3",
+      "enabled": false,
+      "capabilityStatus": "approved_unverified",
+      "requiresFirstProductionProofReceipt": true,
+      "alternatePaidDocumentRoutingAllowed": false
+    },
+    "transientOverride": {
+      "persisted": false,
+      "fallbackMaxHops": 1,
+      "infrastructureFailure": "retry_same_model",
+      "qualityFailureRequiresLoggedFailure": true
+    }
   }
 }

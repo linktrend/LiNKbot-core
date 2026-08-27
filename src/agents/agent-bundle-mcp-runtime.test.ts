@@ -389,6 +389,63 @@ afterEach(async () => {
 });
 
 describe("session MCP runtime", () => {
+  it("uses the sessionless MCP v2 lifecycle without initialize", async () => {
+    const tempDir = appMetadataTempDirs.make("bundle-mcp-sessionless-");
+    const serverPath = path.join(tempDir, "sessionless.mjs");
+    const logPath = path.join(tempDir, "sessionless.log");
+    await writeExecutable(
+      serverPath,
+      `#!/usr/bin/env node
+import fs from "node:fs/promises";
+const logPath = ${JSON.stringify(logPath)};
+let buffer = "";
+const log = (value) => void fs.appendFile(logPath, value + "\\n", "utf8");
+const send = (message) => process.stdout.write(JSON.stringify(message) + "\\n");
+process.stdin.setEncoding("utf8");
+process.stdin.on("data", (chunk) => {
+  buffer += chunk;
+  for (const line of buffer.split("\\n").slice(0, -1)) {
+    if (!line.trim()) continue;
+    const message = JSON.parse(line);
+    log(String(message.method));
+    if (message.method === "initialize") {
+      send({ jsonrpc: "2.0", id: message.id, error: { code: -32600, message: "session_not_supported" } });
+    } else if (message.method === "tools/list") {
+      send({ jsonrpc: "2.0", id: message.id, result: { tools: [{ name: "v2.discovery", description: "modern" }] } });
+    } else if (message.method === "resources/list") {
+      send({ jsonrpc: "2.0", id: message.id, result: { resources: [] } });
+    }
+  }
+  buffer = buffer.slice(buffer.lastIndexOf("\\n") + 1);
+});
+`,
+    );
+    const runtime = createSessionMcpRuntime({
+      sessionId: "session-sessionless",
+      workspaceDir: "/workspace",
+      cfg: {
+        mcp: {
+          servers: {
+            modern: {
+              command: process.execPath,
+              args: [serverPath],
+              sessionless: true,
+            },
+          },
+        },
+      },
+    });
+    try {
+      const catalog = await runtime.getCatalog();
+      expect(catalog.tools.map((tool) => tool.toolName)).toEqual(["v2.discovery"]);
+      const methods = await fs.readFile(logPath, "utf8");
+      expect(methods).not.toContain("initialize");
+      expect(methods).not.toContain("notifications/initialized");
+    } finally {
+      await runtime.dispose();
+    }
+  });
+
   it("advertises the stable MCP Apps client extension only when enabled", () => {
     expect(testing.buildMcpClientCapabilities(false)).toEqual({});
     expect(testing.buildMcpClientCapabilities(true)).toEqual({

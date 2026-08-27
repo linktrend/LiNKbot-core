@@ -6,6 +6,7 @@ import {
   ErrorCode,
   type CallToolResult,
   type ClientCapabilities,
+  type JSONRPCMessage,
 } from "@modelcontextprotocol/sdk/types.js";
 import type { ServerCapabilities } from "@modelcontextprotocol/sdk/types.js";
 import { redactSensitiveUrlLikeString } from "@openclaw/net-policy/redact-sensitive-url";
@@ -67,9 +68,10 @@ import { resolveMcpTransport } from "./mcp-transport.js";
 
 type BundleMcpSession = {
   serverName: string;
-  client: Client;
+  client: Client | SessionlessMcpClient;
   transport: Transport;
   transportType: "stdio" | "sse" | "streamable-http";
+  sessionless: boolean;
   requestTimeoutMs: number;
   supportsParallelToolCalls: boolean;
   connected: boolean;
@@ -81,6 +83,221 @@ type BundleMcpSession = {
   detachStderr?: () => void;
 };
 
+type SessionlessMcpClient = {
+  getServerCapabilities(): ServerCapabilities;
+  listTools(
+    params?: { cursor?: string },
+    options?: { timeout?: number },
+  ): Promise<{ tools: ListedTool[]; nextCursor?: string }>;
+  callTool(
+    params: { name: string; arguments?: Record<string, unknown> },
+    options?: unknown,
+    requestOptions?: { timeout?: number },
+  ): Promise<CallToolResult>;
+  listResources(
+    params?: { cursor?: string },
+    options?: { timeout?: number },
+  ): Promise<{ resources: unknown[]; nextCursor?: string }>;
+  readResource(params: { uri: string }, options?: { timeout?: number }): Promise<unknown>;
+  listResourceTemplates(
+    params?: { cursor?: string },
+    options?: { timeout?: number },
+  ): Promise<{ resourceTemplates: unknown[]; nextCursor?: string }>;
+  listPrompts(
+    params?: { cursor?: string },
+    options?: { timeout?: number },
+  ): Promise<{ prompts: unknown[]; nextCursor?: string }>;
+  getPrompt(
+    params: { name: string; arguments?: Record<string, string> },
+    options?: { timeout?: number },
+  ): Promise<unknown>;
+  close(): Promise<void>;
+};
+
+type SessionlessResponse = {
+  jsonrpc?: string;
+  id?: string | number;
+  result?: Record<string, unknown>;
+  error?: { code?: number; message?: string; data?: unknown };
+};
+
+const SESSIONLESS_MCP_PROTOCOL = "2026-07-28";
+
+function isSessionlessMcpServer(rawServer: unknown): boolean {
+  if (!isMcpConfigRecord(rawServer)) {
+    return false;
+  }
+  return (
+    rawServer.sessionless === true ||
+    rawServer.protocolVersion === SESSIONLESS_MCP_PROTOCOL ||
+    rawServer.mcpProtocol === SESSIONLESS_MCP_PROTOCOL
+  );
+}
+
+function sessionlessError(response: SessionlessResponse): Error {
+  return new Error(response.error?.message ?? "sessionless MCP request failed");
+}
+
+function createSessionlessMcpClient(
+  transport: Transport,
+  requestTimeoutMs: number,
+): SessionlessMcpClient {
+  let nextRequestId = 1;
+  let closed = false;
+  const pending = new Map<
+    string | number,
+    { resolve: (response: SessionlessResponse) => void; reject: (error: unknown) => void }
+  >();
+  const failPending = (error: unknown) => {
+    for (const entry of pending.values()) {
+      entry.reject(error);
+    }
+    pending.clear();
+  };
+  transport.onmessage = (message: JSONRPCMessage) => {
+    if (!isMcpConfigRecord(message)) {
+      return;
+    }
+    const response = message as SessionlessResponse;
+    if (response.id === undefined) {
+      return;
+    }
+    const entry = pending.get(response.id);
+    if (!entry) {
+      return;
+    }
+    pending.delete(response.id);
+    entry.resolve(response);
+  };
+  transport.onerror = (error) => failPending(error);
+  transport.onclose = () => {
+    closed = true;
+    failPending(new Error("sessionless MCP transport closed"));
+  };
+  const request = async (
+    method: string,
+    params: Record<string, unknown> = {},
+    timeoutMs = requestTimeoutMs,
+  ): Promise<Record<string, unknown>> => {
+    if (closed) {
+      throw new Error("sessionless MCP transport closed");
+    }
+    const id = nextRequestId++;
+    const response = await new Promise<SessionlessResponse>((resolve, reject) => {
+      const timer = setTimeout(() => {
+        pending.delete(id);
+        reject(new Error(`sessionless MCP request timed out: ${method}`));
+      }, timeoutMs);
+      pending.set(id, {
+        resolve: (value) => {
+          clearTimeout(timer);
+          resolve(value);
+        },
+        reject: (error) => {
+          clearTimeout(timer);
+          reject(error);
+        },
+      });
+      void transport.send({ jsonrpc: "2.0", id, method, params }).catch((error) => {
+        const entry = pending.get(id);
+        pending.delete(id);
+        clearTimeout(timer);
+        entry?.reject(error);
+      });
+    });
+    if (response.error) {
+      throw sessionlessError(response);
+    }
+    if (!response.result || !isMcpConfigRecord(response.result)) {
+      throw new Error(`sessionless MCP response invalid: ${method}`);
+    }
+    return response.result;
+  };
+  const resultArray = async (
+    method: string,
+    key: string,
+    params?: { cursor?: string },
+    timeoutMs?: number,
+  ) => {
+    const result = await request(method, params, timeoutMs);
+    const values = result[key];
+    return {
+      [key]: Array.isArray(values) ? values : [],
+      ...(typeof result.nextCursor === "string" ? { nextCursor: result.nextCursor } : {}),
+    };
+  };
+  return {
+    getServerCapabilities: () => ({ tools: {}, resources: {}, prompts: {} }),
+    async listTools(params, options) {
+      const result = await request("tools/list", params, options?.timeout);
+      const rawTools = Array.isArray(result.tools) ? result.tools : [];
+      return {
+        tools: rawTools.flatMap((tool) => {
+          if (typeof tool === "string") {
+            return [{ name: tool, inputSchema: { type: "object", properties: {} } } as ListedTool];
+          }
+          if (!isMcpConfigRecord(tool) || typeof tool.name !== "string") {
+            return [];
+          }
+          return [
+            {
+              ...tool,
+              inputSchema:
+                isMcpConfigRecord(tool.inputSchema) && typeof tool.inputSchema.type === "string"
+                  ? tool.inputSchema
+                  : { type: "object", properties: {} },
+            } as ListedTool,
+          ];
+        }),
+        ...(typeof result.nextCursor === "string" ? { nextCursor: result.nextCursor } : {}),
+      };
+    },
+    async callTool(params, _options, requestOptions) {
+      return (await request(
+        "tools/call",
+        { name: params.name, ...(params.arguments ? { arguments: params.arguments } : {}) },
+        requestOptions?.timeout,
+      )) as CallToolResult;
+    },
+    async listResources(params, options) {
+      return (await resultArray("resources/list", "resources", params, options?.timeout)) as {
+        resources: unknown[];
+        nextCursor?: string;
+      };
+    },
+    async readResource(params, options) {
+      return await request("resources/read", params, options?.timeout);
+    },
+    async listResourceTemplates(params, options) {
+      return (await resultArray(
+        "resources/templates/list",
+        "resourceTemplates",
+        params,
+        options?.timeout,
+      )) as {
+        resourceTemplates: unknown[];
+        nextCursor?: string;
+      };
+    },
+    async listPrompts(params, options) {
+      return (await resultArray("prompts/list", "prompts", params, options?.timeout)) as {
+        prompts: unknown[];
+        nextCursor?: string;
+      };
+    },
+    async getPrompt(params, options) {
+      return await request("prompts/get", params, options?.timeout);
+    },
+    async close() {
+      if (closed) {
+        return;
+      }
+      closed = true;
+      failPending(new Error("sessionless MCP transport closed"));
+      await transport.close().catch(() => {});
+    },
+  };
+}
 type ListedTool = Awaited<ReturnType<Client["listTools"]>>["tools"][number];
 const MCP_APPS_CLIENT_EXTENSION = "io.modelcontextprotocol/ui";
 const MCP_APP_RESOURCE_MIME_TYPE = "text/html;profile=mcp-app";
@@ -113,19 +330,35 @@ export { createMcpJsonSchemaValidator as createBundleMcpJsonSchemaValidator };
 
 async function connectWithTimeout(
   serverName: string,
-  client: Client,
+  client: Client | SessionlessMcpClient,
   transport: Transport,
   timeoutMs: number,
+  sessionless: boolean,
 ): Promise<void> {
   const abortController = new AbortController();
   let timeout: ReturnType<typeof setTimeout> | undefined;
   let deadlineExpired = false;
   try {
+    if (sessionless) {
+      // Standard provider lanes deliberately reject initialize and carry no
+      // session id. Start the transport directly; requests are issued only
+      // after the catalog path has installed response handlers.
+      await Promise.race([
+        transport.start(),
+        new Promise<never>((_, reject) => {
+          timeout = setTimeout(() => {
+            deadlineExpired = true;
+            reject(new Error("MCP sessionless start deadline expired"));
+          }, timeoutMs);
+        }),
+      ]);
+      return;
+    }
     // Client.connect() owns both transport startup and the initialize round trip.
     // Give the SDK the deadline so initialize is cancelled, while the outer race
     // also bounds transports whose start() has not reached initialize yet.
     await Promise.race([
-      client.connect(transport, {
+      (client as Client).connect(transport, {
         signal: abortController.signal,
         timeout: timeoutMs,
         maxTotalTimeout: timeoutMs,
@@ -342,7 +575,7 @@ async function disposeSession(session: BundleMcpSession) {
   const timeoutMs = getBundleMcpTestState().disposeTimeoutMs ?? BUNDLE_MCP_DISPOSE_TIMEOUT_MS;
   const closed = await settleWithin(
     (async () => {
-      if (session.transportType === "streamable-http") {
+      if (!session.sessionless && session.transportType === "streamable-http") {
         await (session.transport as StreamableHTTPClientTransport)
           .terminateSession()
           .catch(() => {});
@@ -476,6 +709,7 @@ export function createSessionMcpRuntime(params: {
       session.client,
       session.transport,
       connectionTimeoutMs,
+      session.sessionless,
     )
       .then(() => {
         session.connected = true;
@@ -610,37 +844,41 @@ export function createSessionMcpRuntime(params: {
               }
               const reusedSession = Boolean(session);
               if (!session) {
-                const client = new Client(
-                  {
-                    name: "openclaw-bundle-mcp",
-                    version: "0.0.0",
-                  },
-                  {
-                    ...buildMcpClientOptions(mcpAppsEnabled),
-                    jsonSchemaValidator: createMcpJsonSchemaValidator(),
-                    listChanged: {
-                      tools: {
-                        autoRefresh: false,
-                        debounceMs: 0,
-                        onChanged: (error) => {
-                          if (error) {
-                            logWarn(
-                              `bundle-mcp: failed to refresh changed tool list for server "${serverName}": ${redactErrorUrls(error)}`,
-                            );
-                          }
-                          catalogInvalidationGeneration += 1;
-                          catalog = null;
-                          catalogInFlight = undefined;
+                const sessionless = isSessionlessMcpServer(rawServer);
+                const client = sessionless
+                  ? createSessionlessMcpClient(resolved.transport, resolved.requestTimeoutMs)
+                  : new Client(
+                      {
+                        name: "openclaw-bundle-mcp",
+                        version: "0.0.0",
+                      },
+                      {
+                        ...buildMcpClientOptions(mcpAppsEnabled),
+                        jsonSchemaValidator: createMcpJsonSchemaValidator(),
+                        listChanged: {
+                          tools: {
+                            autoRefresh: false,
+                            debounceMs: 0,
+                            onChanged: (error) => {
+                              if (error) {
+                                logWarn(
+                                  `bundle-mcp: failed to refresh changed tool list for server "${serverName}": ${redactErrorUrls(error)}`,
+                                );
+                              }
+                              catalogInvalidationGeneration += 1;
+                              catalog = null;
+                              catalogInFlight = undefined;
+                            },
+                          },
                         },
                       },
-                    },
-                  },
-                );
+                    );
                 const createdSession: BundleMcpSession = {
                   serverName,
                   client,
                   transport: resolved.transport,
                   transportType: resolved.transportType,
+                  sessionless,
                   requestTimeoutMs: resolved.requestTimeoutMs,
                   supportsParallelToolCalls: resolved.supportsParallelToolCalls,
                   connected: false,
@@ -652,10 +890,12 @@ export function createSessionMcpRuntime(params: {
                 // The SDK exposes lifecycle hooks as callback properties. A close is
                 // terminal for this client/transport pair.
                 // oxlint-disable-next-line unicorn/prefer-add-event-listener -- MCP Client is not an EventTarget.
-                client.onclose = () => {
-                  createdSession.connected = false;
-                  createdSession.disconnectReason = "mcp transport closed";
-                };
+                if (!sessionless) {
+                  (client as Client).onclose = () => {
+                    createdSession.connected = false;
+                    createdSession.disconnectReason = "mcp transport closed";
+                  };
+                }
                 session = createdSession;
                 sessions.set(serverName, session);
               }
@@ -675,7 +915,7 @@ export function createSessionMcpRuntime(params: {
                   session.client.getServerCapabilities(),
                 );
                 const listedTools = await listAllToolsBestEffort({
-                  client: session.client,
+                  client: session.client as Client,
                   timeoutMs: getCatalogListTimeoutMs(rawServer, resolved.requestTimeoutMs),
                   suppressUnsupported: Boolean(
                     !capabilities.tools && (capabilities.resources || capabilities.prompts),
@@ -951,7 +1191,7 @@ export function createSessionMcpRuntime(params: {
       const session = requireConnectedSession(serverName);
       return await runGuardedServerRequest(
         serverName,
-        async () => listAllResources(session.client, session.requestTimeoutMs),
+        async () => listAllResources(session.client as Client, session.requestTimeoutMs),
         options,
       );
     },
@@ -971,7 +1211,7 @@ export function createSessionMcpRuntime(params: {
       await getCatalog();
       const session = requireConnectedSession(serverName);
       return await runGuardedServerRequest(serverName, async () =>
-        session.client.listResourceTemplates(requestParams, {
+        (session.client as Client).listResourceTemplates(requestParams, {
           timeout: session.requestTimeoutMs,
         }),
       );
@@ -981,7 +1221,7 @@ export function createSessionMcpRuntime(params: {
       await getCatalog();
       const session = requireConnectedSession(serverName);
       return await runGuardedServerRequest(serverName, async () =>
-        listAllPrompts(session.client, session.requestTimeoutMs),
+        listAllPrompts(session.client as Client, session.requestTimeoutMs),
       );
     },
     async getPrompt(serverName, name, args) {
