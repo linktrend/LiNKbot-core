@@ -55,14 +55,24 @@ jobs:
       EXPECTED_HEAD: ${{ github.event.pull_request.head.sha }}
       SOURCE_BRANCH: ${{ github.event.pull_request.head.ref }}
       BASELINE_REF: ${{ format('origin/{0}', github.event.pull_request.base.ref) }}
+      BASELINE_FETCH_REF: ${{ format('refs/heads/{0}', github.event.pull_request.base.ref) }}
+      BASELINE_FETCH_DEST: ${{ format('refs/remotes/origin/{0}', github.event.pull_request.base.ref) }}
       BASELINE_SHA: ${{ github.event.pull_request.base.sha }}
     steps:
       - name: Checkout exact Phase PR head
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-          fetch-depth: 0
+          # Fetch only the immutable phase head; fetching every remote
+          # head makes the five-minute Fast gate fail before validation.
+          fetch-depth: 1
           persist-credentials: false
+
+      - name: Fetch exact protected baseline
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=1 origin \
+            "${BASELINE_FETCH_REF}:${BASELINE_FETCH_DEST}"
 
       - name: Reject stale or non-Phase dispatch
         env:
