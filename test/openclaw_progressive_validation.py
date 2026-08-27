@@ -56,8 +56,8 @@ class ProgressiveValidationTests(unittest.TestCase):
         self.assertEqual(committed["baselineRunId"], MODULE.BASELINE_RUN_ID)
         self.assertEqual(committed["policyDigest"], MODULE.POLICY_DIGEST)
         self.assertEqual(committed["inheritedFailures"], MODULE._canonical_failure_contract())
-        self.assertEqual(MODULE.BASELINE_COMMIT, "facdd8052b78ea82a7d75d705dc9f6d8fe502137")
-        self.assertEqual(MODULE.BASELINE_TREE, "1c41031ad085739a701b37ea3279a7a43a6db7bf")
+        self.assertEqual(MODULE.BASELINE_COMMIT, "c98757b598e753ce0344037a3f0ae6321121f6c6")
+        self.assertEqual(MODULE.BASELINE_TREE, "76dd3b81b3db9ffaff614ca3d0561b26a7fb5705")
 
     def fixture(self):
         tmp = tempfile.TemporaryDirectory(prefix="openclaw-progressive-")
