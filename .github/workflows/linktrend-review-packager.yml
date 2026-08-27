@@ -69,6 +69,7 @@ jobs:
       - name: Fetch bounded baseline history
         env:
           BASELINE_REFSPEC: ${{ format('+refs/heads/{0}:refs/remotes/origin/{0}', github.event.pull_request.base.ref) }}
+          PHASE_REFSPEC: ${{ format('+refs/heads/{0}:refs/remotes/origin/{0}', github.event.pull_request.head.ref) }}
         run: |
           set -euo pipefail
           # actions/checkout configured origin with the scoped GitHub token.
@@ -90,7 +91,7 @@ jobs:
             fi
           }
           trap cleanup_checkout_credentials EXIT
-          git fetch --no-tags --depth=64 origin "${BASELINE_REFSPEC}"
+          git fetch --no-tags --depth=64 origin "${BASELINE_REFSPEC}" "${PHASE_REFSPEC}"
           cleanup_checkout_credentials
           trap - EXIT
 
