@@ -1,25 +1,25 @@
-Decisions and attention
+**Decisions and attention**
 {{decisions}}
 {{email_attention}}
 
-Completed since last digest
+**Completed since last digest**
 {{completed}}
 
-Calendar before next digest
-Work
+**Calendar before next digest**
+**Work**
 {{work_calendar}}
-Personal
+**Personal**
 {{personal_calendar}}
 
-Tasks before next digest
-Carlos's Google Tasks
+**Tasks before next digest**
+**Carlos's Google Tasks**
 {{carlos_tasks}}
-Other tasks
+**Other tasks**
 {{other_tasks}}
 
-Outstanding
+**Outstanding**
 {{outstanding}}
 
-Supervised agents
+**Supervised agents**
 {{supervised_agents}}
 {{overnight_maintenance}}

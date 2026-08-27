@@ -16,7 +16,7 @@ export const FROZEN_PLAN_RELATIVE_PATH =
 
 /** Exact SHA-256 of the frozen plan bytes. */
 export const FROZEN_PLAN_SHA256 =
-  "17203ee586a3fb2b1281bcddd8b17ae350075ebce537689f3c4bfcbbd14914f7";
+  "4a608af4b7236e100a8466642a5988ec51222384d17bc3461391a0e2f8ef50ea";
 
 /** Atomic kinds extracted from the plan. */
 export const PLAN_ITEM_KINDS = Object.freeze([

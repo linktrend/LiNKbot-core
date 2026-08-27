@@ -4,15 +4,23 @@
   "identities": [
     {
       "id": "lisa-workspace",
-      "purpose": "Lisa Workspace Gmail, Calendar, Drive, and Docs operations",
+      "purpose": "Lisa Workspace Gmail, Calendar, Drive, Docs, Sheets, and Slides operations",
       "configSubdirectory": "lisa",
+      "accountBindingRef": "opaque_lisa-workspace_account",
+      "calendarBindingRefs": {
+        "work": "opaque_lisa-workspace_calendar_work",
+        "routine": "opaque_lisa-workspace_calendar_routine",
+        "sharedPersonalEvents": "opaque_lisa-workspace_calendar_shared-personal-events"
+      },
       "requestedScopeUrls": [
         "https://www.googleapis.com/auth/gmail.readonly",
         "https://www.googleapis.com/auth/gmail.send",
         "https://www.googleapis.com/auth/calendar.readonly",
         "https://www.googleapis.com/auth/calendar.events",
         "https://www.googleapis.com/auth/drive",
-        "https://www.googleapis.com/auth/documents"
+        "https://www.googleapis.com/auth/documents",
+        "https://www.googleapis.com/auth/spreadsheets",
+        "https://www.googleapis.com/auth/presentations"
       ],
       "mandatoryUpstreamIdentityScopeUrls": [
         "openid",
@@ -28,10 +36,18 @@
         "https://www.googleapis.com/auth/calendar.readonly",
         "https://www.googleapis.com/auth/calendar.events",
         "https://www.googleapis.com/auth/drive",
-        "https://www.googleapis.com/auth/documents"
+        "https://www.googleapis.com/auth/documents",
+        "https://www.googleapis.com/auth/spreadsheets",
+        "https://www.googleapis.com/auth/presentations"
       ],
       "grantedScopeVerification": "later human-controlled sanitized auth-status receipt must equal effectiveExpectedScopeUrls and name no account or unlisted capability scope",
-      "writeOperations": ["email-send-internal", "calendar-insert", "drive-create-document", "drive-share-internal", "docs-append"],
+      "scopeAllowlistDigest": "sha256:55ffdadf53f3262d13fcc1796886fe9d32752e868348ef81ed926f2408bc60fc",
+      "prohibitedScopeUrls": [
+        "https://www.googleapis.com/auth/cloud-platform",
+        "https://www.googleapis.com/auth/admin.directory.user",
+        "https://www.googleapis.com/auth/gmail.modify"
+      ],
+      "writeOperations": ["email-send-internal", "calendar-insert", "drive-create-document", "drive-share-internal", "docs-append", "sheets-append", "sheets-create", "slides-create"],
       "externalRecipients": "denied",
       "adminOperations": "denied",
       "keep": "omitted from OAuth scope request"
@@ -40,6 +56,7 @@
       "id": "carlos-tasks",
       "purpose": "Carlos-owned Google Tasks list and task operations",
       "configSubdirectory": "carlos-tasks",
+      "accountBindingRef": "opaque_carlos-tasks_account",
       "requestedScopeUrls": ["https://www.googleapis.com/auth/tasks"],
       "mandatoryUpstreamIdentityScopeUrls": [
         "openid",
@@ -53,6 +70,12 @@
         "https://www.googleapis.com/auth/tasks"
       ],
       "grantedScopeVerification": "later human-controlled sanitized auth-status receipt must equal effectiveExpectedScopeUrls and name no account or unlisted capability scope",
+      "scopeAllowlistDigest": "sha256:d83ecbc427bbeb86bd48f44a96d6d0fe1f237f838b2b49e5b5555e174e7342d5",
+      "prohibitedScopeUrls": [
+        "https://www.googleapis.com/auth/cloud-platform",
+        "https://www.googleapis.com/auth/admin.directory.user",
+        "https://www.googleapis.com/auth/gmail.modify"
+      ],
       "writeOperations": ["task-insert", "task-patch", "task-delete"],
       "externalRecipients": "not applicable",
       "adminOperations": "denied",
@@ -60,6 +83,7 @@
     }
   ],
   "sharedControls": {
+    "scopeDigestCanonicalization": "UTF-8 JSON.stringify([{id,effectiveExpectedScopeUrls,prohibitedScopeUrls}]) in identity order",
     "configRoot": "LISA_GOOGLE_WORKSPACE_CONFIG_ROOT/<identity>",
     "directoryMode": "0700",
     "credentialStore": "credentials.enc plus .encryption_key with GOOGLE_WORKSPACE_CLI_KEYRING_BACKEND=file; plaintext credentials.json is rejected in steady state",

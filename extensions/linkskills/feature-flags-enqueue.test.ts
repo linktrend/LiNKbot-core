@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { mintFakeToken } from "./fake/auth.mjs";
 import { fixtureSkillsClaim } from "./fake/harness.mjs";
 import { SkillsFakeService } from "./fake/service.mjs";
-import { LINKSKILLS_MCP_TOOL_ALLOWLIST } from "./mcp-tool-filter.js";
+import { LINKSKILLS_MCP_MANAGED_TOOL_ALLOWLIST } from "./mcp-tool-filter.js";
 import { isOperationTimeout } from "./src/bounded.js";
 import { parseLinkskillsConfig } from "./src/config.js";
 import { createSkillsDrainWorker } from "./src/drain-worker.js";
@@ -64,7 +64,8 @@ describe("linkskills feature flags (MCP-gated, no plugin tool stubs)", () => {
         telemetryDrain: false,
       }),
     );
-    expect(discoveryOnly?.include).toContain("skills_list");
+    expect(discoveryOnly?.include).toContain("skills_catalog_list");
+    expect(discoveryOnly?.include).not.toContain("skills_list");
     expect(discoveryOnly?.include).not.toContain("skills_run_start");
     expect(discoveryOnly?.include).not.toContain("skills_feedback_submit");
 
@@ -76,10 +77,7 @@ describe("linkskills feature flags (MCP-gated, no plugin tool stubs)", () => {
         telemetryDrain: false,
       }),
     );
-    expect(telemetryOnly?.include).toEqual([
-      "skills_feedback_submit",
-      "skills_trace_candidate_submit",
-    ]);
+    expect(telemetryOnly?.include).toEqual(["skills_feedback_submit"]);
 
     const both = buildLinkskillsFlaggedMcpToolFilter(
       parseLinkskillsConfig({
@@ -89,7 +87,7 @@ describe("linkskills feature flags (MCP-gated, no plugin tool stubs)", () => {
         telemetryDrain: true,
       }),
     );
-    expect(both?.include).toEqual([...LINKSKILLS_MCP_TOOL_ALLOWLIST]);
+    expect(both?.include).toEqual([...LINKSKILLS_MCP_MANAGED_TOOL_ALLOWLIST]);
   });
 
   it("fake-backed discovery succeeds only when mcpDiscoveryRead enabled", async () => {
@@ -102,8 +100,12 @@ describe("linkskills feature flags (MCP-gated, no plugin tool stubs)", () => {
         mcpDiscoveryRead: true,
         transportMode: "fake",
       }),
-      transport,
-      toolName: "skills_list",
+      transport: {
+        async write() {
+          return { ok: true, result: {} };
+        },
+      },
+      toolName: "skills_catalog_list",
       idempotencyKey: "idem:list-1",
       arguments: {},
     });
@@ -115,11 +117,45 @@ describe("linkskills feature flags (MCP-gated, no plugin tool stubs)", () => {
         transportMode: "fake",
       }),
       transport,
-      toolName: "skills_list",
+      toolName: "skills_catalog_list",
       idempotencyKey: "idem:list-2",
     });
     expect(disabled.ok).toBe(false);
     expect(disabled.errorCode).toBe("feature_flag_disabled");
+  });
+
+  it("requires an explicit compatibility gate for legacy execution", async () => {
+    const config = parseLinkskillsConfig({
+      mcpDiscoveryRead: true,
+      governedExecution: true,
+      transportMode: "fake",
+    });
+    const modern = buildLinkskillsFlaggedMcpToolFilter(config);
+    expect(modern?.include).not.toContain("skills_run_start");
+    expect(
+      buildLinkskillsFlaggedMcpToolFilter(config, { includeLegacyCompatibility: true })?.include,
+    ).toContain("skills_run_start");
+
+    const transport = {
+      async write() {
+        return { ok: true, result: {} };
+      },
+    };
+    const denied = await invokeLinkskillsFeatureOp({
+      config,
+      transport,
+      toolName: "skills_run_start",
+      idempotencyKey: "idem:legacy-denied",
+    });
+    expect(denied.errorCode).toBe("tool_not_allowlisted");
+    const allowed = await invokeLinkskillsFeatureOp({
+      config,
+      transport,
+      toolName: "skills_run_start",
+      includeLegacyCompatibility: true,
+      idempotencyKey: "idem:legacy-allowed",
+    });
+    expect(allowed.ok).toBe(true);
   });
 });
 

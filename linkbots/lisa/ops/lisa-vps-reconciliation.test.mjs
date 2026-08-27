@@ -7,8 +7,10 @@ import path from "node:path";
 import { describe, it } from "node:test";
 import {
   buildReconciliation,
+  buildSourceAcceptanceReceipt,
   canonicalJson,
   validateReconciliation,
+  validateSourceAcceptanceReceipt,
 } from "./lisa-vps-reconciliation.mjs";
 
 const HASH_LOCAL = "a".repeat(64);
@@ -430,5 +432,70 @@ describe("WP-02 deterministic Local/VPS reconciliation", () => {
     assert.equal(result.comparisons[0].classification, "exact_duplicate");
     assert.equal(result.inventories.local[0].path, "config/google-oauth.json");
     assert.equal(result.inventories.local[0].category, "oauth-token-metadata");
+  });
+
+  it("builds a deterministic PKT-11 source receipt with every external gate held", () => {
+    const input = {
+      sourceBase: {
+        repository: "openclaw/openclaw",
+        ref: "origin/development",
+        commit: "9".repeat(40),
+        tree: "8".repeat(40),
+      },
+      stageWorkspacePackage: {
+        status: "verified-source",
+        packageId: "lisa-stage-workspace-v1",
+        manifestSha256: "e".repeat(64),
+        fileCount: 45,
+      },
+    };
+    const first = buildSourceAcceptanceReceipt(input);
+    const second = buildSourceAcceptanceReceipt(structuredClone(input));
+    assert.equal(first.receiptType, "lisa_pkt_11_source_acceptance_receipt_v1");
+    assert.equal(first.status, "source-prepared");
+    assert.deepEqual(first.dependencyPackets.reproduced, []);
+    assert.ok(Object.values(first.gates).every((gate) => gate.status === "HOLD"));
+    assert.equal(first.actions.vpsTouched, false);
+    assert.equal(first.actions.liveLisaTouched, false);
+    assert.equal(first.rollback.rollbackVerified, false);
+    assert.equal(first.receiptDigestSha256, second.receiptDigestSha256);
+    validateSourceAcceptanceReceipt(first);
+  });
+
+  it("rejects PKT-11 receipts that claim an external gate or duplicate dependencies", () => {
+    const receipt = buildSourceAcceptanceReceipt({
+      sourceBase: {
+        repository: "openclaw/openclaw",
+        ref: "origin/development",
+        commit: "9".repeat(40),
+        tree: "8".repeat(40),
+      },
+      stageWorkspacePackage: {
+        status: "verified-source",
+        packageId: "lisa-stage-workspace-v1",
+        manifestSha256: "e".repeat(64),
+        fileCount: 45,
+      },
+    });
+    const gateClaim = structuredClone(receipt);
+    gateClaim.gates.vpsDeployment.status = "PASS";
+    assert.throws(() => validateSourceAcceptanceReceipt(gateClaim), /acceptance_gate_not_hold/);
+    const duplicate = structuredClone(receipt);
+    duplicate.dependencyPackets.reproduced = ["PKT-01"];
+    assert.throws(
+      () => validateSourceAcceptanceReceipt(duplicate),
+      /acceptance_reproduced_dependencies_mismatch/,
+    );
+  });
+
+  it("validates the committed PKT-11 source receipt without live evidence", () => {
+    const receiptPath = path.resolve(
+      "linkbots/lisa/ops/receipts/pkt-11-source-acceptance.receipt.json",
+    );
+    const receipt = JSON.parse(readFileSync(receiptPath, "utf8"));
+    validateSourceAcceptanceReceipt(receipt);
+    assert.equal(receipt.status, "source-prepared");
+    assert.equal(receipt.artifacts.stageWorkspacePackage.status, "verified-source");
+    assert.ok(Object.values(receipt.gates).every((gate) => gate.status === "HOLD"));
   });
 });

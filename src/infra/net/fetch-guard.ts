@@ -29,6 +29,7 @@ import {
   resolveSsrFPolicyForUrl,
   resolvePinnedHostnameWithPolicy,
   type LookupFn,
+  type PinnedHostname,
   type PinnedDispatcherPolicy,
   SsrFBlockedError,
   type SsrFPolicy,
@@ -84,6 +85,8 @@ export type GuardedFetchOptions = {
   requireHttps?: boolean;
   policy?: SsrFPolicy;
   lookupFn?: LookupFn;
+  /** Previously admitted DNS result for the current origin. */
+  pinnedHostname?: PinnedHostname;
   dispatcherPolicy?: PinnedDispatcherPolicy;
   retainAuthorizationRedirectHostnameAllowlist?: string[];
   mode?: GuardedFetchMode;
@@ -538,8 +541,12 @@ async function fetchWithSsrFGuardInternal(
     // Resolve inside the redirect loop so exact-origin trust never carries across origins.
     const policyForUrl = resolveSsrFPolicyForUrl(parsedUrl, params.policy);
     const dispatcherPolicy = params.resolveDispatcherPolicy?.(parsedUrl) ?? params.dispatcherPolicy;
-    const resolvePinnedHostname = async () =>
-      await runAbortablePreflight(
+    const resolvePinnedHostname = async () => {
+      const normalizedHostname = parsedUrl.hostname.toLowerCase().replace(/\.+$/, "");
+      if (params.pinnedHostname?.hostname === normalizedHostname) {
+        return params.pinnedHostname;
+      }
+      return await runAbortablePreflight(
         async () =>
           await resolvePinnedHostnameWithPolicy(parsedUrl.hostname, {
             lookupFn: params.lookupFn,
@@ -547,6 +554,7 @@ async function fetchWithSsrFGuardInternal(
           }),
         signal,
       );
+    };
     try {
       const usesTrustedExplicitProxyMode =
         mode === GUARDED_FETCH_MODE.TRUSTED_EXPLICIT_PROXY &&

@@ -5,6 +5,8 @@ set -euo pipefail
 PATH=/usr/local/bin:/usr/bin:/bin
 export PATH
 
+GWS_PACKAGE_ROOT=$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+
 gws_die() {
   printf 'lisa-google-workspace: %s\n' "$*" >&2
   exit 64
@@ -101,6 +103,8 @@ gws_reject_inherited_auth_env() {
     GOOGLE_CLOUD_QUOTA_PROJECT
     GOOGLE_WORKSPACE_CLI_CONFIG_DIR
     GOOGLE_WORKSPACE_CLI_KEYRING_BACKEND
+    GOOGLE_WORKSPACE_CLI_SCOPES
+    GOOGLE_WORKSPACE_SCOPES
     CLOUDSDK_CONFIG
     XDG_CONFIG_HOME
   )
@@ -174,6 +178,7 @@ gws_init() {
   esac
   gws_require_private_dir "$GWS_CONFIG_DIR"
   GWS_CONFIG_DIR=$(gws_canonical_existing "$GWS_CONFIG_DIR")
+  GWS_CONFIG_ROOT=$canonical_root
 
   [[ -n "$exec_cwd" ]] || gws_die "LISA_GOOGLE_WORKSPACE_EXEC_CWD is required"
   gws_reject_traversal "$exec_cwd"
@@ -235,7 +240,36 @@ gws_exec_route() {
   local route=$1
   shift
   [[ -n "$route" ]] || gws_die "missing gws route binding"
+  gws_require_qualified_skills
   gws_exec "$@"
+}
+
+gws_require_qualified_skills() {
+  local source_receipt="$GWS_PACKAGE_ROOT/receipts/qualified-skills.receipt.json"
+  local receipt="${GWS_CONFIG_ROOT:-}/qualified-skills.receipt.json"
+  local state
+  [[ -r "$source_receipt" && ! -L "$source_receipt" ]] ||
+    gws_die "source Skills receipt prerequisite is missing"
+  [[ -r "$receipt" && ! -L "$receipt" ]] ||
+    gws_die "qualified Skills receipt prerequisite is missing"
+  state=$("$GWS_JSON_NODE_BIN" -e '
+    const fs = require("node:fs");
+    const source = JSON.parse(fs.readFileSync(process.argv[1], "utf8"));
+    const receipt = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
+    const required = source.catalogueIndexBinding?.requiredSkillIds ?? [];
+    const present = new Set(receipt.catalogueIndexBinding?.presentSkillIds ?? []);
+    const qualified = receipt.status === "qualified" &&
+      receipt.qualification?.state === "qualified" &&
+      receipt.qualification?.executionGate === "enabled" &&
+      receipt.provider?.commit === source.provider?.commit &&
+      receipt.provider?.tree === source.provider?.tree &&
+      receipt.catalogueBinding?.sha256 === source.catalogueBinding?.sha256 &&
+      receipt.catalogueIndexBinding?.sha256 === source.catalogueIndexBinding?.sha256 &&
+      required.length > 0 && required.every((id) => present.has(id));
+    process.stdout.write(qualified ? "qualified" : "unavailable");
+  ' "$source_receipt" "$receipt" 2>/dev/null) || gws_die "qualified Skills receipt prerequisite is invalid"
+  [[ "$state" == qualified ]] ||
+    gws_die "qualified Skills receipt prerequisite is unavailable; provider activation is blocked"
 }
 
 gws_require_work_file() {
@@ -288,10 +322,30 @@ gws_id() {
   [[ "$value" =~ ^[A-Za-z0-9_-]+$ ]] || gws_die "Google resource id has an invalid shape"
 }
 
+gws_sheet_range() {
+  local value=$1
+  local pattern='^[A-Za-z0-9_][A-Za-z0-9_ -]{0,63}(![A-Z]{1,3}[1-9][0-9]*(:[A-Z]{1,3}[1-9][0-9]*)?)?$'
+  [[ "$value" =~ $pattern ]] ||
+    gws_die "Google Sheets range has an invalid shape"
+}
+
+gws_json_rows() {
+  local value=$1
+  "${GWS_JSON_NODE_BIN:-/usr/bin/node}" -e '
+    const value = JSON.parse(process.argv[1]);
+    const validCell = (cell) => cell === null || typeof cell === "string" || typeof cell === "number" || typeof cell === "boolean";
+    if (!Array.isArray(value) || value.length === 0 || value.length > 100 || !value.every((row) => Array.isArray(row) && row.length > 0 && row.length <= 100 && row.every(validCell))) process.exit(1);
+  ' "$value" 2>/dev/null || gws_die "Sheet values must be a bounded JSON array of scalar rows"
+}
+
 gws_calendar_id() {
   local value=$1
-  [[ "$value" =~ ^[A-Za-z0-9][A-Za-z0-9._%+@-]{0,254}$ ]] ||
-    gws_die "Google Calendar id has an invalid shape"
+  [[ "$value" =~ ^opaque_[a-z0-9][a-z0-9_-]{0,126}$ ]] ||
+    gws_die "Google Calendar binding reference has an invalid or non-opaque shape"
+  case "$value" in
+    opaque_lisa-workspace_calendar_work|opaque_lisa-workspace_calendar_routine|opaque_lisa-workspace_calendar_shared-personal-events) ;;
+    *) gws_die "Google Calendar binding reference is not in the approved Lisa allowlist" ;;
+  esac
 }
 
 gws_weekdays() {

@@ -8,12 +8,22 @@ const root = path.resolve(import.meta.dirname, "../../..");
 const manifest = JSON.parse(
   fs.readFileSync(path.join(root, "docs/link-integrations/ocp-01/provider-pins.json"), "utf8"),
 );
+// Provider identity constants are deliberately kept in small pin modules for
+// extension-boundary reuse. Read those modules alongside each public adapter;
+// otherwise a valid consumer is reported stale merely because its wrapper
+// re-exports the exact identity instead of duplicating literal pins.
 const checks = new Map([
-  ["platform", "extensions/linkplatform/src/claims.ts"],
-  ["brain", "extensions/linkbrain/src/v2.ts"],
-  ["skills", "extensions/linkskills/src/exact-release.ts"],
-  ["libraries", "extensions/linklibraries/src/revision2.ts"],
-  ["autowork", "extensions/linkautowork/src/contract.ts"],
+  ["platform", ["extensions/linkplatform/src/claims.ts"]],
+  ["brain", ["extensions/linkbrain/src/v2.ts", "extensions/linkbrain/src/v2-pins.ts"]],
+  ["skills", ["extensions/linkskills/src/exact-release.ts"]],
+  [
+    "libraries",
+    ["extensions/linklibraries/src/revision2.ts", "extensions/linklibraries/src/revision2-pins.ts"],
+  ],
+  [
+    "autowork",
+    ["extensions/linkautowork/src/contract.ts", "extensions/linkautowork/src/contract-pins.ts"],
+  ],
 ]);
 const gitEnvironment = {
   ...process.env,
@@ -32,18 +42,23 @@ export function verifyProviderPins(selectedProviders = Object.keys(providerRoots
   const errors = [];
   const names = selectedProviders.length ? [...new Set(selectedProviders)] : [...checks.keys()];
   for (const name of names) {
-    const relative = checks.get(name);
-    if (!relative || !manifest.providers[name]) {
+    const relatives = checks.get(name);
+    if (!relatives || !manifest.providers[name]) {
       errors.push(`${name}: unknown provider pin scope`);
       continue;
     }
     const provider = manifest.providers[name];
-    const file = path.join(root, relative);
-    if (!fs.existsSync(file)) {
-      errors.push(`${name}: missing ${relative}`);
-      continue;
+    const sources = [];
+    for (const relative of relatives) {
+      const file = path.join(root, relative);
+      if (!fs.existsSync(file)) {
+        errors.push(`${name}: missing ${relative}`);
+        continue;
+      }
+      sources.push(fs.readFileSync(file, "utf8"));
     }
-    const source = fs.readFileSync(file, "utf8");
+    if (sources.length !== relatives.length) continue;
+    const source = sources.join("\n");
     if (!source.includes(provider.commit)) errors.push(`${name}: final commit pin missing`);
     if (!source.includes(provider.tree)) errors.push(`${name}: final tree pin missing`);
     for (const version of provider.contractVersions)

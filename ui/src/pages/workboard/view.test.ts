@@ -1753,7 +1753,7 @@ describe("renderWorkboard", () => {
         position: 1000,
         createdAt: 1,
         updatedAt: 1,
-        sessionKey: "agent:main:subagent:workboard-default-card-1",
+        sessionKey: "agent:main:subagent:card-1",
         runId: "run-1",
         taskId: "task-1",
       },
@@ -1763,7 +1763,7 @@ describe("renderWorkboard", () => {
       taskId: "task-1",
       status: "completed",
       title: "Review task result",
-      childSessionKey: "agent:main:subagent:workboard-default-card-1",
+      childSessionKey: "agent:main:subagent:card-1",
       runId: "run-1",
       terminalSummary: "Ready for operator review.",
     });
@@ -1801,7 +1801,7 @@ describe("renderWorkboard", () => {
         position: 1000,
         createdAt: 1,
         updatedAt: 1,
-        sessionKey: "agent:main:subagent:workboard-default-card-1",
+        sessionKey: "agent:main:subagent:card-1",
         runId: "run-1",
         taskId: "task-1",
       },
@@ -1811,7 +1811,7 @@ describe("renderWorkboard", () => {
       taskId: "task-1",
       status: "running",
       title: "Finished despite stale task",
-      childSessionKey: "agent:main:subagent:workboard-default-card-1",
+      childSessionKey: "agent:main:subagent:card-1",
       runId: "run-1",
       progressSummary: "Still running according to stale cache.",
     });
@@ -1824,7 +1824,7 @@ describe("renderWorkboard", () => {
       agentsList: null,
       sessions: [
         {
-          key: "agent:main:subagent:workboard-default-card-1",
+          key: "agent:main:subagent:card-1",
           kind: "direct",
           displayName: "Finished session",
           updatedAt: 2,
@@ -1995,7 +1995,7 @@ describe("renderWorkboard", () => {
         position: 1000,
         createdAt: 1,
         updatedAt: 1,
-        sessionKey: "agent:main:subagent:workboard-default-card-1",
+        sessionKey: "agent:main:subagent:card-1",
         runId: "run-1",
       },
     ];

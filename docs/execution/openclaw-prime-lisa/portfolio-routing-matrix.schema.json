@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://linktrend.local/openclaw-prime-lisa/portfolio-routing-matrix.schema.json",
+  "title": "OpenClaw Planning 02 consolidated portfolio routing matrix",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schemaVersion",
+    "authorityId",
+    "matrixId",
+    "programRunIdentity",
+    "accountCapabilityReceipt",
+    "permanentProtocol",
+    "currentAssignmentCounts",
+    "boundMatrices",
+    "supersededPreparedIntents",
+    "entries",
+    "dispatchState"
+  ],
+  "properties": {
+    "$schema": { "type": "string", "const": "./portfolio-routing-matrix.schema.json" },
+    "schemaVersion": { "type": "integer", "const": 1 },
+    "authorityId": { "type": "string", "const": "openclaw-prime-lisa-dispatch-authority-v4" },
+    "matrixId": { "type": "string", "const": "openclaw-planning-02-portfolio-routing-v2" },
+    "programRunIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "principalBinding", "apiKeyName", "userId", "userEmail", "sdkVersion", "identitySearchPerformed"],
+      "properties": {
+        "state": { "type": "string", "const": "BOUND_TO_PORTFOLIO_SINGLE_CURSOR_ACCOUNT" },
+        "principalBinding": { "type": "string", "const": "exactly-one-cursor-account-for-entire-portfolio" },
+        "apiKeyName": { "type": "string", "const": "LiNKdeveloper" },
+        "userId": { "type": "integer", "const": 348277621 },
+        "userEmail": { "type": "string", "const": "product@linktrend.media" },
+        "sdkVersion": { "type": "string", "const": "1.0.28" },
+        "identitySearchPerformed": { "type": "boolean", "const": false }
+      }
+    },
+    "accountCapabilityReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sha256", "applicability", "modelCount", "autoSmartPresent", "optimizeForCostPresent", "genericAutoOnly"],
+      "properties": {
+        "sha256": { "type": "string", "const": "sha256:23a0173dc24e67a86a87aacd7aee8b8ec93719371070a7e26fe7045b33267aeb" },
+        "applicability": { "type": "string", "const": "APPLIES_TO_THIS_PROGRAM_RUN" },
+        "modelCount": { "type": "integer", "const": 36 },
+        "autoSmartPresent": { "type": "boolean", "const": false },
+        "optimizeForCostPresent": { "type": "boolean", "const": false },
+        "genericAutoOnly": { "type": "boolean", "const": true }
+      }
+    },
+    "permanentProtocol": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["autoCostPreference", "capabilityPreflightCadence", "currentRunPreflightState", "genericAutoAllowed", "fastAllowed"],
+      "properties": {
+        "autoCostPreference": { "type": "string", "const": "preferred-only-when-exact-account-team-capability-preflight-passes" },
+        "capabilityPreflightCadence": { "type": "string", "const": "once-per-program-run" },
+        "currentRunPreflightState": { "type": "string", "const": "SATISFIED_BY_BOUND_ACCOUNT_RECEIPT" },
+        "genericAutoAllowed": { "type": "boolean", "const": false },
+        "fastAllowed": { "type": "boolean", "const": false }
+      }
+    },
+    "currentAssignmentCounts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["auto_cost", "composer_bounded", "grok_complex", "independent_review", "independent_terra_verification"],
+      "properties": {
+        "auto_cost": { "type": "integer", "const": 0 },
+        "composer_bounded": { "type": "integer", "const": 3 },
+        "grok_complex": { "type": "integer", "const": 10 },
+        "independent_review": { "type": "integer", "const": 9 },
+        "independent_terra_verification": { "type": "integer", "const": 13 }
+      }
+    },
+    "boundMatrices": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["openclaw", "platform", "autowork"],
+      "properties": {
+        "openclaw": { "$ref": "#/$defs/binding" },
+        "platform": { "$ref": "#/$defs/binding" },
+        "autowork": { "$ref": "#/$defs/binding" }
+      }
+    },
+    "supersededPreparedIntents": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": { "$ref": "#/$defs/supersededIntent" }
+    },
+    "entries": { "type": "array", "minItems": 13, "maxItems": 13, "items": { "$ref": "#/$defs/entry" } },
+    "dispatchState": { "type": "string", "const": "HOLD_UNTIL_EXECUTION_APPROVAL_PREREQUISITES_BUDGET_AND_FIXED_ROUTE_READBACK" }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "supersededIntent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["preparedIntentIdentity", "packetId", "priorAuthorityId", "priorRoute", "successorRoute", "state", "dispatchEligible", "mutable"],
+      "properties": {
+        "preparedIntentIdentity": { "type": "string", "pattern": "^openclaw-prime-lisa-dispatch-authority-v3:PKT-(01|07):auto_cost$" },
+        "packetId": { "type": "string", "enum": ["PKT-01", "PKT-07"] },
+        "priorAuthorityId": { "type": "string", "const": "openclaw-prime-lisa-dispatch-authority-v3" },
+        "priorRoute": { "type": "string", "const": "auto_cost" },
+        "successorRoute": { "type": "string", "const": "composer_bounded" },
+        "state": { "type": "string", "const": "IMMUTABLE_SUPERSEDED_INELIGIBLE" },
+        "dispatchEligible": { "type": "boolean", "const": false },
+        "mutable": { "type": "boolean", "const": false }
+      }
+    },
+    "entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["packetId", "manifest", "issueIds", "classification", "primaryRoute", "fallbackPolicy", "requiredReviews", "costPool"],
+      "properties": {
+        "packetId": { "type": "string", "pattern": "^[A-Z][A-Z0-9]*-[0-9]{2,}$" },
+        "manifest": { "type": "string", "enum": ["openclaw", "platform", "autowork"] },
+        "issueIds": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "pattern": "^ISS-[0-9]{2,}$" } },
+        "classification": { "type": "string", "minLength": 1 },
+        "primaryRoute": { "type": "string", "enum": ["composer_bounded", "grok_complex"] },
+        "fallbackPolicy": { "type": "string", "enum": ["composer_to_grok_one_hop", "grok_to_composer_one_hop"] },
+        "requiredReviews": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "enum": ["independent_review", "independent_terra_verification"] },
+          "contains": { "const": "independent_terra_verification" }
+        },
+        "costPool": { "type": "string", "const": "cursor-models" }
+      }
+    }
+  }
+}

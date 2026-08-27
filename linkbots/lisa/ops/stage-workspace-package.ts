@@ -25,6 +25,8 @@ import { STAGE_OPS_STAGE_ROOT } from "./stage-ops-command.ts";
 
 export const STAGE_WORKSPACE_PACKAGE_RECEIPT_TYPE =
   "lisa_stage_workspace_package_receipt_v1" as const;
+export const STAGE_WORKSPACE_PACKAGE_SOURCE_RECEIPT_TYPE =
+  "lisa_stage_workspace_package_source_receipt_v1" as const;
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 export const DEFAULT_MANIFEST_PATH = path.join(here, "stage-workspace-package.manifest.json");
@@ -97,6 +99,22 @@ export type StageWorkspacePackageReceipt = {
     defaultMutateStageWorkspace: false;
     liveMutationAllowed: false;
   };
+};
+
+/**
+ * Stable source evidence for an integration packet. Unlike the operational
+ * receipt below, this contains no timestamp, absolute path, or target state.
+ */
+export type StageWorkspacePackageSourceReceipt = {
+  receiptType: typeof STAGE_WORKSPACE_PACKAGE_SOURCE_RECEIPT_TYPE;
+  status: "verified-source" | "blocked-hash-mismatch";
+  packageId: string;
+  manifestSha256: string;
+  fileCount: number;
+  mutableSeeds: false;
+  liveMutationAllowed: false;
+  defaultMutateStageWorkspace: false;
+  sourceRoot: "linkbots/lisa";
 };
 
 function allManifestEntries(
@@ -193,12 +211,421 @@ export function hashStageWorkspacePackageManifest(
     .digest("hex");
 }
 
+/** Build deterministic source evidence suitable for a committed packet receipt. */
+export function buildStageWorkspacePackageSourceReceipt(
+  params: {
+    manifest?: StageWorkspacePackageManifest;
+    manifestPath?: string;
+    sourceRoot?: string;
+  } = {},
+): StageWorkspacePackageSourceReceipt {
+  const manifest =
+    params.manifest ??
+    loadStageWorkspacePackageManifest(params.manifestPath ?? DEFAULT_MANIFEST_PATH);
+  const verification = verifyStageWorkspacePackage({
+    manifest,
+    sourceRoot: params.sourceRoot,
+  });
+  return {
+    receiptType: STAGE_WORKSPACE_PACKAGE_SOURCE_RECEIPT_TYPE,
+    status: verification.ok ? "verified-source" : "blocked-hash-mismatch",
+    packageId: manifest.packageId,
+    manifestSha256: hashStageWorkspacePackageManifest(manifest),
+    fileCount: manifest.files.length,
+    mutableSeeds: false,
+    liveMutationAllowed: false,
+    defaultMutateStageWorkspace: false,
+    sourceRoot: "linkbots/lisa",
+  };
+}
+
 export function sha256File(filePath: string): { sha256: string; bytes: number } {
   const buf = readFileSync(filePath);
   return {
     sha256: createHash("sha256").update(buf).digest("hex"),
     bytes: buf.length,
   };
+}
+
+/**
+ * PKT-11 pre-VPS qualification is deliberately narrower than deployment. The
+ * harness may copy only into a caller-created disposable directory and records
+ * no target path, network result, credential, or live state.
+ */
+export const PKT11_PRE_VPS_QUALIFICATION_RECEIPT_TYPE =
+  "lisa_pkt_11_pre_vps_qualification_receipt_v1" as const;
+
+const PKT11_PRE_VPS_EXTERNAL_GATES = [
+  "providerReleaseSetAccepted",
+  "independentTerraVerification",
+  "independentReview",
+  "stageDeployment",
+  "vpsDeployment",
+  "productionCanary",
+  "principalAcceptance",
+  "rollbackVerification",
+] as const;
+
+const PKT11_PRE_VPS_ACTION_FIELDS = [
+  "vpsTouched",
+  "liveLisaTouched",
+  "productionTouched",
+  "scheduleChangesApplied",
+  "oauthOrLiveGoogleCalls",
+  "privateDataRecorded",
+] as const;
+
+export type Pkt11OfflineCanaryConfig = {
+  targetDir: string;
+  outputDir: string;
+  sourceRoot?: string;
+  action: "install";
+  networkAccess: "disabled";
+  delivery: "none";
+  oauthEnabled: false;
+  schedulesEnabled: false;
+  liveMutationAllowed: false;
+};
+
+export type Pkt11OfflineCanaryResult = {
+  status: "passed";
+  packageStatus: "installed";
+  networkAccess: "disabled";
+  delivery: "none";
+  oauthEnabled: false;
+  schedulesEnabled: false;
+  liveMutationAllowed: false;
+  liveLisaTouched: false;
+  stageWorkspaceMutated: false;
+  installedFileCount: number;
+};
+
+export type Pkt11OfflineRollbackEvidence = {
+  status: "verified-offline";
+  strategy: "discard-hermetic-target";
+  installedFileCount: number;
+  removedFileCount: number;
+  liveRestorePerformed: false;
+  rollbackVerified: true;
+  approvalRequired: true;
+};
+
+function preVpsFail(code: string): never {
+  throw new Error(`pkt11_pre_vps_${code}`);
+}
+
+function isSha256(value: unknown): value is string {
+  return typeof value === "string" && /^[a-f0-9]{64}$/u.test(value);
+}
+
+function isGitSha(value: unknown): value is string {
+  return typeof value === "string" && /^[a-f0-9]{40}$/u.test(value);
+}
+
+function containsSensitiveKey(value: unknown): boolean {
+  if (Array.isArray(value)) return value.some(containsSensitiveKey);
+  if (!value || typeof value !== "object") return false;
+  return Object.entries(value).some(([key, child]) =>
+    /token|secret|password|private.?key|oauth|credential|cookie|message|email/iu.test(key) &&
+    !(typeof child === "boolean" && child === false)
+      ? true
+      : containsSensitiveKey(child),
+  );
+}
+
+/** Validate the only configuration shape accepted by the offline harness. */
+export function validatePkt11OfflineCanaryConfig(
+  config: Pkt11OfflineCanaryConfig,
+): Pkt11OfflineCanaryConfig {
+  if (!config || typeof config !== "object") preVpsFail("config_missing");
+  if (config.action !== "install") preVpsFail("config_action");
+  if (config.networkAccess !== "disabled") preVpsFail("config_network");
+  if (config.delivery !== "none") preVpsFail("config_delivery");
+  if (config.oauthEnabled !== false) preVpsFail("config_oauth");
+  if (config.schedulesEnabled !== false) preVpsFail("config_schedules");
+  if (config.liveMutationAllowed !== false) preVpsFail("config_live_mutation");
+  if (typeof config.targetDir !== "string" || typeof config.outputDir !== "string") {
+    preVpsFail("config_paths");
+  }
+  if (!path.isAbsolute(config.targetDir) || !path.isAbsolute(config.outputDir)) {
+    preVpsFail("config_absolute_paths");
+  }
+  if (config.sourceRoot !== undefined && typeof config.sourceRoot !== "string") {
+    preVpsFail("config_source_path");
+  }
+  const sourceRoot = path.resolve(config.sourceRoot ?? DEFAULT_SOURCE_ROOT);
+  const targetDir = path.resolve(config.targetDir);
+  const outputDir = path.resolve(config.outputDir);
+  if (
+    targetDir === sourceRoot ||
+    targetDir.startsWith(`${sourceRoot}${path.sep}`) ||
+    outputDir === sourceRoot ||
+    outputDir.startsWith(`${sourceRoot}${path.sep}`) ||
+    targetDir === outputDir ||
+    targetDir.startsWith(`${outputDir}${path.sep}`) ||
+    outputDir.startsWith(`${targetDir}${path.sep}`)
+  ) {
+    preVpsFail("config_source_or_nested_paths");
+  }
+  if (
+    isForbiddenLiveLisaTarget(config.targetDir) ||
+    isForbiddenStageWorkspaceTarget(config.targetDir)
+  ) {
+    preVpsFail("config_forbidden_target");
+  }
+  if (
+    isForbiddenLiveLisaTarget(config.outputDir) ||
+    isForbiddenStageWorkspaceTarget(config.outputDir)
+  ) {
+    preVpsFail("config_forbidden_output");
+  }
+  if (config.sourceRoot && isForbiddenLiveLisaTarget(config.sourceRoot)) {
+    preVpsFail("config_forbidden_source");
+  }
+  return config;
+}
+
+/** Execute the package only against the caller's disposable target. */
+export function runPkt11OfflineCanary(config: Pkt11OfflineCanaryConfig): Pkt11OfflineCanaryResult {
+  validatePkt11OfflineCanaryConfig(config);
+  const receipt = planStageWorkspacePackage({
+    action: config.action,
+    targetDir: config.targetDir,
+    outputDir: config.outputDir,
+    sourceRoot: config.sourceRoot,
+  });
+  if (
+    receipt.status !== "installed" ||
+    receipt.liveLisaTouched !== false ||
+    receipt.stageWorkspaceMutated !== false ||
+    receipt.initializedPaths.length !== 0 ||
+    receipt.files.some((file) => !file.ok)
+  ) {
+    preVpsFail("offline_canary_not_verified");
+  }
+  return {
+    status: "passed",
+    packageStatus: receipt.status,
+    networkAccess: "disabled",
+    delivery: "none",
+    oauthEnabled: false,
+    schedulesEnabled: false,
+    liveMutationAllowed: false,
+    liveLisaTouched: false,
+    stageWorkspaceMutated: false,
+    installedFileCount: receipt.installedPaths.length,
+  };
+}
+
+/** Assemble path-free rollback evidence after a disposable target is removed. */
+export function buildPkt11OfflineRollbackEvidence(input: {
+  installedFileCount: number;
+  removedFileCount: number;
+}): Pkt11OfflineRollbackEvidence {
+  if (
+    !Number.isSafeInteger(input.installedFileCount) ||
+    input.installedFileCount <= 0 ||
+    input.removedFileCount !== input.installedFileCount
+  ) {
+    preVpsFail("rollback_not_verified");
+  }
+  return {
+    status: "verified-offline",
+    strategy: "discard-hermetic-target",
+    installedFileCount: input.installedFileCount,
+    removedFileCount: input.removedFileCount,
+    liveRestorePerformed: false,
+    rollbackVerified: true,
+    approvalRequired: true,
+  };
+}
+
+export type Pkt11PreVpsQualificationReceipt = {
+  receiptType: typeof PKT11_PRE_VPS_QUALIFICATION_RECEIPT_TYPE;
+  status: "offline-qualified";
+  packet: { id: "PKT-11"; issue: "ISS-11"; executionState: "PLAN" };
+  sourceBase: {
+    repository: "openclaw/openclaw";
+    ref: "origin/development";
+    commit: string;
+    tree: string;
+  };
+  package: {
+    packageId: string;
+    manifestSha256: string;
+    fileCount: number;
+    status: "verified-source";
+    mutableSeeds: false;
+    liveMutationAllowed: false;
+  };
+  offlineCanary: Pkt11OfflineCanaryResult;
+  rollback: Pkt11OfflineRollbackEvidence;
+  gates: Record<
+    (typeof PKT11_PRE_VPS_EXTERNAL_GATES)[number],
+    { status: "HOLD"; requiredEvidence: string }
+  >;
+  actions: Record<(typeof PKT11_PRE_VPS_ACTION_FIELDS)[number], false>;
+  receiptDigestSha256: string;
+};
+
+function withoutPreVpsDigest(
+  receipt: Pkt11PreVpsQualificationReceipt,
+): Omit<Pkt11PreVpsQualificationReceipt, "receiptDigestSha256"> {
+  const { receiptDigestSha256: _digest, ...payload } = receipt;
+  return payload;
+}
+
+function canonicalPreVpsJson(value: unknown): string {
+  return JSON.stringify(value);
+}
+
+/** Fail-closed validator for the sanitized, source-only qualification receipt. */
+export function validatePkt11PreVpsQualificationReceipt(
+  receipt: Pkt11PreVpsQualificationReceipt,
+): Pkt11PreVpsQualificationReceipt {
+  if (!receipt || typeof receipt !== "object" || containsSensitiveKey(receipt)) {
+    preVpsFail("receipt_sensitive_or_missing");
+  }
+  if (receipt.receiptType !== PKT11_PRE_VPS_QUALIFICATION_RECEIPT_TYPE) {
+    preVpsFail("receipt_type");
+  }
+  if (receipt.status !== "offline-qualified") preVpsFail("receipt_status");
+  if (
+    receipt.packet?.id !== "PKT-11" ||
+    receipt.packet.issue !== "ISS-11" ||
+    receipt.packet.executionState !== "PLAN"
+  ) {
+    preVpsFail("receipt_packet");
+  }
+  if (
+    receipt.sourceBase?.repository !== "openclaw/openclaw" ||
+    receipt.sourceBase.ref !== "origin/development" ||
+    !isGitSha(receipt.sourceBase.commit) ||
+    !isGitSha(receipt.sourceBase.tree)
+  ) {
+    preVpsFail("receipt_source_base");
+  }
+  const pkg = receipt.package;
+  if (
+    !pkg ||
+    typeof pkg.packageId !== "string" ||
+    !isSha256(pkg.manifestSha256) ||
+    !Number.isSafeInteger(pkg.fileCount) ||
+    pkg.fileCount <= 0 ||
+    pkg.status !== "verified-source" ||
+    pkg.mutableSeeds !== false ||
+    pkg.liveMutationAllowed !== false
+  ) {
+    preVpsFail("receipt_package");
+  }
+  const canary = receipt.offlineCanary;
+  if (
+    !canary ||
+    canary.status !== "passed" ||
+    canary.packageStatus !== "installed" ||
+    canary.networkAccess !== "disabled" ||
+    canary.delivery !== "none" ||
+    canary.oauthEnabled !== false ||
+    canary.schedulesEnabled !== false ||
+    canary.liveMutationAllowed !== false ||
+    canary.liveLisaTouched !== false ||
+    canary.stageWorkspaceMutated !== false ||
+    canary.installedFileCount !== pkg.fileCount
+  ) {
+    preVpsFail("receipt_canary");
+  }
+  const rollback = receipt.rollback;
+  if (
+    !rollback ||
+    rollback.status !== "verified-offline" ||
+    rollback.strategy !== "discard-hermetic-target" ||
+    rollback.installedFileCount !== pkg.fileCount ||
+    rollback.removedFileCount !== pkg.fileCount ||
+    rollback.liveRestorePerformed !== false ||
+    rollback.rollbackVerified !== true ||
+    rollback.approvalRequired !== true
+  ) {
+    preVpsFail("receipt_rollback");
+  }
+  if (
+    !receipt.gates ||
+    Object.keys(receipt.gates).toSorted().join("\0") !==
+      [...PKT11_PRE_VPS_EXTERNAL_GATES].toSorted().join("\0")
+  ) {
+    preVpsFail("receipt_gates");
+  }
+  for (const gate of PKT11_PRE_VPS_EXTERNAL_GATES) {
+    if (
+      receipt.gates[gate]?.status !== "HOLD" ||
+      typeof receipt.gates[gate].requiredEvidence !== "string"
+    ) {
+      preVpsFail(`receipt_gate:${gate}`);
+    }
+  }
+  if (
+    !receipt.actions ||
+    Object.keys(receipt.actions).toSorted().join("\0") !==
+      [...PKT11_PRE_VPS_ACTION_FIELDS].toSorted().join("\0")
+  ) {
+    preVpsFail("receipt_actions");
+  }
+  for (const field of PKT11_PRE_VPS_ACTION_FIELDS) {
+    if (receipt.actions[field] !== false) preVpsFail(`receipt_action:${field}`);
+  }
+  if (
+    !isSha256(receipt.receiptDigestSha256) ||
+    receipt.receiptDigestSha256 !==
+      createHash("sha256")
+        .update(canonicalPreVpsJson(withoutPreVpsDigest(receipt)))
+        .digest("hex")
+  ) {
+    preVpsFail("receipt_digest");
+  }
+  return receipt;
+}
+
+/** Build a deterministic pre-VPS receipt; it contains no target path or live claim. */
+export function buildPkt11PreVpsQualificationReceipt(input: {
+  sourceBase: Pkt11PreVpsQualificationReceipt["sourceBase"];
+  stageWorkspacePackage: {
+    packageId: string;
+    manifestSha256: string;
+    fileCount: number;
+    status: "verified-source";
+  };
+  offlineCanary: Pkt11OfflineCanaryResult;
+  rollback: Pkt11OfflineRollbackEvidence;
+}): Pkt11PreVpsQualificationReceipt {
+  const result = {
+    receiptType: PKT11_PRE_VPS_QUALIFICATION_RECEIPT_TYPE,
+    status: "offline-qualified" as const,
+    packet: { id: "PKT-11" as const, issue: "ISS-11" as const, executionState: "PLAN" as const },
+    sourceBase: input.sourceBase,
+    package: {
+      packageId: input.stageWorkspacePackage.packageId,
+      manifestSha256: input.stageWorkspacePackage.manifestSha256,
+      fileCount: input.stageWorkspacePackage.fileCount,
+      status: input.stageWorkspacePackage.status,
+      mutableSeeds: false as const,
+      liveMutationAllowed: false as const,
+    },
+    offlineCanary: input.offlineCanary,
+    rollback: input.rollback,
+    gates: Object.fromEntries(
+      PKT11_PRE_VPS_EXTERNAL_GATES.map((gate) => [
+        gate,
+        { status: "HOLD" as const, requiredEvidence: `external:${gate}` },
+      ]),
+    ) as Pkt11PreVpsQualificationReceipt["gates"],
+    actions: Object.fromEntries(
+      PKT11_PRE_VPS_ACTION_FIELDS.map((field) => [field, false]),
+    ) as Pkt11PreVpsQualificationReceipt["actions"],
+  };
+  const receipt = {
+    ...result,
+    receiptDigestSha256: createHash("sha256").update(canonicalPreVpsJson(result)).digest("hex"),
+  } as Pkt11PreVpsQualificationReceipt;
+  return validatePkt11PreVpsQualificationReceipt(receipt);
 }
 
 export function verifyStageWorkspacePackage(params: {

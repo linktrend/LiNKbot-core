@@ -3,7 +3,9 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import {
+  LINKBRAIN_MCP_MANAGED_TOOL_ALLOWLIST,
   LINKBRAIN_MCP_TOOL_ALLOWLIST,
+  LINKBRAIN_MCP_V2_TOOLS,
   assertAllowedLinkbrainMcpTool,
   buildLinkbrainMcpToolFilter,
   isAllowedLinkbrainMcpTool,
@@ -50,6 +52,12 @@ describe("linkbrain managed MCP toolFilter (§9.1)", () => {
     expect(isAllowedLinkbrainMcpTool("skills_list")).toBe(false);
     expect(() => assertAllowedLinkbrainMcpTool("skills_run_start")).toThrow(/default-deny/);
     expect(() => assertAllowedLinkbrainMcpTool("brain_delete_everything")).toThrow(/§9\.1/);
+  });
+
+  it("keeps the standard v2 operations reachable alongside reviewed compatibility tools", () => {
+    expect(LINKBRAIN_MCP_V2_TOOLS).toContain("v2.projection.evidence");
+    expect(LINKBRAIN_MCP_MANAGED_TOOL_ALLOWLIST).toContain("v2.projection.evidence");
+    expect(LINKBRAIN_MCP_MANAGED_TOOL_ALLOWLIST).toContain("brain_browse");
   });
 
   it("parses Brain MCP templates with matching include lists and disabled servers", () => {

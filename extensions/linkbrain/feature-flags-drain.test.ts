@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { createBrainFake } from "./fake/runtime.mjs";
-import { LINKBRAIN_MCP_TOOL_ALLOWLIST } from "./mcp-tool-filter.js";
+import { LINKBRAIN_MCP_MANAGED_TOOL_ALLOWLIST } from "./mcp-tool-filter.js";
 import { parseLinkbrainConfig } from "./src/config.js";
 import { createBrainDrainWorker } from "./src/drain-worker.js";
 import {
@@ -31,8 +31,10 @@ describe("linkbrain feature flags (MCP-gated, no plugin tool stubs)", () => {
       }),
     );
     expect(readOnly?.include).toContain("brain_browse");
+    expect(readOnly?.include).toContain("v2.projection.evidence");
     expect(readOnly?.include).not.toContain("brain_capture_batch");
     expect(readOnly?.include).not.toContain("brain_task_start");
+    expect(readOnly?.include).not.toContain("v2.projection.ingest");
 
     const captureOnly = buildLinkbrainFlaggedMcpToolFilter(
       parseLinkbrainConfig({
@@ -52,7 +54,7 @@ describe("linkbrain feature flags (MCP-gated, no plugin tool stubs)", () => {
         coordinationWrites: true,
       }),
     );
-    expect(allOn?.include.length).toBe(LINKBRAIN_MCP_TOOL_ALLOWLIST.length);
+    expect(allOn?.include.length).toBe(LINKBRAIN_MCP_MANAGED_TOOL_ALLOWLIST.length);
   });
 
   it("fake-backed read succeeds when mcpRead enabled; fails when disabled", async () => {

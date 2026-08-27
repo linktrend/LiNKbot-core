@@ -6,6 +6,11 @@
  * It does not import Skills symbols and must not be merged with linkskills.
  */
 
+import { BRAIN_V2_OPERATIONS } from "./src/v2-pins.js";
+
+/** Standard sessionless Brain operations; v1 remains a compatibility lane. */
+export const LINKBRAIN_MCP_V2_TOOLS = Object.freeze([...BRAIN_V2_OPERATIONS] as const);
+
 /** Knowledge family (§9.1). */
 const LINKBRAIN_MCP_KNOWLEDGE_TOOLS = Object.freeze([
   "brain_browse",
@@ -42,9 +47,23 @@ export const LINKBRAIN_MCP_TOOL_ALLOWLIST = Object.freeze([
   ...LINKBRAIN_MCP_COORDINATION_TOOLS,
 ] as const);
 
-type LinkbrainMcpAllowedTool = (typeof LINKBRAIN_MCP_TOOL_ALLOWLIST)[number];
+export const LINKBRAIN_LEGACY_MCP_COMPATIBILITY_CONTRACT = Object.freeze({
+  id: "linkbrain.mcp-legacy/1.0",
+  removal: "after all configured consumers advertise brain.v2/2.0.0",
+  tools: LINKBRAIN_MCP_TOOL_ALLOWLIST,
+});
 
-const allowedSet = new Set<string>(LINKBRAIN_MCP_TOOL_ALLOWLIST);
+/** Runtime invocation surface: reviewed v1 compatibility plus standard v2. */
+export const LINKBRAIN_MCP_MANAGED_TOOL_ALLOWLIST = Object.freeze([
+  ...LINKBRAIN_MCP_TOOL_ALLOWLIST,
+  ...LINKBRAIN_MCP_V2_TOOLS.filter(
+    (name) => !(LINKBRAIN_MCP_TOOL_ALLOWLIST as readonly string[]).includes(name),
+  ),
+] as const);
+
+type LinkbrainMcpAllowedTool = (typeof LINKBRAIN_MCP_MANAGED_TOOL_ALLOWLIST)[number];
+
+const allowedSet = new Set<string>(LINKBRAIN_MCP_MANAGED_TOOL_ALLOWLIST);
 
 /**
  * Returns whether a discovered MCP tool name is on the Brain §9.1 allowlist.
@@ -59,9 +78,13 @@ export function isAllowedLinkbrainMcpTool(toolName: string): toolName is Linkbra
  * Include-only (no exclude) so unreviewed Brain tools stay denied.
  */
 export function buildLinkbrainMcpToolFilter(): {
-  include: readonly LinkbrainMcpAllowedTool[];
+  include: readonly (typeof LINKBRAIN_MCP_TOOL_ALLOWLIST)[number][];
 } {
   return { include: LINKBRAIN_MCP_TOOL_ALLOWLIST };
+}
+
+export function buildLinkbrainV2McpToolFilter(): { include: readonly string[] } {
+  return { include: LINKBRAIN_MCP_V2_TOOLS };
 }
 
 /**

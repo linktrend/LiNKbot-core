@@ -24,8 +24,8 @@ import {
 
 describe("LiNKbrain v2 immutable consumer boundary", () => {
   it("pins the final provider and exposes the ordered contract surface", () => {
-    expect(LINKBRAIN_V2_COMMIT).toBe("8ce1d737f8870a479f07b1741c58d6681cd07aa1");
-    expect(LINKBRAIN_V2_TREE).toBe("0cae42d612342f5e52c7e2e0e76cb6fc2f6d81f3");
+    expect(LINKBRAIN_V2_COMMIT).toBe("7eb19cec8ae3cf61b0369167dd3f699675546b28");
+    expect(LINKBRAIN_V2_TREE).toBe("c489ed4de06790ef1daade75688b818ff62c7a4f");
     expect(BRAIN_V2_DISCLOSURE_LEVELS).toEqual([
       "guide",
       "index",

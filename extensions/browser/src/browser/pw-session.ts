@@ -4,12 +4,14 @@
  * Manages CDP-backed Playwright connections, page lookup, observed dialogs,
  * console/network/page state, role refs, and safe navigation handling.
  */
+import { isIP } from "node:net";
 import { expectDefined } from "openclaw/plugin-sdk/expect-runtime";
 import {
   isFutureDateTimestampMs,
   parseFiniteNumber,
   resolveExpiresAtMsFromDurationMs,
 } from "openclaw/plugin-sdk/number-runtime";
+import { fetchWithSsrFGuard } from "openclaw/plugin-sdk/ssrf-runtime";
 import { normalizeOptionalString } from "openclaw/plugin-sdk/string-coerce-runtime";
 import type {
   Browser,
@@ -23,7 +25,7 @@ import type {
   Route,
 } from "playwright-core";
 import { formatErrorMessage } from "../infra/errors.js";
-import { SsrFBlockedError, type SsrFPolicy } from "../infra/net/ssrf.js";
+import { SsrFBlockedError, type PinnedHostname, type SsrFPolicy } from "../infra/net/ssrf.js";
 import { withNoProxyForCdpUrl } from "./cdp-proxy-bypass.js";
 import {
   appendCdpPath,
@@ -45,6 +47,7 @@ import {
   assertBrowserNavigationAllowed,
   assertBrowserNavigationRedirectChainAllowed,
   assertBrowserNavigationResultAllowed,
+  parseBrowserNavigationUrl,
   type BrowserNavigationPolicyOptions,
   InvalidBrowserNavigationUrlError,
   withBrowserNavigationPolicy,
@@ -108,6 +111,127 @@ type BrowserObservedDialogState = {
 type BrowserObservedState = {
   dialogs: BrowserObservedDialogState;
 };
+
+const BROWSER_FORWARDED_RESPONSE_HEADERS = new Set([
+  "connection",
+  "content-encoding",
+  "content-length",
+  "keep-alive",
+  "transfer-encoding",
+]);
+
+function forwardedBrowserResponseHeaders(response: globalThis.Response): Record<string, string> {
+  const headers: Record<string, string> = {};
+  response.headers.forEach((value, key) => {
+    if (!BROWSER_FORWARDED_RESPONSE_HEADERS.has(key.toLowerCase())) {
+      headers[key] = value;
+    }
+  });
+  return headers;
+}
+
+function browserRequestHeaders(request: Request): Record<string, string> {
+  const headers: Record<string, string> = {};
+  if (typeof request.headers !== "function") {
+    return headers;
+  }
+  for (const [key, value] of Object.entries(request.headers())) {
+    if (!["connection", "content-length", "host"].includes(key.toLowerCase())) {
+      headers[key] = value;
+    }
+  }
+  return headers;
+}
+
+/** Fetch a hostname navigation through the admitted Node dispatcher, then hand the response to Chromium. */
+async function fulfillPinnedBrowserNavigation(opts: {
+  route: Route;
+  request: Request;
+  pinnedHostname: PinnedHostname;
+  ssrfPolicy?: SsrFPolicy;
+  lookupFn?: BrowserNavigationPolicyOptions["lookupFn"];
+  fetchImpl?: typeof fetch;
+}): Promise<void> {
+  const method = opts.request.method();
+  const body =
+    method === "GET" || method === "HEAD" || typeof opts.request.postDataBuffer !== "function"
+      ? undefined
+      : opts.request.postDataBuffer();
+  const guarded = await fetchWithSsrFGuard({
+    url: opts.request.url(),
+    fetchImpl: opts.fetchImpl,
+    init: {
+      method,
+      headers: browserRequestHeaders(opts.request),
+      ...(body ? { body: body as unknown as BodyInit } : {}),
+    },
+    maxRedirects: 0,
+    pinnedHostname: opts.pinnedHostname,
+    policy: opts.ssrfPolicy,
+    lookupFn: opts.lookupFn,
+  });
+  try {
+    const responseBody = Buffer.from(await guarded.response.arrayBuffer());
+    await opts.route.fulfill({
+      status: guarded.response.status,
+      headers: forwardedBrowserResponseHeaders(guarded.response),
+      body: responseBody,
+    });
+  } finally {
+    await guarded.release();
+  }
+}
+
+async function admitAndMaybeFulfillPinnedBrowserRequest(opts: {
+  route: Route;
+  request: Request;
+  pinnedHostnames: Map<string, PinnedHostname>;
+  navigationPolicy: BrowserNavigationPolicyOptions;
+  ssrfPolicy?: SsrFPolicy;
+  lookupFn?: BrowserNavigationPolicyOptions["lookupFn"];
+  fetchImpl?: BrowserNavigationPolicyOptions["fetchImpl"];
+}): Promise<boolean> {
+  if (typeof opts.request.method !== "function") {
+    return false;
+  }
+  let parsed: URL;
+  try {
+    parsed = new URL(opts.request.url());
+  } catch {
+    return false;
+  }
+  if (parsed.protocol === "ws:" || parsed.protocol === "wss:") {
+    throw new InvalidBrowserNavigationUrlError(
+      "Navigation blocked: WebSocket targets cannot use the pinned browser transport",
+    );
+  }
+  if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+    return false;
+  }
+  const normalizedHostname = parsed.hostname.toLowerCase().replace(/\.+$/, "");
+  const pinnedHostname = opts.pinnedHostnames.get(normalizedHostname);
+  const admitted = await assertBrowserNavigationAllowed({
+    url: opts.request.url(),
+    pinnedHostname,
+    returnBinding: true,
+    ...opts.navigationPolicy,
+  });
+  if (!pinnedHostname && admitted?.pinnedHostname) {
+    opts.pinnedHostnames.set(admitted.pinnedHostname.hostname, admitted.pinnedHostname);
+  }
+  if (!admitted?.pinnedHostname || isIP(parsed.hostname) !== 0) {
+    return false;
+  }
+  await fulfillPinnedBrowserNavigation({
+    route: opts.route,
+    request: opts.request,
+    pinnedHostname: admitted.pinnedHostname,
+    ssrfPolicy: opts.ssrfPolicy,
+    lookupFn: opts.lookupFn,
+    fetchImpl: opts.fetchImpl,
+  });
+  return true;
+}
 
 /** Raised when an action is blocked by an observed modal dialog. */
 class BrowserObservedDialogBlockedError extends Error {
@@ -1585,6 +1709,8 @@ export async function assertPageNavigationCompletedSafely(
 ): Promise<void> {
   const navigationPolicy = withBrowserNavigationPolicy(opts.ssrfPolicy, {
     browserProxyMode: opts.browserProxyMode,
+    lookupFn: opts.lookupFn,
+    fetchImpl: opts.fetchImpl,
   });
   try {
     await assertBrowserNavigationRedirectChainAllowed({
@@ -1674,6 +1800,8 @@ export async function withPageNavigationRequestGuard<T>(
 ): Promise<T> {
   const navigationPolicy = withBrowserNavigationPolicy(opts.ssrfPolicy, {
     browserProxyMode: opts.browserProxyMode,
+    lookupFn: opts.lookupFn,
+    fetchImpl: opts.fetchImpl,
   });
   if (!navigationPolicy.ssrfPolicy && !navigationPolicy.browserProxyMode) {
     return await opts.action(opts.page.url());
@@ -1688,6 +1816,7 @@ export async function withPageNavigationRequestGuard<T>(
   let unpreservedDocumentCount = 0;
   let policyDeniedDetected = false;
   let lastNotifiedSourcePreserved: boolean | undefined;
+  const pinnedHostnames = new Map<string, PinnedHostname>();
 
   const recordGuardError = (err: unknown) => {
     if (hasGuardError) {
@@ -1776,24 +1905,62 @@ export async function withPageNavigationRequestGuard<T>(
   const handleRoute = async (route: Route, request: Request) => {
     if (!classifyBrowserDocumentNavigationRequest(opts.page, request)) {
       try {
-        await fallbackRouteSafely(route);
+        const fulfilled = await admitAndMaybeFulfillPinnedBrowserRequest({
+          route,
+          request,
+          pinnedHostnames,
+          navigationPolicy,
+          ssrfPolicy: opts.ssrfPolicy,
+          lookupFn: opts.lookupFn,
+          fetchImpl: opts.fetchImpl,
+        });
+        if (!fulfilled) {
+          await fallbackRouteSafely(route);
+        }
       } catch (err) {
         recordGuardError(err);
         await stopGuardedRoute(route, false, err);
       }
       return;
     }
-    const policyCheck = assertBrowserNavigationAllowed({
+    const parsedRequestUrl = parseBrowserNavigationUrl(request.url());
+    const normalizedHostname = parsedRequestUrl.hostname.toLowerCase().replace(/\.+$/, "");
+    const pinnedHostname = pinnedHostnames.get(normalizedHostname);
+    const policyAdmission = assertBrowserNavigationAllowed({
       url: request.url(),
+      pinnedHostname,
+      returnBinding: true,
       ...navigationPolicy,
     });
+    const policyCheck = policyAdmission.then(
+      () => undefined,
+      () => undefined,
+    );
     try {
       opts.onPolicyCheckStarted?.(policyCheck);
     } catch {
       // Observation cannot change the policy decision owned by this guard.
     }
     try {
-      await policyCheck;
+      const admitted = await policyAdmission;
+      if (!pinnedHostname && admitted?.pinnedHostname) {
+        pinnedHostnames.set(admitted.pinnedHostname.hostname, admitted.pinnedHostname);
+      }
+      if (admitted?.pinnedHostname && isIP(parsedRequestUrl.hostname) === 0) {
+        if (typeof request.method !== "function") {
+          await fallbackRouteSafely(route);
+          return;
+        }
+        await fulfillPinnedBrowserNavigation({
+          route,
+          request,
+          pinnedHostname: admitted.pinnedHostname,
+          ssrfPolicy: opts.ssrfPolicy,
+          lookupFn: opts.lookupFn,
+          fetchImpl: opts.fetchImpl,
+        });
+        return;
+      }
     } catch (err) {
       recordGuardError(err);
       notifyPolicyDeniedDetected();
@@ -1901,8 +2068,11 @@ export async function gotoPageWithNavigationGuard(
 ): Promise<Response | null> {
   const navigationPolicy = withBrowserNavigationPolicy(opts.ssrfPolicy, {
     browserProxyMode: opts.browserProxyMode,
+    lookupFn: opts.lookupFn,
+    fetchImpl: opts.fetchImpl,
   });
   let blockedError: unknown = null;
+  const pinnedHostnames = new Map<string, PinnedHostname>();
 
   const handler = async (route: Route, request: Request) => {
     if (blockedError) {
@@ -1911,14 +2081,59 @@ export async function gotoPageWithNavigationGuard(
     }
     const requestKind = classifyBrowserDocumentNavigationRequest(opts.page, request);
     if (!requestKind) {
-      await continueRouteSafely(route);
+      try {
+        const fulfilled = await admitAndMaybeFulfillPinnedBrowserRequest({
+          route,
+          request,
+          pinnedHostnames,
+          navigationPolicy,
+          ssrfPolicy: opts.ssrfPolicy,
+          lookupFn: opts.lookupFn,
+          fetchImpl: opts.fetchImpl,
+        });
+        if (!fulfilled) {
+          await continueRouteSafely(route);
+        }
+      } catch (err) {
+        if (isPolicyDenyNavigationError(err)) {
+          await route.abort().catch(() => {});
+          return;
+        }
+        throw err;
+      }
       return;
     }
     try {
-      await assertBrowserNavigationAllowed({
+      const parsedRequestUrl = parseBrowserNavigationUrl(request.url());
+      const normalizedHostname = parsedRequestUrl.hostname.toLowerCase().replace(/\.+$/, "");
+      const pinnedHostname = pinnedHostnames.get(normalizedHostname);
+      const admitted = await assertBrowserNavigationAllowed({
         url: request.url(),
+        pinnedHostname,
+        returnBinding: true,
         ...navigationPolicy,
       });
+      if (!pinnedHostname && admitted?.pinnedHostname) {
+        pinnedHostnames.set(admitted.pinnedHostname.hostname, admitted.pinnedHostname);
+      }
+      if (admitted?.pinnedHostname && isIP(parsedRequestUrl.hostname) === 0) {
+        // Older test doubles and non-Playwright route adapters may omit request
+        // transport metadata; they cannot safely be promoted to the pinned fetch
+        // bridge, so preserve the existing route path for those adapters.
+        if (typeof request.method !== "function") {
+          await continueRouteSafely(route);
+          return;
+        }
+        await fulfillPinnedBrowserNavigation({
+          route,
+          request,
+          pinnedHostname: admitted.pinnedHostname,
+          ssrfPolicy: opts.ssrfPolicy,
+          lookupFn: opts.lookupFn,
+          fetchImpl: opts.fetchImpl,
+        });
+        return;
+      }
     } catch (err) {
       if (isPolicyDenyNavigationError(err)) {
         if (requestKind === "top-level") {
@@ -2348,6 +2563,8 @@ export async function createPageViaPlaywright(
   if (targetUrl !== "about:blank") {
     const navigationPolicy = withBrowserNavigationPolicy(opts.ssrfPolicy, {
       browserProxyMode: opts.browserProxyMode,
+      lookupFn: opts.lookupFn,
+      fetchImpl: opts.fetchImpl,
     });
     await assertBrowserNavigationAllowed({
       url: targetUrl,
@@ -2362,6 +2579,8 @@ export async function createPageViaPlaywright(
         timeoutMs: 30_000,
         ssrfPolicy: opts.ssrfPolicy,
         browserProxyMode: opts.browserProxyMode,
+        lookupFn: opts.lookupFn,
+        fetchImpl: opts.fetchImpl,
         targetId: createdTargetId ?? undefined,
       });
     } catch (err) {
