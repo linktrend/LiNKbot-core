@@ -61,8 +61,19 @@ jobs:
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-          fetch-depth: 0
+          fetch-depth: 1
           persist-credentials: false
+
+      - name: Fetch bounded baseline history
+        env:
+          BASELINE_REFSPEC: ${{ format('+refs/heads/{0}:refs/remotes/origin/{0}', github.event.pull_request.base.ref) }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          GIT_CONFIG_COUNT=1 \
+          GIT_CONFIG_KEY_0=http.extraheader \
+          GIT_CONFIG_VALUE_0="AUTHORIZATION: bearer ${GH_TOKEN}" \
+            git fetch --no-tags --depth=64 origin "${BASELINE_REFSPEC}"
 
       - name: Reject stale or non-Phase dispatch
         env:
