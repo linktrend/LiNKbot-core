@@ -165,6 +165,7 @@ class ProgressiveValidationTests(unittest.TestCase):
         )
         self.assertTrue(result["ok"], result)
         self.assertTrue(result["receiptChained"])
+        self.assertTrue(result["protectedAdmission"], result)
         self.assertEqual(set(result["receiptTransitionPaths"]), MODULE.BASELINE_RECEIPT_REBIND_SCOPE)
         self.assertEqual(result["baselineCommit"], current)
         self.assertEqual(result["receiptBaselineCommit"], rec["baselineCommit"])

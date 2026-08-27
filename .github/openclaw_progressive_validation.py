@@ -201,16 +201,26 @@ def protected_inherited_failure_admissible(
         return False
     if result.get("errors") != [] or result.get("changedFailureContractPaths") != []:
         return False
-    if result.get("baselineCommit") != BASELINE_COMMIT or result.get("baselineTree") != BASELINE_TREE:
-        return False
-    if result.get("receiptBaselineCommit") != BASELINE_COMMIT or result.get("receiptBaselineTree") != BASELINE_TREE:
-        return False
     changed_paths = result.get("changedPaths")
     if not isinstance(changed_paths, list) or len(changed_paths) != len(set(changed_paths)):
         return False
-    changed_path_set = set(changed_paths)
-    if changed_path_set not in {BASELINE_RECEIPT_REBIND_SCOPE, PKT11_PHASE_SCOPE}:
-        return False
+    if result.get("receiptChained") is True:
+        transition_paths = result.get("receiptTransitionPaths")
+        if (
+            not isinstance(transition_paths, list)
+            or any(not isinstance(path, str) for path in transition_paths)
+            or len(transition_paths) != len(set(transition_paths))
+            or set(transition_paths) != BASELINE_RECEIPT_REBIND_SCOPE
+        ):
+            return False
+    else:
+        if result.get("baselineCommit") != BASELINE_COMMIT or result.get("baselineTree") != BASELINE_TREE:
+            return False
+        if result.get("receiptBaselineCommit") != BASELINE_COMMIT or result.get("receiptBaselineTree") != BASELINE_TREE:
+            return False
+        changed_path_set = set(changed_paths)
+        if changed_path_set not in {BASELINE_RECEIPT_REBIND_SCOPE, PKT11_PHASE_SCOPE}:
+            return False
     if not isinstance(observed_failures, (list, tuple)) or any(
         not isinstance(item, str) for item in observed_failures
     ):
