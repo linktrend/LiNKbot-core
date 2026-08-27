@@ -61,16 +61,39 @@ jobs:
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-          # Fetch only the immutable phase head here; fetching every remote
-          # head makes the five-minute Fast gate fail before validation.
           fetch-depth: 1
-          persist-credentials: false
+          # Keep checkout's token-backed origin configuration for the bounded
+          # baseline fetch below; do not reconstruct authentication in shell.
+          persist-credentials: true
 
-      - name: Fetch exact protected baseline
+      - name: Fetch bounded baseline history
+        env:
+          BASELINE_REFSPEC: ${{ format('+refs/heads/{0}:refs/remotes/origin/{0}', github.event.pull_request.base.ref) }}
+          PHASE_REFSPEC: ${{ format('+refs/heads/{0}:refs/remotes/origin/{0}', github.event.pull_request.head.ref) }}
         run: |
           set -euo pipefail
-          git fetch --no-tags --depth=1 origin \
-            "refs/heads/${{ github.event.pull_request.base.ref }}:refs/remotes/origin/${{ github.event.pull_request.base.ref }}"
+          # actions/checkout configured origin with the scoped GitHub token.
+          cleanup_checkout_credentials() {
+            local key="http.https://github.com/.extraheader"
+            local config_status
+            if git config --local --get-all "${key}" >/dev/null; then
+              git config --local --unset-all "${key}"
+            else
+              config_status=$?
+              test "${config_status}" -eq 1 || return "${config_status}"
+            fi
+            if git config --local --get-all "${key}" >/dev/null; then
+              echo "checkout_credentials_cleanup_failed" >&2
+              return 1
+            else
+              config_status=$?
+              test "${config_status}" -eq 1 || return "${config_status}"
+            fi
+          }
+          trap cleanup_checkout_credentials EXIT
+          git fetch --no-tags --depth=64 origin "${BASELINE_REFSPEC}" "${PHASE_REFSPEC}"
+          cleanup_checkout_credentials
+          trap - EXIT
 
       - name: Reject stale or non-Phase dispatch
         env:

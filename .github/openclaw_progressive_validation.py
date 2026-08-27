@@ -17,8 +17,8 @@ from pathlib import Path
 POLICY_ID = "openclaw-fork-progressive-validation-v1"
 POLICY_DIGEST = "sha256:fa3f448e33fbc05e4b9676628a8be1f67bb020cc0baf58da6dd8fe720d0c26f0"
 BASELINE_RUN_ID = 32917935092
-BASELINE_COMMIT = "facdd8052b78ea82a7d75d705dc9f6d8fe502137"
-BASELINE_TREE = "1c41031ad085739a701b37ea3279a7a43a6db7bf"
+BASELINE_COMMIT = "c98757b598e753ce0344037a3f0ae6321121f6c6"
+BASELINE_TREE = "76dd3b81b3db9ffaff614ca3d0561b26a7fb5705"
 FAILURE_JOB = "checks-node-core-test-nondist-shard"
 BASELINE_RECEIPT_KIND = "openclaw-fork-baseline-ci-receipt"
 BASELINE_RECEIPT_POLICY_ID = POLICY_ID
@@ -201,16 +201,26 @@ def protected_inherited_failure_admissible(
         return False
     if result.get("errors") != [] or result.get("changedFailureContractPaths") != []:
         return False
-    if result.get("baselineCommit") != BASELINE_COMMIT or result.get("baselineTree") != BASELINE_TREE:
-        return False
-    if result.get("receiptBaselineCommit") != BASELINE_COMMIT or result.get("receiptBaselineTree") != BASELINE_TREE:
-        return False
     changed_paths = result.get("changedPaths")
     if not isinstance(changed_paths, list) or len(changed_paths) != len(set(changed_paths)):
         return False
-    changed_path_set = set(changed_paths)
-    if changed_path_set not in {BASELINE_RECEIPT_REBIND_SCOPE, PKT11_PHASE_SCOPE}:
-        return False
+    if result.get("receiptChained") is True:
+        transition_paths = result.get("receiptTransitionPaths")
+        if (
+            not isinstance(transition_paths, list)
+            or any(not isinstance(path, str) for path in transition_paths)
+            or len(transition_paths) != len(set(transition_paths))
+            or set(transition_paths) != BASELINE_RECEIPT_REBIND_SCOPE
+        ):
+            return False
+    else:
+        if result.get("baselineCommit") != BASELINE_COMMIT or result.get("baselineTree") != BASELINE_TREE:
+            return False
+        if result.get("receiptBaselineCommit") != BASELINE_COMMIT or result.get("receiptBaselineTree") != BASELINE_TREE:
+            return False
+        changed_path_set = set(changed_paths)
+        if changed_path_set not in {BASELINE_RECEIPT_REBIND_SCOPE, PKT11_PHASE_SCOPE}:
+            return False
     if not isinstance(observed_failures, (list, tuple)) or any(
         not isinstance(item, str) for item in observed_failures
     ):
@@ -240,6 +250,40 @@ def _is_ancestor(root: Path, ancestor: str, descendant: str) -> bool:
         check=False,
     )
     return result.returncode == 0
+
+
+def _changed_paths(root: Path, ancestor: str, descendant: str) -> tuple[str, ...]:
+    return tuple(
+        path for path in git(root, "diff", "--name-only", f"{ancestor}..{descendant}").splitlines() if path
+    )
+
+
+def _receipt_transition_is_valid(
+    root: Path,
+    receipt_commit: str,
+    receipt_tree: str,
+    current_commit: str,
+) -> tuple[bool, tuple[str, ...], list[str]]:
+    """Validate one receipt-maintenance hop before admitting the current base."""
+    errors: list[str] = []
+    if not _is_sha(receipt_commit) or not _is_sha(receipt_tree):
+        return False, (), ["receipt_predecessor_identity"]
+    try:
+        actual_receipt_tree = git(root, "rev-parse", f"{receipt_commit}^{{tree}}")
+    except (RuntimeError, OSError):
+        return False, (), ["receipt_predecessor_missing"]
+    if actual_receipt_tree != receipt_tree:
+        errors.append("receipt_predecessor_tree_mismatch")
+    if not _is_ancestor(root, receipt_commit, current_commit):
+        errors.append("receipt_predecessor_not_ancestor")
+    try:
+        transition = _changed_paths(root, receipt_commit, current_commit)
+    except (RuntimeError, OSError):
+        transition = ()
+        errors.append("receipt_transition_identity")
+    if set(transition) != BASELINE_RECEIPT_REBIND_SCOPE:
+        errors.append("receipt_transition_scope")
+    return not errors, transition, errors
 
 
 def validate(
@@ -273,15 +317,31 @@ def validate(
     receipt_baseline = str(receipt.get("baselineCommit") or "")
     receipt_tree = str(receipt.get("baselineTree") or "")
     baseline = resolved_tree = candidate = ""
+    receipt_chained = False
+    receipt_transition: tuple[str, ...] = ()
     try:
         baseline = git(root, "rev-parse", f"{baseline_sha or baseline_ref}^{{commit}}")
         resolved_tree = git(root, "rev-parse", f"{baseline_sha or baseline_ref}^{{tree}}")
         if baseline_tree is not None and baseline_tree != resolved_tree:
             errors.append("baseline_tree_mismatch")
         candidate = git(root, "rev-parse", f"{candidate_ref}^{{commit}}")
-        if receipt_baseline != baseline: errors.append("baseline_commit")
-        if receipt_tree != resolved_tree: errors.append("baseline_tree")
-        changed = tuple(p for p in git(root, "diff", "--name-only", f"{baseline}..{candidate}").splitlines() if p)
+        if receipt_baseline == baseline:
+            if receipt_tree != resolved_tree:
+                errors.append("baseline_tree")
+        else:
+            valid_transition, receipt_transition, transition_errors = _receipt_transition_is_valid(
+                root, receipt_baseline, receipt_tree, baseline
+            )
+            if valid_transition:
+                receipt_chained = True
+            else:
+                errors.extend(transition_errors)
+                errors.append("baseline_commit")
+                if receipt_tree != resolved_tree:
+                    errors.append("baseline_tree")
+        if not _is_ancestor(root, baseline, candidate):
+            errors.append("candidate_not_based_on_baseline")
+        changed = _changed_paths(root, baseline, candidate)
     except (RuntimeError, OSError):
         baseline = resolved_tree = candidate = ""
         changed = ()
@@ -301,7 +361,23 @@ def validate(
         else:
             changed_failure = []
     generated_only = bool(changed) and set(changed) <= {BASELINE_RECEIPT_PATH}
-    result = {"ok": not errors, "classification": "inherited_baseline_failure" if not errors else "blocking", "baselineRef": baseline_ref, "baselineCommit": baseline, "baselineTree": resolved_tree, "receiptBaselineCommit": receipt_baseline, "receiptBaselineTree": receipt_tree, "candidateCommit": candidate, "changedPaths": list(changed), "changedFailureContractPaths": changed_failure, "classifierPathsRequiringFocusedChecks": classifier, "generatedOnly": generated_only, "errors": sorted(set(errors))}
+    result = {
+        "ok": not errors,
+        "classification": "inherited_baseline_failure" if not errors else "blocking",
+        "baselineRef": baseline_ref,
+        "baselineCommit": baseline,
+        "baselineTree": resolved_tree,
+        "receiptBaselineCommit": receipt_baseline,
+        "receiptBaselineTree": receipt_tree,
+        "receiptChained": receipt_chained,
+        "receiptTransitionPaths": list(receipt_transition),
+        "candidateCommit": candidate,
+        "changedPaths": list(changed),
+        "changedFailureContractPaths": changed_failure,
+        "classifierPathsRequiringFocusedChecks": classifier,
+        "generatedOnly": generated_only,
+        "errors": sorted(set(errors)),
+    }
     result["protectedAdmission"] = protected_inherited_failure_admissible(result, observed_failures=observed_failures)
     return result
 

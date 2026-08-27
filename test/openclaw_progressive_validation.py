@@ -56,8 +56,8 @@ class ProgressiveValidationTests(unittest.TestCase):
         self.assertEqual(committed["baselineRunId"], MODULE.BASELINE_RUN_ID)
         self.assertEqual(committed["policyDigest"], MODULE.POLICY_DIGEST)
         self.assertEqual(committed["inheritedFailures"], MODULE._canonical_failure_contract())
-        self.assertEqual(MODULE.BASELINE_COMMIT, "facdd8052b78ea82a7d75d705dc9f6d8fe502137")
-        self.assertEqual(MODULE.BASELINE_TREE, "1c41031ad085739a701b37ea3279a7a43a6db7bf")
+        self.assertEqual(MODULE.BASELINE_COMMIT, "c98757b598e753ce0344037a3f0ae6321121f6c6")
+        self.assertEqual(MODULE.BASELINE_TREE, "76dd3b81b3db9ffaff614ca3d0561b26a7fb5705")
 
     def fixture(self):
         tmp = tempfile.TemporaryDirectory(prefix="openclaw-progressive-")
@@ -70,6 +70,29 @@ class ProgressiveValidationTests(unittest.TestCase):
         baseline = git(root, "rev-parse", "HEAD")
         git(root, "update-ref", "refs/remotes/origin/development", baseline)
         return tmp, root, receipt(root)
+
+    def chained_fixture(self, *, extra_path: str | None = None, omit_path: str | None = None):
+        tmp, root, rec = self.fixture()
+        transition_paths = sorted(MODULE.BASELINE_RECEIPT_REBIND_SCOPE)
+        if omit_path is not None:
+            transition_paths.remove(omit_path)
+        for path in transition_paths:
+            target = root / path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text("receipt transition\n", encoding="utf-8")
+        if extra_path is not None:
+            target = root / extra_path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text("unexpected transition\n", encoding="utf-8")
+        git(root, "add", ".")
+        git(root, "commit", "-qm", "receipt maintenance transition")
+        current = git(root, "rev-parse", "HEAD")
+        current_tree = git(root, "rev-parse", "HEAD^{tree}")
+        (root / "candidate.txt").write_text("application candidate\n", encoding="utf-8")
+        git(root, "add", "candidate.txt")
+        git(root, "commit", "-qm", "application candidate")
+        candidate = git(root, "rev-parse", "HEAD")
+        return tmp, root, rec, current, current_tree, candidate
 
     def test_exact_baseline_allows_unrelated_change(self):
         tmp, root, rec = self.fixture(); self.addCleanup(tmp.cleanup)
@@ -128,6 +151,119 @@ class ProgressiveValidationTests(unittest.TestCase):
         stale = MODULE.validate_baseline_ci_receipt(root=root, receipt=rec)
         self.assertFalse(stale["ok"])
         self.assertIn("baseline_commit", stale["errors"])
+
+    def test_chained_receipt_accepts_exact_transition_before_current_candidate(self):
+        tmp, root, rec, current, current_tree, candidate = self.chained_fixture()
+        self.addCleanup(tmp.cleanup)
+        result = MODULE.validate_baseline_ci_receipt(
+            root=root,
+            receipt=rec,
+            baseline_sha=current,
+            baseline_tree=current_tree,
+            candidate_ref=candidate,
+            observed_failures=list(MODULE.INHERITED_FAILURE_IDENTITIES),
+        )
+        self.assertTrue(result["ok"], result)
+        self.assertTrue(result["receiptChained"])
+        self.assertTrue(result["protectedAdmission"], result)
+        self.assertEqual(set(result["receiptTransitionPaths"]), MODULE.BASELINE_RECEIPT_REBIND_SCOPE)
+        self.assertEqual(result["baselineCommit"], current)
+        self.assertEqual(result["receiptBaselineCommit"], rec["baselineCommit"])
+
+    def test_chained_receipt_rejects_transition_path_set_drift(self):
+        for kwargs, expected in (
+            ({"extra_path": "README.md"}, "receipt_transition_scope"),
+            ({"omit_path": ".github/openclaw_progressive_validation.py"}, "receipt_transition_scope"),
+        ):
+            with self.subTest(**kwargs):
+                tmp, root, rec, current, current_tree, candidate = self.chained_fixture(**kwargs)
+                self.addCleanup(tmp.cleanup)
+                result = MODULE.validate_baseline_ci_receipt(
+                    root=root,
+                    receipt=rec,
+                    baseline_sha=current,
+                    baseline_tree=current_tree,
+                    candidate_ref=candidate,
+                )
+                self.assertFalse(result["ok"], result)
+                self.assertIn(expected, result["errors"])
+
+    def test_chained_receipt_rejects_changed_failure_contract_after_transition(self):
+        tmp, root, rec, current, current_tree, candidate = self.chained_fixture()
+        self.addCleanup(tmp.cleanup)
+        contract_path = root / "src" / "state" / "lisa-principal-task-store.ts"
+        contract_path.parent.mkdir(parents=True)
+        contract_path.write_text("changed failure contract\n", encoding="utf-8")
+        git(root, "add", str(contract_path.relative_to(root)))
+        git(root, "commit", "-qm", "change inherited failure contract")
+        result = MODULE.validate_baseline_ci_receipt(
+            root=root,
+            receipt=rec,
+            baseline_sha=current,
+            baseline_tree=current_tree,
+            candidate_ref="HEAD",
+            observed_failures=list(MODULE.INHERITED_FAILURE_IDENTITIES),
+        )
+        self.assertFalse(result["ok"], result)
+        self.assertIn("changed_failure_contract", result["errors"])
+
+    def test_chained_receipt_rejects_predecessor_tree_and_policy_drift(self):
+        tmp, root, rec, current, current_tree, candidate = self.chained_fixture()
+        self.addCleanup(tmp.cleanup)
+        stale_tree = dict(rec)
+        stale_tree["baselineTree"] = "0" * 40
+        result = MODULE.validate_baseline_ci_receipt(
+            root=root,
+            receipt=stale_tree,
+            baseline_sha=current,
+            baseline_tree=current_tree,
+            candidate_ref=candidate,
+        )
+        self.assertFalse(result["ok"], result)
+        self.assertIn("receipt_predecessor_tree_mismatch", result["errors"])
+        stale_policy = dict(rec)
+        stale_policy["policyDigest"] = "sha256:" + "0" * 64
+        result = MODULE.validate_baseline_ci_receipt(
+            root=root,
+            receipt=stale_policy,
+            baseline_sha=current,
+            baseline_tree=current_tree,
+            candidate_ref=candidate,
+        )
+        self.assertFalse(result["ok"], result)
+        self.assertIn("policy", result["errors"])
+
+    def test_chained_receipt_rejects_non_ancestor_predecessor(self):
+        tmp, root, rec = self.fixture()
+        self.addCleanup(tmp.cleanup)
+        git(root, "checkout", "-qb", "unrelated-predecessor")
+        (root / "unrelated.txt").write_text("not the protected predecessor\n", encoding="utf-8")
+        git(root, "add", "unrelated.txt")
+        git(root, "commit", "-qm", "unrelated predecessor")
+        predecessor = git(root, "rev-parse", "HEAD")
+        predecessor_tree = git(root, "rev-parse", "HEAD^{tree}")
+        git(root, "checkout", "-q", "development")
+        for path in sorted(MODULE.BASELINE_RECEIPT_REBIND_SCOPE):
+            target = root / path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text("receipt transition\n", encoding="utf-8")
+        git(root, "add", ".")
+        git(root, "commit", "-qm", "receipt maintenance transition")
+        current = git(root, "rev-parse", "HEAD")
+        current_tree = git(root, "rev-parse", "HEAD^{tree}")
+        candidate = current
+        non_ancestor_receipt = dict(rec)
+        non_ancestor_receipt["baselineCommit"] = predecessor
+        non_ancestor_receipt["baselineTree"] = predecessor_tree
+        result = MODULE.validate_baseline_ci_receipt(
+            root=root,
+            receipt=non_ancestor_receipt,
+            baseline_sha=current,
+            baseline_tree=current_tree,
+            candidate_ref=candidate,
+        )
+        self.assertFalse(result["ok"], result)
+        self.assertIn("receipt_predecessor_not_ancestor", result["errors"])
 
     def test_stale_receipt_rebinds_to_atomic_execution_base(self):
         tmp, root, rec = self.fixture(); self.addCleanup(tmp.cleanup)
