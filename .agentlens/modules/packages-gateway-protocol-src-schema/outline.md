@@ -1,0 +1,260 @@
+# Outline
+
+[← Back to MODULE](MODULE.md) | [← Back to INDEX](../../INDEX.md)
+
+Symbol maps for 7 large files in this module.
+
+## packages/gateway-protocol/src/schema/agents-models-skills.ts (986 lines)
+
+| Line | Kind | Name | Visibility |
+| ---- | ---- | ---- | ---------- |
+| 914 | type | AgentSummary | pub |
+| 915 | type | GatewayAgentRuntime | pub |
+| 916 | type | AgentsFileEntry | pub |
+| 917 | type | AgentsCreateParams | pub |
+| 918 | type | AgentsCreateResult | pub |
+| 919 | type | AgentsUpdateParams | pub |
+| 920 | type | AgentsUpdateResult | pub |
+| 921 | type | AgentsDeleteParams | pub |
+| 922 | type | AgentsDeleteResult | pub |
+| 923 | type | AgentsFilesListParams | pub |
+| 924 | type | AgentsFilesListResult | pub |
+| 925 | type | AgentsFilesGetParams | pub |
+| 926 | type | AgentsFilesGetResult | pub |
+| 927 | type | AgentsFilesSetParams | pub |
+| 928 | type | AgentsFilesSetResult | pub |
+| 929 | type | AgentsListParams | pub |
+| 930 | type | AgentsListResult | pub |
+| 931 | type | ModelChoice | pub |
+| 932 | type | ModelsListParams | pub |
+| 933 | type | ModelsListResult | pub |
+| 934 | type | AuthProbeStatus | pub |
+| 935 | type | ModelsProbeParams | pub |
+| 936 | type | ModelsProbeTargetResult | pub |
+| 937 | type | ModelsProbeResult | pub |
+| 938 | type | SkillsStatusParams | pub |
+| 939 | type | ToolsCatalogParams | pub |
+| 940 | type | ToolCatalogProfile | pub |
+| 941 | type | ToolCatalogEntry | pub |
+| 942 | type | ToolCatalogGroup | pub |
+| 943 | type | ToolsCatalogResult | pub |
+| 944 | type | ToolsEffectiveParams | pub |
+| 945 | type | ToolsEffectiveEntry | pub |
+| 946 | type | ToolsEffectiveGroup | pub |
+| 947 | type | ToolsEffectiveNotice | pub |
+| 948 | type | ToolsEffectiveResult | pub |
+| 949 | type | ToolsInvokeParams | pub |
+| 950 | type | ToolsInvokeResult | pub |
+| 951 | type | SkillsBinsParams | pub |
+| 952 | type | SkillsBinsResult | pub |
+| 953 | type | SkillsSearchParams | pub |
+| 954 | type | SkillsSearchResult | pub |
+| 955 | type | SkillsDetailParams | pub |
+| 956 | type | SkillsDetailResult | pub |
+| 957 | type | SkillsProposalsListParams | pub |
+| 958 | type | SkillsProposalsListResult | pub |
+| 959 | type | SkillsProposalInspectParams | pub |
+| 960 | type | SkillsProposalInspectResult | pub |
+| 961 | type | SkillsProposalCreateParams | pub |
+| 962 | type | SkillsProposalUpdateParams | pub |
+| 963 | type | SkillsProposalReviseParams | pub |
+| 964 | type | SkillsProposalRequestRevisionParams | pub |
+| 967 | type | SkillsProposalRequestRevisionResult | pub |
+| 970 | type | SkillsProposalActionParams | pub |
+| 971 | type | SkillsProposalApplyResult | pub |
+| 972 | type | SkillsProposalRecordResult | pub |
+| 973 | type | SkillsCuratorStatusParams | pub |
+| 974 | type | SkillsCuratorStatusResult | pub |
+| 975 | type | SkillsCuratorActionParams | pub |
+| 976 | type | SkillsCuratorActionResult | pub |
+| 977 | type | SkillsSecurityVerdictsParams | pub |
+| 978 | type | SkillsSecurityVerdictsResult | pub |
+| 979 | type | SkillsSkillCardParams | pub |
+| 980 | type | SkillsSkillCardResult | pub |
+| 981 | type | SkillsUploadBeginParams | pub |
+| 982 | type | SkillsUploadChunkParams | pub |
+| 983 | type | SkillsUploadCommitParams | pub |
+| 984 | type | SkillsInstallParams | pub |
+| 985 | type | SkillsUpdateParams | pub |
+
+## packages/gateway-protocol/src/schema/audit-activity.ts (620 lines)
+
+| Line | Kind | Name | Visibility |
+| ---- | ---- | ---- | ---------- |
+| 91 | fn | correlatedObject | (private) |
+| 100 | fn | withoutField | (private) |
+| 449 | type | AuditActivityRecordBaseV1 | (private) |
+| 458 | type | AuditActivityAgentRecordBaseV1 | (private) |
+| 466 | type | AuditActivityAgentRunV1Terminal | (private) |
+| 473 | type | AuditActivityAgentRunV1 | pub |
+| 478 | type | AuditActivityToolActionV1Terminal | (private) |
+| 490 | type | AuditActivityToolActionV1 | pub |
+| 497 | type | AuditActivityMessageRecordBaseV1 | (private) |
+| 515 | type | AuditActivityInboundMessageV1Terminal | (private) |
+| 545 | type | AuditActivityInboundMessageV1 | pub |
+| 554 | type | AuditActivityOutboundMessageV1Terminal | (private) |
+| 592 | type | AuditActivityOutboundMessageV1 | pub |
+| 599 | type | AuditActivityEventV1 | pub |
+| 604 | type | AuditActivityListParams | pub |
+| 617 | type | AuditActivityListResult | pub |
+
+## packages/gateway-protocol/src/schema/channels.ts (808 lines)
+
+| Line | Kind | Name | Visibility |
+| ---- | ---- | ---- | ---------- |
+| 143 | fn | requireJsonSchemaProperties | (private) |
+| 768 | type | TalkEvent | pub |
+| 769 | type | TalkModeParams | pub |
+| 770 | type | TalkCatalogParams | pub |
+| 771 | type | TalkCatalogResult | pub |
+| 772 | type | TalkConfigParams | pub |
+| 773 | type | TalkConfigResult | pub |
+| 774 | type | TalkClientCreateParams | pub |
+| 775 | type | TalkClientCreateResult | pub |
+| 776 | type | TalkClientSteerParams | pub |
+| 777 | type | TalkAgentControlResult | pub |
+| 778 | type | TalkClientToolCallParams | pub |
+| 779 | type | TalkClientToolCallResult | pub |
+| 780 | type | TalkClientTranscriptParams | pub |
+| 781 | type | TalkClientCloseParams | pub |
+| 782 | type | TalkClientMutationResult | pub |
+| 783 | type | TalkSessionCreateParams | pub |
+| 784 | type | TalkSessionCreateResult | pub |
+| 785 | type | TalkSessionJoinParams | pub |
+| 786 | type | TalkSessionJoinResult | pub |
+| 787 | type | TalkSessionAppendAudioParams | pub |
+| 788 | type | TalkSessionTurnParams | pub |
+| 789 | type | TalkSessionCancelTurnParams | pub |
+| 790 | type | TalkSessionCancelOutputParams | pub |
+| 791 | type | TalkSessionTurnResult | pub |
+| 792 | type | TalkSessionSteerParams | pub |
+| 793 | type | TalkSessionSubmitToolResultParams | pub |
+| 796 | type | TalkSessionCloseParams | pub |
+| 797 | type | TalkSessionOkResult | pub |
+| 798 | type | TalkSpeakParams | pub |
+| 799 | type | TalkSpeakResult | pub |
+| 800 | type | TtsSpeakParams | pub |
+| 801 | type | TtsSpeakResult | pub |
+| 802 | type | ChannelsStatusParams | pub |
+| 803 | type | ChannelsStatusResult | pub |
+| 804 | type | ChannelsStartParams | pub |
+| 805 | type | ChannelsStopParams | pub |
+| 806 | type | ChannelsLogoutParams | pub |
+| 807 | type | WebLoginStartParams | pub |
+| 808 | type | WebLoginWaitParams | pub |
+
+## packages/gateway-protocol/src/schema/cron.ts (622 lines)
+
+| Line | Kind | Name | Visibility |
+| ---- | ---- | ---- | ---------- |
+| 14 | fn | cronAgentTurnPayloadSchema | (private) |
+| 38 | fn | cronCommandPayloadSchema | (private) |
+| 53 | fn | cronScriptPayloadSchema | (private) |
+| 74 | fn | cronRunStatusSchema | (private) |
+| 186 | fn | cronIdOrJobIdParams | (private) |
+
+## packages/gateway-protocol/src/schema/protocol-schemas.ts (1158 lines)
+
+_No symbols extracted._
+
+## packages/gateway-protocol/src/schema/sessions.ts (741 lines)
+
+| Line | Kind | Name | Visibility |
+| ---- | ---- | ---- | ---------- |
+| 415 | type | SessionsPatchParams | pub |
+| 676 | type | SessionsListParams | pub |
+| 677 | type | SessionsCleanupParams | pub |
+| 678 | type | SessionsPreviewParams | pub |
+| 679 | type | SessionsDescribeParams | pub |
+| 680 | type | SessionsResolveParams | pub |
+| 681 | type | SessionsSearchParams | pub |
+| 682 | type | SessionsSearchHit | pub |
+| 683 | type | SessionsSearchResult | pub |
+| 684 | type | SessionCompactionCheckpoint | pub |
+| 685 | type | SessionOperationEvent | pub |
+| 686 | type | SessionsCompactionListParams | pub |
+| 687 | type | SessionsCompactionGetParams | pub |
+| 688 | type | SessionsCompactionBranchParams | pub |
+| 689 | type | SessionsCompactionRestoreParams | pub |
+| 690 | type | SessionsCompactionListResult | pub |
+| 691 | type | SessionsCompactionGetResult | pub |
+| 692 | type | SessionsCompactionBranchResult | pub |
+| 693 | type | SessionsCompactionRestoreResult | pub |
+| 694 | type | SessionsRewindParams | pub |
+| 695 | type | SessionsForkParams | pub |
+| 696 | type | SessionsRewindResult | pub |
+| 697 | type | SessionsForkResult | pub |
+| 698 | type | SessionBranch | pub |
+| 699 | type | SessionsBranchesListParams | pub |
+| 700 | type | SessionsBranchesListResult | pub |
+| 701 | type | SessionsBranchesSwitchParams | pub |
+| 702 | type | SessionsBranchesSwitchResult | pub |
+| 703 | type | SessionWorktreeInfo | pub |
+| 704 | type | SessionsCreateParams | pub |
+| 705 | type | SessionsCreateResult | pub |
+| 706 | type | SessionsSendParams | pub |
+| 707 | type | SessionsMessagesSubscribeParams | pub |
+| 708 | type | SessionsMessagesUnsubscribeParams | pub |
+| 711 | type | SessionsAbortParams | pub |
+| 712 | type | SessionsPluginPatchParams | pub |
+| 713 | type | SessionsPluginPatchResult | pub |
+| 714 | type | SessionsResetParams | pub |
+| 715 | type | SessionsDeleteParams | pub |
+| 716 | type | SessionGroup | pub |
+| 717 | type | SessionsGroupsListParams | pub |
+| 718 | type | SessionsGroupsListResult | pub |
+| 719 | type | SessionsGroupsPutParams | pub |
+| 720 | type | SessionsGroupsRenameParams | pub |
+| 721 | type | SessionsGroupsDeleteParams | pub |
+| 722 | type | SessionsGroupsMutationResult | pub |
+| 723 | type | SessionsCompactParams | pub |
+| 724 | type | SessionsUsageParams | pub |
+| 725 | type | SessionFileKind | pub |
+| 726 | type | SessionFileRelevance | pub |
+| 727 | type | SessionFileEntry | pub |
+| 728 | type | SessionFileBrowserEntry | pub |
+| 729 | type | SessionFileBrowserResult | pub |
+| 730 | type | SessionsFilesListParams | pub |
+| 731 | type | SessionsFilesListResult | pub |
+| 732 | type | SessionsFilesGetParams | pub |
+| 733 | type | SessionsFilesGetResult | pub |
+| 734 | type | SessionsFilesSetParams | pub |
+| 735 | type | SessionsFilesSetResult | pub |
+| 736 | type | SessionsFilesRevealParams | pub |
+| 737 | type | SessionsFilesRevealResult | pub |
+| 738 | type | SessionDiffFileStatus | pub |
+| 739 | type | SessionDiffFile | pub |
+| 740 | type | SessionsDiffParams | pub |
+| 741 | type | SessionsDiffResult | pub |
+
+## packages/gateway-protocol/src/schema/worker-admission.ts (663 lines)
+
+| Line | Kind | Name | Visibility |
+| ---- | ---- | ---- | ---------- |
+| 338 | fn | workerLiveObject | (private) |
+| 630 | type | WorkerAdmissionHandshake | pub |
+| 631 | type | WorkerConnectParams | pub |
+| 632 | type | WorkerConnectRequestFrame | pub |
+| 633 | type | WorkerAdmissionFailureReason | pub |
+| 634 | type | WorkerProtocolCloseReason | pub |
+| 635 | type | WorkerErrorShape | pub |
+| 636 | type | WorkerHelloOk | pub |
+| 637 | type | WorkerAdmissionResponseFrame | pub |
+| 638 | type | WorkerHeartbeatParams | pub |
+| 639 | type | WorkerHeartbeatResult | pub |
+| 640 | type | WorkerHeartbeatRequestFrame | pub |
+| 641 | type | WorkerHeartbeatResponseFrame | pub |
+| 642 | type | WorkerTranscriptMessage | pub |
+| 643 | type | WorkerTranscriptCommitParams | pub |
+| 644 | type | WorkerTranscriptCommitResult | pub |
+| 645 | type | WorkerTranscriptCommitErrorReason | pub |
+| 648 | type | WorkerTranscriptCommitErrorShape | pub |
+| 651 | type | WorkerTranscriptCommitRequestFrame | pub |
+| 654 | type | WorkerTranscriptCommitResponseFrame | pub |
+| 657 | type | WorkerLiveEvent | pub |
+| 658 | type | WorkerLiveEventParams | pub |
+| 659 | type | WorkerLiveEventResult | pub |
+| 660 | type | WorkerLiveEventErrorDetails | pub |
+| 661 | type | WorkerLiveEventErrorShape | pub |
+| 662 | type | WorkerLiveEventRequestFrame | pub |
+| 663 | type | WorkerLiveEventResponseFrame | pub |

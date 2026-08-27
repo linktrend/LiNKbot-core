@@ -1,0 +1,75 @@
+# Outline
+
+[← Back to MODULE](MODULE.md) | [← Back to INDEX](../../INDEX.md)
+
+Symbol maps for 1 large files in this module.
+
+## ui/src/test-helpers/control-ui-e2e.ts (1497 lines)
+
+| Line | Kind | Name | Visibility |
+| ---- | ---- | ---- | ---------- |
+| 40 | type | MockGatewayRequest | pub |
+| 46 | type | ControlUiMockGatewayScenario | pub |
+| 91 | type | NormalizedControlUiMockGatewayScenario | (private) |
+| 93 | type | ControlUiE2eServer | pub |
+| 98 | type | MockGatewayControls | pub |
+| 127 | fn | resolveRepoRoot | (private) |
+| 132 | fn | resolvePlaywrightChromiumExecutablePath | pub |
+| 150 | fn | canRunPlaywrightChromium | pub |
+| 157 | fn | startControlUiE2eServer | pub |
+| 213 | fn | resolveAvailableLoopbackPort | (private) |
+| 234 | fn | resolveServerBaseUrl | (private) |
+| 242 | fn | normalizeScenario | (private) |
+| 282 | fn | createControlUiMockBootstrapConfig | pub |
+| 298 | fn | createControlUiMockGatewayInitScript | pub |
+| 308 | fn | installControlUiMockGateway | (private) |
+| 312 | type | BrowserRequest | (private) |
+| 313 | type | BrowserFrame | (private) |
+| 319 | type | BrowserScenario | (private) |
+| 320 | type | BrowserMethodResponseCase | (private) |
+| 324 | type | BrowserMethodResponseCases | (private) |
+| 327 | type | BrowserMethodResponseSequence | (private) |
+| 330 | type | DeferredResponse | (private) |
+| 336 | type | ExposedGateway | (private) |
+| 354 | type | WindowWithGateway | (private) |
+| 459 | fn | persistConfigState | (private) |
+| 467 | fn | mockConfigHash | (private) |
+| 471 | fn | mockAppliedConfigHash | (private) |
+| 475 | fn | persistGroupsState | (private) |
+| 483 | fn | groupsPayload | (private) |
+| 487 | fn | normalizedGroupNames | (private) |
+| 503 | fn | isRecord | (private) |
+| 507 | fn | hasOwn | (private) |
+| 511 | fn | valuesEqual | (private) |
+| 525 | fn | paramsMatch | (private) |
+| 541 | fn | responseCases | (private) |
+| 549 | fn | responseSequence | (private) |
+| 557 | fn | configuredResponse | (private) |
+| 586 | fn | recordSessionPatch | (private) |
+| 602 | fn | applySessionPatches | (private) |
+| 641 | fn | stopRepeatingSessionEvents | (private) |
+| 648 | fn | emitRepeatingSessionEvent | (private) |
+| 669 | fn | startRepeatingSessionEvents | (private) |
+| 678 | fn | updateSessionMessageSubscription | (private) |
+| 696 | fn | sessionRow | (private) |
+| 712 | fn | buildResponse | (private) |
+| 991 | fn | shouldDefer | (private) |
+| 1000 | fn | parseFrame | (private) |
+| 1012 | class | MockWebSocket | (private) |
+| 1244 | fn | installMockGateway | pub |
+| 1260 | fn | createMockGatewayControls | (private) |
+| 1261 | fn | emitGatewayEvent | (private) |
+| 1264 | fn | gateway | (private) |
+| 1280 | fn | deliverLatest | (private) |
+| 1282 | fn | gateway | (private) |
+| 1296 | fn | getRequests | (private) |
+| 1298 | fn | gateway | (private) |
+| 1312 | fn | gateway | (private) |
+| 1330 | fn | gateway | (private) |
+| 1359 | fn | gateway | (private) |
+| 1371 | fn | gateway | (private) |
+| 1384 | fn | gateway | (private) |
+| 1410 | fn | gateway | (private) |
+| 1427 | fn | gateway | (private) |
+| 1442 | fn | gateway | (private) |
+| 1458 | fn | gateway | (private) |

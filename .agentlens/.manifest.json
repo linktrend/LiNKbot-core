@@ -1,0 +1,2761 @@
+{
+  "version": "0.5.0",
+  "generated_at": 1787805123,
+  "modules": {
+    "extensions-openshell": {
+      "latest_mtime": 1787804983,
+      "file_count": 1,
+      "files_hash": 11278248629963595856
+    },
+    "extensions-oc-path-src-oc-path-yaml": {
+      "latest_mtime": 1787804983,
+      "file_count": 5,
+      "files_hash": 7788257329554994992
+    },
+    "src-agents-sandbox": {
+      "latest_mtime": 1787804984,
+      "file_count": 84,
+      "files_hash": 2472669361672163026
+    },
+    "src-shared-text": {
+      "latest_mtime": 1787804986,
+      "file_count": 18,
+      "files_hash": 17198875215136343635
+    },
+    "ui-src-lib-cron": {
+      "latest_mtime": 1787804986,
+      "file_count": 4,
+      "files_hash": 3047538334245769795
+    },
+    "packages-acp-core-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 16,
+      "files_hash": 14740856087546267163
+    },
+    "extensions-codex-src-app-server": {
+      "latest_mtime": 1787804982,
+      "file_count": 268,
+      "files_hash": 2724935198182621535
+    },
+    "extensions-oc-path-src-oc-path-jsonl": {
+      "latest_mtime": 1787804983,
+      "file_count": 6,
+      "files_hash": 2443023383566210347
+    },
+    "extensions-qqbot-src-engine-access": {
+      "latest_mtime": 1787804983,
+      "file_count": 6,
+      "files_hash": 15929266211396675847
+    },
+    "packages-gateway-client-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 20,
+      "files_hash": 526488461673040017
+    },
+    "packages-media-understanding-common-src": {
+      "latest_mtime": 1787804984,
+      "file_count": 13,
+      "files_hash": 17062217221518617762
+    },
+    "src-plugins-runtime": {
+      "latest_mtime": 1787804986,
+      "file_count": 52,
+      "files_hash": 3217279105318662733
+    },
+    "extensions-together": {
+      "latest_mtime": 1787804983,
+      "file_count": 8,
+      "files_hash": 98371494585165947
+    },
+    "extensions-lmstudio-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 14,
+      "files_hash": 2879534128257990534
+    },
+    "src-channels-plugins-contracts-test-helpers": {
+      "latest_mtime": 1787804984,
+      "file_count": 15,
+      "files_hash": 1608523104068032200
+    },
+    "extensions-mattermost": {
+      "latest_mtime": 1787804983,
+      "file_count": 12,
+      "files_hash": 3348472499299657438
+    },
+    "ui-src-lit": {
+      "latest_mtime": 1787804986,
+      "file_count": 6,
+      "files_hash": 13638501554893776987
+    },
+    "extensions-googlechat": {
+      "latest_mtime": 1787804983,
+      "file_count": 12,
+      "files_hash": 13487347788795303284
+    },
+    "extensions-browser-scripts": {
+      "latest_mtime": 1787804982,
+      "file_count": 5,
+      "files_hash": 4290724360060296956
+    },
+    "extensions-copilot-src": {
+      "latest_mtime": 1787804982,
+      "file_count": 33,
+      "files_hash": 5381891537825486406
+    },
+    "ui-src-pages-activity": {
+      "latest_mtime": 1787804986,
+      "file_count": 7,
+      "files_hash": 1619240881504857467
+    },
+    "extensions-cohere": {
+      "latest_mtime": 1787804982,
+      "file_count": 7,
+      "files_hash": 15419400355805278445
+    },
+    "ui-src-i18n-lib": {
+      "latest_mtime": 1787804986,
+      "file_count": 5,
+      "files_hash": 356180666288645179
+    },
+    "extensions-voice-call-src-webhook": {
+      "latest_mtime": 1787804983,
+      "file_count": 11,
+      "files_hash": 13412513954013781233
+    },
+    "ui-src-lib-sessions": {
+      "latest_mtime": 1787804986,
+      "file_count": 30,
+      "files_hash": 6867514741533500645
+    },
+    "packages-ai-src-internal": {
+      "latest_mtime": 1787804983,
+      "file_count": 9,
+      "files_hash": 8876605364529785475
+    },
+    "extensions-reef": {
+      "latest_mtime": 1787804983,
+      "file_count": 11,
+      "files_hash": 8543909707751578157
+    },
+    "extensions-tlon": {
+      "latest_mtime": 1787804983,
+      "file_count": 32,
+      "files_hash": 10139935850416811313
+    },
+    "src-gateway-worker-environments": {
+      "latest_mtime": 1787804985,
+      "file_count": 101,
+      "files_hash": 6160972249425468916
+    },
+    "extensions-whatsapp-src-auto-reply-monitor": {
+      "latest_mtime": 1787804983,
+      "file_count": 39,
+      "files_hash": 10457317414343677588
+    },
+    "extensions-thread-ownership": {
+      "latest_mtime": 1787804983,
+      "file_count": 4,
+      "files_hash": 6803828289901963669
+    },
+    "extensions-matrix-src-matrix-monitor": {
+      "latest_mtime": 1787804983,
+      "file_count": 72,
+      "files_hash": 3915972670331032696
+    },
+    "extensions-amazon-bedrock-mantle": {
+      "latest_mtime": 1787804982,
+      "file_count": 8,
+      "files_hash": 5041978623184113170
+    },
+    "src-docs": {
+      "latest_mtime": 1787804985,
+      "file_count": 7,
+      "files_hash": 4549014771675484573
+    },
+    "src-transcripts": {
+      "latest_mtime": 1787804986,
+      "file_count": 8,
+      "files_hash": 13811728066796332977
+    },
+    "extensions-memory-lancedb": {
+      "latest_mtime": 1787804983,
+      "file_count": 15,
+      "files_hash": 8230444453028231792
+    },
+    "extensions-litellm": {
+      "latest_mtime": 1787804983,
+      "file_count": 8,
+      "files_hash": 2839251604945670300
+    },
+    "extensions-gradium": {
+      "latest_mtime": 1787804983,
+      "file_count": 7,
+      "files_hash": 16558346038963969562
+    },
+    "src-hooks": {
+      "latest_mtime": 1787804985,
+      "file_count": 52,
+      "files_hash": 4309691085881126479
+    },
+    "ui-src-lib-plugins": {
+      "latest_mtime": 1787804986,
+      "file_count": 1,
+      "files_hash": 12833416274346399399
+    },
+    "extensions-lobster": {
+      "latest_mtime": 1787804983,
+      "file_count": 2,
+      "files_hash": 3802630869374970245
+    },
+    "src-trajectory": {
+      "latest_mtime": 1787804986,
+      "file_count": 14,
+      "files_hash": 15280635201853048832
+    },
+    "extensions-qa-lab-src-mantis": {
+      "latest_mtime": 1787804983,
+      "file_count": 16,
+      "files_hash": 4205347267291848475
+    },
+    "src-skills-runtime": {
+      "latest_mtime": 1787804986,
+      "file_count": 25,
+      "files_hash": 15088799292747149007
+    },
+    "src-auto-reply-usage-bar": {
+      "latest_mtime": 1787804984,
+      "file_count": 8,
+      "files_hash": 4896036738088497640
+    },
+    "apps-ios-Tests-Logic": {
+      "latest_mtime": 1787804982,
+      "file_count": 7,
+      "files_hash": 759742845569433773
+    },
+    "extensions-workboard-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 35,
+      "files_hash": 10446979550716974404
+    },
+    "ui-src-pages-custodian": {
+      "latest_mtime": 1787804986,
+      "file_count": 17,
+      "files_hash": 10404550963776122439
+    },
+    "src-utils": {
+      "latest_mtime": 1787804986,
+      "file_count": 50,
+      "files_hash": 4402733408282913352
+    },
+    "extensions-duckduckgo": {
+      "latest_mtime": 1787804983,
+      "file_count": 3,
+      "files_hash": 8522396670287342896
+    },
+    "extensions-file-transfer-src-tools": {
+      "latest_mtime": 1787804983,
+      "file_count": 10,
+      "files_hash": 18093391108777462238
+    },
+    "src-agents-utils": {
+      "latest_mtime": 1787804984,
+      "file_count": 15,
+      "files_hash": 486174359704120243
+    },
+    "extensions-gmi": {
+      "latest_mtime": 1787804983,
+      "file_count": 4,
+      "files_hash": 10851264156070465164
+    },
+    "extensions-talk-voice": {
+      "latest_mtime": 1787804983,
+      "file_count": 3,
+      "files_hash": 5888099840639422568
+    },
+    "ui-src-test-helpers-app-sidebar-cases": {
+      "latest_mtime": 1787804986,
+      "file_count": 17,
+      "files_hash": 5498433930343433331
+    },
+    "extensions-feishu": {
+      "latest_mtime": 1787804983,
+      "file_count": 18,
+      "files_hash": 9749544356513527860
+    },
+    "extensions-webhooks": {
+      "latest_mtime": 1787804983,
+      "file_count": 8,
+      "files_hash": 16736233302246936906
+    },
+    "extensions-phone-control": {
+      "latest_mtime": 1787804983,
+      "file_count": 5,
+      "files_hash": 13666882430527114776
+    },
+    "src-commands-channel-setup": {
+      "latest_mtime": 1787804985,
+      "file_count": 11,
+      "files_hash": 96871939366205908
+    },
+    "extensions-mattermost-src-mattermost": {
+      "latest_mtime": 1787804983,
+      "file_count": 62,
+      "files_hash": 6953533165730030067
+    },
+    "extensions-tlon-src-monitor": {
+      "latest_mtime": 1787804983,
+      "file_count": 16,
+      "files_hash": 13877429259659749211
+    },
+    "apps-macos-Sources-OpenClawMacCLI": {
+      "latest_mtime": 1787804982,
+      "file_count": 9,
+      "files_hash": 5276685540980338193
+    },
+    "extensions-memory-wiki-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 69,
+      "files_hash": 2757557942986713742
+    },
+    "extensions-zoom-meetings-src-transports": {
+      "latest_mtime": 1787804983,
+      "file_count": 16,
+      "files_hash": 17055360924906921530
+    },
+    "src-auto-reply-reply-commands-subagents": {
+      "latest_mtime": 1787804984,
+      "file_count": 9,
+      "files_hash": 14166164776586981545
+    },
+    "extensions-browser-src-gateway": {
+      "latest_mtime": 1787804982,
+      "file_count": 7,
+      "files_hash": 15240323373392158574
+    },
+    "extensions-qqbot": {
+      "latest_mtime": 1787804983,
+      "file_count": 96,
+      "files_hash": 7617531451632505821
+    },
+    "extensions-stepfun": {
+      "latest_mtime": 1787804983,
+      "file_count": 4,
+      "files_hash": 5399786006977997259
+    },
+    "apps-swabble-Sources-swabble-Commands": {
+      "latest_mtime": 1787804982,
+      "file_count": 11,
+      "files_hash": 110653402158210963
+    },
+    "src-wizard-i18n": {
+      "latest_mtime": 1787804986,
+      "file_count": 6,
+      "files_hash": 17446083335123044875
+    },
+    "scripts-mantis": {
+      "latest_mtime": 1787804984,
+      "file_count": 8,
+      "files_hash": 18113727554854201162
+    },
+    "src-mcp": {
+      "latest_mtime": 1787804985,
+      "file_count": 20,
+      "files_hash": 8164666829756433028
+    },
+    "extensions-google": {
+      "latest_mtime": 1787804983,
+      "file_count": 86,
+      "files_hash": 5551091335282838144
+    },
+    "extensions-policy-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 19,
+      "files_hash": 7487201606710155948
+    },
+    "extensions-admin-http-rpc": {
+      "latest_mtime": 1787804982,
+      "file_count": 5,
+      "files_hash": 3895359288410163721
+    },
+    "src-commands-doctor-cron": {
+      "latest_mtime": 1787804985,
+      "file_count": 19,
+      "files_hash": 14767483672825175550
+    },
+    "extensions-memory-wiki": {
+      "latest_mtime": 1787804983,
+      "file_count": 8,
+      "files_hash": 12940656388205655800
+    },
+    "extensions-clickclack-src-discussions": {
+      "latest_mtime": 1787804982,
+      "file_count": 17,
+      "files_hash": 1676703332764986471
+    },
+    "src-plugin-state": {
+      "latest_mtime": 1787804985,
+      "file_count": 16,
+      "files_hash": 1970425233227285557
+    },
+    "extensions-matrix-src-matrix-send": {
+      "latest_mtime": 1787804983,
+      "file_count": 7,
+      "files_hash": 12987323069072732641
+    },
+    "extensions-migrate-hermes": {
+      "latest_mtime": 1787804983,
+      "file_count": 30,
+      "files_hash": 1040503357119805696
+    },
+    "src-model-catalog": {
+      "latest_mtime": 1787804985,
+      "file_count": 5,
+      "files_hash": 11495863577460036160
+    },
+    "src-process-supervisor-adapters": {
+      "latest_mtime": 1787804986,
+      "file_count": 6,
+      "files_hash": 1697669319370282583
+    },
+    "extensions-zai": {
+      "latest_mtime": 1787804983,
+      "file_count": 16,
+      "files_hash": 7910921491062925961
+    },
+    "packages-markdown-core-src": {
+      "latest_mtime": 1787804984,
+      "file_count": 33,
+      "files_hash": 5947525453480940660
+    },
+    "extensions-qqbot-src-engine-commands": {
+      "latest_mtime": 1787804983,
+      "file_count": 10,
+      "files_hash": 273855759980005341
+    },
+    "extensions-venice": {
+      "latest_mtime": 1787804983,
+      "file_count": 11,
+      "files_hash": 7011635481672403250
+    },
+    "src-skills-test-support": {
+      "latest_mtime": 1787804986,
+      "file_count": 7,
+      "files_hash": 231581510468683384
+    },
+    "src-infra-command-analysis": {
+      "latest_mtime": 1787804985,
+      "file_count": 8,
+      "files_hash": 6090226404503512071
+    },
+    "src-skills-workshop": {
+      "latest_mtime": 1787804986,
+      "file_count": 36,
+      "files_hash": 13835125237654686899
+    },
+    "extensions-deepgram": {
+      "latest_mtime": 1787804982,
+      "file_count": 8,
+      "files_hash": 5251466303635079002
+    },
+    "extensions-raft-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 9,
+      "files_hash": 9538144520643088410
+    },
+    "extensions-msteams-src-monitor-handler": {
+      "latest_mtime": 1787804983,
+      "file_count": 15,
+      "files_hash": 626293474089140291
+    },
+    "extensions-msteams-src-attachments": {
+      "latest_mtime": 1787804983,
+      "file_count": 12,
+      "files_hash": 4992737288470570911
+    },
+    "extensions-qqbot-src-engine-config": {
+      "latest_mtime": 1787804983,
+      "file_count": 8,
+      "files_hash": 843412335854459938
+    },
+    "extensions-deepseek": {
+      "latest_mtime": 1787804982,
+      "file_count": 12,
+      "files_hash": 7515998977382148397
+    },
+    "ui-src-pages-nodes": {
+      "latest_mtime": 1787804986,
+      "file_count": 11,
+      "files_hash": 12973590214824499355
+    },
+    "extensions-teams-meetings": {
+      "latest_mtime": 1787804983,
+      "file_count": 17,
+      "files_hash": 10873908690931774948
+    },
+    "extensions-vercel-ai-gateway": {
+      "latest_mtime": 1787804983,
+      "file_count": 9,
+      "files_hash": 17241445730750044350
+    },
+    "extensions-linkbrain": {
+      "latest_mtime": 1787804983,
+      "file_count": 29,
+      "files_hash": 13870280785976875685
+    },
+    "ui-src-pages-agents": {
+      "latest_mtime": 1787804986,
+      "file_count": 19,
+      "files_hash": 15697083331723477465
+    },
+    "src-agents-auth-profiles": {
+      "latest_mtime": 1787804984,
+      "file_count": 85,
+      "files_hash": 6149941617026518009
+    },
+    "packages-agent-core-src-harness-compaction": {
+      "latest_mtime": 1787804983,
+      "file_count": 7,
+      "files_hash": 15976786753685463495
+    },
+    "extensions-signal-src-monitor": {
+      "latest_mtime": 1787804983,
+      "file_count": 14,
+      "files_hash": 5131641119885269384
+    },
+    "extensions-logbook-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 10,
+      "files_hash": 11278149964139594727
+    },
+    "src-process-supervisor": {
+      "latest_mtime": 1787804986,
+      "file_count": 8,
+      "files_hash": 4398811467119797300
+    },
+    "extensions-file-transfer-src-shared": {
+      "latest_mtime": 1787804983,
+      "file_count": 19,
+      "files_hash": 2555331890354605531
+    },
+    "src-video-generation": {
+      "latest_mtime": 1787804986,
+      "file_count": 17,
+      "files_hash": 14937846090998762538
+    },
+    "src-boards": {
+      "latest_mtime": 1787804984,
+      "file_count": 7,
+      "files_hash": 10226494880391652190
+    },
+    "extensions-signal": {
+      "latest_mtime": 1787804983,
+      "file_count": 90,
+      "files_hash": 3750989939533556425
+    },
+    "src-skills-discovery": {
+      "latest_mtime": 1787804986,
+      "file_count": 15,
+      "files_hash": 962499446229889270
+    },
+    "test-vitest": {
+      "latest_mtime": 1787804986,
+      "file_count": 178,
+      "files_hash": 15740229167725229078
+    },
+    "extensions-moonshot": {
+      "latest_mtime": 1787804983,
+      "file_count": 18,
+      "files_hash": 2142186671632122897
+    },
+    "packages-workboard-contract-src": {
+      "latest_mtime": 1787804984,
+      "file_count": 1,
+      "files_hash": 8448319191445714564
+    },
+    "extensions-memory-core-src-memory": {
+      "latest_mtime": 1787804983,
+      "file_count": 100,
+      "files_hash": 2256687179588406004
+    },
+    "scripts-dev": {
+      "latest_mtime": 1787804984,
+      "file_count": 7,
+      "files_hash": 12118230916794600656
+    },
+    "extensions-meta": {
+      "latest_mtime": 1787804983,
+      "file_count": 9,
+      "files_hash": 10613951302164702014
+    },
+    "extensions-cloudflare-ai-gateway": {
+      "latest_mtime": 1787804982,
+      "file_count": 9,
+      "files_hash": 11287687830795182841
+    },
+    "extensions-line-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 82,
+      "files_hash": 8258093914006818408
+    },
+    "src-tui-components": {
+      "latest_mtime": 1787804986,
+      "file_count": 18,
+      "files_hash": 1033103686534624000
+    },
+    "src-llm-providers-stream-wrappers": {
+      "latest_mtime": 1787804985,
+      "file_count": 20,
+      "files_hash": 2449365100950456515
+    },
+    "extensions-brave": {
+      "latest_mtime": 1787804982,
+      "file_count": 5,
+      "files_hash": 18378678689517971941
+    },
+    "src-gateway-server-plugins-http": {
+      "latest_mtime": 1787804985,
+      "file_count": 5,
+      "files_hash": 11578788553291748118
+    },
+    "src-channels-plugins-contracts": {
+      "latest_mtime": 1787804984,
+      "file_count": 53,
+      "files_hash": 5747204169726527038
+    },
+    "ui-src-lib-config": {
+      "latest_mtime": 1787804986,
+      "file_count": 4,
+      "files_hash": 8179103180274398582
+    },
+    "extensions-qa-lab": {
+      "latest_mtime": 1787804983,
+      "file_count": 235,
+      "files_hash": 7684950719948760381
+    },
+    "src-cli-nodes-cli": {
+      "latest_mtime": 1787804985,
+      "file_count": 18,
+      "files_hash": 6613008222079224926
+    },
+    "src-agents-cli-runner": {
+      "latest_mtime": 1787804984,
+      "file_count": 52,
+      "files_hash": 11078462830794598800
+    },
+    "src-channels-message": {
+      "latest_mtime": 1787804984,
+      "file_count": 36,
+      "files_hash": 5142377333509216091
+    },
+    "src": {
+      "latest_mtime": 1787804986,
+      "file_count": 5152,
+      "files_hash": 10802437813161799645
+    },
+    "extensions-crabbox": {
+      "latest_mtime": 1787804982,
+      "file_count": 5,
+      "files_hash": 10933440693691641385
+    },
+    "src-test-helpers": {
+      "latest_mtime": 1787804986,
+      "file_count": 10,
+      "files_hash": 16200599926448704770
+    },
+    "extensions-reef-protocol": {
+      "latest_mtime": 1787804983,
+      "file_count": 21,
+      "files_hash": 8702190325388280657
+    },
+    "extensions-voice-call-src-providers-shared": {
+      "latest_mtime": 1787804983,
+      "file_count": 5,
+      "files_hash": 13595951329103536009
+    },
+    "src-channels-plugins": {
+      "latest_mtime": 1787804984,
+      "file_count": 156,
+      "files_hash": 9567294563748509873
+    },
+    "src-plugin-sdk-test-helpers": {
+      "latest_mtime": 1787804985,
+      "file_count": 51,
+      "files_hash": 13266004978728911973
+    },
+    "ui-src-lib-agents": {
+      "latest_mtime": 1787804986,
+      "file_count": 7,
+      "files_hash": 4100592185374014936
+    },
+    "extensions-browser-chrome-extension-modules": {
+      "latest_mtime": 1787804982,
+      "file_count": 29,
+      "files_hash": 460231356733318682
+    },
+    "src-infra-net": {
+      "latest_mtime": 1787804985,
+      "file_count": 29,
+      "files_hash": 13434463845752557090
+    },
+    "extensions-ollama-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 27,
+      "files_hash": 4692594148407661959
+    },
+    "extensions-diagnostics-otel-src": {
+      "latest_mtime": 1787804982,
+      "file_count": 20,
+      "files_hash": 8520896466026327857
+    },
+    "extensions-alibaba": {
+      "latest_mtime": 1787804982,
+      "file_count": 3,
+      "files_hash": 14576355353027718155
+    },
+    "src-cli-cron-cli": {
+      "latest_mtime": 1787804985,
+      "file_count": 16,
+      "files_hash": 2123806001954036982
+    },
+    "extensions-qqbot-src-engine-gateway-stages": {
+      "latest_mtime": 1787804983,
+      "file_count": 13,
+      "files_hash": 15707345855803488722
+    },
+    "ui-src-e2e": {
+      "latest_mtime": 1787804986,
+      "file_count": 64,
+      "files_hash": 7072778118969407276
+    },
+    "extensions-azure-speech": {
+      "latest_mtime": 1787804982,
+      "file_count": 8,
+      "files_hash": 3521520191909819809
+    },
+    "extensions-linux-canvas": {
+      "latest_mtime": 1787804983,
+      "file_count": 2,
+      "files_hash": 2036211766170490549
+    },
+    "extensions-acpx": {
+      "latest_mtime": 1787804982,
+      "file_count": 12,
+      "files_hash": 10376774408980794866
+    },
+    "test-helpers-link-domain-fakes": {
+      "latest_mtime": 1787804986,
+      "file_count": 6,
+      "files_hash": 4726626351976440613
+    },
+    "extensions-browser-src-browser-routes": {
+      "latest_mtime": 1787804982,
+      "file_count": 43,
+      "files_hash": 3436316959966083487
+    },
+    "src-skills-loading": {
+      "latest_mtime": 1787804986,
+      "file_count": 33,
+      "files_hash": 16530819809869808133
+    },
+    "extensions-codex-src-migration": {
+      "latest_mtime": 1787804982,
+      "file_count": 14,
+      "files_hash": 5119648862889285773
+    },
+    "extensions-tlon-src-urbit": {
+      "latest_mtime": 1787804983,
+      "file_count": 19,
+      "files_hash": 14821443949126700577
+    },
+    "src-node-host": {
+      "latest_mtime": 1787804985,
+      "file_count": 48,
+      "files_hash": 5093172105441735787
+    },
+    "extensions-bonjour-src": {
+      "latest_mtime": 1787804982,
+      "file_count": 6,
+      "files_hash": 3912246407527060531
+    },
+    "src-cron-isolated-agent": {
+      "latest_mtime": 1787804985,
+      "file_count": 74,
+      "files_hash": 10338933238031803461
+    },
+    "ui-src-pages-logs": {
+      "latest_mtime": 1787804986,
+      "file_count": 7,
+      "files_hash": 1833602216489266537
+    },
+    "extensions-diffs": {
+      "latest_mtime": 1787804982,
+      "file_count": 3,
+      "files_hash": 14925304624465423850
+    },
+    "src-worker": {
+      "latest_mtime": 1787804986,
+      "file_count": 21,
+      "files_hash": 4417437483040445961
+    },
+    "ui-src-pages-config": {
+      "latest_mtime": 1787804986,
+      "file_count": 20,
+      "files_hash": 15871881868977153914
+    },
+    "src-commands-onboard-non-interactive": {
+      "latest_mtime": 1787804985,
+      "file_count": 6,
+      "files_hash": 11595798422177155867
+    },
+    "extensions-whatsapp-src-inbound": {
+      "latest_mtime": 1787804983,
+      "file_count": 30,
+      "files_hash": 8222845313189807830
+    },
+    "test-fixtures-ts-topology-basic-src-public": {
+      "latest_mtime": 1787804986,
+      "file_count": 2,
+      "files_hash": 8835039805714722543
+    },
+    "scripts-e2e-lib-fixtures": {
+      "latest_mtime": 1787804984,
+      "file_count": 7,
+      "files_hash": 16563970294129265496
+    },
+    "packages-plugin-package-contract-src": {
+      "latest_mtime": 1787804984,
+      "file_count": 2,
+      "files_hash": 9406731804024608407
+    },
+    "src-context-engine": {
+      "latest_mtime": 1787804985,
+      "file_count": 14,
+      "files_hash": 8027805136375921146
+    },
+    "packages-memory-host-sdk-src-host": {
+      "latest_mtime": 1787804984,
+      "file_count": 97,
+      "files_hash": 6268253935470459004
+    },
+    "extensions-line-src-flex-templates": {
+      "latest_mtime": 1787804983,
+      "file_count": 6,
+      "files_hash": 6407059833376448098
+    },
+    "src-commands-channels": {
+      "latest_mtime": 1787804985,
+      "file_count": 16,
+      "files_hash": 140423767623615572
+    },
+    "apps-linux-src-tauri-src": {
+      "latest_mtime": 1787804982,
+      "file_count": 13,
+      "files_hash": 16997451980081045961
+    },
+    "extensions-slack": {
+      "latest_mtime": 1787804983,
+      "file_count": 23,
+      "files_hash": 15015564720752509433
+    },
+    "ui-src-lib-skill-workshop": {
+      "latest_mtime": 1787804986,
+      "file_count": 1,
+      "files_hash": 18210389605453768007
+    },
+    "extensions-file-transfer-src-node-host": {
+      "latest_mtime": 1787804983,
+      "file_count": 10,
+      "files_hash": 7660059428261026400
+    },
+    "scripts-gitops-coordinator": {
+      "latest_mtime": 1787804984,
+      "file_count": 4,
+      "files_hash": 13027682483106300873
+    },
+    "apps-ios-Sources-Push": {
+      "latest_mtime": 1787804982,
+      "file_count": 7,
+      "files_hash": 9043816710075655061
+    },
+    "extensions-linkskills-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 16,
+      "files_hash": 7802740654254958633
+    },
+    "extensions-onepassword": {
+      "latest_mtime": 1787804983,
+      "file_count": 2,
+      "files_hash": 696820834036786639
+    },
+    "packages-plugin-sdk-src": {
+      "latest_mtime": 1787804984,
+      "file_count": 25,
+      "files_hash": 7309565018309372879
+    },
+    "extensions-clickclack": {
+      "latest_mtime": 1787804982,
+      "file_count": 46,
+      "files_hash": 8817965767186005712
+    },
+    "scripts-e2e-lib-codex-media-path": {
+      "latest_mtime": 1787804984,
+      "file_count": 7,
+      "files_hash": 10678284220587707351
+    },
+    "extensions-fal": {
+      "latest_mtime": 1787804983,
+      "file_count": 13,
+      "files_hash": 1967522584764465960
+    },
+    "extensions-policy-src-doctor": {
+      "latest_mtime": 1787804983,
+      "file_count": 38,
+      "files_hash": 9656222110397525014
+    },
+    "extensions-slack-src-http": {
+      "latest_mtime": 1787804983,
+      "file_count": 6,
+      "files_hash": 6001972619228914789
+    },
+    "extensions-oc-path": {
+      "latest_mtime": 1787804983,
+      "file_count": 5,
+      "files_hash": 15395866790725447478
+    },
+    "extensions-qa-channel-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 20,
+      "files_hash": 7704471635028828144
+    },
+    "src-cli-capability-cli": {
+      "latest_mtime": 1787804985,
+      "file_count": 12,
+      "files_hash": 13560374092312036636
+    },
+    "extensions-matrix-src-matrix-actions": {
+      "latest_mtime": 1787804983,
+      "file_count": 23,
+      "files_hash": 7468980079803747106
+    },
+    "extensions-whatsapp": {
+      "latest_mtime": 1787804983,
+      "file_count": 198,
+      "files_hash": 9035035559202619176
+    },
+    "apps-ios-WatchApp-Sources": {
+      "latest_mtime": 1787804982,
+      "file_count": 12,
+      "files_hash": 5661914213934650943
+    },
+    "extensions-codex-src-app-server-sandbox-exec-server": {
+      "latest_mtime": 1787804982,
+      "file_count": 8,
+      "files_hash": 14189178464879780974
+    },
+    "extensions-codex": {
+      "latest_mtime": 1787804982,
+      "file_count": 60,
+      "files_hash": 4514819451563306140
+    },
+    "extensions-sms-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 26,
+      "files_hash": 4970006729955801933
+    },
+    "extensions-diffs-language-pack": {
+      "latest_mtime": 1787804982,
+      "file_count": 4,
+      "files_hash": 1272322412977639808
+    },
+    "extensions-vydra": {
+      "latest_mtime": 1787804983,
+      "file_count": 12,
+      "files_hash": 13118903042353603236
+    },
+    "src-daemon": {
+      "latest_mtime": 1787804985,
+      "file_count": 75,
+      "files_hash": 2225270991470036359
+    },
+    "src-commands-status-all": {
+      "latest_mtime": 1787804985,
+      "file_count": 22,
+      "files_hash": 650605787892869668
+    },
+    "extensions-matrix-src-matrix-sdk": {
+      "latest_mtime": 1787804983,
+      "file_count": 32,
+      "files_hash": 2916427497847785409
+    },
+    "src-agents-embedded-agent-helpers": {
+      "latest_mtime": 1787804984,
+      "file_count": 19,
+      "files_hash": 17217202868541850142
+    },
+    "extensions-discord-src-activities": {
+      "latest_mtime": 1787804982,
+      "file_count": 18,
+      "files_hash": 15857763235253554995
+    },
+    "src-gateway-server-ws-connection": {
+      "latest_mtime": 1787804985,
+      "file_count": 33,
+      "files_hash": 4478061892462552569
+    },
+    "extensions-document-extract": {
+      "latest_mtime": 1787804983,
+      "file_count": 3,
+      "files_hash": 1821499815226835840
+    },
+    "extensions-browser-src-browser-extension-relay": {
+      "latest_mtime": 1787804982,
+      "file_count": 13,
+      "files_hash": 13894856137792769702
+    },
+    "src-cron-store": {
+      "latest_mtime": 1787804985,
+      "file_count": 13,
+      "files_hash": 3381623591798606424
+    },
+    "src-channels-inbound-event": {
+      "latest_mtime": 1787804984,
+      "file_count": 9,
+      "files_hash": 5772002036578172966
+    },
+    "extensions-vault": {
+      "latest_mtime": 1787804983,
+      "file_count": 8,
+      "files_hash": 9495219690112257416
+    },
+    "extensions-kilocode": {
+      "latest_mtime": 1787804983,
+      "file_count": 10,
+      "files_hash": 8698131722028033708
+    },
+    "extensions-imessage-src-monitor": {
+      "latest_mtime": 1787804983,
+      "file_count": 59,
+      "files_hash": 6224835730742817082
+    },
+    "extensions-browser-chrome-extension": {
+      "latest_mtime": 1787804982,
+      "file_count": 5,
+      "files_hash": 9473298796918939354
+    },
+    "linkbots-lisa-ops": {
+      "latest_mtime": 1787804983,
+      "file_count": 38,
+      "files_hash": 1203875823806885874
+    },
+    "src-image-generation": {
+      "latest_mtime": 1787804985,
+      "file_count": 16,
+      "files_hash": 11449257517160587277
+    },
+    "extensions-fireworks": {
+      "latest_mtime": 1787804983,
+      "file_count": 9,
+      "files_hash": 3055482402671811816
+    },
+    "extensions-qqbot-src-engine-ref": {
+      "latest_mtime": 1787804983,
+      "file_count": 6,
+      "files_hash": 715204182846569461
+    },
+    "ui-src-lib-nodes": {
+      "latest_mtime": 1787804986,
+      "file_count": 5,
+      "files_hash": 3296403442343076377
+    },
+    "src-infra-net-proxy": {
+      "latest_mtime": 1787804985,
+      "file_count": 10,
+      "files_hash": 10933427299060681611
+    },
+    "src-agents-sessions-compaction": {
+      "latest_mtime": 1787804984,
+      "file_count": 3,
+      "files_hash": 876611770991377837
+    },
+    "apps-ios-Sources-Design": {
+      "latest_mtime": 1787804982,
+      "file_count": 40,
+      "files_hash": 3913579138227266951
+    },
+    "packages-media-generation-core-src": {
+      "latest_mtime": 1787804984,
+      "file_count": 8,
+      "files_hash": 1877993873117580870
+    },
+    "src-cron-service": {
+      "latest_mtime": 1787804985,
+      "file_count": 46,
+      "files_hash": 14924269805233798360
+    },
+    "scripts-docs-i18n": {
+      "latest_mtime": 1787804984,
+      "file_count": 29,
+      "files_hash": 5723171532070314544
+    },
+    "extensions-clawrouter": {
+      "latest_mtime": 1787804982,
+      "file_count": 9,
+      "files_hash": 7579989440616893790
+    },
+    "extensions-qa-lab-src-live-transports-telegram": {
+      "latest_mtime": 1787804983,
+      "file_count": 11,
+      "files_hash": 4645116719346597206
+    },
+    "extensions-policy-src-doctor-scopes": {
+      "latest_mtime": 1787804983,
+      "file_count": 8,
+      "files_hash": 8072185363776983086
+    },
+    "packages-gateway-protocol-src-schema": {
+      "latest_mtime": 1787804983,
+      "file_count": 77,
+      "files_hash": 2839058585973666189
+    },
+    "extensions-searxng-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 6,
+      "files_hash": 487761293038984372
+    },
+    "extensions-qqbot-src-engine-utils": {
+      "latest_mtime": 1787804983,
+      "file_count": 31,
+      "files_hash": 12199578458907093965
+    },
+    "extensions-qa-lab-src-providers-live-frontier": {
+      "latest_mtime": 1787804983,
+      "file_count": 6,
+      "files_hash": 7354026489383555539
+    },
+    "extensions-mxc-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 15,
+      "files_hash": 16674572616455272268
+    },
+    "packages-gateway-protocol-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 37,
+      "files_hash": 2024815152606857053
+    },
+    "src-canvas": {
+      "latest_mtime": 1787804984,
+      "file_count": 10,
+      "files_hash": 1057082958988053010
+    },
+    "extensions-llm-task": {
+      "latest_mtime": 1787804983,
+      "file_count": 5,
+      "files_hash": 4205863037855185982
+    },
+    "extensions-opencode-go": {
+      "latest_mtime": 1787804983,
+      "file_count": 14,
+      "files_hash": 1013164965832848757
+    },
+    "extensions-elevenlabs": {
+      "latest_mtime": 1787804983,
+      "file_count": 19,
+      "files_hash": 15672104990269456275
+    },
+    "extensions-qqbot-src-engine-messaging": {
+      "latest_mtime": 1787804983,
+      "file_count": 29,
+      "files_hash": 9951286307786407078
+    },
+    "src-cli-program-message": {
+      "latest_mtime": 1787804985,
+      "file_count": 13,
+      "files_hash": 10732987974100128901
+    },
+    "src-agents-sessions": {
+      "latest_mtime": 1787804984,
+      "file_count": 71,
+      "files_hash": 13388134579705706242
+    },
+    "extensions-openshell-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 11,
+      "files_hash": 8286530215304863844
+    },
+    "src-state": {
+      "latest_mtime": 1787804986,
+      "file_count": 73,
+      "files_hash": 10221418434959838384
+    },
+    "extensions-copilot": {
+      "latest_mtime": 1787804982,
+      "file_count": 6,
+      "files_hash": 14232902181815057473
+    },
+    "src-plugins-contracts": {
+      "latest_mtime": 1787804985,
+      "file_count": 45,
+      "files_hash": 16385444262655344237
+    },
+    "src-gateway": {
+      "latest_mtime": 1787804985,
+      "file_count": 700,
+      "files_hash": 18180118804588000612
+    },
+    "src-agents-worktrees": {
+      "latest_mtime": 1787804984,
+      "file_count": 18,
+      "files_hash": 10595557207751993744
+    },
+    "ui-src-pages-chat-components": {
+      "latest_mtime": 1787804986,
+      "file_count": 55,
+      "files_hash": 574807222975914557
+    },
+    "extensions-browser": {
+      "latest_mtime": 1787804982,
+      "file_count": 316,
+      "files_hash": 10190326224831064833
+    },
+    "extensions-amazon-bedrock": {
+      "latest_mtime": 1787804982,
+      "file_count": 26,
+      "files_hash": 9562807523313588548
+    },
+    "extensions-llama-cpp": {
+      "latest_mtime": 1787804983,
+      "file_count": 2,
+      "files_hash": 4596042883821694061
+    },
+    "ui-src-pages-cron": {
+      "latest_mtime": 1787804986,
+      "file_count": 10,
+      "files_hash": 14937636497136972145
+    },
+    "src-commands-models": {
+      "latest_mtime": 1787804985,
+      "file_count": 61,
+      "files_hash": 5554744531859576293
+    },
+    "extensions-qa-channel": {
+      "latest_mtime": 1787804983,
+      "file_count": 8,
+      "files_hash": 11224237056376319256
+    },
+    "src-cron": {
+      "latest_mtime": 1787804985,
+      "file_count": 136,
+      "files_hash": 15586933195665433339
+    },
+    "extensions-canvas-scripts": {
+      "latest_mtime": 1787804982,
+      "file_count": 9,
+      "files_hash": 11362629103169362133
+    },
+    "ui-src-lib-channels": {
+      "latest_mtime": 1787804986,
+      "file_count": 2,
+      "files_hash": 2055481329256336111
+    },
+    "extensions-brave-src": {
+      "latest_mtime": 1787804982,
+      "file_count": 5,
+      "files_hash": 3549313227974330080
+    },
+    "extensions-runway": {
+      "latest_mtime": 1787804983,
+      "file_count": 3,
+      "files_hash": 4597860531279335228
+    },
+    "packages-model-catalog-core-src": {
+      "latest_mtime": 1787804984,
+      "file_count": 13,
+      "files_hash": 1507462145256812800
+    },
+    "src-plugin-sdk": {
+      "latest_mtime": 1787804985,
+      "file_count": 536,
+      "files_hash": 2607439258235986308
+    },
+    "extensions-volcengine": {
+      "latest_mtime": 1787804983,
+      "file_count": 10,
+      "files_hash": 8360796711600295276
+    },
+    "extensions-mxc-test": {
+      "latest_mtime": 1787804983,
+      "file_count": 9,
+      "files_hash": 17322719659207684564
+    },
+    "extensions-google-meet": {
+      "latest_mtime": 1787804983,
+      "file_count": 39,
+      "files_hash": 6605817061833430598
+    },
+    "extensions-qa-lab-src-live-transports-matrix-scenarios": {
+      "latest_mtime": 1787804983,
+      "file_count": 44,
+      "files_hash": 4881478179907377957
+    },
+    "src-plugins-test-helpers": {
+      "latest_mtime": 1787804986,
+      "file_count": 6,
+      "files_hash": 9151302179614813757
+    },
+    "scripts-repro": {
+      "latest_mtime": 1787804984,
+      "file_count": 6,
+      "files_hash": 17091416164763419045
+    },
+    "extensions-novita": {
+      "latest_mtime": 1787804983,
+      "file_count": 4,
+      "files_hash": 44976307514863284
+    },
+    "extensions-telegram-src-miniapp": {
+      "latest_mtime": 1787804983,
+      "file_count": 13,
+      "files_hash": 2895808015481286574
+    },
+    "ui-src-i18n-locales": {
+      "latest_mtime": 1787804986,
+      "file_count": 22,
+      "files_hash": 4747790612304676786
+    },
+    "extensions-openrouter": {
+      "latest_mtime": 1787804983,
+      "file_count": 33,
+      "files_hash": 12471288046131108673
+    },
+    "extensions-opencode": {
+      "latest_mtime": 1787804983,
+      "file_count": 17,
+      "files_hash": 13366116216056159704
+    },
+    "src-commands-doctor-shared": {
+      "latest_mtime": 1787804985,
+      "file_count": 141,
+      "files_hash": 5819904191360943106
+    },
+    "extensions-slack-src-monitor-events": {
+      "latest_mtime": 1787804983,
+      "file_count": 24,
+      "files_hash": 3630944410306260010
+    },
+    "src-skills-lifecycle": {
+      "latest_mtime": 1787804986,
+      "file_count": 26,
+      "files_hash": 9573308669947539207
+    },
+    "extensions-vllm": {
+      "latest_mtime": 1787804983,
+      "file_count": 10,
+      "files_hash": 17989544943495859000
+    },
+    "extensions-ollama": {
+      "latest_mtime": 1787804983,
+      "file_count": 17,
+      "files_hash": 11708539014052544618
+    },
+    "src-channels-turn": {
+      "latest_mtime": 1787804984,
+      "file_count": 14,
+      "files_hash": 4625656169000688960
+    },
+    "src-channels-plugins-outbound": {
+      "latest_mtime": 1787804984,
+      "file_count": 6,
+      "files_hash": 2007722626512886337
+    },
+    "extensions-groq": {
+      "latest_mtime": 1787804983,
+      "file_count": 5,
+      "files_hash": 9521904845793376760
+    },
+    "extensions-tts-local-cli": {
+      "latest_mtime": 1787804983,
+      "file_count": 4,
+      "files_hash": 8673003226161439975
+    },
+    "extensions-workboard": {
+      "latest_mtime": 1787804983,
+      "file_count": 5,
+      "files_hash": 12298123179766494807
+    },
+    "src-cli-node-cli": {
+      "latest_mtime": 1787804985,
+      "file_count": 6,
+      "files_hash": 15019310215116311772
+    },
+    "src-auto-reply-reply-queue": {
+      "latest_mtime": 1787804984,
+      "file_count": 17,
+      "files_hash": 16636188011326418797
+    },
+    "extensions-diagnostics-otel": {
+      "latest_mtime": 1787804982,
+      "file_count": 3,
+      "files_hash": 10656944481446912199
+    },
+    "extensions-nemotron-shadow-eval": {
+      "latest_mtime": 1787804983,
+      "file_count": 4,
+      "files_hash": 14750490456890742371
+    },
+    "extensions-active-memory": {
+      "latest_mtime": 1787804982,
+      "file_count": 17,
+      "files_hash": 1783540432648272744
+    },
+    "scripts-e2e-parallels": {
+      "latest_mtime": 1787804984,
+      "file_count": 26,
+      "files_hash": 13650461480121395979
+    },
+    "extensions-voyage": {
+      "latest_mtime": 1787804983,
+      "file_count": 6,
+      "files_hash": 1150881589325498897
+    },
+    "src-test-utils": {
+      "latest_mtime": 1787804986,
+      "file_count": 54,
+      "files_hash": 4760594448387233567
+    },
+    "extensions-deepinfra": {
+      "latest_mtime": 1787804982,
+      "file_count": 29,
+      "files_hash": 16024262094410763638
+    },
+    "ui-src-pages-agents-memory": {
+      "latest_mtime": 1787804986,
+      "file_count": 7,
+      "files_hash": 12498951750815083521
+    },
+    "ui-src-lib-skills": {
+      "latest_mtime": 1787804986,
+      "file_count": 2,
+      "files_hash": 12654229875393660185
+    },
+    "extensions-qa-lab-src-providers-shared": {
+      "latest_mtime": 1787804983,
+      "file_count": 8,
+      "files_hash": 6188203383212703682
+    },
+    "ui-src-pages-workboard": {
+      "latest_mtime": 1787804986,
+      "file_count": 12,
+      "files_hash": 4861258291253518326
+    },
+    "ui-src-components-terminal": {
+      "latest_mtime": 1787804986,
+      "file_count": 21,
+      "files_hash": 15675568289951370801
+    },
+    "ui-src-pages-usage": {
+      "latest_mtime": 1787804986,
+      "file_count": 25,
+      "files_hash": 5454015502503252394
+    },
+    "src-sessions": {
+      "latest_mtime": 1787804986,
+      "file_count": 46,
+      "files_hash": 7712770145748356977
+    },
+    "packages-agent-core-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 19,
+      "files_hash": 7871960985727418005
+    },
+    "ui-src-pages-tasks": {
+      "latest_mtime": 1787804986,
+      "file_count": 5,
+      "files_hash": 8435907534237459136
+    },
+    "extensions-baseten": {
+      "latest_mtime": 1787804982,
+      "file_count": 10,
+      "files_hash": 3017560430816097516
+    },
+    "extensions-canvas-src-host": {
+      "latest_mtime": 1787804982,
+      "file_count": 7,
+      "files_hash": 7488095217042898739
+    },
+    "extensions-zalo-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 57,
+      "files_hash": 9628177151879081153
+    },
+    "scripts-github": {
+      "latest_mtime": 1787804984,
+      "file_count": 12,
+      "files_hash": 16959006362752057463
+    },
+    "extensions-whatsapp-src-auto-reply": {
+      "latest_mtime": 1787804983,
+      "file_count": 14,
+      "files_hash": 12219055434140165875
+    },
+    "extensions-sglang": {
+      "latest_mtime": 1787804983,
+      "file_count": 6,
+      "files_hash": 1634017626306061003
+    },
+    "extensions-lobster-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 7,
+      "files_hash": 16672332476771805567
+    },
+    "extensions-qa-lab-src-providers-mock-openai": {
+      "latest_mtime": 1787804983,
+      "file_count": 11,
+      "files_hash": 9599157199548973824
+    },
+    "src-commitments": {
+      "latest_mtime": 1787804985,
+      "file_count": 15,
+      "files_hash": 4631499268490818982
+    },
+    "extensions-linux-node-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 9,
+      "files_hash": 3015396487730867620
+    },
+    "extensions-open-prose": {
+      "latest_mtime": 1787804983,
+      "file_count": 2,
+      "files_hash": 10307070356670904917
+    },
+    "extensions-qa-lab-src-live-transports-whatsapp": {
+      "latest_mtime": 1787804983,
+      "file_count": 21,
+      "files_hash": 11813967352840246102
+    },
+    "extensions-discord-src-voice": {
+      "latest_mtime": 1787804983,
+      "file_count": 43,
+      "files_hash": 13309238734496720731
+    },
+    "extensions-tavily": {
+      "latest_mtime": 1787804983,
+      "file_count": 4,
+      "files_hash": 7388571143278801954
+    },
+    "src-model-catalog-provider-index": {
+      "latest_mtime": 1787804985,
+      "file_count": 6,
+      "files_hash": 16772976665338243555
+    },
+    "qa-convex-credential-broker-convex": {
+      "latest_mtime": 1787804984,
+      "file_count": 5,
+      "files_hash": 5287337399280565850
+    },
+    "src-agents-tools": {
+      "latest_mtime": 1787804984,
+      "file_count": 208,
+      "files_hash": 1109891274012511737
+    },
+    "extensions-telegram-src-bot": {
+      "latest_mtime": 1787804983,
+      "file_count": 14,
+      "files_hash": 17947457653342607768
+    },
+    "extensions-migrate-claude": {
+      "latest_mtime": 1787804983,
+      "file_count": 12,
+      "files_hash": 2742623463196793487
+    },
+    "extensions-raft": {
+      "latest_mtime": 1787804983,
+      "file_count": 4,
+      "files_hash": 4833907275461465896
+    },
+    "linkbots-lisa-ops-providers": {
+      "latest_mtime": 1787804983,
+      "file_count": 23,
+      "files_hash": 113952599232543874
+    },
+    "extensions-discord-src-test-support": {
+      "latest_mtime": 1787804983,
+      "file_count": 6,
+      "files_hash": 6729213049255240874
+    },
+    "linkbots-lisa-ops-jobs-time-management": {
+      "latest_mtime": 1787804983,
+      "file_count": 6,
+      "files_hash": 18040628669691267612
+    },
+    "test-scripts": {
+      "latest_mtime": 1787804986,
+      "file_count": 410,
+      "files_hash": 12809565945604547226
+    },
+    "src-agents-agent-hooks-context-pruning": {
+      "latest_mtime": 1787804984,
+      "file_count": 6,
+      "files_hash": 442991148429975385
+    },
+    "packages-ai-src-utils": {
+      "latest_mtime": 1787804983,
+      "file_count": 21,
+      "files_hash": 3574222191890362498
+    },
+    "src-agents-test-helpers": {
+      "latest_mtime": 1787804984,
+      "file_count": 23,
+      "files_hash": 5031970554844006468
+    },
+    "src-types": {
+      "latest_mtime": 1787804986,
+      "file_count": 5,
+      "files_hash": 923254349144454616
+    },
+    "packages-net-policy-src": {
+      "latest_mtime": 1787804984,
+      "file_count": 11,
+      "files_hash": 5996078765205838714
+    },
+    "extensions-file-transfer": {
+      "latest_mtime": 1787804983,
+      "file_count": 2,
+      "files_hash": 14718162698713665491
+    },
+    "src-fleet": {
+      "latest_mtime": 1787804985,
+      "file_count": 15,
+      "files_hash": 10007194034310311488
+    },
+    "extensions-linux-canvas-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 6,
+      "files_hash": 17671612254972290426
+    },
+    "src-gateway-methods": {
+      "latest_mtime": 1787804985,
+      "file_count": 6,
+      "files_hash": 11626979671724624330
+    },
+    "extensions-xai-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 15,
+      "files_hash": 10513313662821440764
+    },
+    "extensions-synthetic": {
+      "latest_mtime": 1787804983,
+      "file_count": 6,
+      "files_hash": 10328566047897672018
+    },
+    "extensions-linux-node": {
+      "latest_mtime": 1787804983,
+      "file_count": 2,
+      "files_hash": 12351014488713269196
+    },
+    "src-routing": {
+      "latest_mtime": 1787804986,
+      "file_count": 18,
+      "files_hash": 15904567739244321508
+    },
+    "test-e2e-qa-lab-runtime-fixtures-voice-call-runtime-plugin": {
+      "latest_mtime": 1787804986,
+      "file_count": 1,
+      "files_hash": 1321788433772014580
+    },
+    "extensions-pixverse": {
+      "latest_mtime": 1787804983,
+      "file_count": 6,
+      "files_hash": 15423741660854210783
+    },
+    "src-agents-agent-hooks": {
+      "latest_mtime": 1787804984,
+      "file_count": 10,
+      "files_hash": 3251296265543980399
+    },
+    "apps-ios-ShareExtension": {
+      "latest_mtime": 1787804982,
+      "file_count": 5,
+      "files_hash": 6515783254328514752
+    },
+    "root": {
+      "latest_mtime": 1787804986,
+      "file_count": 1783,
+      "files_hash": 10194545024395637367
+    },
+    "extensions-line": {
+      "latest_mtime": 1787804983,
+      "file_count": 8,
+      "files_hash": 6581182461484792015
+    },
+    "extensions-microsoft": {
+      "latest_mtime": 1787804983,
+      "file_count": 7,
+      "files_hash": 3400496677442428271
+    },
+    "test-helpers-paci-fake": {
+      "latest_mtime": 1787804986,
+      "file_count": 7,
+      "files_hash": 15727445931690380497
+    },
+    "test-helpers-agents": {
+      "latest_mtime": 1787804986,
+      "file_count": 5,
+      "files_hash": 12935945385430557841
+    },
+    "extensions-diagnostics-prometheus": {
+      "latest_mtime": 1787804982,
+      "file_count": 4,
+      "files_hash": 8514554522373802000
+    },
+    "packages-terminal-core-src": {
+      "latest_mtime": 1787804984,
+      "file_count": 32,
+      "files_hash": 9408361482239129174
+    },
+    "src-agents-harness": {
+      "latest_mtime": 1787804984,
+      "file_count": 45,
+      "files_hash": 14438628248268615065
+    },
+    "extensions-voice-call": {
+      "latest_mtime": 1787804983,
+      "file_count": 74,
+      "files_hash": 2228076243898016955
+    },
+    "ui-src-lib-workboard": {
+      "latest_mtime": 1787804986,
+      "file_count": 21,
+      "files_hash": 7710127630202121989
+    },
+    "packages-ai-src-providers": {
+      "latest_mtime": 1787804983,
+      "file_count": 72,
+      "files_hash": 15403571566431728132
+    },
+    "extensions-nextcloud-talk": {
+      "latest_mtime": 1787804983,
+      "file_count": 7,
+      "files_hash": 12128498164008862441
+    },
+    "src-infra-command-explainer": {
+      "latest_mtime": 1787804985,
+      "file_count": 7,
+      "files_hash": 12236296265271532709
+    },
+    "src-scripts": {
+      "latest_mtime": 1787804986,
+      "file_count": 10,
+      "files_hash": 16570090303158286107
+    },
+    "extensions-linkskills": {
+      "latest_mtime": 1787804983,
+      "file_count": 21,
+      "files_hash": 12243925970923700395
+    },
+    "extensions-nvidia": {
+      "latest_mtime": 1787804983,
+      "file_count": 7,
+      "files_hash": 18417390377681697207
+    },
+    "extensions-reef-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 41,
+      "files_hash": 15770691050226048567
+    },
+    "extensions-onepassword-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 13,
+      "files_hash": 4915674338708333640
+    },
+    "ui-src-pages-model-providers": {
+      "latest_mtime": 1787804986,
+      "file_count": 10,
+      "files_hash": 18198610206537007398
+    },
+    "extensions-browser-src-cli-browser-cli-actions-input": {
+      "latest_mtime": 1787804982,
+      "file_count": 11,
+      "files_hash": 13060283528318616424
+    },
+    "extensions-policy": {
+      "latest_mtime": 1787804983,
+      "file_count": 2,
+      "files_hash": 3066560497916698390
+    },
+    "extensions-copilot-proxy": {
+      "latest_mtime": 1787804982,
+      "file_count": 2,
+      "files_hash": 17549637121944068513
+    },
+    "extensions-firecrawl": {
+      "latest_mtime": 1787804983,
+      "file_count": 7,
+      "files_hash": 6284905881896733723
+    },
+    "extensions-mxc": {
+      "latest_mtime": 1787804983,
+      "file_count": 2,
+      "files_hash": 9739560528397079508
+    },
+    "src-agents-embedded-agent-runner-run": {
+      "latest_mtime": 1787804984,
+      "file_count": 252,
+      "files_hash": 800688792927538977
+    },
+    "extensions-qqbot-src-bridge-commands": {
+      "latest_mtime": 1787804983,
+      "file_count": 7,
+      "files_hash": 5528980159611367912
+    },
+    "extensions-comfy": {
+      "latest_mtime": 1787804982,
+      "file_count": 13,
+      "files_hash": 4883770989859589364
+    },
+    "ui-src-pages-plugin": {
+      "latest_mtime": 1787804986,
+      "file_count": 8,
+      "files_hash": 10307251764312268387
+    },
+    "extensions-zalo": {
+      "latest_mtime": 1787804983,
+      "file_count": 13,
+      "files_hash": 4314452593078472646
+    },
+    "apps-ios-Sources-Gateway": {
+      "latest_mtime": 1787804982,
+      "file_count": 20,
+      "files_hash": 12147548693242396947
+    },
+    "extensions-voice-call-src-manager": {
+      "latest_mtime": 1787804983,
+      "file_count": 17,
+      "files_hash": 4704332608049274048
+    },
+    "extensions-bonjour": {
+      "latest_mtime": 1787804982,
+      "file_count": 3,
+      "files_hash": 16522013992648988206
+    },
+    "extensions-anthropic": {
+      "latest_mtime": 1787804982,
+      "file_count": 47,
+      "files_hash": 8848927797972193830
+    },
+    "extensions-qwen": {
+      "latest_mtime": 1787804983,
+      "file_count": 15,
+      "files_hash": 2356198238524765549
+    },
+    "extensions-parallel": {
+      "latest_mtime": 1787804983,
+      "file_count": 5,
+      "files_hash": 2161593103415877290
+    },
+    "extensions-imessage": {
+      "latest_mtime": 1787804983,
+      "file_count": 114,
+      "files_hash": 2909473057627732328
+    },
+    "packages-media-core-src": {
+      "latest_mtime": 1787804984,
+      "file_count": 16,
+      "files_hash": 17312812739715406859
+    },
+    "extensions-qqbot-src-engine-commands-builtin": {
+      "latest_mtime": 1787804983,
+      "file_count": 11,
+      "files_hash": 6311211720801874437
+    },
+    "extensions-senseaudio": {
+      "latest_mtime": 1787804983,
+      "file_count": 4,
+      "files_hash": 5719492271302636304
+    },
+    "extensions-nostr": {
+      "latest_mtime": 1787804983,
+      "file_count": 10,
+      "files_hash": 11277728347945636244
+    },
+    "extensions-nextcloud-talk-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 60,
+      "files_hash": 4002839893740735734
+    },
+    "extensions-qa-lab-src-live-transports-matrix-substrate": {
+      "latest_mtime": 1787804983,
+      "file_count": 24,
+      "files_hash": 10238747015866867978
+    },
+    "extensions-device-pair": {
+      "latest_mtime": 1787804982,
+      "file_count": 13,
+      "files_hash": 13705635781764391136
+    },
+    "ui-src-pages-memory-import": {
+      "latest_mtime": 1787804986,
+      "file_count": 5,
+      "files_hash": 63350698659484482
+    },
+    "extensions-qa-lab-src-live-transports-shared": {
+      "latest_mtime": 1787804983,
+      "file_count": 13,
+      "files_hash": 11039682958584252448
+    },
+    "extensions-qa-lab-src-providers-aimock": {
+      "latest_mtime": 1787804983,
+      "file_count": 3,
+      "files_hash": 3282097645410804970
+    },
+    "extensions-twitch-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 40,
+      "files_hash": 15543443686441458639
+    },
+    "src-infra-format-time": {
+      "latest_mtime": 1787804985,
+      "file_count": 7,
+      "files_hash": 3566336600855481888
+    },
+    "src-commands-migrate": {
+      "latest_mtime": 1787804985,
+      "file_count": 16,
+      "files_hash": 14770496030320458534
+    },
+    "extensions-google-meet-src-transports": {
+      "latest_mtime": 1787804983,
+      "file_count": 12,
+      "files_hash": 13592275851238508000
+    },
+    "extensions-parallel-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 11,
+      "files_hash": 310438074372671371
+    },
+    "extensions-slack-src-monitor-message-handler": {
+      "latest_mtime": 1787804983,
+      "file_count": 25,
+      "files_hash": 9552995298752934188
+    },
+    "extensions-canvas": {
+      "latest_mtime": 1787804982,
+      "file_count": 10,
+      "files_hash": 9823916107876090357
+    },
+    "linkbots-lisa-ops-deployment": {
+      "latest_mtime": 1787804983,
+      "file_count": 5,
+      "files_hash": 17973942409986060349
+    },
+    "extensions-kimi-coding": {
+      "latest_mtime": 1787804983,
+      "file_count": 15,
+      "files_hash": 10738778422760068397
+    },
+    "extensions-tokenjuice": {
+      "latest_mtime": 1787804983,
+      "file_count": 5,
+      "files_hash": 14042921271525933371
+    },
+    "src-talk": {
+      "latest_mtime": 1787804986,
+      "file_count": 54,
+      "files_hash": 14614625868728175505
+    },
+    "src-skills-research": {
+      "latest_mtime": 1787804986,
+      "file_count": 5,
+      "files_hash": 18041433893112831122
+    },
+    "extensions-openai": {
+      "latest_mtime": 1787804983,
+      "file_count": 82,
+      "files_hash": 215277642653518594
+    },
+    "extensions-qqbot-src-engine-api": {
+      "latest_mtime": 1787804983,
+      "file_count": 12,
+      "files_hash": 468314323376998786
+    },
+    "scripts-e2e-lib-upgrade-survivor": {
+      "latest_mtime": 1787804984,
+      "file_count": 5,
+      "files_hash": 5636334349896682925
+    },
+    "src-channels-message-access": {
+      "latest_mtime": 1787804984,
+      "file_count": 14,
+      "files_hash": 5093729340804145208
+    },
+    "packages-retry-src": {
+      "latest_mtime": 1787804984,
+      "file_count": 2,
+      "files_hash": 1213226674857614556
+    },
+    "extensions-acpx-src": {
+      "latest_mtime": 1787804982,
+      "file_count": 28,
+      "files_hash": 16292068704677644655
+    },
+    "scripts-ide_development": {
+      "latest_mtime": 1787804984,
+      "file_count": 19,
+      "files_hash": 7398063775995087253
+    },
+    "extensions-logbook": {
+      "latest_mtime": 1787804983,
+      "file_count": 1,
+      "files_hash": 3415923938309383759
+    },
+    "src-cli-daemon-cli": {
+      "latest_mtime": 1787804985,
+      "file_count": 53,
+      "files_hash": 10626639152196100420
+    },
+    "src-gateway-terminal": {
+      "latest_mtime": 1787804985,
+      "file_count": 17,
+      "files_hash": 617538747150510576
+    },
+    "ui-src-i18n": {
+      "latest_mtime": 1787804986,
+      "file_count": 2,
+      "files_hash": 15769647431252197951
+    },
+    "ui-src-pages-channels": {
+      "latest_mtime": 1787804986,
+      "file_count": 27,
+      "files_hash": 12037460626876857140
+    },
+    "extensions-mistral": {
+      "latest_mtime": 1787804983,
+      "file_count": 16,
+      "files_hash": 15585065899086482779
+    },
+    "extensions-zalouser": {
+      "latest_mtime": 1787804983,
+      "file_count": 11,
+      "files_hash": 8905894723815991521
+    },
+    "src-audit": {
+      "latest_mtime": 1787804984,
+      "file_count": 16,
+      "files_hash": 9695404924754248152
+    },
+    "extensions-irc-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 44,
+      "files_hash": 15250846302486508685
+    },
+    "extensions-teams-meetings-src-transports": {
+      "latest_mtime": 1787804983,
+      "file_count": 17,
+      "files_hash": 10510012267712817947
+    },
+    "extensions-cerebras": {
+      "latest_mtime": 1787804982,
+      "file_count": 5,
+      "files_hash": 14103159755883602298
+    },
+    "linkbots-lisa-ops-jobs-maintenance": {
+      "latest_mtime": 1787804983,
+      "file_count": 5,
+      "files_hash": 741139160796844820
+    },
+    "linkbots-lisa-ops-jobs-health": {
+      "latest_mtime": 1787804983,
+      "file_count": 6,
+      "files_hash": 1925117878973292432
+    },
+    "extensions-synology-chat": {
+      "latest_mtime": 1787804983,
+      "file_count": 6,
+      "files_hash": 12700605902317244616
+    },
+    "src-infra-outbound": {
+      "latest_mtime": 1787804985,
+      "file_count": 139,
+      "files_hash": 462168171892800319
+    },
+    "extensions-huggingface": {
+      "latest_mtime": 1787804983,
+      "file_count": 9,
+      "files_hash": 13185250158758251202
+    },
+    "extensions-xai": {
+      "latest_mtime": 1787804983,
+      "file_count": 61,
+      "files_hash": 12630359656817186723
+    },
+    "extensions-qqbot-src-engine-adapter": {
+      "latest_mtime": 1787804983,
+      "file_count": 6,
+      "files_hash": 3271765439777048013
+    },
+    "extensions-sms": {
+      "latest_mtime": 1787804983,
+      "file_count": 4,
+      "files_hash": 12621201439578844621
+    },
+    "src-cli-gateway-cli": {
+      "latest_mtime": 1787804985,
+      "file_count": 22,
+      "files_hash": 7513225471537973289
+    },
+    "extensions-canvas-src": {
+      "latest_mtime": 1787804982,
+      "file_count": 16,
+      "files_hash": 1751580999374006694
+    },
+    "extensions-qianfan": {
+      "latest_mtime": 1787804983,
+      "file_count": 5,
+      "files_hash": 14301324269910370366
+    },
+    "extensions-qa-lab-src-live-transports-discord": {
+      "latest_mtime": 1787804983,
+      "file_count": 7,
+      "files_hash": 12530802871850200451
+    },
+    "src-skills-security": {
+      "latest_mtime": 1787804986,
+      "file_count": 6,
+      "files_hash": 1057893726689355155
+    },
+    "apps-shared-OpenClawKit-Sources-OpenClawKit": {
+      "latest_mtime": 1787804982,
+      "file_count": 94,
+      "files_hash": 4274799409470299876
+    },
+    "src-plugin-sdk-test-helpers-agents": {
+      "latest_mtime": 1787804985,
+      "file_count": 7,
+      "files_hash": 7538289318015182973
+    },
+    "src-config-sessions": {
+      "latest_mtime": 1787804985,
+      "file_count": 184,
+      "files_hash": 3586718373530344303
+    },
+    "src-link-understanding": {
+      "latest_mtime": 1787804985,
+      "file_count": 8,
+      "files_hash": 7893747830674503534
+    },
+    "extensions-llama-cpp-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 7,
+      "files_hash": 527195672320761032
+    },
+    "apps-shared-OpenClawKit-Tests-OpenClawKitTests": {
+      "latest_mtime": 1787804982,
+      "file_count": 80,
+      "files_hash": 6327619470013891491
+    },
+    "src-cli-update-cli": {
+      "latest_mtime": 1787804985,
+      "file_count": 28,
+      "files_hash": 18079352280100410857
+    },
+    "extensions-longcat": {
+      "latest_mtime": 1787804983,
+      "file_count": 7,
+      "files_hash": 2148405041998111680
+    },
+    "packages-llm-core-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 7,
+      "files_hash": 15149285745297159039
+    },
+    "src-acp-control-plane": {
+      "latest_mtime": 1787804984,
+      "file_count": 40,
+      "files_hash": 1388599356036498098
+    },
+    "extensions-xiaomi": {
+      "latest_mtime": 1787804983,
+      "file_count": 11,
+      "files_hash": 12975379565827799274
+    },
+    "apps-ios-Sources-Model": {
+      "latest_mtime": 1787804982,
+      "file_count": 5,
+      "files_hash": 11243134375051425543
+    },
+    "extensions-oc-path-src-oc-path": {
+      "latest_mtime": 1787804983,
+      "file_count": 21,
+      "files_hash": 8846339256053009555
+    },
+    "extensions-minimax": {
+      "latest_mtime": 1787804983,
+      "file_count": 37,
+      "files_hash": 202075906774527130
+    },
+    "apps-ios-Sources-Voice": {
+      "latest_mtime": 1787804982,
+      "file_count": 12,
+      "files_hash": 9128751229467869355
+    },
+    "extensions-googlechat-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 62,
+      "files_hash": 15270853523707484042
+    },
+    "extensions-msteams": {
+      "latest_mtime": 1787804983,
+      "file_count": 13,
+      "files_hash": 5247833630260927313
+    },
+    "src-agents-sessions-extensions": {
+      "latest_mtime": 1787804984,
+      "file_count": 8,
+      "files_hash": 11902135465149809265
+    },
+    "extensions-linkskills-fake": {
+      "latest_mtime": 1787804983,
+      "file_count": 17,
+      "files_hash": 16457055758716885964
+    },
+    "extensions-github-copilot": {
+      "latest_mtime": 1787804983,
+      "file_count": 30,
+      "files_hash": 14050691047212229976
+    },
+    "src-secrets": {
+      "latest_mtime": 1787804986,
+      "file_count": 153,
+      "files_hash": 11826716914812588863
+    },
+    "extensions-slack-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 243,
+      "files_hash": 15788613928842747916
+    },
+    "extensions-zalouser-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 65,
+      "files_hash": 1590073361354288588
+    },
+    "ui-src-pages-sessions": {
+      "latest_mtime": 1787804986,
+      "file_count": 11,
+      "files_hash": 7090309368794524778
+    },
+    "scripts-lib-cross-os-release-checks": {
+      "latest_mtime": 1787804984,
+      "file_count": 12,
+      "files_hash": 1103344644702174188
+    },
+    "packages-speech-core-src": {
+      "latest_mtime": 1787804984,
+      "file_count": 7,
+      "files_hash": 218037951609344016
+    },
+    "packages-sdk-src": {
+      "latest_mtime": 1787804984,
+      "file_count": 11,
+      "files_hash": 17791978239510617112
+    },
+    "ui-src-pages-about": {
+      "latest_mtime": 1787804986,
+      "file_count": 5,
+      "files_hash": 14434275329675411551
+    },
+    "extensions-qa-lab-web-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 30,
+      "files_hash": 16890109984686885932
+    },
+    "ui-src-lib-chat": {
+      "latest_mtime": 1787804986,
+      "file_count": 35,
+      "files_hash": 7789888591113567585
+    },
+    "apps-ios-Sources-Services": {
+      "latest_mtime": 1787804982,
+      "file_count": 7,
+      "files_hash": 13117525781517412499
+    },
+    "extensions-featherless": {
+      "latest_mtime": 1787804983,
+      "file_count": 7,
+      "files_hash": 9806847148725800752
+    },
+    "src-cli-program": {
+      "latest_mtime": 1787804985,
+      "file_count": 72,
+      "files_hash": 325415850262556560
+    },
+    "packages-acp-core-src-runtime": {
+      "latest_mtime": 1787804983,
+      "file_count": 8,
+      "files_hash": 16958010596682276854
+    },
+    "scripts-lib-ts-topology": {
+      "latest_mtime": 1787804984,
+      "file_count": 5,
+      "files_hash": 17234211084146665785
+    },
+    "src-flows": {
+      "latest_mtime": 1787804985,
+      "file_count": 44,
+      "files_hash": 6465946177708466083
+    },
+    "extensions-chutes": {
+      "latest_mtime": 1787804982,
+      "file_count": 10,
+      "files_hash": 10704698698884783916
+    },
+    "extensions-irc": {
+      "latest_mtime": 1787804983,
+      "file_count": 11,
+      "files_hash": 1638472346353466307
+    },
+    "apps-ios-Sources-Onboarding": {
+      "latest_mtime": 1787804982,
+      "file_count": 8,
+      "files_hash": 4925505952432708652
+    },
+    "src-shared": {
+      "latest_mtime": 1787804986,
+      "file_count": 125,
+      "files_hash": 15298116405262914819
+    },
+    "extensions-lmstudio": {
+      "latest_mtime": 1787804983,
+      "file_count": 5,
+      "files_hash": 1246468220124456493
+    },
+    "src-acp": {
+      "latest_mtime": 1787804984,
+      "file_count": 57,
+      "files_hash": 13955397006653992799
+    },
+    "ui-src-components-browser": {
+      "latest_mtime": 1787804986,
+      "file_count": 9,
+      "files_hash": 13754860292062309319
+    },
+    "src-tui": {
+      "latest_mtime": 1787804986,
+      "file_count": 53,
+      "files_hash": 1239354531927524075
+    },
+    "extensions-voice-call-src-providers-twilio": {
+      "latest_mtime": 1787804983,
+      "file_count": 5,
+      "files_hash": 17160014881739211034
+    },
+    "extensions-msteams-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 156,
+      "files_hash": 8447328535167369283
+    },
+    "extensions-diffs-src": {
+      "latest_mtime": 1787804982,
+      "file_count": 29,
+      "files_hash": 10478808844674429801
+    },
+    "extensions-memory-core": {
+      "latest_mtime": 1787804983,
+      "file_count": 71,
+      "files_hash": 11868148876505321565
+    },
+    "extensions-qa-lab-src-providers": {
+      "latest_mtime": 1787804983,
+      "file_count": 5,
+      "files_hash": 8163042242967174914
+    },
+    "src-agents-command": {
+      "latest_mtime": 1787804984,
+      "file_count": 37,
+      "files_hash": 16125951648279663736
+    },
+    "src-commands-onboard-non-interactive-local": {
+      "latest_mtime": 1787804985,
+      "file_count": 14,
+      "files_hash": 543599996141766817
+    },
+    "extensions-qqbot-src-bridge-tools": {
+      "latest_mtime": 1787804983,
+      "file_count": 4,
+      "files_hash": 12363944757469853474
+    },
+    "apps-macos-Sources-OpenClaw-NodeMode": {
+      "latest_mtime": 1787804982,
+      "file_count": 10,
+      "files_hash": 9295181938368035946
+    },
+    "extensions-perplexity": {
+      "latest_mtime": 1787804983,
+      "file_count": 8,
+      "files_hash": 9878630075246901846
+    },
+    "extensions-exa": {
+      "latest_mtime": 1787804983,
+      "file_count": 8,
+      "files_hash": 2954199990794464437
+    },
+    "extensions-discord-src-actions": {
+      "latest_mtime": 1787804982,
+      "file_count": 20,
+      "files_hash": 15522531779773359846
+    },
+    "ui-src-pages-chat": {
+      "latest_mtime": 1787804986,
+      "file_count": 113,
+      "files_hash": 15757747065826286907
+    },
+    "src-commands-gateway-status": {
+      "latest_mtime": 1787804985,
+      "file_count": 7,
+      "files_hash": 9204727003402315359
+    },
+    "extensions-discord-src-monitor": {
+      "latest_mtime": 1787804983,
+      "file_count": 240,
+      "files_hash": 16332280159791612858
+    },
+    "extensions-byteplus": {
+      "latest_mtime": 1787804982,
+      "file_count": 9,
+      "files_hash": 8076298472121881376
+    },
+    "ui-src-app": {
+      "latest_mtime": 1787804986,
+      "file_count": 76,
+      "files_hash": 8762247381619232335
+    },
+    "src-logging": {
+      "latest_mtime": 1787804985,
+      "file_count": 78,
+      "files_hash": 11260873196267255836
+    },
+    "extensions-duckduckgo-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 5,
+      "files_hash": 3645275190869850374
+    },
+    "src-proxy-capture": {
+      "latest_mtime": 1787804986,
+      "file_count": 14,
+      "files_hash": 12427342486497459219
+    },
+    "extensions-feishu-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 230,
+      "files_hash": 6522172872033971702
+    },
+    "extensions-oc-path-src-oc-path-tests": {
+      "latest_mtime": 1787804983,
+      "file_count": 9,
+      "files_hash": 3214448606105233741
+    },
+    "ui-src-api": {
+      "latest_mtime": 1787804986,
+      "file_count": 7,
+      "files_hash": 15939170165370721018
+    },
+    "src-meeting-bot": {
+      "latest_mtime": 1787804985,
+      "file_count": 33,
+      "files_hash": 6436340977669928134
+    },
+    "extensions-voice-call-src-providers": {
+      "latest_mtime": 1787804983,
+      "file_count": 11,
+      "files_hash": 130152157400506507
+    },
+    "src-agents-runtime": {
+      "latest_mtime": 1787804984,
+      "file_count": 3,
+      "files_hash": 16946847587538331248
+    },
+    "scripts-e2e-lib-gateway-network": {
+      "latest_mtime": 1787804984,
+      "file_count": 6,
+      "files_hash": 10740604704151689603
+    },
+    "extensions-arcee": {
+      "latest_mtime": 1787804982,
+      "file_count": 6,
+      "files_hash": 9020218275121865535
+    },
+    "src-security": {
+      "latest_mtime": 1787804986,
+      "file_count": 87,
+      "files_hash": 10481748358146799324
+    },
+    "extensions-tavily-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 10,
+      "files_hash": 8836634392502755692
+    },
+    "extensions-inworld": {
+      "latest_mtime": 1787804983,
+      "file_count": 7,
+      "files_hash": 13607640908620195821
+    },
+    "extensions-zoom-meetings": {
+      "latest_mtime": 1787804983,
+      "file_count": 21,
+      "files_hash": 6366574191772421176
+    },
+    "extensions-telegram": {
+      "latest_mtime": 1787804983,
+      "file_count": 28,
+      "files_hash": 16793448737713577280
+    },
+    "extensions-nostr-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 48,
+      "files_hash": 3868681408401273467
+    },
+    "src-tts": {
+      "latest_mtime": 1787804986,
+      "file_count": 24,
+      "files_hash": 4603959888910938112
+    },
+    "extensions-oc-path-src-oc-path-jsonc": {
+      "latest_mtime": 1787804983,
+      "file_count": 6,
+      "files_hash": 15333085246494839159
+    },
+    "extensions-qqbot-src-engine-group": {
+      "latest_mtime": 1787804983,
+      "file_count": 8,
+      "files_hash": 12836098737934166291
+    },
+    "extensions-discord": {
+      "latest_mtime": 1787804983,
+      "file_count": 240,
+      "files_hash": 17464854070711223715
+    },
+    "packages-ai-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 13,
+      "files_hash": 5437651812923316723
+    },
+    "src-agents-sessions-tools": {
+      "latest_mtime": 1787804984,
+      "file_count": 33,
+      "files_hash": 7091409121898850157
+    },
+    "extensions-mattermost-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 40,
+      "files_hash": 6937669819761988157
+    },
+    "src-acp-runtime": {
+      "latest_mtime": 1787804984,
+      "file_count": 6,
+      "files_hash": 5583912179210840433
+    },
+    "extensions-tencent": {
+      "latest_mtime": 1787804983,
+      "file_count": 11,
+      "files_hash": 13713662345795626250
+    },
+    "src-media-understanding": {
+      "latest_mtime": 1787804985,
+      "file_count": 74,
+      "files_hash": 8687862696397175782
+    },
+    "extensions-linkbrain-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 21,
+      "files_hash": 10608037538770845077
+    },
+    "apps-shared-OpenClawKit-Sources-OpenClawChatUI": {
+      "latest_mtime": 1787804982,
+      "file_count": 72,
+      "files_hash": 18034391393182615411
+    },
+    "ui-src-pages-skill-workshop": {
+      "latest_mtime": 1787804986,
+      "file_count": 19,
+      "files_hash": 18054508703041051079
+    },
+    "ui-src-pages-apps": {
+      "latest_mtime": 1787804986,
+      "file_count": 5,
+      "files_hash": 11498748951283781440
+    },
+    "extensions-discord-src-internal": {
+      "latest_mtime": 1787804982,
+      "file_count": 59,
+      "files_hash": 6809514277793165348
+    },
+    "examples-ai-chat": {
+      "latest_mtime": 1787804982,
+      "file_count": 1,
+      "files_hash": 11914251191679222775
+    },
+    "src-status": {
+      "latest_mtime": 1787804986,
+      "file_count": 18,
+      "files_hash": 11855245566326860614
+    },
+    "extensions-qa-lab-src-live-transports-slack": {
+      "latest_mtime": 1787804983,
+      "file_count": 18,
+      "files_hash": 12678145298259432336
+    },
+    "ui-src-pages-plugins": {
+      "latest_mtime": 1787804986,
+      "file_count": 9,
+      "files_hash": 7936256762493498638
+    },
+    "extensions-searxng": {
+      "latest_mtime": 1787804983,
+      "file_count": 2,
+      "files_hash": 7597725457077608323
+    },
+    "ui-src-lib-board-widgets": {
+      "latest_mtime": 1787804986,
+      "file_count": 3,
+      "files_hash": 17078078072230660934
+    },
+    "extensions-anthropic-vertex": {
+      "latest_mtime": 1787804982,
+      "file_count": 15,
+      "files_hash": 10481498676519468418
+    },
+    "src-music-generation": {
+      "latest_mtime": 1787804985,
+      "file_count": 11,
+      "files_hash": 10500671963029659353
+    },
+    "extensions-synology-chat-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 27,
+      "files_hash": 14478652273152391079
+    },
+    "src-pairing": {
+      "latest_mtime": 1787804985,
+      "file_count": 14,
+      "files_hash": 8448104486573966201
+    },
+    "src-llm-utils-oauth": {
+      "latest_mtime": 1787804985,
+      "file_count": 10,
+      "files_hash": 7576393823804030778
+    },
+    "extensions-qqbot-src-engine-approval": {
+      "latest_mtime": 1787804983,
+      "file_count": 2,
+      "files_hash": 15522736259869300662
+    },
+    "ui-src-pages-model-setup": {
+      "latest_mtime": 1787804986,
+      "file_count": 15,
+      "files_hash": 90269315607174490
+    },
+    "apps-macos-Tests-OpenClawIPCTests": {
+      "latest_mtime": 1787804982,
+      "file_count": 154,
+      "files_hash": 18105256875538374214
+    },
+    "packages-tool-call-repair-src": {
+      "latest_mtime": 1787804984,
+      "file_count": 10,
+      "files_hash": 16267862378423108355
+    },
+    "src-gateway-server-methods": {
+      "latest_mtime": 1787804985,
+      "file_count": 322,
+      "files_hash": 6745205184498929863
+    },
+    "extensions-oc-path-src-oc-path-tests-scenarios": {
+      "latest_mtime": 1787804983,
+      "file_count": 21,
+      "files_hash": 13570159554457562131
+    },
+    "packages-normalization-core-src": {
+      "latest_mtime": 1787804984,
+      "file_count": 27,
+      "files_hash": 15764682333154531531
+    },
+    "ui-src-pages-profile": {
+      "latest_mtime": 1787804986,
+      "file_count": 10,
+      "files_hash": 16620952601714229722
+    },
+    "extensions-microsoft-foundry": {
+      "latest_mtime": 1787804983,
+      "file_count": 13,
+      "files_hash": 14318659649158834688
+    },
+    "src-system-agent": {
+      "latest_mtime": 1787804986,
+      "file_count": 72,
+      "files_hash": 3720771017481315261
+    },
+    "ui-src-test-helpers": {
+      "latest_mtime": 1787804986,
+      "file_count": 15,
+      "files_hash": 9740033513787177925
+    },
+    "packages-agent-core-src-harness": {
+      "latest_mtime": 1787804983,
+      "file_count": 6,
+      "files_hash": 15799110914378755590
+    },
+    "extensions-web-readability": {
+      "latest_mtime": 1787804983,
+      "file_count": 3,
+      "files_hash": 12364716074265168726
+    },
+    "extensions-telegram-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 401,
+      "files_hash": 6208444691282365384
+    },
+    "extensions-twitch": {
+      "latest_mtime": 1787804983,
+      "file_count": 10,
+      "files_hash": 11659493935898032828
+    },
+    "src-memory-host-sdk": {
+      "latest_mtime": 1787804985,
+      "file_count": 12,
+      "files_hash": 3904556905259055470
+    },
+    "ui-src-pages-new-session": {
+      "latest_mtime": 1787804986,
+      "file_count": 28,
+      "files_hash": 1058192766307042603
+    },
+    "src-auto-reply-reply-commands-acp": {
+      "latest_mtime": 1787804984,
+      "file_count": 11,
+      "files_hash": 15432630404609918065
+    },
+    "src-agents-runtime-plan": {
+      "latest_mtime": 1787804984,
+      "file_count": 19,
+      "files_hash": 1021118617810682423
+    },
+    "extensions-matrix-src-matrix-client": {
+      "latest_mtime": 1787804983,
+      "file_count": 19,
+      "files_hash": 4865726385872342307
+    },
+    "extensions-firecrawl-src": {
+      "latest_mtime": 1787804983,
+      "file_count": 10,
+      "files_hash": 11950724026255122613
+    },
+    "src-tasks": {
+      "latest_mtime": 1787804986,
+      "file_count": 74,
+      "files_hash": 11752988555170755780
+    },
+    "extensions-matrix": {
+      "latest_mtime": 1787804983,
+      "file_count": 167,
+      "files_hash": 166100566974924789
+    }
+  }
+}

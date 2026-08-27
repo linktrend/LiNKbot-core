@@ -1,0 +1,131 @@
+# Outline
+
+[← Back to MODULE](MODULE.md) | [← Back to INDEX](../../INDEX.md)
+
+Symbol maps for 3 large files in this module.
+
+## scripts/dev/discord-acp-plain-language-smoke.ts (1129 lines)
+
+| Line | Kind | Name | Visibility |
+| ---- | ---- | ---- | ---------- |
+| 22 | fn | writeStdoutLine | (private) |
+| 26 | fn | writeStdoutJson | (private) |
+| 30 | fn | writeStderrLine | (private) |
+| 34 | type | ThreadBindingRecord | (private) |
+| 45 | type | DiscordMessage | (private) |
+| 56 | type | DiscordUser | (private) |
+| 62 | type | WebhookForCleanup | (private) |
+| 71 | type | DriverMode | (private) |
+| 73 | type | Args | (private) |
+| 90 | type | SuccessResult | (private) |
+| 113 | type | FailureResult | (private) |
+| 157 | class | CliArgumentError | (private) |
+| 161 | fn | remainingTimeoutMs | (private) |
+| 169 | fn | sleepUntilDeadline | (private) |
+| 177 | fn | withTimeout | (private) |
+| 201 | fn | parseNumber | (private) |
+| 205 | fn | createDiscordResponseTooLargeError | (private) |
+| 211 | fn | isTooLargeError | (private) |
+| 215 | fn | readDiscordResponseText | (private) |
+| 227 | fn | readDiscordResponseJson | (private) |
+| 240 | fn | resolveStateDir | (private) |
+| 255 | fn | resolveArg | (private) |
+| 275 | fn | hasFlag | (private) |
+| 279 | fn | validateCliArgs | (private) |
+| 299 | fn | parseDriverMode | (private) |
+| 309 | fn | redactDiscordApiPath | (private) |
+| 316 | fn | safeErrorMessage | (private) |
+| 320 | fn | usage | (private) |
+| 359 | fn | parseArgs | (private) |
+| 436 | fn | openclawCliJson | (private) |
+| 454 | fn | readMessagesWithOpenclaw | (private) |
+| 482 | fn | resolveAuthorizationHeader | (private) |
+| 493 | fn | discordApi | (private) |
+| 515 | fn | discordWebhookApi | (private) |
+| 539 | fn | requestDiscordJson | (private) |
+| 556 | fn | timeoutError | (private) |
+| 649 | fn | readThreadBindings | (private) |
+| 661 | fn | normalizeBoundAt | (private) |
+| 668 | fn | resolveCandidateBindings | (private) |
+| 692 | fn | buildInstruction | (private) |
+| 709 | fn | toRecentMessageRow | (private) |
+| 718 | fn | loadParentRecentMessages | (private) |
+| 739 | fn | cleanupWebhook | (private) |
+| 753 | fn | printOutput | (private) |
+| 792 | fn | run | (private) |
+| 1088 | fn | main | (private) |
+
+## scripts/dev/realtime-talk-live-smoke.ts (920 lines)
+
+| Line | Kind | Name | Visibility |
+| ---- | ---- | ---- | ---------- |
+| 24 | type | RealtimeSmokeCliOptions | (private) |
+| 30 | type | Browser | (private) |
+| 31 | type | ViteDevServer | (private) |
+| 33 | type | SmokeResult | (private) |
+| 45 | type | OpenAIHttpOptions | (private) |
+| 50 | type | OpenAIRealtimeBrowserResponseReader | (private) |
+| 56 | type | OpenAIWebRtcSmokeGlobal | (private) |
+| 60 | class | CliArgumentError | (private) |
+| 64 | fn | usage | (private) |
+| 78 | fn | parseRealtimeSmokeArgs | (private) |
+| 91 | fn | getEnv | (private) |
+| 96 | fn | shortError | (private) |
+| 100 | fn | readBoundedText | (private) |
+| 112 | fn | readBoundedJsonResponse | (private) |
+| 121 | fn | resolveOpenAIHttpTimeoutMs | (private) |
+| 132 | fn | withTimeout | (private) |
+| 151 | fn | printResult | (private) |
+| 158 | fn | compareStrings | (private) |
+| 162 | fn | readOpenAIRealtimeBrowserResponseText | (private) |
+| 215 | fn | openAIRealtimeBrowserResponseReaderInitScript | (private) |
+| 219 | fn | createOpenAIClientSecret | (private) |
+| 275 | fn | smokeOpenAIBackendBridge | (private) |
+| 316 | fn | smokeOpenAIWebRtc | (private) |
+| 453 | fn | smokeGoogleLiveBrowserWs | (private) |
+| 645 | fn | smokeGatewayRelayBrowser | (private) |
+| 663 | fn | delay | (private) |
+| 669 | fn | emit | (private) |
+| 675 | fn | base64ZeroPcm | (private) |
+| 785 | fn | result | (private) |
+| 833 | fn | main | (private) |
+| 908 | fn | toLintErrorObject | (private) |
+
+## scripts/dev/tui-pty-test-watch.ts (528 lines)
+
+| Line | Kind | Name | Visibility |
+| ---- | ---- | ---- | ---------- |
+| 10 | type | Options | (private) |
+| 35 | class | CliArgumentError | (private) |
+| 39 | type | KillableChild | (private) |
+| 44 | type | ChildStopper | (private) |
+| 49 | type | SignalChild | (private) |
+| 51 | type | RunTaskkill | (private) |
+| 57 | fn | unrefTimer | (private) |
+| 61 | fn | readOption | (private) |
+| 73 | fn | readMode | (private) |
+| 81 | fn | usage | (private) |
+| 93 | fn | validateOwnArgs | (private) |
+| 107 | fn | parseOptions | (private) |
+| 123 | fn | shouldUseAltScreen | (private) |
+| 127 | fn | resolveVitestCliEntry | (private) |
+| 132 | fn | currentTerminalDimension | (private) |
+| 136 | fn | signalWindowsProcessTree | (private) |
+| 149 | fn | signalWindowsProcessTreeOrForce | (private) |
+| 160 | fn | signalChildProcessTree | (private) |
+| 190 | fn | createChildStopper | (private) |
+| 205 | fn | cancel | (private) |
+| 216 | fn | stop | (private) |
+| 235 | fn | createMirrorFile | (private) |
+| 240 | fn | readNewMirrorData | (private) |
+| 262 | fn | appendBufferTail | (private) |
+| 273 | fn | drainNewMirrorData | (private) |
+| 290 | fn | main | (private) |
+| 335 | fn | filterMirrorTerminalQueries | (private) |
+| 356 | fn | writeMirrorChunk | (private) |
+| 368 | fn | restoreScreen | (private) |
+| 381 | fn | ignoredInput | (private) |
+| 393 | fn | restoreInput | (private) |
+| 404 | fn | drainParentInput | (private) |
+| 411 | fn | renderWaitingStatus | (private) |
+| 442 | type | ChildExit | (private) |

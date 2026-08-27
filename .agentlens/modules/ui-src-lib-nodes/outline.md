@@ -1,0 +1,72 @@
+# Outline
+
+[← Back to MODULE](MODULE.md) | [← Back to INDEX](../../INDEX.md)
+
+Symbol maps for 1 large files in this module.
+
+## ui/src/lib/nodes/index.ts (893 lines)
+
+| Line | Kind | Name | Visibility |
+| ---- | ---- | ---- | ---------- |
+| 14 | type | GatewayRequestClient | (private) |
+| 18 | type | NodesGatewaySnapshot | (private) |
+| 23 | type | DeviceTokenSummary | pub |
+| 32 | type | PendingDevice | pub |
+| 45 | type | PairedDevice | pub |
+| 67 | type | DevicePairingList | pub |
+| 72 | type | ExecApprovalsDefaults | (private) |
+| 79 | type | ExecApprovalsAllowlistEntry | pub |
+| 90 | type | ExecApprovalsAgent | (private) |
+| 94 | type | ExecApprovalsFile | pub |
+| 101 | type | FileExecApprovalsSnapshot | (private) |
+| 108 | type | NativeExecApprovalRule | (private) |
+| 116 | type | NativeExecApprovalsSnapshot | pub |
+| 127 | type | ExecApprovalsSnapshot | pub |
+| 129 | type | ExecApprovalsTarget | pub |
+| 131 | type | NodesRequestState | (private) |
+| 139 | type | NodesState | (private) |
+| 146 | type | DevicesState | (private) |
+| 152 | type | ExecApprovalsState | (private) |
+| 163 | type | NodesPageDataState | pub |
+| 165 | type | StoredIdentity | (private) |
+| 173 | type | DeviceIdentity | (private) |
+| 183 | fn | createInitialNodesState | pub |
+| 205 | fn | isCurrentNodesRequest | (private) |
+| 213 | fn | loadNodes | pub |
+| 240 | fn | loadDevices | pub |
+| 272 | fn | approveDevicePairing | pub |
+| 290 | fn | rejectDevicePairing | pub |
+| 313 | type | InventoryRemovalRequest | pub |
+| 320 | type | InventoryState | (private) |
+| 322 | fn | removeInventoryEntryRpc | (private) |
+| 339 | fn | reloadInventory | (private) |
+| 349 | fn | removeInventoryEntry | pub |
+| 362 | fn | removeStaleInventoryEntries | pub |
+| 388 | fn | approveNodePairingRequest | pub |
+| 400 | fn | rejectNodePairingRequest | pub |
+| 416 | fn | rotateDeviceToken | pub |
+| 463 | fn | revokeDeviceToken | pub |
+| 503 | fn | resolveExecApprovalsRpc | (private) |
+| 514 | fn | resolveExecApprovalsSaveRpc | (private) |
+| 525 | fn | loadExecApprovals | pub |
+| 558 | fn | applyExecApprovalsSnapshot | (private) |
+| 570 | fn | isNativeExecApprovalsSnapshot | pub |
+| 576 | fn | saveExecApprovals | pub |
+| 622 | fn | updateExecApprovalsFormValue | pub |
+| 639 | fn | removeExecApprovalsFormValue | pub |
+| 655 | fn | deviceAuthStorageKey | (private) |
+| 659 | fn | removeLegacyDeviceAuthStore | (private) |
+| 667 | fn | parseDeviceAuthStore | (private) |
+| 688 | fn | readStore | (private) |
+| 719 | fn | writeStore | (private) |
+| 729 | fn | loadDeviceAuthToken | pub |
+| 744 | fn | storeDeviceAuthToken | pub |
+| 763 | fn | clearDeviceAuthToken | pub |
+| 778 | fn | base64UrlEncode | (private) |
+| 786 | fn | base64UrlDecode | (private) |
+| 797 | fn | bytesToHex | (private) |
+| 803 | fn | fingerprintPublicKey | (private) |
+| 808 | fn | generateIdentity | (private) |
+| 824 | fn | peekStoredDeviceIdentityId | pub |
+| 839 | fn | loadOrCreateDeviceIdentity | pub |
+| 887 | fn | signDevicePayload | pub |
