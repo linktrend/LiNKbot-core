@@ -58,8 +58,34 @@ const BRAIN_OPERATOR_CEILING = [
   "brain_task_close",
 ] as const;
 
-/** Full §9.2 Skills operator ceiling (15). */
+/**
+ * Full §9.2 Skills managed surface (19). Live linkskills overlay is v2-only;
+ * leftover v1 names stay compatibility-only and must not appear in catalogs.
+ */
 const SKILLS_OPERATOR_CEILING = [
+  "skills_capabilities_get",
+  "skills_catalog_list",
+  "skills_catalog_search",
+  "skills_release_list",
+  "skills_release_describe",
+  "skills_qualification_get",
+  "skills_release_entrypoint_get",
+  "skills_release_sections_list",
+  "skills_release_section_get",
+  "skills_release_resources_list",
+  "skills_release_resource_get",
+  "skills_release_content_get",
+  "skills_release_package_get",
+  "skills_release_verify",
+  "skills_use_report_submit",
+  "skills_use_report_status_get",
+  "skills_feedback_submit",
+  "skills_feedback_status_get",
+  "skills_librarian_status_get",
+] as const;
+
+/** Leftover v1 names: advertised under a wide operator ceiling, denied by overlay. */
+const SKILLS_LEGACY_COMPAT_NAMES = [
   "skills_list",
   "skills_search",
   "skills_describe",
@@ -73,7 +99,6 @@ const SKILLS_OPERATOR_CEILING = [
   "skills_tool_invoke",
   "skills_input_validate",
   "skills_output_validate",
-  "skills_feedback_submit",
   "skills_trace_candidate_submit",
 ] as const;
 
@@ -88,11 +113,19 @@ const BRAIN_READ_ONLY = [
 ] as const;
 
 const SKILLS_DISCOVERY_ONLY = [
-  "skills_list",
-  "skills_search",
-  "skills_describe",
-  "skills_fragment_get",
-  "skills_release_get",
+  "skills_capabilities_get",
+  "skills_catalog_list",
+  "skills_catalog_search",
+  "skills_release_list",
+  "skills_release_describe",
+  "skills_qualification_get",
+  "skills_release_entrypoint_get",
+  "skills_release_sections_list",
+  "skills_release_section_get",
+  "skills_release_resources_list",
+  "skills_release_resource_get",
+  "skills_release_content_get",
+  "skills_release_package_get",
 ] as const;
 
 async function writeListToolsMcpServer(params: {
@@ -201,7 +234,7 @@ describe("managed MCP toolFilter live plugin registry → gateway catalog", () =
     resetPluginRuntimeStateForTest();
   });
 
-  it("keeps active registry identity after ensure and catalogs Brain 7 / Skills 5", async () => {
+  it("keeps active registry identity after ensure and catalogs Brain 7 / Skills 13", async () => {
     const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "mcp-toolfilter-live-ensure-"));
     const brainServerPath = path.join(tempDir, "linkbrain.mjs");
     const skillsServerPath = path.join(tempDir, "linkskills.mjs");
@@ -211,7 +244,7 @@ describe("managed MCP toolFilter live plugin registry → gateway catalog", () =
     });
     await writeListToolsMcpServer({
       filePath: skillsServerPath,
-      tools: SKILLS_OPERATOR_CEILING,
+      tools: [...SKILLS_OPERATOR_CEILING, ...SKILLS_LEGACY_COMPAT_NAMES],
     });
 
     const readOnlyCfg = buildPluginConfig({
@@ -274,7 +307,9 @@ describe("managed MCP toolFilter live plugin registry → gateway catalog", () =
                 linkskills: {
                   command: process.execPath,
                   args: [skillsServerPath],
-                  toolFilter: { include: [...SKILLS_OPERATOR_CEILING] },
+                  toolFilter: {
+                    include: [...SKILLS_OPERATOR_CEILING, ...SKILLS_LEGACY_COMPAT_NAMES],
+                  },
                 },
               },
             },
@@ -295,6 +330,7 @@ describe("managed MCP toolFilter live plugin registry → gateway catalog", () =
         expect(brain).toEqual([...BRAIN_READ_ONLY].toSorted());
         expect(skills).toEqual([...SKILLS_DISCOVERY_ONLY].toSorted());
         expect(brain).not.toContain("brain_capture_batch");
+        expect(skills).not.toContain("skills_list");
         expect(skills).not.toContain("skills_run_start");
       } finally {
         await readOnly.dispose();
@@ -323,6 +359,8 @@ describe("managed MCP toolFilter live plugin registry → gateway catalog", () =
       try {
         const names = (await allOn.getCatalog()).tools.map((t) => t.toolName).toSorted();
         expect(names).toEqual([...BRAIN_OPERATOR_CEILING, ...SKILLS_OPERATOR_CEILING].toSorted());
+        expect(names).not.toContain("skills_list");
+        expect(names).not.toContain("skills_run_start");
       } finally {
         await allOn.dispose();
       }

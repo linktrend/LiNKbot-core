@@ -1,0 +1,107 @@
+{
+  "receiptType": "lisa_pkt_09_source_acceptance_receipt_v1",
+  "status": "source-prepared",
+  "packet": {
+    "id": "PKT-09",
+    "issue": "ISS-09",
+    "executionState": "PLAN"
+  },
+  "sourceBase": {
+    "repository": "linktrend/openclaw_prime",
+    "ref": "origin/development",
+    "commit": "c75c8fb8f7d2e0b0ef801cef03e7cbc70bbb85f7",
+    "tree": "1072bcbdd236e2bcb0a67e7556cb35adbf0ff157"
+  },
+  "ownedPaths": [
+    "linkbots/lisa/ops/backup",
+    "linkbots/lisa/ops/deployment",
+    "linkbots/lisa/docs"
+  ],
+  "prohibitedPaths": [
+    "extensions/linkplatform",
+    "extensions/linkbrain",
+    "extensions/linkskills",
+    "linkbots/lisa/ops/jobs/time-management"
+  ],
+  "artifacts": {
+    "backupContract": {
+      "path": "linkbots/lisa/ops/backup/backup.ts",
+      "sha256": "2f1ab28e16f7116712faac5846bdd759c2e9a39900c897ad82a2518d40703e49",
+      "algorithm": "aes-256-gcm",
+      "keyMaterial": "runtime-only-google-secret-manager-reference",
+      "plaintextHealthInReceipt": false
+    },
+    "receiptSchema": {
+      "path": "linkbots/lisa/ops/backup/backup-receipt.schema.json",
+      "sha256": "bea4201b94422e1e020817f42e5832607028aab7c87e977a0ad94e0be2456431"
+    },
+    "deploymentUnits": [
+      {
+        "path": "linkbots/lisa/ops/deployment/linktrend-lisa-backup.service",
+        "sha256": "b93c457b48e7a4e728a7dd847e16807cf06ba0e28426765c9fb8079f1ecb2b3d"
+      },
+      {
+        "path": "linkbots/lisa/ops/deployment/linktrend-lisa-backup.timer",
+        "sha256": "812df407e7766c7ce349b5f5cf2e29184310987caab2ec929b5826c7f91e191d"
+      },
+      {
+        "path": "linkbots/lisa/ops/deployment/linktrend-lisa-private-health-restore.service",
+        "sha256": "614a1222969ce7a842131c8857ab065a3dc69db0fb7ade5fe9676b67a61bde0e"
+      },
+      {
+        "path": "linkbots/lisa/ops/deployment/deployment.ts",
+        "sha256": "5f9d0df24da4b0d5c30ecf2a87b51a60cec95a3e3cce2b09bff2bfbee52ce9ef"
+      }
+    ],
+    "offlineRehearsal": {
+      "path": "linkbots/lisa/ops/deployment/pre-vps-rehearsal.test.mjs",
+      "sha256": "f7f08eda2a2a280c8162f9912ff358c71bae3ff7631f6d380c52508fb16fb077",
+      "command": "node --experimental-strip-types --test linkbots/lisa/ops/deployment/pre-vps-rehearsal.test.mjs",
+      "status": "passed",
+      "tests": 1,
+      "network": "disabled-by-injected-adapters",
+      "liveMutation": false
+    },
+    "runbooks": [
+      "linkbots/lisa/docs/LISA-BACKUP-DEPLOYMENT-RUNBOOK.md",
+      "linkbots/lisa/docs/LISA-DIRECT-MIGRATION.md"
+    ]
+  },
+  "sanitizedEvidence": {
+    "privateDataRecorded": false,
+    "credentialValuesRecorded": false,
+    "companyArchiveExcludes": [
+      "private-health",
+      "credentials"
+    ],
+    "restoreNetwork": "disabled",
+    "channelDelivery": "disabled"
+  },
+  "gates": {
+    "sourceTests": "focused-offline-pass",
+    "cleanHostInstall": "HOLD: external host operator",
+    "vpsDeployment": "HOLD: Principal-authorized VPS action",
+    "liveRestore": "HOLD: Principal-authorized VPS action",
+    "productionCanary": "HOLD: outside PKT-09 source scope"
+  },
+  "actions": {
+    "vpsTouched": false,
+    "liveLisaTouched": false,
+    "productionTouched": false,
+    "oauthOrLiveGoogleCalls": false,
+    "privateDataRecorded": false
+  },
+  "rollback": {
+    "sourceStrategy": "revert-this-source-checkpoint",
+    "offlineSequence": [
+      "stop-timer",
+      "restore-units",
+      "preserve-backup",
+      "start-service"
+    ],
+    "offlineRehearsalPassed": true,
+    "liveRestorePerformed": false,
+    "approvalRequired": true
+  },
+  "receiptDigestSha256": "b2a83ce967434812e37e7136e3866066070924e7e0b1c566ce4f00349ef520d6"
+}

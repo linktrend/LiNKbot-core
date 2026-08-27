@@ -134,16 +134,31 @@ export async function agentsAddCommand(
       ...(opts.bind?.length ? { bindingSpecs: opts.bind } : {}),
       transformConfig: transformConfigWithPendingPluginInstalls,
     });
-    if (created.status === "error") {
-      runtime.error(
-        created.reason === "reserved-id"
-          ? `"${created.agentId}" is reserved. Choose another name, or run ${formatCliCommand("openclaw agents list")} to inspect configured agents.`
-          : created.reason === "already-exists"
-            ? `Agent "${created.agentId}" already exists.`
-            : created.message,
-      );
-      runtime.exit(1);
-      return;
+    switch (created.status) {
+      case "created":
+        break;
+      case "error":
+        runtime.error(
+          created.reason === "reserved-id"
+            ? `"${created.agentId}" is reserved. Choose another name, or run ${formatCliCommand("openclaw agents list")} to inspect configured agents.`
+            : created.reason === "already-exists"
+              ? `Agent "${created.agentId}" already exists.`
+              : created.message,
+        );
+        runtime.exit(1);
+        return;
+      case "inactive":
+        runtime.error(`Profile "${created.profileId}" is inactive and cannot be provisioned.`);
+        runtime.exit(1);
+        return;
+      case "dry-run":
+        runtime.error(`Agent "${created.agentId}" was not created.`);
+        runtime.exit(1);
+        return;
+      default: {
+        const exhaustive: never = created;
+        throw new Error(`unexpected createAgent status: ${JSON.stringify(exhaustive)}`);
+      }
     }
 
     const bindingResult = created.bindingResult ?? emptyBindingResult(cfg);

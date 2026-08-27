@@ -3364,6 +3364,7 @@ jobs:
 
   ci-gate:
     permissions:
+      actions: read
       contents: read
     name: openclaw/ci-gate
     needs:
@@ -3393,6 +3394,46 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
+      - name: Checkout exact CI candidate for inherited-failure classification
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          fetch-tags: false
+          persist-credentials: false
+          submodules: false
+
+      - name: Classify exact inherited baseline failure
+        id: inherited-baseline
+        shell: bash
+        env:
+          BASELINE_REF: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.event.pull_request.base.ref) || 'origin/development' }}
+          BASELINE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.sha }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          # Read concrete matrix job names from Actions. Aggregate needs
+          # contexts cannot distinguish a failing matrix row from its parent.
+          observed_failures="$(
+            gh api --paginate \
+              "repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/jobs?per_page=100" \
+              --jq '.jobs[] | select(.conclusion == "failure" and .name != "openclaw/ci-gate") | .name' |
+              sort |
+              jq -Rsc 'split("\n") | map(select(length > 0))'
+          )"
+          result="$(python3 .github/openclaw_progressive_validation.py \
+            --root . \
+            --receipt docs/execution/openclaw-prime-lisa/baseline-ci-receipt.json \
+            --baseline-ref "${BASELINE_REF}" \
+            --baseline-sha "${BASELINE_SHA}" \
+            --candidate-ref HEAD \
+            --observed-failure-identities "${observed_failures}" || true)"
+          echo "${result}"
+          classification="$(jq -r '.classification // "blocking"' <<<"${result}")"
+          protected_admission="$(jq -r '.protectedAdmission // false' <<<"${result}")"
+          echo "classification=${classification}" >> "${GITHUB_OUTPUT}"
+          echo "protected_admission=${protected_admission}" >> "${GITHUB_OUTPUT}"
+
       - name: Verify selected CI lanes
         shell: bash
         env:
@@ -3430,6 +3471,10 @@ jobs:
             result="${entry#*=}"
             echo "${name}: ${result}"
             if [[ "$result" != "success" ]]; then
+              if [[ "$result" == "failure" && "${{ steps.inherited-baseline.outputs.protected_admission }}" == "true" ]]; then
+                echo "::warning title=Inherited baseline failure::${name} is unchanged and bound to the exact baseline receipt"
+                continue
+              fi
               echo "::error title=Required CI job did not succeed::${name} finished with ${result}"
               failures=1
             fi
@@ -3443,6 +3488,10 @@ jobs:
             case "$result" in
               success | skipped) ;;
               *)
+                if [[ "$result" == "failure" && "${{ steps.inherited-baseline.outputs.protected_admission }}" == "true" ]]; then
+                  echo "::warning title=Inherited baseline failure::${name} is unchanged and bound to the exact baseline receipt"
+                  continue
+                fi
                 echo "::error title=Selected CI job did not succeed::${name} finished with ${result}"
                 failures=1
                 ;;

@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "profileId": "david",
+  "roleRefs": ["role:cpo", "scope:product", "scope:go-to-market"],
+  "identityRef": "platform-identity:pending:david",
+  "activation": "inactive",
+  "capabilityClasses": ["product", "go-to-market", "research"],
+  "providerPins": {
+    "platform": "platform-contract:actor-grants-v1",
+    "openclaw": "openclaw-profile-runtime:v1"
+  },
+  "skillPins": {
+    "product": "skills-qualified:product:v1",
+    "go-to-market": "skills-qualified:go-to-market:v1"
+  },
+  "modelPolicyRef": "model-policy:future:david",
+  "toolExposure": ["product.read", "product.plan", "research.summarize"],
+  "stateOwners": {
+    "profile": "openclaw-agent-sqlite",
+    "approval": "platform-approval-authority",
+    "product": "product-domain-authority"
+  },
+  "exclusions": {
+    "credentials": true,
+    "accountIds": true,
+    "privateState": true,
+    "sessions": true,
+    "recipients": true,
+    "schedules": true,
+    "jobs": true,
+    "cookies": true,
+    "downloads": true,
+    "workspace": true
+  }
+}

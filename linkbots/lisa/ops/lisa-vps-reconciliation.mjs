@@ -45,10 +45,48 @@ const DESTINATION_KINDS = new Set([
 const LIFECYCLES = new Set(["active", "disabled", "closed", "archived"]);
 const CONFLICT_DISPOSITIONS = new Set(["no_required_unique_facts", "facts_extracted"]);
 const SHA256 = /^[a-f0-9]{64}$/u;
+const GIT_SHA = /^[a-f0-9]{40}$/u;
 const RELATIVE_PATH = /^(?!\/)(?!.*(?:^|\/)\.\.(?:\/|$))[^\\]+$/u;
 const FORBIDDEN_FIELD = /^(?:payload|value|content|body|data)$/iu;
 const SECRET_FIELD =
   /(?:secret|token|password|passwd|api[_-]?key|access[_-]?token|refresh[_-]?token|private[_-]?key|client[_-]?secret|authorization)/iu;
+
+export const PKT11_SOURCE_ACCEPTANCE_RECEIPT_TYPE = "lisa_pkt_11_source_acceptance_receipt_v1";
+export const PKT11_SOURCE_ACCEPTANCE_OWNED_PATHS = Object.freeze([
+  "linkbots/lisa/ops/lisa-vps-reconciliation.mjs",
+  "linkbots/lisa/ops/stage-workspace-package.ts",
+  "linkbots/lisa/ops/receipts",
+  "linkbots/lisa/docs",
+]);
+export const PKT11_SOURCE_ACCEPTANCE_PROHIBITED_PATHS = Object.freeze([
+  "extensions/linkplatform/src",
+  "extensions/linkbrain/src",
+  "extensions/linkskills/src",
+  "extensions/linklibraries/src",
+  "extensions/linkautowork/src",
+]);
+const PKT11_DEPENDENCIES = Object.freeze([
+  "PKT-01",
+  "PKT-02",
+  "PKT-03",
+  "PKT-04",
+  "PKT-05",
+  "PKT-06",
+  "PKT-07",
+  "PKT-08",
+  "PKT-09",
+  "PKT-10",
+]);
+const PKT11_EXTERNAL_GATES = Object.freeze([
+  "providerReleaseSetAccepted",
+  "independentTerraVerification",
+  "independentReview",
+  "stageDeployment",
+  "vpsDeployment",
+  "productionCanary",
+  "principalAcceptance",
+  "rollbackVerification",
+]);
 
 function fail(message) {
   throw new Error(message);
@@ -84,6 +122,10 @@ function sha256(value) {
 
 function assertSha(value, label) {
   assert(typeof value === "string" && SHA256.test(value), `invalid_${label}`);
+}
+
+function assertGitSha(value, label) {
+  assert(typeof value === "string" && GIT_SHA.test(value), `invalid_${label}`);
 }
 
 function assertNoSecretMaterialFields(value, label) {
@@ -445,6 +487,215 @@ function buildComparisons(localEntries, vpsEntries) {
 function withoutReceipt(manifest) {
   const { receipt: _receipt, ...payload } = manifest;
   return payload;
+}
+
+function withoutAcceptanceDigest(receipt) {
+  const { receiptDigestSha256: _receiptDigestSha256, ...payload } = receipt;
+  return payload;
+}
+
+function assertExactStringArray(actual, expected, label) {
+  assert(Array.isArray(actual), `${label}_missing`);
+  assert(canonicalJson(actual) === canonicalJson(expected), `${label}_mismatch`);
+}
+
+/**
+ * Validate the source-only PKT-11 handoff contract. This does not assert that
+ * deployment happened: every external gate must remain HOLD until its
+ * separately owned receipt is supplied and reviewed.
+ */
+export function validateSourceAcceptanceReceipt(receipt) {
+  assert(
+    receipt && typeof receipt === "object" && !Array.isArray(receipt),
+    "acceptance_receipt_missing",
+  );
+  assertNoSecretMaterialFields(receipt, "acceptance_receipt");
+  assert(
+    receipt.receiptType === PKT11_SOURCE_ACCEPTANCE_RECEIPT_TYPE,
+    "unsupported_acceptance_receipt_type",
+  );
+  assert(receipt.status === "source-prepared", "invalid_acceptance_receipt_status");
+  assert(receipt.packet?.id === "PKT-11", "acceptance_packet_id_mismatch");
+  assert(receipt.packet.issue === "ISS-11", "acceptance_issue_id_mismatch");
+  assert(receipt.packet.executionState === "PLAN", "acceptance_execution_state_mismatch");
+  assert(receipt.sourceBase?.repository === "openclaw/openclaw", "acceptance_repository_mismatch");
+  assert(receipt.sourceBase?.ref === "origin/development", "acceptance_ref_mismatch");
+  assertGitSha(receipt.sourceBase?.commit, "acceptance_source_commit");
+  assertGitSha(receipt.sourceBase?.tree, "acceptance_source_tree");
+  assertExactStringArray(
+    receipt.ownedPaths,
+    PKT11_SOURCE_ACCEPTANCE_OWNED_PATHS,
+    "acceptance_owned_paths",
+  );
+  assertExactStringArray(
+    receipt.prohibitedPaths,
+    PKT11_SOURCE_ACCEPTANCE_PROHIBITED_PATHS,
+    "acceptance_prohibited_paths",
+  );
+
+  assert(
+    receipt.dependencyPackets && typeof receipt.dependencyPackets === "object",
+    "acceptance_dependencies_missing",
+  );
+  assertExactStringArray(
+    receipt.dependencyPackets.required,
+    PKT11_DEPENDENCIES,
+    "acceptance_dependencies",
+  );
+  assertExactStringArray(
+    receipt.dependencyPackets.reproduced,
+    [],
+    "acceptance_reproduced_dependencies",
+  );
+  assert(
+    receipt.dependencyPackets.resolution ===
+      "exact accepted commit/tree receipts are consumed from the external runtime authority snapshot",
+    "acceptance_dependency_resolution_mismatch",
+  );
+
+  const packageArtifact = receipt.artifacts?.stageWorkspacePackage;
+  assert(
+    packageArtifact && typeof packageArtifact === "object",
+    "acceptance_stage_package_missing",
+  );
+  assert(
+    packageArtifact.sourceReceiptType === "lisa_stage_workspace_package_source_receipt_v1",
+    "acceptance_stage_receipt_type_mismatch",
+  );
+  assert(
+    packageArtifact.status === "verified-source" ||
+      packageArtifact.status === "blocked-hash-mismatch",
+    "acceptance_stage_status",
+  );
+  assertSafeText(packageArtifact.packageId, "acceptance_stage_package_id");
+  assertSha(packageArtifact.manifestSha256, "acceptance_stage_manifest_hash");
+  assert(
+    Number.isSafeInteger(packageArtifact.fileCount) && packageArtifact.fileCount > 0,
+    "acceptance_stage_file_count",
+  );
+  assert(packageArtifact.mutableSeeds === false, "acceptance_stage_mutable_seeds");
+  assert(packageArtifact.liveMutationAllowed === false, "acceptance_stage_live_mutation");
+
+  assert(
+    receipt.artifacts.reconciliationTool?.sourceOnly === true,
+    "acceptance_reconciliation_not_source_only",
+  );
+  assert(
+    receipt.artifacts.reconciliationTool.liveActions === false,
+    "acceptance_reconciliation_live_actions",
+  );
+  assertSafeText(receipt.artifacts.reconciliationTool.path, "acceptance_reconciliation_path");
+  assertSafeText(
+    receipt.artifacts.providerQualificationReference,
+    "acceptance_provider_receipt_ref",
+  );
+
+  assert(receipt.gates && typeof receipt.gates === "object", "acceptance_gates_missing");
+  assertExactStringArray(
+    Object.keys(receipt.gates).toSorted(),
+    [...PKT11_EXTERNAL_GATES].toSorted(),
+    "acceptance_gate_names",
+  );
+  for (const gate of PKT11_EXTERNAL_GATES) {
+    const value = receipt.gates[gate];
+    assert(value && typeof value === "object", `acceptance_gate_missing:${gate}`);
+    assert(value.status === "HOLD", `acceptance_gate_not_hold:${gate}`);
+    assertSafeText(value.requiredEvidence, `acceptance_gate_evidence:${gate}`);
+  }
+
+  const actions = receipt.actions;
+  assert(actions && typeof actions === "object", "acceptance_actions_missing");
+  for (const field of [
+    "vpsTouched",
+    "liveLisaTouched",
+    "productionTouched",
+    "scheduleChangesApplied",
+    "oauthOrLiveGoogleCalls",
+    "privateDataRecorded",
+  ]) {
+    assert(actions[field] === false, `acceptance_action_not_false:${field}`);
+  }
+
+  const rollback = receipt.rollback;
+  assert(rollback && typeof rollback === "object", "acceptance_rollback_missing");
+  assert(
+    rollback.strategy === "revert-this-source-checkpoint-before-any-promotion",
+    "acceptance_rollback_strategy",
+  );
+  assert(rollback.sourceRevertAvailable === true, "acceptance_source_revert_missing");
+  assert(rollback.liveRestorePerformed === false, "acceptance_live_restore_performed");
+  assert(rollback.rollbackVerified === false, "acceptance_rollback_claimed");
+  assert(rollback.approvalRequired === true, "acceptance_rollback_approval_missing");
+
+  assert(
+    receipt.receiptDigestSha256 === sha256(canonicalJson(withoutAcceptanceDigest(receipt))),
+    "acceptance_receipt_digest_mismatch",
+  );
+  return receipt;
+}
+
+/** Build a deterministic, source-only PKT-11 receipt without live evidence. */
+export function buildSourceAcceptanceReceipt({ sourceBase, stageWorkspacePackage }) {
+  const result = {
+    receiptType: PKT11_SOURCE_ACCEPTANCE_RECEIPT_TYPE,
+    status: "source-prepared",
+    packet: { id: "PKT-11", issue: "ISS-11", executionState: "PLAN" },
+    sourceBase: {
+      repository: sourceBase.repository,
+      ref: sourceBase.ref,
+      commit: sourceBase.commit,
+      tree: sourceBase.tree,
+    },
+    ownedPaths: [...PKT11_SOURCE_ACCEPTANCE_OWNED_PATHS],
+    prohibitedPaths: [...PKT11_SOURCE_ACCEPTANCE_PROHIBITED_PATHS],
+    dependencyPackets: {
+      required: [...PKT11_DEPENDENCIES],
+      reproduced: [],
+      resolution:
+        "exact accepted commit/tree receipts are consumed from the external runtime authority snapshot",
+    },
+    artifacts: {
+      reconciliationTool: {
+        path: "linkbots/lisa/ops/lisa-vps-reconciliation.mjs",
+        sourceOnly: true,
+        liveActions: false,
+      },
+      stageWorkspacePackage: {
+        sourceReceiptType: "lisa_stage_workspace_package_source_receipt_v1",
+        status: stageWorkspacePackage.status,
+        packageId: stageWorkspacePackage.packageId,
+        manifestSha256: stageWorkspacePackage.manifestSha256,
+        fileCount: stageWorkspacePackage.fileCount,
+        mutableSeeds: false,
+        liveMutationAllowed: false,
+      },
+      providerQualificationReference:
+        "linkbots/lisa/ops/google-workspace/receipts/qualified-skills.receipt.json",
+    },
+    gates: Object.fromEntries(
+      PKT11_EXTERNAL_GATES.map((gate) => [
+        gate,
+        { status: "HOLD", requiredEvidence: `external:${gate}` },
+      ]),
+    ),
+    actions: {
+      vpsTouched: false,
+      liveLisaTouched: false,
+      productionTouched: false,
+      scheduleChangesApplied: false,
+      oauthOrLiveGoogleCalls: false,
+      privateDataRecorded: false,
+    },
+    rollback: {
+      strategy: "revert-this-source-checkpoint-before-any-promotion",
+      sourceRevertAvailable: true,
+      liveRestorePerformed: false,
+      rollbackVerified: false,
+      approvalRequired: true,
+    },
+  };
+  const receipt = { ...result, receiptDigestSha256: sha256(canonicalJson(result)) };
+  return validateSourceAcceptanceReceipt(receipt);
 }
 
 export function validateReconciliation(manifest) {

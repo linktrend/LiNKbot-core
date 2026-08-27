@@ -187,7 +187,7 @@ function sessionRow(overrides: Partial<GatewaySessionRow> = {}): GatewaySessionR
 function readOnlyConnectResponse() {
   return {
     auth: {
-      deviceToken: "e2e-read-only-device-token",
+      deviceToken: "fixture",
       role: "operator",
       scopes: ["operator.read"],
     },

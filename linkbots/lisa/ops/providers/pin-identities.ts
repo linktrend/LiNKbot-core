@@ -12,8 +12,8 @@ export const LISA_OCP01_PIN_IDENTITIES = Object.freeze({
   }),
   brain: Object.freeze({
     repository: "LiNKbrain",
-    commit: "8ce1d737f8870a479f07b1741c58d6681cd07aa1",
-    tree: "0cae42d612342f5e52c7e2e0e76cb6fc2f6d81f3",
+    commit: "7eb19cec8ae3cf61b0369167dd3f699675546b28",
+    tree: "c489ed4de06790ef1daade75688b818ff62c7a4f",
     contractRef: "brain.v2/2.0.0",
   }),
   skills: Object.freeze({

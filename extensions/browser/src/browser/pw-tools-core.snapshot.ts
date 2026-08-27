@@ -469,6 +469,8 @@ export async function navigateViaPlaywright(opts: {
   timeoutMs?: number;
   ssrfPolicy?: SsrFPolicy;
   browserProxyMode?: BrowserNavigationPolicyOptions["browserProxyMode"];
+  lookupFn?: BrowserNavigationPolicyOptions["lookupFn"];
+  fetchImpl?: BrowserNavigationPolicyOptions["fetchImpl"];
 }): Promise<{ url: string; download?: BrowserDownloadResult }> {
   const isRetryableNavigateError = (err: unknown): boolean => {
     const msg =
@@ -489,6 +491,8 @@ export async function navigateViaPlaywright(opts: {
   }
   const navigationPolicy = withBrowserNavigationPolicy(opts.ssrfPolicy, {
     browserProxyMode: opts.browserProxyMode,
+    lookupFn: opts.lookupFn,
+    fetchImpl: opts.fetchImpl,
   });
   await assertBrowserNavigationAllowed({
     url,
@@ -505,6 +509,8 @@ export async function navigateViaPlaywright(opts: {
       timeoutMs: timeout,
       ssrfPolicy: opts.ssrfPolicy,
       browserProxyMode: opts.browserProxyMode,
+      lookupFn: opts.lookupFn,
+      fetchImpl: opts.fetchImpl,
       targetId: opts.targetId,
     });
   const navigateWithDownloadCapture = async (): Promise<{

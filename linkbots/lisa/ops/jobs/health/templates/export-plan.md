@@ -1,4 +1,4 @@
-# Private export plan
+**Private export plan**
 
 Create an encrypted machine-readable ledger copy in the current slot and retain the previous successful copy until current verification completes.
 

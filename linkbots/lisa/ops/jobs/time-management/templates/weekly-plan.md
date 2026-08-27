@@ -1,9 +1,9 @@
-# Weekly plan
+**Weekly plan**
 
 Planning horizon: {{horizon}}
 Timezone: Asia/Taipei
 
-## Decisions and attention
+**Decisions and attention**
 
 {{approval_blocks}}
 
@@ -16,7 +16,7 @@ A. {{choice_a}}
 B. {{choice_b}}
 C. Other — specify
 
-## Capacity blocks
+**Capacity blocks**
 
 Review 1: 08:15–08:45
 Work Period 1: 08:45–10:15
@@ -25,6 +25,6 @@ Work Period 3: 13:15–14:45
 Flexible period: 15:30–17:00
 Review 2: 17:00–17:30
 
-## Four-week outcomes
+**Four-week outcomes**
 
 {{outcomes}}

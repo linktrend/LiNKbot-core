@@ -1,4 +1,4 @@
-# Private monthly health report
+**Private monthly health report**
 
 Destination: Carlos's personal email only.
 

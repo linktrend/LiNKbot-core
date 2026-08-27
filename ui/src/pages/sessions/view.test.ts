@@ -636,7 +636,7 @@ describe("sessions view", () => {
       renderSessions({
         ...buildProps(
           buildResult({
-            key: "agent:data-expert:dingtalk:cidzg6sF43NZMy52Rnk8EN",
+            key: "agent:data-expert:dingtalk:test",
             kind: "direct",
             updatedAt: Date.now(),
           }),
@@ -1155,7 +1155,7 @@ describe("sessions view", () => {
         ...buildProps(
           buildMultiResult([
             {
-              key: "agent:data-expert:dingtalk:cidzg6sF43NZMy52Rnk8EN",
+              key: "agent:data-expert:dingtalk:test",
               kind: "direct",
               updatedAt: 20,
             },

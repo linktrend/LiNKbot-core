@@ -185,7 +185,7 @@ function configSnapshot(isWorkboardEnabled: boolean) {
 function readOnlyConnectResponse() {
   return {
     auth: {
-      deviceToken: "plugins-read-only-device-token",
+      deviceToken: "fixture",
       role: "operator",
       scopes: ["operator.read"],
     },
