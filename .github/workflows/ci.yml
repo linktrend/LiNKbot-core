@@ -799,7 +799,7 @@ jobs:
   security-fast:
     permissions:
       contents: read
-    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
+    if: github.event_name != 'pull_request' || (github.repository == 'openclaw/openclaw' && !github.event.pull_request.draft)
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
