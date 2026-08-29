@@ -8,7 +8,9 @@
     "preInstallTree": "a070f87137dd2e3cb4873be9a7633ab54cc78388",
     "preInstallPackageVersion": "2.5.1",
     "postInstallPackageVersion": "2.5.2",
-    "postInstallWorktree": "dirty-by-exact-managed-install; checkpoint required"
+    "postInstallCommit": "ccb3cfbd4690a6a376b57474db70d3ad3fef34b4",
+    "postInstallTree": "80eaa5270e04ea155998e4249f63e20305f15cbc",
+    "postInstallWorktree": "checkpointed"
   },
   "provider": {
     "repository": "linktrend/IDE-Development",
