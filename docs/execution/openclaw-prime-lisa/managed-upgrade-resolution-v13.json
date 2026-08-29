@@ -1,0 +1,54 @@
+{
+  "kind": "ide-managed-upgrade-resolution-receipt",
+  "schemaVersion": 1,
+  "consumer": {
+    "repository": "linktrend/openclaw_prime",
+    "ref": "dev/cloudcursor/v252-rollout-openclaw-prime-20260829-c926",
+    "preInstallCommit": "c8fd2baf4dd71e7361c7c301ffc9bf2a89c132b2",
+    "preInstallTree": "a070f87137dd2e3cb4873be9a7633ab54cc78388",
+    "preInstallPackageVersion": "2.5.1",
+    "postInstallPackageVersion": "2.5.2",
+    "postInstallWorktree": "dirty-by-exact-managed-install; checkpoint required"
+  },
+  "provider": {
+    "repository": "linktrend/IDE-Development",
+    "authoritativeRef": "v2.5.2",
+    "sourceCommit": "5a64f7f03d3463804b424cc59c4ee048473d9a51",
+    "sourceTree": "d2188157f2c32f5ba9c0cf6a5a60c7553cdce58a",
+    "phasePullRequest": 455,
+    "managedPackageManifest": "sha256:a40ef247933c1f3d8efb43f951ee5443a32c3c121e139d0c91d82ad8cd54c384",
+    "independentVerificationReceipt": "sha256:73d0ff0ae40b258f8337aae51c41e014b7b1e0c7ffe4623d9213d8b14bd16744",
+    "installerVersionDeclaredInResolution": "2.5.1"
+  },
+  "resolution": {
+    "kind": "ide-managed-upgrade-resolution",
+    "schemaVersion": 2,
+    "decision": "provider_supersedes for the exact 13 hash_mismatch_owned IDE-managed paths only",
+    "principalAuthorization": "provider_supersedes",
+    "transaction": "official IDE 2.5.2 installer update --resolution-manifest; exact preimage backup; transactional rollback; no manual overwrite",
+    "transactionId": "f67583e3-19f3-4471-b6ed-ec646efff95f",
+    "conflictCount": 13,
+    "missingDestinationsCreated": true
+  },
+  "validation": {
+    "update": "PASS; actionCount=455; mutatingActionCount=432; conflictCount=0; driftCount=0",
+    "verify": "PASS; actionCount=455; mutatingActionCount=0; conflictCount=0; driftCount=0; packageVersion=2.5.2; manifestHash=sha256:a40ef247933c1f3d8efb43f951ee5443a32c3c121e139d0c91d82ad8cd54c384",
+    "postInstallVerification": {
+      "manifest": "pass",
+      "managedHashes": "pass",
+      "closure": "pass",
+      "selfScan": "pass",
+      "cleanroom": "receipt-bound-pass",
+      "selfScanMode": "change-scoped",
+      "selfScanExitCode": 0
+    },
+    "managedWriteLease": "PASS; writableManagedFiles=0 after transaction",
+    "generatedOutputClosureVerify": "PASS; ok=true; generatorOrder=[secret-scan-fixtures]",
+    "openclawCustomizationAdmission": "PASS; admitted over Prime customizations plus v2.5.2 changed files; noUpstreamScanOrMutation=true",
+    "appCanary": "PASS; profile=canary ok=true applications=codex,cursor",
+    "gitDiffCheck": "PASS",
+    "postInstallInstalledStateSha256": "sha256:42e5e2f5676267a1983c6b261b2d31e687ce37777b28bdcb7344162ed3078156",
+    "upstreamMutation": false,
+    "runtimeOrVpsMutation": false
+  }
+}

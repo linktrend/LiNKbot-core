@@ -29,12 +29,14 @@ try:
         candidate_source_tree as closure_candidate_source_tree,
         load_graph as load_generated_output_graph,
     )
+    from scripts.gitops.mutation_guard import MutationGuardError, validate_argv
 except ModuleNotFoundError:  # pragma: no cover - script-style execution
     from generated_output_closure import (  # type: ignore
         ClosureError,
         candidate_source_tree as closure_candidate_source_tree,
         load_graph as load_generated_output_graph,
     )
+    from mutation_guard import MutationGuardError, validate_argv  # type: ignore
 
 SCANNER_POLICY_VERSION = "secret-scan-policy/v1"
 CHANGE_SCOPED_SCHEMA_VERSION = 1
@@ -67,6 +69,7 @@ RULE_MALFORMED = "declaration.malformed"
 RULE_REPO_SCANNER = "repository_scanner.failure"
 RULE_REPO_TIMEOUT = "repository_scanner.timeout"
 RULE_REPO_MALFORMED = "repository_scanner.malformed"
+RULE_REPO_CREDENTIAL_DISCOVERY = "repository_scanner.credential_discovery"
 RULE_INPUT_UNDECODABLE = "input.undecodable"
 RULE_INPUT_TOO_LARGE = "input.too_large"
 RULE_GIT_FAILED = "git.failed"
@@ -1248,6 +1251,26 @@ def _run_repository_scanners(root: Path) -> list[dict[str, Any]]:
         if not command:
             raise SecretScanError("repository_scanners_malformed", "empty command")
         try:
+            # Repository-owned scanners are untrusted children.  They may
+            # inspect repository input, but cannot be used as a credential
+            # discovery side channel.  The error is deliberately reduced to a
+            # rule and scanner id; command arguments and child output never
+            # enter secret-scan evidence.
+            validate_argv(command)
+        except MutationGuardError:
+            findings.append(
+                _finding(
+                    kind=KIND_CREDENTIAL,
+                    path=REPO_SCANNERS_REL,
+                    line=None,
+                    field=None,
+                    rule=RULE_REPO_CREDENTIAL_DISCOVERY,
+                    digest=None,
+                    scanner_id=str(row["id"]),
+                )
+            )
+            continue
+        try:
             result = subprocess.run(
                 command,
                 cwd=root,
@@ -1556,8 +1579,14 @@ def _change_scope_error_result(exc: SecretScanError, content_tree: str = EMPTY_T
     )
 
 
-def _scan_repository(root: Path, baseline_evidence: Any | None = None) -> dict[str, Any]:
+def _scan_repository(
+    root: Path,
+    baseline_evidence: Any | None = None,
+    requested_paths: set[str] | None = None,
+) -> dict[str, Any]:
     entries = tracked_entries(root)
+    if requested_paths is not None:
+        entries = [entry for entry in entries if entry.path in requested_paths]
     content_tree = candidate_content_tree(root)
     scope: dict[str, Any] | None = None
     scan_paths: set[str] | None = None
@@ -1580,7 +1609,11 @@ def _scan_repository(root: Path, baseline_evidence: Any | None = None) -> dict[s
             and row["path"] not in scan_paths
         ]
     managed_paths = set(managed_scanner_policy_paths(root)) if scope is not None else set()
-    index_scan_paths = (scan_paths - managed_paths) if scan_paths is not None else None
+    index_scan_paths = (
+        (scan_paths - managed_paths)
+        if scan_paths is not None
+        else requested_paths
+    )
     detections, findings = _scan_regular_blobs(root, entries, index_scan_paths)
     if scope is not None:
         managed_detections, managed_findings = _scan_worktree_managed_blobs(root, entries, managed_paths)
@@ -1640,6 +1673,7 @@ def scan_repository(
     *,
     baseline_evidence: Any | None = None,
     baseline_evidence_path: Path | str | None = None,
+    paths: list[str] | set[str] | None = None,
 ) -> dict[str, Any]:
     root = root.resolve()
     try:
@@ -1650,7 +1684,8 @@ def scan_repository(
                 baseline_evidence = json.loads(Path(baseline_evidence_path).read_text(encoding="utf-8"))
             except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
                 raise SecretScanError("change_scope_identity", "unreadable baseline evidence") from exc
-        return _scan_repository(root, baseline_evidence)
+        requested_paths = set(paths) if paths is not None else None
+        return _scan_repository(root, baseline_evidence, requested_paths)
     except SecretScanError as exc:
         if baseline_evidence is not None or baseline_evidence_path is not None:
             return _change_scope_error_result(exc)
