@@ -21,7 +21,12 @@ from .state import load_installed_state
 from .transaction import apply_plan, current_tx_dir, read_journal, recover_interrupted, rollback_last
 from .io_atomic import atomic_write_bytes
 from .hashing import sha256_file
+from .managed_write_guard import export_candidate
 from .resolution import UpgradeResolution, load_and_validate_resolution
+from .openclaw_customization_admission import (
+    BOUNDARY_REL,
+    admit_openclaw_customization,
+)
 
 
 CONSUMER_CONFIG = Path(".github/linktrend-gitops-consumer.json")
@@ -29,6 +34,7 @@ MANAGED_FAST_WORKFLOW = "Linktrend Fast Checks"
 MANAGED_RUNNER_TYPE = "github-hosted"
 RETIRED_RUNNER_TYPE = "linktrend-private-macos-arm64"
 CI_CONTRACT_MODULE_REL = Path("scripts/gitops/repository_ci_contract.py")
+SECRET_SCAN_MODULE_REL = Path("scripts/gitops/secret_scan.py")
 
 
 def _load_repository_ci_contract_module(package_root: Path):
@@ -166,9 +172,128 @@ def _plan_payload(plan: Plan, **extra: Any) -> dict[str, Any]:
     return payload
 
 
+def _validate_package_identity(manifest: Manifest, prior: Any | None) -> str:
+    """Reject a different package identity reusing an installed version."""
+    digest = sha256_file(manifest.path)
+    if prior is None or prior.package_version != manifest.package_version:
+        return digest
+    if prior.manifest_hash is not None and prior.manifest_hash != digest:
+        raise InvalidPackageError(
+            "Managed package version collision: manifest bytes changed for an installed version",
+            details={
+                "packageVersion": manifest.package_version,
+                "installedManifestHash": prior.manifest_hash,
+                "packageManifestHash": digest,
+            },
+        )
+    current = {entry.destination: entry.source_hash for entry in manifest.active_entries()}
+    installed = {
+        path: file_state.source_hash
+        for path, file_state in prior.files.items()
+        if path != f"{MANAGED_CORE_DIR}/MANIFEST.json"
+    }
+    collisions = sorted(
+        path for path in current.keys() & installed.keys() if current[path] != installed[path]
+    )
+    if collisions:
+        raise InvalidPackageError(
+            "Managed package version collision: source bytes changed for an installed version",
+            details={"packageVersion": manifest.package_version, "paths": collisions},
+        )
+    return digest
+
+
+def _export_conflict_candidates(
+    *, target_root: Path, package_version: str, prior: Any | None, plan: Plan
+) -> list[dict[str, object]]:
+    """Quarantine changed owned bytes before reporting an overwrite refusal."""
+    if prior is None:
+        return []
+    exports: list[dict[str, object]] = []
+    for conflict in plan.conflicts:
+        if conflict.kind.value != "hash_mismatch_owned":
+            continue
+        file_state = prior.files.get(conflict.path)
+        destination = target_root / conflict.path
+        if file_state is None or not destination.is_file() or destination.is_symlink():
+            continue
+        try:
+            exports.append(
+                export_candidate(
+                    target_root,
+                    conflict.path,
+                    package_version=package_version,
+                    baseline_digest=file_state.content_hash,
+                    classification="candidate_central_ide_improvement",
+                    reason="managed bytes changed outside an authorized transaction",
+                )
+            )
+        except (OSError, InstallerError) as exc:
+            exports.append(
+                {
+                    "path": conflict.path,
+                    "classification": "candidate_export_failed",
+                    "error": str(exc),
+                }
+            )
+    return exports
+
+
 def _repository_ci_trigger_audit(package_root: Path, target_root: Path) -> dict[str, Any]:
     ci_module = _load_repository_ci_contract_module(package_root)
     return ci_module.installer_audit_repository_ci_triggers(target_root)
+
+
+def _load_secret_scan_module(package_root: Path):
+    """Load the package scanner so admission can pass an explicit path scope."""
+    import sys
+
+    module_path = package_root / SECRET_SCAN_MODULE_REL
+    if not module_path.is_file():
+        raise InvalidPackageError(f"secret scan module missing: {module_path}")
+    module_name = "linktrend_secret_scan"
+    existing = sys.modules.get(module_name)
+    if (
+        existing is not None
+        and getattr(existing, "__file__", None) == str(module_path)
+        and hasattr(existing, "scan_repository")
+    ):
+        return existing
+    package_root_str = str(package_root.resolve())
+    if package_root_str not in sys.path:
+        sys.path.insert(0, package_root_str)
+    spec = importlib.util.spec_from_file_location(module_name, module_path)
+    if spec is None or spec.loader is None:
+        raise InvalidPackageError(f"secret scan module unloadable: {module_path}")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[module_name] = module
+    try:
+        spec.loader.exec_module(module)
+    except Exception:
+        sys.modules.pop(module_name, None)
+        raise
+    if not hasattr(module, "scan_repository"):
+        sys.modules.pop(module_name, None)
+        raise InvalidPackageError(f"secret scan module missing scanner: {module_path}")
+    return module
+
+
+def _openclaw_admission(package_root: Path, target_root: Path) -> dict[str, Any] | None:
+    """Run scoped admission when the target exposes the OpenClaw boundary."""
+    boundary = target_root / BOUNDARY_REL
+    if not boundary.exists():
+        return None
+    scanner_module = _load_secret_scan_module(package_root)
+
+    def scanner(paths: list[str]) -> dict[str, Any]:
+        return scanner_module.scan_repository(target_root, paths=paths)
+
+    return admit_openclaw_customization(
+        consumer_root=target_root,
+        package_root=package_root,
+        boundary_path=boundary,
+        scanner=scanner,
+    )
 
 
 def _resolve_authorized_upgrade(
@@ -300,6 +425,7 @@ def run_plan(
     resolution_manifest: Path | None = None,
 ) -> EngineResult:
     package_root, target_root = _prepare(target=target, package=package)
+    openclaw_admission = _openclaw_admission(package_root, target_root)
     recovery = _maybe_recover(target_root, mutate=False)
     manifest = load_manifest(package_root)
     migration = load_migration_catalog(package_root)
@@ -345,6 +471,7 @@ def run_plan(
         normalizedFastWorkflowName=normalized_fast,
         repositoryCiTriggerAudit=ci_trigger_audit,
         managedUpgradeResolution=resolution.to_dict() if resolution else None,
+        openclawAdmission=openclaw_admission,
     )
     return EngineResult(exit_code=exit_code, payload=payload)
 
@@ -358,9 +485,13 @@ def run_install_or_update(
     resolution_manifest: Path | None = None,
 ) -> EngineResult:
     package_root, target_root = _prepare(target=target, package=package)
+    openclaw_admission = _openclaw_admission(package_root, target_root)
     recovery = _maybe_recover(target_root, mutate=not dry_run)
     manifest = load_manifest(package_root)
     migration = load_migration_catalog(package_root)
+
+    prior = load_installed_state(target_root)
+    package_manifest_digest = _validate_package_identity(manifest, prior)
 
     # The installer is the authoritative upgrade path.  Early consumers have
     # a repository-owned config without the later receipt-bound Fast key; add
@@ -370,8 +501,6 @@ def run_install_or_update(
     normalized_fast = _normalize_consumer_workflow_contract(
         target_root, mutate=not dry_run and resolution_manifest is None
     )
-    prior = load_installed_state(target_root)
-
     if command == "update" and prior is None:
         raise InvalidPackageError(
             "update requires an existing installed-state; use install for first-time setup"
@@ -417,6 +546,14 @@ def run_install_or_update(
         normalizedFastWorkflowName=normalized_fast,
         repositoryCiTriggerAudit=ci_trigger_audit,
         managedUpgradeResolution=resolution.to_dict() if resolution else None,
+        managedPackageManifestDigest=package_manifest_digest,
+        openclawAdmission=openclaw_admission,
+        candidateExports=_export_conflict_candidates(
+            target_root=target_root,
+            package_version=manifest.package_version,
+            prior=prior,
+            plan=plan,
+        ),
     )
 
     if plan.has_conflicts:
@@ -455,12 +592,14 @@ def run_drift(
     package_root, target_root = _prepare(target=target, package=package)
     recovery = _maybe_recover(target_root, mutate=False)
     manifest = load_manifest(package_root)
+    migration = load_migration_catalog(package_root)
     prior = load_installed_state(target_root)
     items = build_drift_report(
         package_root=package_root,
         target_root=target_root,
         manifest=manifest,
         prior=prior,
+        migration=migration,
     )
     meaningful = meaningful_drift(items)
     payload = {
@@ -504,6 +643,7 @@ def run_verify(
         target_root=target_root,
         manifest=manifest,
         prior=prior,
+        migration=migration,
     )
     meaningful = meaningful_drift(items)
     needs_work = [a for a in plan.actions if a.op.value != "noop"]
