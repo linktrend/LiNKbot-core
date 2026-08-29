@@ -156,6 +156,10 @@
         "provenance": "github-contents-404-at-classification-pin"
       },
       {
+        "path": ".github/linktrend-secret-scan-fixtures.json",
+        "provenance": "github-contents-404-at-classification-pin"
+      },
+      {
         "path": ".github/workflows/branch-source-policy.yml",
         "provenance": "github-contents-404-at-classification-pin"
       },
