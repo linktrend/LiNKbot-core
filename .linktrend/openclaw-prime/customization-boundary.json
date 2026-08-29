@@ -1,0 +1,253 @@
+{
+  "schemaVersion": 1,
+  "kind": "openclaw-prime-customization-boundary",
+  "prime": {
+    "repository": "linktrend/openclaw_prime",
+    "ref": "main",
+    "commit": "ae397be1e601307b50d593c195ab9777c8400492",
+    "tree": "c5d6b6d75066915b433e6f92d223b7bcb821d6fc"
+  },
+  "upstream": {
+    "repository": "openclaw/openclaw",
+    "configuredSource": "github-fork-parent-default-branch",
+    "defaultBranch": "main",
+    "classificationPin": {
+      "kind": "fork-network-merge-base-with-observed-parent-main",
+      "commit": "503b21dc6bfdea5e385ba3f85e81691cfc2a23c1",
+      "tree": "270f1c102caf961b69839fe04656aee4ea59ac8c",
+      "observedAt": "2026-08-29T05:16:31Z",
+      "observedParentMainCommit": "4ee2216cd76ba9cedcb8e62d81dd02e0b531ffb5",
+      "observedParentMainTree": "3f114e932a8ea40cc2599d39fdfdebe9f42b32f2"
+    }
+  },
+  "pathRules": {
+    "form": "posix-repo-relative",
+    "match": "exact-or-string-prefix-no-dotdot",
+    "relativeTo": "upstream-classification-pin-tree"
+  },
+  "digestRules": {
+    "algorithm": "sha256",
+    "encoding": "lowercase-hex",
+    "prefix": "sha256:",
+    "canonicalBytes": "physical-file-bytes-no-git-blob-header",
+    "symlinkPolicy": "refuse-follow",
+    "scope": "owned-and-ide-listed-paths-only-never-untouched-upstream"
+  },
+  "provenanceRules": {
+    "methods": [
+      "github-contents-404-at-classification-pin",
+      "ide-installed-state-destination",
+      "ide-upgrade-receipt-applied-path",
+      "this-manifest-namespace"
+    ],
+    "precedence": [
+      "ide-upgrade-receipt-applied-path",
+      "ide-installed-state-destination",
+      "github-contents-404-at-classification-pin",
+      "this-manifest-namespace"
+    ]
+  },
+  "exclusion": {
+    "untouchedUpstream": {
+      "enumerated": false,
+      "rule": "Any path that does not match linktrendOwned prefixes/exact paths is untreated as a Prime customization and MUST NOT be listed. Untouched upstream trees are excluded by omission; this manifest is not an upstream file inventory."
+    },
+    "forbiddenWholeTrees": [
+      "src",
+      "extensions",
+      "ui",
+      "apps",
+      "packages",
+      "test",
+      "qa",
+      "skills",
+      "security",
+      "examples",
+      "config",
+      "deploy"
+    ]
+  },
+  "linktrendOwned": {
+    "prefixes": [
+      {
+        "path": ".ide-development",
+        "provenance": "github-contents-404-at-classification-pin"
+      },
+      {
+        "path": ".cursor",
+        "provenance": "github-contents-404-at-classification-pin"
+      },
+      {
+        "path": ".linktrend/openclaw-prime",
+        "provenance": "this-manifest-namespace"
+      },
+      {
+        "path": ".githooks",
+        "provenance": "github-contents-404-at-classification-pin"
+      },
+      {
+        "path": "linkbots",
+        "provenance": "github-contents-404-at-classification-pin"
+      },
+      {
+        "path": "docs/execution",
+        "provenance": "github-contents-404-at-classification-pin"
+      },
+      {
+        "path": "docs/agent-sessions",
+        "provenance": "github-contents-404-at-classification-pin"
+      },
+      {
+        "path": "docs/handoffs",
+        "provenance": "github-contents-404-at-classification-pin"
+      },
+      {
+        "path": "docs/archive",
+        "provenance": "github-contents-404-at-classification-pin"
+      },
+      {
+        "path": "docs/evidence",
+        "provenance": "github-contents-404-at-classification-pin"
+      },
+      {
+        "path": "docs/link-integrations",
+        "provenance": "github-contents-404-at-classification-pin"
+      },
+      {
+        "path": "docs/CURSOR-GROK-",
+        "provenance": "github-contents-404-at-classification-pin"
+      },
+      {
+        "path": "docs/ITEM-3-CONNECT-OPENCLAW-PRIME-LISA-",
+        "provenance": "github-contents-404-at-classification-pin"
+      },
+      {
+        "path": "docs/OPENCLAW-PRIME-",
+        "provenance": "github-contents-404-at-classification-pin"
+      },
+      {
+        "path": "scripts/gitops",
+        "provenance": "github-contents-404-at-classification-pin"
+      },
+      {
+        "path": "scripts/ide_development",
+        "provenance": "github-contents-404-at-classification-pin"
+      },
+      {
+        "path": "scripts/tests",
+        "provenance": "github-contents-404-at-classification-pin"
+      },
+      {
+        "path": ".github/workflows/linktrend-",
+        "provenance": "github-contents-404-at-classification-pin"
+      }
+    ],
+    "exactPaths": [
+      {
+        "path": "docs/agent-briefing.md",
+        "provenance": "github-contents-404-at-classification-pin"
+      },
+      {
+        "path": "docs/agent-coordination.md",
+        "provenance": "github-contents-404-at-classification-pin"
+      },
+      {
+        "path": "docs/current-status.md",
+        "provenance": "github-contents-404-at-classification-pin"
+      },
+      {
+        "path": ".github/workflows/branch-source-policy.yml",
+        "provenance": "github-contents-404-at-classification-pin"
+      },
+      {
+        "path": "scripts/ide-development.py",
+        "provenance": "github-contents-404-at-classification-pin"
+      },
+      {
+        "path": "scripts/cleanup-merged-branches.sh",
+        "provenance": "github-contents-404-at-classification-pin"
+      },
+      {
+        "path": "scripts/install-git-hooks.sh",
+        "provenance": "github-contents-404-at-classification-pin"
+      },
+      {
+        "path": "scripts/manage-repository-protections.sh",
+        "provenance": "github-contents-404-at-classification-pin"
+      }
+    ]
+  },
+  "ideManaged": {
+    "separateFromLinktrendOwnedInventory": true,
+    "inventoryPath": ".ide-development/installed-state.json",
+    "packageName": "ide-development-managed-core",
+    "packageVersion": "2.5.1",
+    "destinationCount": 425,
+    "prefixes": [
+      ".agents",
+      ".cursor",
+      ".githooks",
+      ".ide-development",
+      "AGENTS.md",
+      "core",
+      "scripts/cleanup-merged-branches.sh",
+      "scripts/gitops",
+      "scripts/ide-development.py",
+      "scripts/ide_development",
+      "scripts/install-git-hooks.sh",
+      "scripts/manage-repository-protections.sh",
+      "scripts/tests"
+    ],
+    "overlayOnUpstreamExactPaths": ["AGENTS.md"],
+    "declaredMissingLocally": ["core"]
+  },
+  "ideTransactionChanged": {
+    "separateFromIdeManagedInventory": true,
+    "records": [
+      {
+        "receiptPath": "docs/execution/openclaw-prime-lisa/managed-upgrade-resolution-v10.json",
+        "paths": [
+          ".ide-development/schemas/secret-scan-result.schema.json",
+          ".ide-development/tests/test_fixture_aware_secret_scan.py",
+          "scripts/gitops/secret_scan.py"
+        ]
+      },
+      {
+        "receiptPath": "docs/execution/openclaw-prime-lisa/managed-upgrade-resolution-v12.json",
+        "paths": [
+          ".ide-development/MANIFEST.json",
+          ".ide-development/tests/test_fixture_aware_secret_scan.py",
+          "scripts/gitops/secret_scan.py"
+        ]
+      }
+    ],
+    "paths": [
+      ".ide-development/MANIFEST.json",
+      ".ide-development/schemas/secret-scan-result.schema.json",
+      ".ide-development/tests/test_fixture_aware_secret_scan.py",
+      "scripts/gitops/secret_scan.py"
+    ]
+  },
+  "uncertainty": [
+    {
+      "id": "fork-network-sha-url",
+      "summary": "GitHub serves linktrend/openclaw_prime commit ae397be1e601307b50d593c195ab9777c8400492 under the openclaw/openclaw commit URL because of fork-network lookup. That SHA is a LiNKtrend promotion merge, not an upstream OpenClaw main commit."
+    },
+    {
+      "id": "parent-main-not-frozen-to-prime",
+      "summary": "Configured upstream is the GitHub fork parent openclaw/openclaw default branch main. Observed parent main 4ee2216cd76ba9cedcb8e62d81dd02e0b531ffb5 / tree 3f114e932a8ea40cc2599d39fdfdebe9f42b32f2 is a moving tip. Classification uses merge-base 503b21dc6bfdea5e385ba3f85e81691cfc2a23c1 / tree 270f1c102caf961b69839fe04656aee4ea59ac8c against that observation, not a claim that Prime equals current upstream."
+    },
+    {
+      "id": "overlapping-upstream-trees-unscanned",
+      "summary": "Overlapping trees that exist at the classification pin (src, extensions, ui, apps, packages, test, qa, most of docs, most of scripts, most of .github, .agents product skills, and similar) were not file-diffed. This manifest does not inventory in-tree patches to those paths and does not assert they are byte-identical to upstream."
+    },
+    {
+      "id": "ide-declared-core-absent",
+      "summary": "IDE installed-state 2.5.1 declares destinations under core/, but that prefix is absent from this Prime tree. Treat those destinations as declared-managed, not present customizations."
+    },
+    {
+      "id": "mixed-agents-tree",
+      "summary": ".agents exists on upstream at the classification pin (for example .agents/skills/autoreview). LiNKtrend IDE destinations under .agents are managed overlays or additions, not an exclusive Prime prefix."
+    }
+  ]
+}
