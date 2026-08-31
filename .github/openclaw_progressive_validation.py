@@ -17,8 +17,12 @@ from pathlib import Path
 POLICY_ID = "openclaw-fork-progressive-validation-v1"
 POLICY_DIGEST = "sha256:fa3f448e33fbc05e4b9676628a8be1f67bb020cc0baf58da6dd8fe720d0c26f0"
 BASELINE_RUN_ID = 32917935092
-BASELINE_COMMIT = "c98757b598e753ce0344037a3f0ae6321121f6c6"
-BASELINE_TREE = "76dd3b81b3db9ffaff614ca3d0561b26a7fb5705"
+# Original Full CI identity from run 32917935092. Kept as preserved origin
+# evidence; Fast Checks now bind the receipt to current protected development.
+ORIGIN_BASELINE_COMMIT = "c98757b598e753ce0344037a3f0ae6321121f6c6"
+ORIGIN_BASELINE_TREE = "76dd3b81b3db9ffaff614ca3d0561b26a7fb5705"
+BASELINE_COMMIT = "95e0494c1f332fd33cea12152a07dd404c52bb07"
+BASELINE_TREE = "dbeea3e695449c1a5e79962d772d1c0716f42fc5"
 FAILURE_JOB = "checks-node-core-test-nondist-shard"
 BASELINE_RECEIPT_KIND = "openclaw-fork-baseline-ci-receipt"
 BASELINE_RECEIPT_POLICY_ID = POLICY_ID
@@ -304,6 +308,14 @@ def validate(
     if receipt.get("policyId") != POLICY_ID or receipt.get("policyDigest") != POLICY_DIGEST: errors.append("policy")
     if receipt.get("reuse") != "exact baseline commit/tree, policy digest, workflow, run and complete unchanged failure contract only": errors.append("reuse")
     if receipt.get("changedFailuresBlock") is not True or receipt.get("scope") != "fork-only" or receipt.get("upstreamMutation") is not False: errors.append("scope")
+    preserved = receipt.get("preservedOriginBaseline")
+    if preserved is not None:
+        if (
+            not isinstance(preserved, dict)
+            or preserved.get("commit") != ORIGIN_BASELINE_COMMIT
+            or preserved.get("tree") != ORIGIN_BASELINE_TREE
+        ):
+            errors.append("preserved_origin")
     if receipt.get("inheritedFailures") != _canonical_failure_contract(): errors.append("failure_contract")
     baseline_checks = receipt.get("baselineChecks")
     if (

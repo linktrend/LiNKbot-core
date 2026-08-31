@@ -2,8 +2,14 @@
   "schemaVersion": 2,
   "kind": "openclaw-fork-baseline-ci-receipt",
   "repository": "linktrend/openclaw_prime",
-  "baselineCommit": "c98757b598e753ce0344037a3f0ae6321121f6c6",
-  "baselineTree": "76dd3b81b3db9ffaff614ca3d0561b26a7fb5705",
+  "baselineCommit": "95e0494c1f332fd33cea12152a07dd404c52bb07",
+  "baselineTree": "dbeea3e695449c1a5e79962d772d1c0716f42fc5",
+  "preservedOriginBaseline": {
+    "commit": "c98757b598e753ce0344037a3f0ae6321121f6c6",
+    "tree": "76dd3b81b3db9ffaff614ca3d0561b26a7fb5705",
+    "baselineRunId": 32917935092,
+    "note": "Original Full CI identity; rebound to current protected development without a new Full run"
+  },
   "workflow": "CI",
   "baselineRunId": 32917935092,
   "policyId": "openclaw-fork-progressive-validation-v1",

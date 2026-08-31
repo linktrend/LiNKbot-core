@@ -56,8 +56,22 @@ class ProgressiveValidationTests(unittest.TestCase):
         self.assertEqual(committed["baselineRunId"], MODULE.BASELINE_RUN_ID)
         self.assertEqual(committed["policyDigest"], MODULE.POLICY_DIGEST)
         self.assertEqual(committed["inheritedFailures"], MODULE._canonical_failure_contract())
-        self.assertEqual(MODULE.BASELINE_COMMIT, "c98757b598e753ce0344037a3f0ae6321121f6c6")
-        self.assertEqual(MODULE.BASELINE_TREE, "76dd3b81b3db9ffaff614ca3d0561b26a7fb5705")
+        self.assertEqual(MODULE.BASELINE_COMMIT, "95e0494c1f332fd33cea12152a07dd404c52bb07")
+        self.assertEqual(MODULE.BASELINE_TREE, "dbeea3e695449c1a5e79962d772d1c0716f42fc5")
+        self.assertEqual(MODULE.ORIGIN_BASELINE_COMMIT, "c98757b598e753ce0344037a3f0ae6321121f6c6")
+        self.assertEqual(MODULE.ORIGIN_BASELINE_TREE, "76dd3b81b3db9ffaff614ca3d0561b26a7fb5705")
+        preserved = committed["preservedOriginBaseline"]
+        self.assertEqual(preserved["commit"], MODULE.ORIGIN_BASELINE_COMMIT)
+        self.assertEqual(preserved["tree"], MODULE.ORIGIN_BASELINE_TREE)
+        self.assertEqual(preserved["baselineRunId"], MODULE.BASELINE_RUN_ID)
+
+    def test_preserved_origin_mismatch_blocks(self):
+        tmp, root, rec = self.fixture(); self.addCleanup(tmp.cleanup)
+        stale = dict(rec)
+        stale["preservedOriginBaseline"] = {"commit": "a" * 40, "tree": "b" * 40}
+        result = MODULE.validate_baseline_ci_receipt(root=root, receipt=stale)
+        self.assertFalse(result["ok"])
+        self.assertIn("preserved_origin", result["errors"])
 
     def fixture(self):
         tmp = tempfile.TemporaryDirectory(prefix="openclaw-progressive-")
