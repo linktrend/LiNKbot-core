@@ -27,9 +27,34 @@ class CustomizationBoundaryTests(unittest.TestCase):
 
     def test_starting_prime_identity(self) -> None:
         prime = self.manifest["prime"]
-        self.assertEqual(prime["commit"], "ae397be1e601307b50d593c195ab9777c8400492")
-        self.assertEqual(prime["tree"], "c5d6b6d75066915b433e6f92d223b7bcb821d6fc")
+        self.assertEqual(prime["commit"], "95e0494c1f332fd33cea12152a07dd404c52bb07")
+        self.assertEqual(prime["tree"], "dbeea3e695449c1a5e79962d772d1c0716f42fc5")
+        self.assertEqual(prime["ref"], "development")
         self.assertEqual(prime["repository"], "linktrend/openclaw_prime")
+
+    def test_ide_managed_matches_v252_installed_state(self) -> None:
+        ide = self.manifest["ideManaged"]
+        self.assertEqual(ide["packageVersion"], "2.5.2")
+        self.assertEqual(ide["destinationCount"], 442)
+        receipts = [record["receiptPath"] for record in self.manifest["ideTransactionChanged"]["records"]]
+        self.assertIn(
+            "docs/execution/openclaw-prime-lisa/managed-upgrade-resolution-v13.json",
+            receipts,
+        )
+        source = self.manifest["ideSource"]
+        self.assertEqual(source["packageVersion"], "2.5.2")
+        self.assertEqual(
+            source["taggedRelease"]["commit"],
+            "5a64f7f03d3463804b424cc59c4ee048473d9a51",
+        )
+        self.assertEqual(
+            source["currentSource"]["commit"],
+            "e32b578e2d11dcdf6e24baa8022f577efa26da24",
+        )
+        self.assertEqual(
+            source["currentSource"]["tree"],
+            "39273d6735c0baed7bf23c48df33c1c0a27d0476",
+        )
 
     def test_untouched_upstream_is_omitted(self) -> None:
         self.assertFalse(self.manifest["exclusion"]["untouchedUpstream"]["enumerated"])
@@ -82,6 +107,10 @@ class CustomizationBoundaryTests(unittest.TestCase):
             "ide-transaction-changed",
         )
         self.assertEqual(
+            classify("scripts/gitops/packager_coordinator.py", self.manifest),
+            "ide-transaction-changed",
+        )
+        self.assertEqual(
             classify(".ide-development/MANIFEST.json", self.manifest),
             "ide-transaction-changed",
         )
@@ -114,6 +143,13 @@ class CustomizationBoundaryTests(unittest.TestCase):
                 "provenance": "github-contents-404-at-classification-pin",
             }
         )
+        with self.assertRaises(BoundaryError):
+            validate_manifest(broken)
+
+    def test_reject_collapsing_ide_source_pins(self) -> None:
+        broken = copy.deepcopy(self.manifest)
+        broken["ideSource"]["currentSource"]["commit"] = broken["ideSource"]["taggedRelease"]["commit"]
+        broken["ideSource"]["currentSource"]["tree"] = broken["ideSource"]["taggedRelease"]["tree"]
         with self.assertRaises(BoundaryError):
             validate_manifest(broken)
 

@@ -3,9 +3,9 @@
   "kind": "openclaw-prime-customization-boundary",
   "prime": {
     "repository": "linktrend/openclaw_prime",
-    "ref": "main",
-    "commit": "ae397be1e601307b50d593c195ab9777c8400492",
-    "tree": "c5d6b6d75066915b433e6f92d223b7bcb821d6fc"
+    "ref": "development",
+    "commit": "95e0494c1f332fd33cea12152a07dd404c52bb07",
+    "tree": "dbeea3e695449c1a5e79962d772d1c0716f42fc5"
   },
   "upstream": {
     "repository": "openclaw/openclaw",
@@ -185,8 +185,8 @@
     "separateFromLinktrendOwnedInventory": true,
     "inventoryPath": ".ide-development/installed-state.json",
     "packageName": "ide-development-managed-core",
-    "packageVersion": "2.5.1",
-    "destinationCount": 425,
+    "packageVersion": "2.5.2",
+    "destinationCount": 442,
     "prefixes": [
       ".agents",
       ".cursor",
@@ -204,6 +204,25 @@
     ],
     "overlayOnUpstreamExactPaths": ["AGENTS.md"],
     "declaredMissingLocally": ["core"]
+  },
+  "ideSource": {
+    "repository": "linktrend/IDE-Development",
+    "packageName": "ide-development-managed-core",
+    "packageVersion": "2.5.2",
+    "authoritativeRef": "v2.5.2",
+    "taggedRelease": {
+      "commit": "5a64f7f03d3463804b424cc59c4ee048473d9a51",
+      "tree": "d2188157f2c32f5ba9c0cf6a5a60c7553cdce58a",
+      "phasePullRequest": 455,
+      "receiptPath": "docs/execution/openclaw-prime-lisa/managed-upgrade-resolution-v13.json",
+      "note": "Annotated tag v2.5.2 and the consumer v13 installer transaction source; preserved, not rewritten"
+    },
+    "currentSource": {
+      "commit": "e32b578e2d11dcdf6e24baa8022f577efa26da24",
+      "tree": "39273d6735c0baed7bf23c48df33c1c0a27d0476",
+      "phasePullRequest": 459,
+      "note": "Current IDE 2.5.2 source after phase/ide-v2.5.2-rollout-repair-458; evidence rebind only, not a Prime installer re-run"
+    }
   },
   "ideTransactionChanged": {
     "separateFromIdeManagedInventory": true,
@@ -223,19 +242,50 @@
           ".ide-development/tests/test_fixture_aware_secret_scan.py",
           "scripts/gitops/secret_scan.py"
         ]
+      },
+      {
+        "receiptPath": "docs/execution/openclaw-prime-lisa/managed-upgrade-resolution-v13.json",
+        "paths": [
+          ".ide-development/schemas/managed-upgrade-resolution.schema.json",
+          ".ide-development/schemas/phase-handoff.schema.json",
+          ".ide-development/schemas/phase-record.schema.json",
+          ".ide-development/tests/test_delivery_controller.py",
+          ".ide-development/tests/test_phase_packager_coordinator.py",
+          ".ide-development/tests/test_receipt_seal_and_recovery.py",
+          ".ide-development/workflows/linktrend-integrator-merge.yml",
+          "scripts/gitops/delivery_controller.py",
+          "scripts/gitops/github_auth.py",
+          "scripts/gitops/issue_checkpoint.py",
+          "scripts/gitops/packager_coordinator.py",
+          "scripts/gitops/phase_integrator.py",
+          "scripts/ide_development/resolution.py"
+        ]
       }
     ],
     "paths": [
       ".ide-development/MANIFEST.json",
+      ".ide-development/schemas/managed-upgrade-resolution.schema.json",
+      ".ide-development/schemas/phase-handoff.schema.json",
+      ".ide-development/schemas/phase-record.schema.json",
       ".ide-development/schemas/secret-scan-result.schema.json",
+      ".ide-development/tests/test_delivery_controller.py",
       ".ide-development/tests/test_fixture_aware_secret_scan.py",
-      "scripts/gitops/secret_scan.py"
+      ".ide-development/tests/test_phase_packager_coordinator.py",
+      ".ide-development/tests/test_receipt_seal_and_recovery.py",
+      ".ide-development/workflows/linktrend-integrator-merge.yml",
+      "scripts/gitops/delivery_controller.py",
+      "scripts/gitops/github_auth.py",
+      "scripts/gitops/issue_checkpoint.py",
+      "scripts/gitops/packager_coordinator.py",
+      "scripts/gitops/phase_integrator.py",
+      "scripts/gitops/secret_scan.py",
+      "scripts/ide_development/resolution.py"
     ]
   },
   "uncertainty": [
     {
       "id": "fork-network-sha-url",
-      "summary": "GitHub serves linktrend/openclaw_prime commit ae397be1e601307b50d593c195ab9777c8400492 under the openclaw/openclaw commit URL because of fork-network lookup. That SHA is a LiNKtrend promotion merge, not an upstream OpenClaw main commit."
+      "summary": "GitHub serves linktrend/openclaw_prime commit 95e0494c1f332fd33cea12152a07dd404c52bb07 under the openclaw/openclaw commit URL because of fork-network lookup. That SHA is protected development after the focused-PR-CI merge, not an upstream OpenClaw main commit."
     },
     {
       "id": "parent-main-not-frozen-to-prime",
@@ -247,11 +297,15 @@
     },
     {
       "id": "ide-declared-core-absent",
-      "summary": "IDE installed-state 2.5.1 declares destinations under core/, but that prefix is absent from this Prime tree. Treat those destinations as declared-managed, not present customizations."
+      "summary": "IDE installed-state 2.5.2 declares destinations under core/, but that prefix is absent from this Prime tree. Treat those destinations as declared-managed, not present customizations."
     },
     {
       "id": "mixed-agents-tree",
       "summary": ".agents exists on upstream at the classification pin (for example .agents/skills/autoreview). LiNKtrend IDE destinations under .agents are managed overlays or additions, not an exclusive Prime prefix."
+    },
+    {
+      "id": "ide-252-current-source-vs-tag",
+      "summary": "Annotated tag v2.5.2 remains 5a64f7f03d3463804b424cc59c4ee048473d9a51 / tree d2188157f2c32f5ba9c0cf6a5a60c7553cdce58a. Current IDE 2.5.2 source after PR 459 is e32b578e2d11dcdf6e24baa8022f577efa26da24 / tree 39273d6735c0baed7bf23c48df33c1c0a27d0476. This manifest records both; it does not claim a new consumer installer transaction against the later SHA."
     }
   ]
 }
