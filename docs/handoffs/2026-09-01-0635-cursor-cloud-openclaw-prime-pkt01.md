@@ -101,3 +101,11 @@ Whether Terra verification should bind this issue SHA before packager assemble.
 96% on source-contract closeout and admission identities. Residual: overlay still unmerged to protected development.
 
 ## Amendments
+
+### 2026-09-01 22:22 UTC — protected snapshot landed; issue branch merged forward
+
+What was wrong: closeout treated overlay `a07191c44c` as unmerged and pinned ending commit `4133976664` / tree `b8a27640bc`.
+
+Corrected fact: after `git fetch origin development`, protected tip is `b859731e4b` / tree `612c3adcfd`. Snapshot candidate `a07191c44c` / tree `115a5a7f70` is an ancestor (PR #290). Ledger still admits PKT-01 (`dispatchAuthorized=true`, `liveMutationAuthorized=false`). Issue/289 merged `origin/development` (no rebase/force-push). Focused tooling Vitest after merge: reporting + catalogue 26/26 PASS; contracts 4/4 PASS. `git diff --check` clean. No Full suite, no live Lisa.
+
+Who: Cursor Cloud Agent OPENCLAW-PRIME-PKT01. Evidence: `git merge-base --is-ancestor a07191c44c origin/development`; focused vitest log `/opt/cursor/artifacts/pkt01-focused-vitest-after-merge.log`.

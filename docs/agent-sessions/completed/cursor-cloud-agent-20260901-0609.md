@@ -14,7 +14,7 @@
 | Coordination home | this checkout                    |
 | Session ID        | cursor-cloud-agent-20260901-0609 |
 | Started           | 2026-09-01 06:09 Asia/Taipei     |
-| Last updated      | 2026-09-01 06:35 Asia/Taipei     |
+| Last updated      | 2026-09-01 06:40 Asia/Taipei     |
 
 ## Work
 
@@ -39,7 +39,7 @@
 - Related sessions: snapshot 20260901-0422; GOVERN-A071 20260901-0518; active VPS session (no overlap)
 - Overlap risk: none
 - Pre-existing changes to preserve: none
-- Relayed or directly verified: protected development `452a7f1f31` / `56c96716`; overlay `a07191c44c` not merged; PKT-01 `dispatchAuthorized=true`
+- Relayed or directly verified: protected development `b859731e4b` / `612c3adcfd` (PR #290); snapshot `a07191c44c` / `115a5a7f70` is an ancestor; PKT-01 `dispatchAuthorized=true`
 
 ## Progress
 
@@ -47,6 +47,7 @@
 - 2026-09-01 06:20 — Created issue #289 and worktree branch from `origin/development`.
 - 2026-09-01 06:25 — Closed remaining source gaps: digest 06:45/16:45 prep, five-minute flash leads, emoji fail-closed, duplicate delivery suppression, live-enabled apply HOLD vs drift.
 - 2026-09-01 06:35 — Focused tests PASS on changed files (39). Inherited health-store serialize failure unchanged on development. Session complete.
+- 2026-09-01 06:22 — Refreshed origin. Snapshot `a07191c` now protected via PR #290. Merged `origin/development` into issue/289. Focused vitest after merge: 30/30 PASS on reporting+catalogue+contracts. No Full suite.
 
 ## Next Action
 
