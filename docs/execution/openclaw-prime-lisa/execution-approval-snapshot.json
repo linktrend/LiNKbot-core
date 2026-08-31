@@ -1,0 +1,320 @@
+{
+  "$schema": "./execution-approval-snapshot.schema.json",
+  "schemaVersion": 1,
+  "kind": "openclaw-prime-lisa-execution-approval-snapshot",
+  "snapshotId": "openclaw-prime-lisa-execution-approval-20260831-452a7f1f31",
+  "approvalScope": "execution-approval-overlay-on-protected-development",
+  "workerIssueAuthorized": false,
+  "approvedProtectedDevelopment": {
+    "repository": "linktrend/openclaw_prime",
+    "ref": "development",
+    "commit": "452a7f1f31b1d1947d4bb992f91457e5a238ea31",
+    "tree": "56c96716ede75bdc896791ec2098cf1bf2594bb6"
+  },
+  "frozenDispatchAuthority": {
+    "path": "docs/execution/openclaw-prime-lisa/dispatch-authority.json",
+    "authorityId": "openclaw-prime-lisa-dispatch-authority-v4",
+    "sha256": "sha256:38f08a689f570d176dd8ce3e643472ebde5d4aa8038c36e6294575ac9734c62e",
+    "executionAuthorizedAtCheckpoint": false,
+    "rewrittenByThisSnapshot": false
+  },
+  "principalPolicy": {
+    "primaryExecutor": {
+      "transport": "cursor-sdk",
+      "modelId": "cursor-grok-4.6-medium",
+      "fast": false
+    },
+    "fallbackOrConcurrentExecutor": {
+      "transport": "codex-cli",
+      "modelId": "gpt-5.6-luna",
+      "reasoning": "high",
+      "usage": "fallback-on-same-packet-or-separate-concurrent-packet-with-distinct-id-and-non-overlapping-owned-paths"
+    },
+    "parallelism": {
+      "mode": "maximum-safe-parallel",
+      "protocolCitation": "IDE-Development-v2.5.2-execution-control-stage-1-5-cursor-plus-2-luna-fail-closed-without-complete-capacity-snapshot",
+      "admissionWithoutCapacitySnapshot": "HOLD"
+    },
+    "dispatchAuthorizedRule": "customization-scoped-and-dependency-ready-only",
+    "duplicateImplementation": false
+  },
+  "ideManaged": {
+    "packageVersion": "2.5.2",
+    "destinationCount": 442,
+    "readOnly": true,
+    "modifiedByThisSnapshot": false
+  },
+  "forbiddenActions": [
+    "inherited-upstream-scan",
+    "live-lisa-mutation",
+    "credential-access",
+    "vps-mutation",
+    "staging-touch",
+    "main-touch",
+    "production-touch",
+    "deploy",
+    "full-or-broad-suites",
+    "implementer-pr",
+    "self-merge",
+    "ide-development-2.5.2-managed-write"
+  ],
+  "packetDag": {
+    "source": "docs/execution/openclaw-prime-lisa/dispatch-authority.json#packets",
+    "customizationScopedDependencyReady": ["PKT-01"],
+    "readyAfterLocalDependenciesOnly": ["PKT-05", "PKT-09"],
+    "blockedByExternalPrerequisites": [
+      "PKT-02",
+      "PKT-03",
+      "PKT-07",
+      "PKT-08",
+      "PKT-11",
+      "LP-01",
+      "AW-01"
+    ],
+    "notCustomizationScoped": [
+      "PKT-02",
+      "PKT-03",
+      "PKT-04",
+      "PKT-05",
+      "PKT-06",
+      "PKT-08",
+      "PKT-10",
+      "LP-01",
+      "AW-01"
+    ],
+    "liveOrProductionForbidden": ["PKT-09", "PKT-11"]
+  },
+  "runtimeAuthority": {
+    "snapshotPresent": false,
+    "packetTokenBudgetsPresent": false,
+    "authenticatedAccountPlanReadbackPresent": false,
+    "preparedIntentAndEffectiveModelReadbackPresent": false,
+    "hostedCapacitySnapshotPresent": false,
+    "failClosed": true
+  },
+  "externalPrerequisites": {
+    "platform_contract_accepted": {
+      "checkpointState": "PENDING_RUNTIME_EVIDENCE",
+      "receiptPresent": false
+    },
+    "brain_provider_contract_accepted": {
+      "checkpointState": "PENDING_RUNTIME_EVIDENCE",
+      "receiptPresent": false
+    },
+    "skills_provider_contract_accepted": {
+      "checkpointState": "PENDING_RUNTIME_EVIDENCE",
+      "receiptPresent": false
+    },
+    "libraries_contract_audit_accepted": {
+      "checkpointState": "PENDING_RUNTIME_EVIDENCE",
+      "receiptPresent": false
+    },
+    "autowork_contract_audit_accepted": {
+      "checkpointState": "PENDING_RUNTIME_EVIDENCE",
+      "receiptPresent": false
+    },
+    "skills_google_workspace_release_qualified": {
+      "checkpointState": "PENDING_RUNTIME_EVIDENCE",
+      "receiptPresent": false
+    },
+    "brain_mcp_v2_contract_accepted": {
+      "checkpointState": "PENDING_RUNTIME_EVIDENCE",
+      "receiptPresent": false
+    },
+    "skills_mcp_v2_contract_accepted": {
+      "checkpointState": "PENDING_RUNTIME_EVIDENCE",
+      "receiptPresent": false
+    },
+    "provider_release_set_accepted": {
+      "checkpointState": "PENDING_RUNTIME_EVIDENCE",
+      "receiptPresent": false
+    },
+    "skills_watcher_contracts_accepted": {
+      "checkpointState": "PENDING_RUNTIME_EVIDENCE",
+      "receiptPresent": false
+    }
+  },
+  "packets": {
+    "PKT-01": {
+      "customizationScoped": true,
+      "localDependencies": [],
+      "externalPrerequisites": [],
+      "dependencyReady": true,
+      "dispatchAuthorized": true,
+      "liveMutationAuthorized": false,
+      "workerIssueAuthorized": false,
+      "reason": "Only OpenClaw Prime packet whose owned paths are entirely inside the customization boundary and whose local/external dependencies are empty; source-only. Worker issue remains HOLD until packet budgets, account-plan readback, capacity snapshot, and prepared-intent/effective-model readback exist."
+    },
+    "PKT-02": {
+      "customizationScoped": false,
+      "localDependencies": [],
+      "externalPrerequisites": ["platform_contract_accepted"],
+      "dependencyReady": false,
+      "dispatchAuthorized": false,
+      "liveMutationAuthorized": false,
+      "workerIssueAuthorized": false,
+      "reason": "Owned paths are under forbidden src/; also blocked by missing platform_contract_accepted receipt."
+    },
+    "PKT-03": {
+      "customizationScoped": false,
+      "localDependencies": ["PKT-02"],
+      "externalPrerequisites": [
+        "platform_contract_accepted",
+        "brain_provider_contract_accepted",
+        "skills_provider_contract_accepted",
+        "libraries_contract_audit_accepted",
+        "autowork_contract_audit_accepted"
+      ],
+      "dependencyReady": false,
+      "dispatchAuthorized": false,
+      "liveMutationAuthorized": false,
+      "workerIssueAuthorized": false,
+      "reason": "Owned paths include forbidden extensions/; local PKT-02 and five external receipts are missing."
+    },
+    "PKT-04": {
+      "customizationScoped": false,
+      "localDependencies": [],
+      "externalPrerequisites": [],
+      "dependencyReady": true,
+      "dispatchAuthorized": false,
+      "liveMutationAuthorized": false,
+      "workerIssueAuthorized": false,
+      "reason": "DAG-ready but owned paths include forbidden src/; Principal rule authorizes customization-scoped packets only."
+    },
+    "PKT-05": {
+      "customizationScoped": false,
+      "localDependencies": ["PKT-01"],
+      "externalPrerequisites": [],
+      "dependencyReady": false,
+      "dispatchAuthorized": false,
+      "liveMutationAuthorized": false,
+      "workerIssueAuthorized": false,
+      "reason": "Waits for PKT-01; owned paths include forbidden src/state."
+    },
+    "PKT-06": {
+      "customizationScoped": false,
+      "localDependencies": ["PKT-03"],
+      "externalPrerequisites": [],
+      "dependencyReady": false,
+      "dispatchAuthorized": false,
+      "liveMutationAuthorized": false,
+      "workerIssueAuthorized": false,
+      "reason": "Waits for PKT-03; owned paths include forbidden src/."
+    },
+    "PKT-07": {
+      "customizationScoped": true,
+      "localDependencies": ["PKT-03"],
+      "externalPrerequisites": ["skills_google_workspace_release_qualified"],
+      "dependencyReady": false,
+      "dispatchAuthorized": false,
+      "liveMutationAuthorized": false,
+      "workerIssueAuthorized": false,
+      "reason": "Customization-scoped but blocked by PKT-03 and missing skills_google_workspace_release_qualified receipt."
+    },
+    "PKT-08": {
+      "customizationScoped": false,
+      "localDependencies": ["PKT-03"],
+      "externalPrerequisites": [
+        "brain_mcp_v2_contract_accepted",
+        "skills_mcp_v2_contract_accepted"
+      ],
+      "dependencyReady": false,
+      "dispatchAuthorized": false,
+      "liveMutationAuthorized": false,
+      "workerIssueAuthorized": false,
+      "reason": "Owned paths include forbidden src/ and extensions/; MCP v2 receipts missing."
+    },
+    "PKT-09": {
+      "customizationScoped": true,
+      "localDependencies": ["PKT-01", "PKT-05"],
+      "externalPrerequisites": [],
+      "dependencyReady": false,
+      "dispatchAuthorized": false,
+      "liveMutationAuthorized": false,
+      "workerIssueAuthorized": false,
+      "reason": "Customization-scoped backup/deployment source waits for PKT-01 and PKT-05; live VPS/deploy remains forbidden."
+    },
+    "PKT-10": {
+      "customizationScoped": false,
+      "localDependencies": ["PKT-02", "PKT-03"],
+      "externalPrerequisites": [],
+      "dependencyReady": false,
+      "dispatchAuthorized": false,
+      "liveMutationAuthorized": false,
+      "workerIssueAuthorized": false,
+      "reason": "Waits for PKT-02 and PKT-03; owned paths include forbidden src/agents/profile-manifest.test.ts."
+    },
+    "PKT-11": {
+      "customizationScoped": true,
+      "localDependencies": [
+        "PKT-01",
+        "PKT-02",
+        "PKT-03",
+        "PKT-04",
+        "PKT-05",
+        "PKT-06",
+        "PKT-07",
+        "PKT-08",
+        "PKT-09",
+        "PKT-10"
+      ],
+      "externalPrerequisites": ["provider_release_set_accepted"],
+      "dependencyReady": false,
+      "dispatchAuthorized": false,
+      "liveMutationAuthorized": false,
+      "workerIssueAuthorized": false,
+      "reason": "Integration/canary packet; production, VPS, and staging remain forbidden; provider_release_set_accepted receipt missing."
+    },
+    "LP-01": {
+      "customizationScoped": false,
+      "localDependencies": [],
+      "externalPrerequisites": [],
+      "dependencyReady": false,
+      "dispatchAuthorized": false,
+      "liveMutationAuthorized": false,
+      "workerIssueAuthorized": false,
+      "reason": "Owned by linktrend/LiNKplatform, not this Prime customization tree; Platform contract receipt remains PENDING_RUNTIME_EVIDENCE."
+    },
+    "AW-01": {
+      "customizationScoped": false,
+      "localDependencies": [],
+      "externalPrerequisites": [
+        "platform_contract_accepted",
+        "skills_watcher_contracts_accepted"
+      ],
+      "dependencyReady": false,
+      "dispatchAuthorized": false,
+      "liveMutationAuthorized": false,
+      "workerIssueAuthorized": false,
+      "reason": "Owned by linktrend/LiNKautowork; blocked by missing platform and skills-watcher receipts."
+    }
+  },
+  "holds": [
+    "runtime-authority-snapshot-absent",
+    "packet-token-budgets-absent",
+    "authenticated-account-plan-readback-absent",
+    "prepared-intent-and-effective-model-readback-absent",
+    "hosted-capacity-snapshot-absent",
+    "all-external-provider-contract-receipts-pending",
+    "worker-issue-forbidden-until-spend-and-capacity-gates-pass",
+    "live-lisa-vps-staging-main-production-deploy-forbidden"
+  ],
+  "verification": {
+    "profile": "focused-owned-paths-and-git-diff-check",
+    "commands": [
+      ["python3", "docs/execution/openclaw-prime-lisa/validate_execution_approval_snapshot.py"],
+      [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "docs/execution/openclaw-prime-lisa/tests",
+        "-t",
+        "docs/execution/openclaw-prime-lisa"
+      ],
+      ["git", "diff", "--check"]
+    ],
+    "fullOrBroadSuites": "forbidden"
+  }
+}
