@@ -31,6 +31,7 @@ REQUIRED_TOP = (
     "exclusion",
     "linktrendOwned",
     "ideManaged",
+    "ideSource",
     "ideTransactionChanged",
     "uncertainty",
 )
@@ -187,6 +188,29 @@ def validate_manifest(manifest: Mapping[str, Any], *, checkout: Path | None = No
         _require_path(path, "overlayOnUpstreamExactPaths")
         if classify(path, manifest) != "ide-managed-overlay":
             raise BoundaryError(f"overlay path not classified as overlay: {path}")
+
+    source = manifest["ideSource"]
+    if source.get("repository") != "linktrend/IDE-Development":
+        raise BoundaryError("ideSource.repository mismatch")
+    if source.get("packageName") != "ide-development-managed-core":
+        raise BoundaryError("ideSource.packageName mismatch")
+    if source.get("packageVersion") != "2.5.2" or source.get("authoritativeRef") != "v2.5.2":
+        raise BoundaryError("ideSource must pin package 2.5.2 / ref v2.5.2")
+    tagged = source.get("taggedRelease")
+    current = source.get("currentSource")
+    if not isinstance(tagged, Mapping) or not isinstance(current, Mapping):
+        raise BoundaryError("ideSource pins missing")
+    for label, pin in (("taggedRelease", tagged), ("currentSource", current)):
+        _require_sha(pin.get("commit"), f"ideSource.{label}.commit")
+        _require_sha(pin.get("tree"), f"ideSource.{label}.tree")
+        if not isinstance(pin.get("phasePullRequest"), int) or pin["phasePullRequest"] < 1:
+            raise BoundaryError(f"ideSource.{label}.phasePullRequest invalid")
+        if not isinstance(pin.get("note"), str) or not pin["note"]:
+            raise BoundaryError(f"ideSource.{label}.note missing")
+        if "receiptPath" in pin:
+            _require_path(pin["receiptPath"], f"ideSource.{label}.receiptPath")
+    if tagged.get("commit") == current.get("commit"):
+        raise BoundaryError("ideSource currentSource must not collapse onto taggedRelease")
 
     txn = manifest["ideTransactionChanged"]
     if txn["separateFromIdeManagedInventory"] is not True:

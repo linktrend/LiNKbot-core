@@ -41,6 +41,20 @@ class CustomizationBoundaryTests(unittest.TestCase):
             "docs/execution/openclaw-prime-lisa/managed-upgrade-resolution-v13.json",
             receipts,
         )
+        source = self.manifest["ideSource"]
+        self.assertEqual(source["packageVersion"], "2.5.2")
+        self.assertEqual(
+            source["taggedRelease"]["commit"],
+            "5a64f7f03d3463804b424cc59c4ee048473d9a51",
+        )
+        self.assertEqual(
+            source["currentSource"]["commit"],
+            "e32b578e2d11dcdf6e24baa8022f577efa26da24",
+        )
+        self.assertEqual(
+            source["currentSource"]["tree"],
+            "39273d6735c0baed7bf23c48df33c1c0a27d0476",
+        )
 
     def test_untouched_upstream_is_omitted(self) -> None:
         self.assertFalse(self.manifest["exclusion"]["untouchedUpstream"]["enumerated"])
@@ -129,6 +143,13 @@ class CustomizationBoundaryTests(unittest.TestCase):
                 "provenance": "github-contents-404-at-classification-pin",
             }
         )
+        with self.assertRaises(BoundaryError):
+            validate_manifest(broken)
+
+    def test_reject_collapsing_ide_source_pins(self) -> None:
+        broken = copy.deepcopy(self.manifest)
+        broken["ideSource"]["currentSource"]["commit"] = broken["ideSource"]["taggedRelease"]["commit"]
+        broken["ideSource"]["currentSource"]["tree"] = broken["ideSource"]["taggedRelease"]["tree"]
         with self.assertRaises(BoundaryError):
             validate_manifest(broken)
 

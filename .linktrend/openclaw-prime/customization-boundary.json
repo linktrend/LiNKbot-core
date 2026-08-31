@@ -205,6 +205,25 @@
     "overlayOnUpstreamExactPaths": ["AGENTS.md"],
     "declaredMissingLocally": ["core"]
   },
+  "ideSource": {
+    "repository": "linktrend/IDE-Development",
+    "packageName": "ide-development-managed-core",
+    "packageVersion": "2.5.2",
+    "authoritativeRef": "v2.5.2",
+    "taggedRelease": {
+      "commit": "5a64f7f03d3463804b424cc59c4ee048473d9a51",
+      "tree": "d2188157f2c32f5ba9c0cf6a5a60c7553cdce58a",
+      "phasePullRequest": 455,
+      "receiptPath": "docs/execution/openclaw-prime-lisa/managed-upgrade-resolution-v13.json",
+      "note": "Annotated tag v2.5.2 and the consumer v13 installer transaction source; preserved, not rewritten"
+    },
+    "currentSource": {
+      "commit": "e32b578e2d11dcdf6e24baa8022f577efa26da24",
+      "tree": "39273d6735c0baed7bf23c48df33c1c0a27d0476",
+      "phasePullRequest": 459,
+      "note": "Current IDE 2.5.2 source after phase/ide-v2.5.2-rollout-repair-458; evidence rebind only, not a Prime installer re-run"
+    }
+  },
   "ideTransactionChanged": {
     "separateFromIdeManagedInventory": true,
     "records": [
@@ -283,6 +302,10 @@
     {
       "id": "mixed-agents-tree",
       "summary": ".agents exists on upstream at the classification pin (for example .agents/skills/autoreview). LiNKtrend IDE destinations under .agents are managed overlays or additions, not an exclusive Prime prefix."
+    },
+    {
+      "id": "ide-252-current-source-vs-tag",
+      "summary": "Annotated tag v2.5.2 remains 5a64f7f03d3463804b424cc59c4ee048473d9a51 / tree d2188157f2c32f5ba9c0cf6a5a60c7553cdce58a. Current IDE 2.5.2 source after PR 459 is e32b578e2d11dcdf6e24baa8022f577efa26da24 / tree 39273d6735c0baed7bf23c48df33c1c0a27d0476. This manifest records both; it does not claim a new consumer installer transaction against the later SHA."
     }
   ]
 }

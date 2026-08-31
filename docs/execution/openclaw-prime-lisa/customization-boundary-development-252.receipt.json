@@ -24,7 +24,18 @@
     "packageVersion": "2.5.2",
     "destinationCount": 442,
     "authoritativeRef": "v2.5.2",
-    "upgradeReceipt": "docs/execution/openclaw-prime-lisa/managed-upgrade-resolution-v13.json"
+    "upgradeReceipt": "docs/execution/openclaw-prime-lisa/managed-upgrade-resolution-v13.json",
+    "taggedRelease": {
+      "commit": "5a64f7f03d3463804b424cc59c4ee048473d9a51",
+      "tree": "d2188157f2c32f5ba9c0cf6a5a60c7553cdce58a",
+      "phasePullRequest": 455
+    },
+    "currentSource": {
+      "commit": "e32b578e2d11dcdf6e24baa8022f577efa26da24",
+      "tree": "39273d6735c0baed7bf23c48df33c1c0a27d0476",
+      "phasePullRequest": 459,
+      "note": "Evidence rebind only; v13 installer transaction remains the tagged-release source"
+    }
   },
   "scope": {
     "customizationOnly": true,

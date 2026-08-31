@@ -15,6 +15,7 @@
     "exclusion",
     "linktrendOwned",
     "ideManaged",
+    "ideSource",
     "ideTransactionChanged",
     "uncertainty"
   ],
@@ -224,6 +225,29 @@
         }
       }
     },
+    "ideSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository",
+        "packageName",
+        "packageVersion",
+        "authoritativeRef",
+        "taggedRelease",
+        "currentSource"
+      ],
+      "properties": {
+        "repository": { "type": "string", "const": "linktrend/IDE-Development" },
+        "packageName": {
+          "type": "string",
+          "const": "ide-development-managed-core"
+        },
+        "packageVersion": { "type": "string", "const": "2.5.2" },
+        "authoritativeRef": { "type": "string", "const": "v2.5.2" },
+        "taggedRelease": { "$ref": "#/$defs/ideSourcePin" },
+        "currentSource": { "$ref": "#/$defs/ideSourcePin" }
+      }
+    },
     "ideTransactionChanged": {
       "type": "object",
       "additionalProperties": false,
@@ -280,6 +304,18 @@
       "type": "string",
       "minLength": 1,
       "pattern": "^(?!/|\\\\)(?!.*\\.\\.(?:/|\\\\|$))(?!.*:)[A-Za-z0-9._@+, \\-]+(?:/[A-Za-z0-9._@+, \\-]+)*$"
+    },
+    "ideSourcePin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["commit", "tree", "phasePullRequest", "note"],
+      "properties": {
+        "commit": { "$ref": "#/$defs/gitSha" },
+        "tree": { "$ref": "#/$defs/gitSha" },
+        "phasePullRequest": { "type": "integer", "minimum": 1 },
+        "receiptPath": { "$ref": "#/$defs/repoRelPath" },
+        "note": { "type": "string", "minLength": 1 }
+      }
     },
     "ownedEntry": {
       "type": "object",
