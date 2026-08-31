@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import shutil
 import subprocess
 import tempfile
 import unittest
@@ -48,7 +49,7 @@ def receipt(root: Path) -> dict[str, object]:
 
 
 class ProgressiveValidationTests(unittest.TestCase):
-    def test_committed_receipt_matches_controller_and_protected_development(self):
+    def test_committed_receipt_matches_github_true_full_run_pin(self):
         repo = Path(__file__).resolve().parents[1]
         committed = json.loads((repo / MODULE.BASELINE_RECEIPT_PATH).read_text(encoding="utf-8"))
         self.assertEqual(committed["baselineCommit"], MODULE.BASELINE_COMMIT)
@@ -56,22 +57,38 @@ class ProgressiveValidationTests(unittest.TestCase):
         self.assertEqual(committed["baselineRunId"], MODULE.BASELINE_RUN_ID)
         self.assertEqual(committed["policyDigest"], MODULE.POLICY_DIGEST)
         self.assertEqual(committed["inheritedFailures"], MODULE._canonical_failure_contract())
-        self.assertEqual(MODULE.BASELINE_COMMIT, "95e0494c1f332fd33cea12152a07dd404c52bb07")
-        self.assertEqual(MODULE.BASELINE_TREE, "dbeea3e695449c1a5e79962d772d1c0716f42fc5")
-        self.assertEqual(MODULE.ORIGIN_BASELINE_COMMIT, "c98757b598e753ce0344037a3f0ae6321121f6c6")
-        self.assertEqual(MODULE.ORIGIN_BASELINE_TREE, "76dd3b81b3db9ffaff614ca3d0561b26a7fb5705")
-        preserved = committed["preservedOriginBaseline"]
-        self.assertEqual(preserved["commit"], MODULE.ORIGIN_BASELINE_COMMIT)
-        self.assertEqual(preserved["tree"], MODULE.ORIGIN_BASELINE_TREE)
-        self.assertEqual(preserved["baselineRunId"], MODULE.BASELINE_RUN_ID)
+        self.assertEqual(MODULE.BASELINE_COMMIT, "428c6bc9ba21b2358934aa0d311911791fa3fd21")
+        self.assertEqual(MODULE.BASELINE_TREE, "a29648096f9872a7f3d727aef79b0cb63a31ff07")
+        self.assertEqual(MODULE.BASELINE_RUN_ID, 32917935092)
+        self.assertNotIn("preservedOriginBaseline", committed)
+        self.assertNotEqual(MODULE.BASELINE_COMMIT, "c98757b598e753ce0344037a3f0ae6321121f6c6")
+        self.assertNotEqual(MODULE.BASELINE_COMMIT, "95e0494c1f332fd33cea12152a07dd404c52bb07")
 
-    def test_preserved_origin_mismatch_blocks(self):
+    def test_preserved_origin_claim_is_forbidden(self):
         tmp, root, rec = self.fixture(); self.addCleanup(tmp.cleanup)
         stale = dict(rec)
-        stale["preservedOriginBaseline"] = {"commit": "a" * 40, "tree": "b" * 40}
+        stale["preservedOriginBaseline"] = {
+            "commit": "c98757b598e753ce0344037a3f0ae6321121f6c6",
+            "tree": "76dd3b81b3db9ffaff614ca3d0561b26a7fb5705",
+        }
         result = MODULE.validate_baseline_ci_receipt(root=root, receipt=stale)
         self.assertFalse(result["ok"])
-        self.assertIn("preserved_origin", result["errors"])
+        self.assertIn("preserved_origin_forbidden", result["errors"])
+        self.assertEqual(result["hold"], MODULE.HOLD_FULL_PIN_EXECUTION_UNMATCHED)
+
+    def test_review_gate_default_branch_is_env_bound(self):
+        workflow = (
+            Path(__file__).resolve().parents[1]
+            / ".github"
+            / "workflows"
+            / "linktrend-review-gate.yml"
+        ).read_text(encoding="utf-8")
+        self.assertIn("DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}", workflow)
+        self.assertNotIn('DEFAULT_BRANCH="${{ github.event.repository.default_branch }}"', workflow)
+
+    def _restore_full_pin(self, commit: str, tree: str) -> None:
+        MODULE.BASELINE_COMMIT = commit
+        MODULE.BASELINE_TREE = tree
 
     def fixture(self):
         tmp = tempfile.TemporaryDirectory(prefix="openclaw-progressive-")
@@ -82,8 +99,19 @@ class ProgressiveValidationTests(unittest.TestCase):
         (root / "README.md").write_text("baseline\n", encoding="utf-8")
         git(root, "add", "README.md"); git(root, "commit", "-qm", "baseline")
         baseline = git(root, "rev-parse", "HEAD")
+        tree = git(root, "rev-parse", "HEAD^{tree}")
+        self.addCleanup(self._restore_full_pin, MODULE.BASELINE_COMMIT, MODULE.BASELINE_TREE)
+        MODULE.BASELINE_COMMIT = baseline
+        MODULE.BASELINE_TREE = tree
         git(root, "update-ref", "refs/remotes/origin/development", baseline)
         return tmp, root, receipt(root)
+
+    def install_boundary(self, root: Path) -> None:
+        src = Path(__file__).resolve().parents[1] / ".linktrend" / "openclaw-prime"
+        dest = root / ".linktrend" / "openclaw-prime"
+        dest.mkdir(parents=True)
+        shutil.copy(src / "customization-boundary.json", dest / "customization-boundary.json")
+        shutil.copy(src / "validate_customization_boundary.py", dest / "validate_customization_boundary.py")
 
     def chained_fixture(self, *, extra_path: str | None = None, omit_path: str | None = None):
         tmp, root, rec = self.fixture()
@@ -164,7 +192,9 @@ class ProgressiveValidationTests(unittest.TestCase):
         self.assertEqual(bound["baselineCommit"], baseline)
         stale = MODULE.validate_baseline_ci_receipt(root=root, receipt=rec)
         self.assertFalse(stale["ok"])
-        self.assertIn("baseline_commit", stale["errors"])
+        self.assertIn("customization_boundary", stale["errors"])
+        self.assertEqual(stale["hold"], MODULE.HOLD_CUSTOMIZATION_UNAVAILABLE)
+        self.assertEqual(stale["receiptBaselineCommit"], rec["baselineCommit"])
 
     def test_chained_receipt_accepts_exact_transition_before_current_candidate(self):
         tmp, root, rec, current, current_tree, candidate = self.chained_fixture()
@@ -298,9 +328,10 @@ class ProgressiveValidationTests(unittest.TestCase):
             candidate_ref=candidate,
         )
         self.assertFalse(result["ok"], result)
-        self.assertIn("baseline_commit", result["errors"])
-        self.assertIn("baseline_tree", result["errors"])
+        self.assertIn("customization_boundary", result["errors"])
+        self.assertEqual(result["hold"], MODULE.HOLD_CUSTOMIZATION_UNAVAILABLE)
         self.assertEqual(result["receiptBaselineCommit"], receipt_baseline)
+        self.assertNotEqual(result["baselineCommit"], receipt_baseline)
 
     def test_stale_receipt_rebind_still_blocks_changed_failure_contract(self):
         tmp, root, rec = self.fixture(); self.addCleanup(tmp.cleanup)
@@ -476,6 +507,88 @@ class ProgressiveValidationTests(unittest.TestCase):
             MODULE.protected_inherited_failure_admissible(
                 result, observed_failures=list(MODULE.INHERITED_FAILURE_IDENTITIES)
             )
+        )
+
+    def test_customization_only_admits_owned_paths_without_rewriting_full_pin(self):
+        tmp, root, rec = self.fixture(); self.addCleanup(tmp.cleanup)
+        self.install_boundary(root)
+        git(root, "add", ".linktrend/openclaw-prime")
+        git(root, "commit", "-qm", "boundary")
+        execution_base = git(root, "rev-parse", "HEAD")
+        execution_tree = git(root, "rev-parse", "HEAD^{tree}")
+        git(root, "update-ref", "refs/remotes/origin/development", execution_base)
+        owned = root / "docs" / "execution" / "openclaw-prime-lisa" / "note.md"
+        owned.parent.mkdir(parents=True)
+        owned.write_text("customization only\n", encoding="utf-8")
+        git(root, "add", str(owned.relative_to(root)))
+        git(root, "commit", "-qm", "customization candidate")
+        result = MODULE.validate_baseline_ci_receipt(
+            root=root,
+            receipt=rec,
+            baseline_sha=execution_base,
+            baseline_tree=execution_tree,
+        )
+        self.assertTrue(result["ok"], result)
+        self.assertEqual(result["classification"], "customization_only")
+        self.assertTrue(result["customizationOnly"])
+        self.assertFalse(result["protectedAdmission"])
+        self.assertIsNone(result["hold"])
+        self.assertEqual(result["receiptBaselineCommit"], rec["baselineCommit"])
+        self.assertEqual(result["fullRunPin"]["commit"], rec["baselineCommit"])
+        self.assertNotEqual(result["baselineCommit"], result["receiptBaselineCommit"])
+        self.assertEqual(result["receiptTransitionPaths"], [])
+
+    def test_customization_only_hold_on_untouched_upstream_path(self):
+        tmp, root, rec = self.fixture(); self.addCleanup(tmp.cleanup)
+        self.install_boundary(root)
+        git(root, "add", ".linktrend/openclaw-prime")
+        git(root, "commit", "-qm", "boundary")
+        execution_base = git(root, "rev-parse", "HEAD")
+        execution_tree = git(root, "rev-parse", "HEAD^{tree}")
+        leaked = root / "src" / "gateway" / "server.ts"
+        leaked.parent.mkdir(parents=True)
+        leaked.write_text("upstream leak\n", encoding="utf-8")
+        git(root, "add", str(leaked.relative_to(root)))
+        git(root, "commit", "-qm", "upstream change")
+        result = MODULE.validate_baseline_ci_receipt(
+            root=root,
+            receipt=rec,
+            baseline_sha=execution_base,
+            baseline_tree=execution_tree,
+        )
+        self.assertFalse(result["ok"], result)
+        self.assertIn("customization_scope", result["errors"])
+        self.assertEqual(result["hold"], MODULE.HOLD_CUSTOMIZATION_UNAVAILABLE)
+        self.assertFalse(result["protectedAdmission"])
+        self.assertEqual(result["receiptBaselineCommit"], rec["baselineCommit"])
+
+    def test_customization_only_plus_focused_classifier_does_not_grant_protected_admission(self):
+        tmp, root, rec = self.fixture(); self.addCleanup(tmp.cleanup)
+        self.install_boundary(root)
+        git(root, "add", ".linktrend/openclaw-prime")
+        git(root, "commit", "-qm", "boundary")
+        execution_base = git(root, "rev-parse", "HEAD")
+        execution_tree = git(root, "rev-parse", "HEAD^{tree}")
+        classifier = root / ".github" / "openclaw_progressive_validation.py"
+        classifier.parent.mkdir(parents=True)
+        classifier.write_text("focused classifier\n", encoding="utf-8")
+        owned = root / "docs" / "execution" / "note.md"
+        owned.parent.mkdir(parents=True)
+        owned.write_text("owned\n", encoding="utf-8")
+        git(root, "add", ".")
+        git(root, "commit", "-qm", "classifier and customization")
+        result = MODULE.validate_baseline_ci_receipt(
+            root=root,
+            receipt=rec,
+            baseline_sha=execution_base,
+            baseline_tree=execution_tree,
+        )
+        self.assertTrue(result["ok"], result)
+        self.assertEqual(result["classification"], "customization_only")
+        self.assertFalse(result["protectedAdmission"])
+        self.assertEqual(
+            result["classifierPathsRequiringFocusedChecks"],
+            [".github/openclaw_progressive_validation.py"],
         )
 
 
