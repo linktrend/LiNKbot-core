@@ -14,7 +14,7 @@
 | Coordination home | this checkout                    |
 | Session ID        | cursor-cloud-agent-20260901-0609 |
 | Started           | 2026-09-01 06:09 Asia/Taipei     |
-| Last updated      | 2026-09-01 06:25 Asia/Taipei     |
+| Last updated      | 2026-09-01 06:35 Asia/Taipei     |
 
 ## Work
 
@@ -23,8 +23,8 @@
 | Objective       | OPENCLAW-PRIME-PKT01 source-only Lisa jobs/desired-state reconciliation |
 | Branch          | `issue/289-pkt-01-reconcile-lisa-delivery-contracts-and-can`          |
 | Starting commit | `452a7f1f31b1d1947d4bb992f91457e5a238ea31`                            |
-| Status          | `active`                                                              |
-| Handoff         | pending                                                               |
+| Status          | `complete`                                                            |
+| Handoff         | `docs/handoffs/2026-09-01-0635-cursor-cloud-openclaw-prime-pkt01.md`  |
 
 ## Ownership Scope
 
@@ -46,8 +46,9 @@
 - 2026-09-01 06:09 — Admission: protected development identity matches snapshot; source-only PKT-01 authorized.
 - 2026-09-01 06:20 — Created issue #289 and worktree branch from `origin/development`.
 - 2026-09-01 06:25 — Closed remaining source gaps: digest 06:45/16:45 prep, five-minute flash leads, emoji fail-closed, duplicate delivery suppression, live-enabled apply HOLD vs drift.
+- 2026-09-01 06:35 — Focused tests PASS on changed files (39). Inherited health-store serialize failure unchanged on development. Session complete.
 
 ## Next Action
 
-- Exact next action: focused PKT-01 tests, checkpoint, evidence
-- Owner: this session
+- Exact next action: independent Terra verification of the pushed issue SHA; packager integrates. No live Lisa. No implementer PR.
+- Owner: next Terra worker / packager
