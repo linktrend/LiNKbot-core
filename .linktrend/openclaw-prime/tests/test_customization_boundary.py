@@ -27,9 +27,20 @@ class CustomizationBoundaryTests(unittest.TestCase):
 
     def test_starting_prime_identity(self) -> None:
         prime = self.manifest["prime"]
-        self.assertEqual(prime["commit"], "ae397be1e601307b50d593c195ab9777c8400492")
-        self.assertEqual(prime["tree"], "c5d6b6d75066915b433e6f92d223b7bcb821d6fc")
+        self.assertEqual(prime["commit"], "95e0494c1f332fd33cea12152a07dd404c52bb07")
+        self.assertEqual(prime["tree"], "dbeea3e695449c1a5e79962d772d1c0716f42fc5")
+        self.assertEqual(prime["ref"], "development")
         self.assertEqual(prime["repository"], "linktrend/openclaw_prime")
+
+    def test_ide_managed_matches_v252_installed_state(self) -> None:
+        ide = self.manifest["ideManaged"]
+        self.assertEqual(ide["packageVersion"], "2.5.2")
+        self.assertEqual(ide["destinationCount"], 442)
+        receipts = [record["receiptPath"] for record in self.manifest["ideTransactionChanged"]["records"]]
+        self.assertIn(
+            "docs/execution/openclaw-prime-lisa/managed-upgrade-resolution-v13.json",
+            receipts,
+        )
 
     def test_untouched_upstream_is_omitted(self) -> None:
         self.assertFalse(self.manifest["exclusion"]["untouchedUpstream"]["enumerated"])
@@ -79,6 +90,10 @@ class CustomizationBoundaryTests(unittest.TestCase):
         )
         self.assertEqual(
             classify("scripts/gitops/secret_scan.py", self.manifest),
+            "ide-transaction-changed",
+        )
+        self.assertEqual(
+            classify("scripts/gitops/packager_coordinator.py", self.manifest),
             "ide-transaction-changed",
         )
         self.assertEqual(
