@@ -67,6 +67,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           HEAD_SHA: ${{ github.event.check_run.head_sha }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
           CHECK_CONCLUSION: ${{ github.event.check_run.conclusion }}
           CHECK_STATUS: ${{ github.event.check_run.status }}
           CHECK_DETAILS: ${{ github.event.check_run.output.summary }}
@@ -91,7 +92,8 @@ jobs:
           # Trusted provider/Full evidence: GitHub Checks bound to authenticated
           # producer run/job/check-suite identity + default-branch workflow blob (#329).
           # details_url alone is forgeable; never read candidate .linktrend/*.json.
-          DEFAULT_BRANCH="${{ github.event.repository.default_branch }}"
+          # DEFAULT_BRANCH is env-only so zizmor cannot treat it as shell injection.
+          test -n "${DEFAULT_BRANCH}" || { echo "default_branch_missing"; exit 1; }
           CHECK_RUNS_FILE="$(mktemp)"
           WORKFLOW_RUNS_FILE="$(mktemp)"
           WORKFLOW_JOBS_FILE="$(mktemp)"
