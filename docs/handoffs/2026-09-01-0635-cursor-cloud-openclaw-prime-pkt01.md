@@ -14,7 +14,7 @@
 | Starting branch  | `dev/cloudcursor/openclaw-prime-pkt01-6fe1` |
 | Ending branch    | `issue/289-pkt-01-reconcile-lisa-delivery-contracts-and-can` |
 | Starting commit  | `452a7f1f31b1d1947d4bb992f91457e5a238ea31` |
-| Ending commit    | pending closeout SHA (see Exact Next Action after push) |
+| Ending commit    | 4133976664c51682ebb0e4b848212b309c2db628 / tree b8a27640bc2820e38eaa80685073b764804bbd6b |
 | Starting status  | protected development tip; overlay `a07191c` unmerged |
 | Ending status    | PKT-01 source contracts pushed on issue/289; live mutation HOLD |
 
