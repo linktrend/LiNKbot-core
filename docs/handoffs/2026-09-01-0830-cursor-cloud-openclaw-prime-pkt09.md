@@ -100,3 +100,5 @@ Should PKT-01 residual P2 (`reportDeadline` 10 vs 15/5) be a later jobs issue?
 98% that PKT-09 is the correct next customization-scoped source packet and that live VPS was not touched.
 
 ## Amendments
+
+- 2026-09-01 08:31 Asia/Taipei — Tip after recording the functional SHA is `76377f239c42055de970df39e4415abe96c931f8` / tree `8a7c63c56faf07c56d3cdbfae6f669d438dfe27f`. Functional source commit remains `e9010afb9913a6d33d94067b154dd64334ce08a7` / tree `d67b93ec8993bf29dadb0f1a0702fad86b1add8e`.
