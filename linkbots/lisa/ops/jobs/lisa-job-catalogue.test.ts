@@ -188,6 +188,15 @@ describe("Lisa canonical operational desired state", () => {
       enabled: item.activation.enabled,
     }));
     expect(diffLisaJobDesiredState(live).ok).toBe(true);
+    expect(diffLisaJobDesiredState(live).applyAuthorizationHold).toEqual([]);
+    const liveEnabled = live.map((item) => ({ ...item, enabled: true }));
+    expect(diffLisaJobDesiredState(liveEnabled)).toMatchObject({
+      ok: true,
+      drifted: [],
+      applyAuthorizationHold: LISA_JOB_DESIRED_STATE.declarations
+        .map((item) => item.declarationKey)
+        .toSorted(),
+    });
     const drifted = live.map((item) =>
       item.declarationKey === "lisa-executive-digest-evening-v1"
         ? { ...item, scheduleExpression: "0 17 * * *" }

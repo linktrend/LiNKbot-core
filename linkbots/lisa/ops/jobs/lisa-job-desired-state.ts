@@ -649,6 +649,7 @@ export type LisaDesiredStateDiff = Readonly<{
   missing: readonly string[];
   unexpected: readonly string[];
   drifted: readonly string[];
+  applyAuthorizationHold: readonly string[];
   ok: boolean;
 }>;
 
@@ -728,15 +729,24 @@ export function diffLisaJobDesiredState(
         observed.owner !== wanted.owner ||
         observed.executor !== wanted.executor ||
         observed.deliveryMode !== wanted.delivery.mode ||
-        observed.deliveryChannel !== wanted.delivery.channel ||
-        observed.enabled !== wanted.activation.enabled
+        observed.deliveryChannel !== wanted.delivery.channel
       );
+    })
+    .toSorted();
+  // Source stays disabled until a separate apply authority exists. Live
+  // enabled=true is an apply HOLD, not schedule drift, and this helper never
+  // mutates cron.
+  const applyAuthorizationHold = [...expected.keys()]
+    .filter((key) => {
+      const observed = actual.get(key);
+      return Boolean(observed?.enabled) && !drifted.includes(key);
     })
     .toSorted();
   return {
     missing,
     unexpected,
     drifted,
+    applyAuthorizationHold,
     ok: missing.length === 0 && unexpected.length === 0 && drifted.length === 0,
   };
 }
