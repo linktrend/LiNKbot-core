@@ -118,6 +118,9 @@ jobs:
           printf 'BASELINE_TREE=%s\n' "${BASELINE_TREE}" >> "${GITHUB_ENV}"
 
       - name: Run fast profile
+        env:
+          LINKTREND_TARGET_BASELINE_SHA: ${{ env.BASELINE_SHA }}
+          LINKTREND_TARGET_BASELINE_REF: ${{ env.BASELINE_REF }}
         run: |
           set -euo pipefail
           # Use the same governed Phase admission as every other consumer.
