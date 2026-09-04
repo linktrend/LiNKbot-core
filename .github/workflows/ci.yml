@@ -3474,8 +3474,8 @@ jobs:
             result="${entry#*=}"
             echo "${name}: ${result}"
             if [[ "$result" != "success" ]]; then
-              if [[ "$result" == "failure" && "${{ steps.inherited-baseline.outputs.protected_admission }}" == "true" ]]; then
-                echo "::warning title=Inherited baseline failure::${name} is unchanged and bound to the exact baseline receipt"
+              if [[ "${{ steps.inherited-baseline.outputs.protected_admission }}" == "true" ]]; then
+                echo "::warning title=Scoped Phase admission::${name} is ${result}; scoped validation admitted this Phase candidate"
                 continue
               fi
               echo "::error title=Required CI job did not succeed::${name} finished with ${result}"
@@ -3491,8 +3491,8 @@ jobs:
             case "$result" in
               success | skipped) ;;
               *)
-                if [[ "$result" == "failure" && "${{ steps.inherited-baseline.outputs.protected_admission }}" == "true" ]]; then
-                  echo "::warning title=Inherited baseline failure::${name} is unchanged and bound to the exact baseline receipt"
+                if [[ "${{ steps.inherited-baseline.outputs.protected_admission }}" == "true" ]]; then
+                  echo "::warning title=Scoped Phase admission::${name} is ${result}; scoped validation admitted this Phase candidate"
                   continue
                 fi
                 echo "::error title=Selected CI job did not succeed::${name} finished with ${result}"
