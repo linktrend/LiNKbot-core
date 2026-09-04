@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "kind": "openclaw-prime-customization-boundary-refresh",
+  "status": "source_repaired_awaiting_governed_integration",
+  "repository": "linktrend/openclaw_prime",
+  "issue": 284,
+  "protectedDevelopment": {
+    "ref": "development",
+    "commit": "95e0494c1f332fd33cea12152a07dd404c52bb07",
+    "tree": "dbeea3e695449c1a5e79962d772d1c0716f42fc5"
+  },
+  "boundary": {
+    "path": ".linktrend/openclaw-prime/customization-boundary.json",
+    "kind": "openclaw-prime-customization-boundary",
+    "previousPrime": {
+      "ref": "main",
+      "commit": "ae397be1e601307b50d593c195ab9777c8400492",
+      "tree": "c5d6b6d75066915b433e6f92d223b7bcb821d6fc"
+    }
+  },
+  "providerRelease": {
+    "installerVersion": "2.5.2",
+    "packageName": "ide-development-managed-core",
+    "packageVersion": "2.5.2",
+    "destinationCount": 442,
+    "authoritativeRef": "v2.5.2",
+    "upgradeReceipt": "docs/execution/openclaw-prime-lisa/managed-upgrade-resolution-v13.json",
+    "taggedRelease": {
+      "commit": "5a64f7f03d3463804b424cc59c4ee048473d9a51",
+      "tree": "d2188157f2c32f5ba9c0cf6a5a60c7553cdce58a",
+      "phasePullRequest": 455
+    },
+    "currentSource": {
+      "commit": "e32b578e2d11dcdf6e24baa8022f577efa26da24",
+      "tree": "39273d6735c0baed7bf23c48df33c1c0a27d0476",
+      "phasePullRequest": 459,
+      "note": "Evidence rebind only; v13 installer transaction remains the tagged-release source"
+    }
+  },
+  "scope": {
+    "customizationOnly": true,
+    "noUpstreamScanOrMutation": true,
+    "ideManagedFilesModified": false
+  },
+  "protectedDevelopmentVerify": {
+    "mode": "verify",
+    "dryRun": true,
+    "ok": false,
+    "problem": "development ruleset 20623039 required checks are Linktrend Branch Source Policy only; managed desired also includes Verify IDE Development",
+    "mutation": false
+  },
+  "externalHolds": [
+    "LiNKplatform LP-01 accepted release/provider receipt",
+    "LiNKbrain accepted provider release receipt",
+    "LiNKskills qualified exact release and provider receipt where required",
+    "LiNKlibraries explicit no-current-requirement closure",
+    "LiNKautowork accepted provider contract/release receipt where included",
+    "openclaw-prime-lisa dispatch execution-approval snapshot and packet budget/route readback"
+  ],
+  "nextGovernedIntegrationStep": "HOLD: (1) operator-admin apply of development-autonomous-merge to add required check Verify IDE Development if that remains the managed contract; (2) Phase Packager/Coordinator integrates issue/284 onto protected development after review-ready; (3) frozen model-route contracts remain HOLD_UNTIL_EXECUTION_APPROVAL_PREREQUISITES_BUDGET_AND_ROUTE_READBACK until execution-approval snapshot, packet budgets, and external provider-release receipts exist. Downstream Programs consume the exact post-integration development commit/tree."
+}

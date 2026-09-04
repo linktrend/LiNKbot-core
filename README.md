@@ -1,5 +1,7 @@
 # 🦞 OpenClaw — Personal AI Assistant
 
+> Production status: the pre-configuration engineering baseline is complete. See [the production-readiness index](https://docs.openclaw.ai/production-readiness) for remaining configuration, staging, deployment, and operational acceptance work.
+
 <p align="center">
     <picture>
         <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/openclaw/openclaw/main/docs/assets/openclaw-banner-light.png">

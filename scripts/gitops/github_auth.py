@@ -10,10 +10,7 @@ or bypass substantive proof.
 
 from __future__ import annotations
 
-import importlib.util
 import os
-import sys
-from pathlib import Path
 from typing import Mapping
 
 try:
@@ -22,38 +19,10 @@ try:
         classify_legacy_publisher_gate,
     )
 except ModuleNotFoundError:  # pragma: no cover - script-style execution
-    _CANONICAL_PROTOCOL_PATH = (
-        Path(__file__).resolve().parents[2] / ".ide-development" / "execution" / "protocol.py"
+    from execution.protocol import (  # type: ignore
+        WAIVED_LEGACY_GATE,
+        classify_legacy_publisher_gate,
     )
-    _CANONICAL_PROTOCOL_MODULE = "_openclaw_canonical_execution_protocol"
-    _protocol = sys.modules.get(_CANONICAL_PROTOCOL_MODULE)
-    if _protocol is None or getattr(_protocol, "__file__", None) != str(_CANONICAL_PROTOCOL_PATH):
-        _protocol = None
-        if not _CANONICAL_PROTOCOL_PATH.is_file():
-            # Keep the historical script entry point available for packaged
-            # callers whose protocol is already exposed as ``execution``.
-            from execution.protocol import (  # type: ignore
-                WAIVED_LEGACY_GATE,
-                classify_legacy_publisher_gate,
-            )
-        else:
-            _spec = importlib.util.spec_from_file_location(
-                _CANONICAL_PROTOCOL_MODULE, _CANONICAL_PROTOCOL_PATH
-            )
-            if _spec is None or _spec.loader is None:
-                raise ModuleNotFoundError(
-                    f"canonical execution protocol is unloadable: {_CANONICAL_PROTOCOL_PATH}"
-                )
-            _protocol = importlib.util.module_from_spec(_spec)
-            sys.modules[_CANONICAL_PROTOCOL_MODULE] = _protocol
-            try:
-                _spec.loader.exec_module(_protocol)
-            except Exception:
-                sys.modules.pop(_CANONICAL_PROTOCOL_MODULE, None)
-                raise
-    if _protocol is not None:
-        WAIVED_LEGACY_GATE = _protocol.WAIVED_LEGACY_GATE
-        classify_legacy_publisher_gate = _protocol.classify_legacy_publisher_gate
 
 PHASE_API_TOKEN_ENVS = ("GH_TOKEN", "GITHUB_TOKEN")
 LEGACY_PUBLISHER_TOKEN_ENV = "AUTOMATION_TOKEN"

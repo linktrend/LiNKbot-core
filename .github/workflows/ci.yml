@@ -66,7 +66,10 @@ jobs:
   preflight:
     permissions:
       contents: read
-    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
+    # LiNKtrend's fork validates Prime-only PR scope through its focused IDE
+    # admission workflow. Keep the inherited upstream matrix for upstream PRs,
+    # main pushes, and explicit maintainer dispatches only.
+    if: github.event_name != 'pull_request' || (github.repository == 'openclaw/openclaw' && !github.event.pull_request.draft)
     runs-on: ${{ github.event_name == 'workflow_dispatch' && 'ubuntu-24.04' || (github.repository == 'openclaw/openclaw' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == 'openclaw/openclaw') && 'blacksmith-4vcpu-ubuntu-2404' || 'ubuntu-24.04') }}
     timeout-minutes: 20
     outputs:
@@ -796,7 +799,7 @@ jobs:
   security-fast:
     permissions:
       contents: read
-    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
+    if: github.event_name != 'pull_request' || (github.repository == 'openclaw/openclaw' && !github.event.pull_request.draft)
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:

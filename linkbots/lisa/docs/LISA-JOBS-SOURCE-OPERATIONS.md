@@ -20,7 +20,9 @@ delivery intent, opaque binding references, exact skill/schema reference,
 dependencies, bounded retry policy, idempotency key, and receipt requirements.
 
 `diffLisaJobDesiredState` compares a read-only live-format export against the
-source declarations. It returns missing, unexpected, and drifted keys and has
+source declarations. It returns missing, unexpected, and drifted keys. Live
+rows that are enabled while source remains disabled are listed as
+`applyAuthorizationHold` and are not treated as schedule drift. The helper has
 no apply or mutation path.
 
 ## Ownership repair

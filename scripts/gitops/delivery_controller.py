@@ -27,7 +27,7 @@ import urllib.error
 import urllib.request
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Callable, Iterable, Mapping, Protocol
+from typing import Any, Callable, Mapping, Protocol
 
 try:
     from scripts.gitops.delivery_modes import is_phase_branch, is_valid_sha, normalize_sha
@@ -38,7 +38,11 @@ try:
         evaluate_release_path,
         verify_receipt_payload,
     )
-    from scripts.gitops.coordinator.receipts import compute_receipt_digest
+    from scripts.gitops.coordinator.receipts import (
+        compute_receipt_digest,
+        compute_transition_digest,
+        create_transition_receipt,
+    )
     from scripts.gitops.github_auth import GitHubAuthError, resolve_phase_api_token
     from scripts.gitops.administrator_recovery import MemoryProtection, recover_phase_merge
 except ModuleNotFoundError:  # pragma: no cover - script-style execution
@@ -50,7 +54,7 @@ except ModuleNotFoundError:  # pragma: no cover - script-style execution
         evaluate_release_path,
         verify_receipt_payload,
     )
-    from coordinator.receipts import compute_receipt_digest  # type: ignore
+    from coordinator.receipts import compute_receipt_digest, compute_transition_digest, create_transition_receipt  # type: ignore
     from github_auth import GitHubAuthError, resolve_phase_api_token  # type: ignore
     from administrator_recovery import MemoryProtection, recover_phase_merge  # type: ignore
 
@@ -86,21 +90,6 @@ REQUIRED_CHECK_NAMES = (
     "Linktrend Full Suite",
     "Linktrend Branch Source Policy",
 )
-
-# This one-time bridge exists only to land the recovery workflow that creates
-# the first exact protected-development Full receipt. Keep the identity and
-# path set immutable so an ordinary/product change cannot inherit this path.
-RECOVERY_BOOTSTRAP_BASE_REF = "development"
-RECOVERY_BOOTSTRAP_BASE_COMMIT = "88b3c767f5bab799228deb4c7371c9f80cca7121"
-RECOVERY_BOOTSTRAP_BASE_TREE = "016416564d5064f2ce500522d6d63a0b98565b1f"
-RECOVERY_BOOTSTRAP_PATHS = frozenset(
-    {
-        ".ide-development/workflows/linktrend-integrator-merge.yml",
-        ".ide-development/tests/test_receipt_seal_and_recovery.py",
-    }
-)
-RECOVERY_BOOTSTRAP_FAILURE_JOBS = frozenset({"checks-node-core-test-nondist-shard"})
-RECOVERY_BOOTSTRAP_REQUIRED_CHECKS = ("preflight", "security")
 
 
 @dataclass(frozen=True)
@@ -173,6 +162,34 @@ class ControllerError(ValueError):
 
     def to_dict(self) -> dict[str, str]:
         return {"code": self.code, "detail": self.detail}
+
+
+def _receipt_workflow_run_id(receipt: Mapping[str, Any]) -> int:
+    """Return the exact reusable Full Suite run ID required by promotion gates."""
+
+    raw = receipt.get("workflowRunId")
+    if isinstance(raw, bool):
+        raise ControllerError("receipt_workflow_run_invalid", str(raw))
+    try:
+        run_id = int(raw)
+    except (TypeError, ValueError) as exc:
+        raise ControllerError("receipt_workflow_run_invalid", str(raw or "missing")) from exc
+    if run_id < 1 or str(raw).strip() != str(run_id):
+        raise ControllerError("receipt_workflow_run_invalid", str(raw))
+    return run_id
+
+
+def _receipt_workflow_run_attempt(receipt: Mapping[str, Any]) -> int:
+    raw = receipt.get("workflowRunAttempt")
+    if isinstance(raw, bool):
+        raise ControllerError("receipt_workflow_attempt_invalid", str(raw))
+    try:
+        attempt = int(raw)
+    except (TypeError, ValueError) as exc:
+        raise ControllerError("receipt_workflow_attempt_invalid", str(raw or "missing")) from exc
+    if attempt < 1 or str(raw).strip() != str(attempt):
+        raise ControllerError("receipt_workflow_attempt_invalid", str(raw))
+    return attempt
 
 
 class GitHubPort(Protocol):
@@ -774,74 +791,6 @@ def _check_repository_owned_ci(
             raise ControllerError("repository_ci_stale", f"{name}:{observed or 'missing'}")
 
 
-def admit_recovery_controller_bootstrap(
-    *,
-    base_ref: str,
-    base_commit: str,
-    base_tree: str,
-    changed_paths: Iterable[str],
-    failures: Iterable[Mapping[str, Any]],
-    required_checks: Mapping[str, Any],
-    receipt: Mapping[str, Any] | None = None,
-) -> dict[str, Any]:
-    """Admit only the one checkpoint that installs the recovery receipt path.
-
-    This is not a Full or stale-receipt waiver.  It permits the controller
-    checkpoint to land without a receipt so the subsequent exact
-    development-ref recovery run can create one. Every ordinary/changed
-    failure and every missing required preflight/security result blocks.
-    """
-
-    if str(base_ref or "") != RECOVERY_BOOTSTRAP_BASE_REF:
-        raise ControllerError("recovery_bootstrap_ref_mismatch", str(base_ref or "missing"))
-    if normalize_sha(base_commit) != RECOVERY_BOOTSTRAP_BASE_COMMIT:
-        raise ControllerError("recovery_bootstrap_commit_mismatch", normalize_sha(base_commit) or "missing")
-    if normalize_sha(base_tree) != RECOVERY_BOOTSTRAP_BASE_TREE:
-        raise ControllerError("recovery_bootstrap_tree_mismatch", normalize_sha(base_tree) or "missing")
-
-    paths = {str(path or "").strip() for path in changed_paths}
-    if not paths or not paths <= RECOVERY_BOOTSTRAP_PATHS:
-        unexpected = sorted(paths - RECOVERY_BOOTSTRAP_PATHS) or ["missing"]
-        raise ControllerError("recovery_bootstrap_paths_forbidden", ",".join(unexpected))
-
-    if receipt is not None:
-        raise ControllerError("recovery_bootstrap_receipt_forbidden", "bootstrap requires a newly produced exact receipt")
-
-    checks = required_checks if isinstance(required_checks, Mapping) else {}
-    for name in RECOVERY_BOOTSTRAP_REQUIRED_CHECKS:
-        status = str(checks.get(name) or "").strip().lower()
-        if status in {"skipped", "neutral", "cancelled", "canceled"}:
-            raise ControllerError("recovery_bootstrap_required_check_skipped", name)
-        if status not in {"success", "passed", "successful", "green"}:
-            raise ControllerError("recovery_bootstrap_required_check_failed", f"{name}:{status or 'missing'}")
-
-    rows = list(failures) if failures is not None else []
-    for row in rows:
-        if not isinstance(row, Mapping):
-            raise ControllerError("recovery_bootstrap_failure_untrusted", "failure row must be an object")
-        job = str(row.get("job") or row.get("name") or "")
-        classification = str(row.get("classification") or row.get("kind") or "").strip().lower()
-        if job not in RECOVERY_BOOTSTRAP_FAILURE_JOBS:
-            raise ControllerError("recovery_bootstrap_failure_not_declared", job or "missing")
-        if classification != "inherited_baseline":
-            raise ControllerError("recovery_bootstrap_failure_changed", f"{job}:{classification or 'missing'}")
-        if row.get("changed") is True or row.get("changedPaths"):
-            raise ControllerError("recovery_bootstrap_failure_changed", job)
-
-    return {
-        "accepted": True,
-        "mode": "recovery-bootstrap",
-        "baseRef": RECOVERY_BOOTSTRAP_BASE_REF,
-        "baseCommit": RECOVERY_BOOTSTRAP_BASE_COMMIT,
-        "baseTree": RECOVERY_BOOTSTRAP_BASE_TREE,
-        "changedPaths": sorted(paths),
-        "inheritedFailures": [str(row.get("job") or row.get("name")) for row in rows],
-        "receipt": "required-after-integration",
-        "security": "passed",
-        "preflight": "passed",
-    }
-
-
 def verify_development_eligibility(
     *,
     handoff: Mapping[str, Any],
@@ -852,13 +801,12 @@ def verify_development_eligibility(
     gate_payload: Mapping[str, Any],
     named_checks: Mapping[str, Any],
     repository_ci: Mapping[str, Any],
-    receipt: Mapping[str, Any] | None,
+    receipt: Mapping[str, Any],
     candidate_identity: Mapping[str, Any],
     conflict: bool = False,
     rollout: StagedRolloutConfig | None = None,
-    recovery_bootstrap: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Require exact gates, repo-owned CI, and either receipt or named bootstrap."""
+    """Require exact gates, repo-owned CI, genuine receipt, and an unchanged Phase PR head."""
 
     config = _rollout_config(rollout)
     accepted = accept_phase_pr(
@@ -880,19 +828,9 @@ def verify_development_eligibility(
     gates = evaluate_development_gates(gate_payload, live_head)
     if not gates.accepted:
         raise ControllerError(gates.code, gates.detail)
-    bootstrap = None
-    if receipt is None:
-        if recovery_bootstrap is None:
-            raise ControllerError("receipt_rejected", "exact Full receipt is required")
-        try:
-            bootstrap = admit_recovery_controller_bootstrap(**dict(recovery_bootstrap))
-        except TypeError as exc:
-            raise ControllerError("recovery_bootstrap_invalid", str(exc)) from exc
-        receipt_decision = None
-    else:
-        receipt_decision = verify_receipt_payload(receipt, candidate_identity, "full-gate")
-        if not receipt_decision.accepted:
-            raise ControllerError("receipt_rejected", f"{receipt_decision.code}:{receipt_decision.detail}")
+    receipt_decision = verify_receipt_payload(receipt, candidate_identity, "full-gate")
+    if not receipt_decision.accepted:
+        raise ControllerError("receipt_rejected", f"{receipt_decision.code}:{receipt_decision.detail}")
     identity_head = normalize_sha(str(candidate_identity.get("headCommit") or ""))
     identity_tree = normalize_sha(str(candidate_identity.get("gitTree") or ""))
     if identity_head != normalize_sha(live_head) or identity_tree != normalize_sha(live_tree):
@@ -900,9 +838,8 @@ def verify_development_eligibility(
     return {
         "eligible": True,
         "pr": accepted,
-        "receiptLookupKey": receipt_decision.receipt_lookup_key if receipt_decision else None,
-        "receiptDigest": compute_receipt_digest(receipt) if receipt is not None else None,
-        "recoveryBootstrap": bootstrap,
+        "receiptLookupKey": receipt_decision.receipt_lookup_key,
+        "receiptDigest": compute_receipt_digest(receipt),
         "repositoryCi": "passed",
         "detail": "development_eligible",
     }
@@ -916,6 +853,10 @@ def merge_to_development(
     expected_head: str,
     role: str,
     actor: str = "delivery-controller",
+    receipt: Mapping[str, Any] | None = None,
+    candidate_identity: Mapping[str, Any] | None = None,
+    candidate_tree: str | None = None,
+    protected_base_commit: str | None = None,
     rollout: StagedRolloutConfig | None = None,
 ) -> dict[str, Any]:
     """Merge through GitHub protection. Never push directly to development."""
@@ -937,7 +878,7 @@ def merge_to_development(
             match_head_commit=True,
         )
     )
-    return {
+    result = {
         "status": "merged",
         "stage": config.development_branch,
         "pr": pr_number,
@@ -948,6 +889,27 @@ def merge_to_development(
         "directPush": False,
         "component": COMPONENT_KIND,
     }
+    if receipt is not None or candidate_identity is not None:
+        if receipt is None or candidate_identity is None:
+            raise ControllerError("transition_receipt_failed", "receipt and candidate identity must be supplied together")
+        target_tree = normalize_sha(candidate_tree or "")
+        merge_commit = normalize_sha(str(result.get("mergeCommitSha") or ""))
+        if not is_valid_sha(merge_commit) or not is_valid_sha(target_tree):
+            raise ControllerError("transition_receipt_failed", "protected merge did not return an exact commit/tree identity")
+        try:
+            transition = create_transition_receipt(
+                receipt,
+                target_branch=config.development_branch,
+                target_commit=merge_commit,
+                target_tree=target_tree,
+                protected_base_commit=normalize_sha(protected_base_commit or "") or None,
+            ).to_dict()
+        except (ValueError, TypeError) as exc:
+            raise ControllerError("transition_receipt_failed", str(exc)) from exc
+        result["gitTree"] = target_tree
+        result["transitionReceipt"] = transition
+        result["transitionReceiptDigest"] = transition["receiptDigest"]
+    return result
 
 
 def promote_to_staging(
@@ -963,6 +925,7 @@ def promote_to_staging(
     release_gate: Mapping[str, Any],
     role: str,
     full_suite_invoked: bool = False,
+    transition_receipt: Mapping[str, Any] | None = None,
     rollout: StagedRolloutConfig | None = None,
 ) -> dict[str, Any]:
     """Promote via temporary promote/staging/* PR using exact receipt reuse."""
@@ -979,7 +942,12 @@ def promote_to_staging(
     release = evaluate_release_path({**dict(release_gate), "fullSuiteInvoked": False})
     if not release.accepted:
         raise ControllerError(release.code, release.detail)
-    receipt_decision = verify_receipt_payload(receipt, candidate_identity, "full-gate")
+    receipt_decision = verify_receipt_payload(
+        receipt,
+        candidate_identity,
+        "full-gate",
+        transition_receipt=transition_receipt,
+    )
     if not receipt_decision.accepted:
         raise ControllerError("receipt_rejected", f"{receipt_decision.code}:{receipt_decision.detail}")
     identity_tree = normalize_sha(str(candidate_identity.get("gitTree") or ""))
@@ -997,7 +965,11 @@ def promote_to_staging(
         "candidateHead": normalize_sha(candidate_sha),
         "promoteBranch": branch,
         "receiptDigest": compute_receipt_digest(receipt),
+        "fullRunId": _receipt_workflow_run_id(receipt),
+        "fullRunAttempt": _receipt_workflow_run_attempt(receipt),
     }
+    if transition_receipt is not None:
+        marker["transitionReceiptDigest"] = compute_transition_digest(transition_receipt)
     body = f"<!-- linktrend-promote: {json.dumps(marker, sort_keys=True)} -->"
     pr = call_with_infrastructure_retry(
         lambda: github.create_pull_request(
@@ -1019,7 +991,16 @@ def promote_to_staging(
             match_head_commit=True,
         )
     )
-    return {
+    try:
+        protected_transition = create_transition_receipt(
+            receipt,
+            target_branch=config.staging_branch,
+            target_commit=normalize_sha(str(merged.get("mergeCommitSha") or "")),
+            target_tree=normalize_sha(candidate_tree),
+        ).to_dict()
+    except (ValueError, TypeError) as exc:
+        raise ControllerError("transition_receipt_failed", str(exc)) from exc
+    result = {
         "status": "merged",
         "stage": config.staging_branch,
         "pr": int(pr["number"]),
@@ -1031,8 +1012,11 @@ def promote_to_staging(
         "mergeCommitSha": normalize_sha(str(merged.get("mergeCommitSha") or "")),
         "fullSuiteRerun": False,
         "receiptReused": True,
+        "transitionReceipt": protected_transition,
+        "transitionReceiptDigest": protected_transition["receiptDigest"],
         "component": COMPONENT_KIND,
     }
+    return result
 
 
 def prepare_main_promotion(
@@ -1046,6 +1030,7 @@ def prepare_main_promotion(
     candidate_identity: Mapping[str, Any],
     release_gate: Mapping[str, Any],
     role: str,
+    transition_receipt: Mapping[str, Any] | None = None,
     rollout: StagedRolloutConfig | None = None,
 ) -> dict[str, Any]:
     """Open promote/main/* and wait for explicit founder approval."""
@@ -1060,7 +1045,12 @@ def prepare_main_promotion(
     release = evaluate_release_path({**dict(release_gate), "fullSuiteInvoked": False})
     if not release.accepted:
         raise ControllerError(release.code, release.detail)
-    receipt_decision = verify_receipt_payload(receipt, candidate_identity, "full-gate")
+    receipt_decision = verify_receipt_payload(
+        receipt,
+        candidate_identity,
+        "full-gate",
+        transition_receipt=transition_receipt,
+    )
     if not receipt_decision.accepted:
         raise ControllerError("receipt_rejected", f"{receipt_decision.code}:{receipt_decision.detail}")
     short = normalize_sha(staging_sha)[:12]
@@ -1075,8 +1065,12 @@ def prepare_main_promotion(
         "candidateHead": normalize_sha(candidate_sha),
         "promoteBranch": branch,
         "receiptDigest": compute_receipt_digest(receipt),
+        "fullRunId": _receipt_workflow_run_id(receipt),
+        "fullRunAttempt": _receipt_workflow_run_attempt(receipt),
         "awaitingFounderApproval": True,
     }
+    if transition_receipt is not None:
+        marker["transitionReceiptDigest"] = compute_transition_digest(transition_receipt)
     body = f"<!-- linktrend-promote: {json.dumps(marker, sort_keys=True)} -->"
     pr = call_with_infrastructure_retry(
         lambda: github.create_pull_request(
@@ -1091,7 +1085,7 @@ def prepare_main_promotion(
             head_sha=candidate_sha,
         )
     )
-    return {
+    result = {
         "status": "waiting_founder_approval",
         "stage": config.main_branch,
         "pr": int(pr["number"]),
@@ -1103,6 +1097,9 @@ def prepare_main_promotion(
         "founderApprovalInferred": False,
         "component": COMPONENT_KIND,
     }
+    if transition_receipt is not None:
+        result["transitionReceiptDigest"] = compute_transition_digest(transition_receipt)
+    return result
 
 
 def complete_main_promotion(
@@ -1307,14 +1304,14 @@ def deliver_phase_to_development(
     gate_payload: Mapping[str, Any],
     named_checks: Mapping[str, Any],
     repository_ci: Mapping[str, Any],
-    receipt: Mapping[str, Any] | None,
+    receipt: Mapping[str, Any],
     candidate_identity: Mapping[str, Any],
     role: str,
     actor: str = "delivery-controller",
     conflict: bool = False,
     record_path: Path | None = None,
+    protected_tree: str | None = None,
     rollout: StagedRolloutConfig | None = None,
-    recovery_bootstrap: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """End-to-end development merge for one exact Phase PR."""
 
@@ -1332,7 +1329,6 @@ def deliver_phase_to_development(
         candidate_identity=candidate_identity,
         conflict=conflict,
         rollout=config,
-        recovery_bootstrap=recovery_bootstrap,
     )
     try:
         merged = merge_to_development(
@@ -1342,18 +1338,26 @@ def deliver_phase_to_development(
             expected_head=live_head,
             role=role,
             actor=actor,
+            receipt=receipt,
+            candidate_identity=candidate_identity,
+            candidate_tree=protected_tree or live_tree,
+            protected_base_commit=str(handoff.get("baseCommit") or ""),
             rollout=config,
         )
     except ControllerError as exc:
         return stop_on_protected_merge_rejection(exc)
     record = {
         **merged,
-        "gitTree": normalize_sha(live_tree),
         "eligibility": eligibility,
         "agentFingerprint": agent_env_fingerprint(),
     }
     if record_path is not None:
-        write_operation_record(record_path, record)
+        operation_record = dict(record)
+        operation_record["transitionReceipt"] = {
+            "receiptDigest": record["transitionReceiptDigest"],
+            "externalEvidenceRequired": True,
+        }
+        write_operation_record(record_path, operation_record)
     return record
 
 
@@ -1429,11 +1433,6 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--checks-json", default="")
     parser.add_argument("--repository-ci-json", default="")
     parser.add_argument("--receipt", default="")
-    parser.add_argument(
-        "--recovery-bootstrap-json",
-        default="",
-        help="Optional exact recovery-controller bootstrap admission payload",
-    )
     parser.add_argument("--identity-json", default="")
     parser.add_argument("--approval-json", default="")
     parser.add_argument("--release-json", default="")
@@ -1484,10 +1483,9 @@ def main(argv: list[str] | None = None) -> int:
                 gate_payload=load(args.gates_json),
                 named_checks=load(args.checks_json),
                 repository_ci=load(args.repository_ci_json),
-                receipt=load(args.receipt) if args.receipt else None,
+                receipt=load(args.receipt),
                 candidate_identity=load(args.identity_json),
                 rollout=rollout,
-                recovery_bootstrap=load(args.recovery_bootstrap_json) if args.recovery_bootstrap_json else None,
             )
         else:
             require_controller_role(args.role)
@@ -1499,6 +1497,10 @@ def main(argv: list[str] | None = None) -> int:
                     pr_number=args.pr_number,
                     expected_head=args.expected_head or args.live_head,
                     role=args.role,
+                    receipt=load(args.receipt) if args.receipt else None,
+                    candidate_identity=load(args.identity_json) if args.identity_json else None,
+                    candidate_tree=args.live_tree or None,
+                    protected_base_commit=args.base_sha or None,
                     rollout=rollout,
                 )
             elif args.command == "promote-staging":
@@ -1515,6 +1517,7 @@ def main(argv: list[str] | None = None) -> int:
                     release_gate=load(args.release_json),
                     role=args.role,
                     full_suite_invoked=bool(payload.get("fullSuiteInvoked")),
+                    transition_receipt=load(str(payload["transitionReceipt"])) if isinstance(payload.get("transitionReceipt"), str) else payload.get("transitionReceipt"),
                     rollout=rollout,
                 )
             elif args.command == "prepare-main":
@@ -1529,6 +1532,7 @@ def main(argv: list[str] | None = None) -> int:
                     candidate_identity=load(args.identity_json),
                     release_gate=load(args.release_json),
                     role=args.role,
+                    transition_receipt=load(str(payload["transitionReceipt"])) if isinstance(payload.get("transitionReceipt"), str) else payload.get("transitionReceipt"),
                     rollout=rollout,
                 )
             elif args.command == "complete-main":
