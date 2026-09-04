@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   BACKUP_SERVICE_TEMPLATE,
   BACKUP_TIMER_TEMPLATE,
+  LISA_BACKUP_ONCALENDAR,
   LISA_BACKUP_SERVICE,
   LISA_BACKUP_TIMER,
   LISA_PRIVATE_RESTORE_SERVICE,
@@ -29,7 +30,7 @@ describe("PKT-09 source deployment recreation", () => {
     ]);
     expect(plan.units[0].contents).toContain("--profile lisa");
     expect(plan.units[0].contents).toContain("ProtectSystem=strict");
-    expect(plan.units[1].contents).toContain("OnCalendar=*-*-* 05:30:00 Asia/Taipei");
+    expect(plan.units[1].contents).toContain(`OnCalendar=${LISA_BACKUP_ONCALENDAR}`);
     expect(plan.units[2].contents).toContain("IPAddressDeny=any");
     expect(plan.units.map((unit) => unit.contents).join("\n")).not.toMatch(
       /(?:\/Users\/|\/Applications\/)/u,
