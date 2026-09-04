@@ -1,0 +1,338 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://linktrend.local/openclaw-prime/customization-boundary.schema.json",
+  "title": "OpenClaw Prime customization boundary manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "kind",
+    "prime",
+    "upstream",
+    "pathRules",
+    "digestRules",
+    "provenanceRules",
+    "exclusion",
+    "linktrendOwned",
+    "ideManaged",
+    "ideSource",
+    "ideTransactionChanged",
+    "uncertainty"
+  ],
+  "properties": {
+    "schemaVersion": { "type": "integer", "const": 1 },
+    "kind": {
+      "type": "string",
+      "const": "openclaw-prime-customization-boundary"
+    },
+    "prime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "ref", "commit", "tree"],
+      "properties": {
+        "repository": { "type": "string", "const": "linktrend/openclaw_prime" },
+        "ref": { "type": "string", "minLength": 1 },
+        "commit": { "$ref": "#/$defs/gitSha" },
+        "tree": { "$ref": "#/$defs/gitSha" }
+      }
+    },
+    "upstream": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository",
+        "configuredSource",
+        "defaultBranch",
+        "classificationPin"
+      ],
+      "properties": {
+        "repository": { "type": "string", "const": "openclaw/openclaw" },
+        "configuredSource": {
+          "type": "string",
+          "const": "github-fork-parent-default-branch"
+        },
+        "defaultBranch": { "type": "string", "const": "main" },
+        "classificationPin": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "commit",
+            "tree",
+            "observedAt",
+            "observedParentMainCommit",
+            "observedParentMainTree"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "fork-network-merge-base-with-observed-parent-main"
+            },
+            "commit": { "$ref": "#/$defs/gitSha" },
+            "tree": { "$ref": "#/$defs/gitSha" },
+            "observedAt": { "type": "string", "minLength": 1 },
+            "observedParentMainCommit": { "$ref": "#/$defs/gitSha" },
+            "observedParentMainTree": { "$ref": "#/$defs/gitSha" }
+          }
+        }
+      }
+    },
+    "pathRules": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["form", "match", "relativeTo"],
+      "properties": {
+        "form": { "type": "string", "const": "posix-repo-relative" },
+        "match": {
+          "type": "string",
+          "const": "exact-or-string-prefix-no-dotdot"
+        },
+        "relativeTo": {
+          "type": "string",
+          "const": "upstream-classification-pin-tree"
+        }
+      }
+    },
+    "digestRules": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "encoding",
+        "prefix",
+        "canonicalBytes",
+        "symlinkPolicy",
+        "scope"
+      ],
+      "properties": {
+        "algorithm": { "type": "string", "const": "sha256" },
+        "encoding": { "type": "string", "const": "lowercase-hex" },
+        "prefix": { "type": "string", "const": "sha256:" },
+        "canonicalBytes": {
+          "type": "string",
+          "const": "physical-file-bytes-no-git-blob-header"
+        },
+        "symlinkPolicy": { "type": "string", "const": "refuse-follow" },
+        "scope": {
+          "type": "string",
+          "const": "owned-and-ide-listed-paths-only-never-untouched-upstream"
+        }
+      }
+    },
+    "provenanceRules": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["methods", "precedence"],
+      "properties": {
+        "methods": {
+          "type": "array",
+          "minItems": 4,
+          "items": {
+            "type": "string",
+            "enum": [
+              "github-contents-404-at-classification-pin",
+              "ide-installed-state-destination",
+              "ide-upgrade-receipt-applied-path",
+              "this-manifest-namespace"
+            ]
+          }
+        },
+        "precedence": {
+          "type": "array",
+          "minItems": 4,
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "exclusion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["untouchedUpstream", "forbiddenWholeTrees"],
+      "properties": {
+        "untouchedUpstream": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["enumerated", "rule"],
+          "properties": {
+            "enumerated": { "type": "boolean", "const": false },
+            "rule": { "type": "string", "minLength": 1 }
+          }
+        },
+        "forbiddenWholeTrees": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/repoRelPath" }
+        }
+      }
+    },
+    "linktrendOwned": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["prefixes", "exactPaths"],
+      "properties": {
+        "prefixes": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/ownedEntry" }
+        },
+        "exactPaths": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/ownedEntry" }
+        }
+      }
+    },
+    "ideManaged": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "separateFromLinktrendOwnedInventory",
+        "inventoryPath",
+        "packageName",
+        "packageVersion",
+        "destinationCount",
+        "prefixes",
+        "overlayOnUpstreamExactPaths",
+        "declaredMissingLocally"
+      ],
+      "properties": {
+        "separateFromLinktrendOwnedInventory": {
+          "type": "boolean",
+          "const": true
+        },
+        "inventoryPath": {
+          "type": "string",
+          "const": ".ide-development/installed-state.json"
+        },
+        "packageName": {
+          "type": "string",
+          "const": "ide-development-managed-core"
+        },
+        "packageVersion": { "type": "string", "minLength": 1 },
+        "destinationCount": { "type": "integer", "minimum": 1 },
+        "prefixes": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/repoRelPath" }
+        },
+        "overlayOnUpstreamExactPaths": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/repoRelPath" }
+        },
+        "declaredMissingLocally": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/repoRelPath" }
+        }
+      }
+    },
+    "ideSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository",
+        "packageName",
+        "packageVersion",
+        "authoritativeRef",
+        "taggedRelease",
+        "currentSource"
+      ],
+      "properties": {
+        "repository": { "type": "string", "const": "linktrend/IDE-Development" },
+        "packageName": {
+          "type": "string",
+          "const": "ide-development-managed-core"
+        },
+        "packageVersion": { "type": "string", "const": "2.5.2" },
+        "authoritativeRef": { "type": "string", "const": "v2.5.2" },
+        "taggedRelease": { "$ref": "#/$defs/ideSourcePin" },
+        "currentSource": { "$ref": "#/$defs/ideSourcePin" }
+      }
+    },
+    "ideTransactionChanged": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["separateFromIdeManagedInventory", "records", "paths"],
+      "properties": {
+        "separateFromIdeManagedInventory": {
+          "type": "boolean",
+          "const": true
+        },
+        "records": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["receiptPath", "paths"],
+            "properties": {
+              "receiptPath": { "$ref": "#/$defs/repoRelPath" },
+              "paths": {
+                "type": "array",
+                "minItems": 1,
+                "items": { "$ref": "#/$defs/repoRelPath" }
+              }
+            }
+          }
+        },
+        "paths": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/repoRelPath" }
+        }
+      }
+    },
+    "uncertainty": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "summary"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "summary": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "gitSha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "repoRelPath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/|\\\\)(?!.*\\.\\.(?:/|\\\\|$))(?!.*:)[A-Za-z0-9._@+, \\-]+(?:/[A-Za-z0-9._@+, \\-]+)*$"
+    },
+    "ideSourcePin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["commit", "tree", "phasePullRequest", "note"],
+      "properties": {
+        "commit": { "$ref": "#/$defs/gitSha" },
+        "tree": { "$ref": "#/$defs/gitSha" },
+        "phasePullRequest": { "type": "integer", "minimum": 1 },
+        "receiptPath": { "$ref": "#/$defs/repoRelPath" },
+        "note": { "type": "string", "minLength": 1 }
+      }
+    },
+    "ownedEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "provenance"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "provenance": {
+          "type": "string",
+          "enum": [
+            "github-contents-404-at-classification-pin",
+            "ide-installed-state-destination",
+            "ide-upgrade-receipt-applied-path",
+            "this-manifest-namespace"
+          ]
+        }
+      }
+    }
+  }
+}

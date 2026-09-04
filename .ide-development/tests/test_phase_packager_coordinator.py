@@ -12,6 +12,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from jsonschema import Draft202012Validator, RefResolver
+
 from scripts.gitops import packager_coordinator as coordinator
 from scripts.gitops import packager_discover as discover
 from scripts.ide_development.constants import RC_REQUIRED_SCHEMA_RELS
@@ -94,6 +96,7 @@ class Fixture:
             expected_repository=kwargs.get("expected_repository", "owner/name"),
             require_live_pr=kwargs.get("require_live_pr", False),
             evidence_payloads=kwargs.get("evidence_payloads"),
+            provider_consumer_handoff=kwargs.get("provider_consumer_handoff"),
         )
 
 
@@ -123,69 +126,6 @@ class PhasePackagerCoordinatorTests(unittest.TestCase):
         self.assertEqual(result["acceptedCommits"][0]["sha"], one.sha)
         self.assertFalse(result["record"]["sealed"])
         self.assertFalse(result["fullDispatchAllowed"])
-
-    def test_phase_records_base_without_receipt_only_repin(self) -> None:
-        receipt_path = coordinator.BASELINE_RECEIPT_REL
-        write(
-            self.fx.work / receipt_path,
-            json.dumps(
-                {
-                    "schemaVersion": 1,
-                    "kind": "openclaw-fork-baseline-ci-receipt",
-                    "repository": "linktrend/openclaw_prime",
-                    "baselineCommit": "0" * 40,
-                    "baselineTree": "0" * 40,
-                }
-            ),
-        )
-        git(self.fx.work, "add", str(receipt_path))
-        git(self.fx.work, "commit", "-qm", "baseline receipt fixture")
-        git(self.fx.work, "push", "-q", "origin", "development")
-        base = self.fx.development_sha()
-        base_tree = git(self.fx.work, "rev-parse", f"{base}^{{tree}}")
-        one = self.fx.accept_issue(34, "atomic.txt", "atomic\n")
-
-        result = self.fx.assemble([one])
-        bound = json.loads(git(self.fx.work, "show", f"{result['headSha']}:{receipt_path}"))
-        self.assertEqual(result["record"]["baseSha"], base)
-        self.assertEqual(bound["baselineCommit"], "0" * 40)
-        self.assertEqual(bound["baselineTree"], "0" * 40)
-        self.assertNotEqual(result["headSha"], git(self.fx.work, "rev-parse", f"{base}^{{commit}}"))
-
-    def test_existing_phase_keeps_receipt_immutable_after_development_moves(self) -> None:
-        receipt_path = coordinator.BASELINE_RECEIPT_REL
-        write(
-            self.fx.work / receipt_path,
-            json.dumps(
-                {
-                    "schemaVersion": 1,
-                    "kind": "openclaw-fork-baseline-ci-receipt",
-                    "repository": "linktrend/openclaw_prime",
-                    "baselineCommit": "0" * 40,
-                    "baselineTree": "0" * 40,
-                }
-            ),
-        )
-        git(self.fx.work, "add", str(receipt_path))
-        git(self.fx.work, "commit", "-qm", "baseline receipt fixture")
-        git(self.fx.work, "push", "-q", "origin", "development")
-        one = self.fx.accept_issue(35, "rebind.txt", "rebind\n")
-        first = self.fx.assemble([one])
-
-        git(self.fx.work, "checkout", "-q", "development")
-        write(self.fx.work / "moving.txt", "protected base moved\n")
-        git(self.fx.work, "add", "moving.txt")
-        git(self.fx.work, "commit", "-qm", "move protected development base")
-        git(self.fx.work, "push", "-q", "origin", "development")
-        moved_base = self.fx.development_sha()
-
-        rebound = self.fx.assemble([one])
-        self.assertEqual(rebound["action"], "reused")
-        self.assertEqual(rebound["headSha"], first["headSha"])
-        self.assertEqual(rebound["record"]["baseSha"], moved_base)
-        bound = json.loads(git(self.fx.work, "show", f"{rebound['headSha']}:{receipt_path}"))
-        self.assertEqual(bound["baselineCommit"], "0" * 40)
-        self.assertEqual(bound["baselineTree"], "0" * 40)
 
     def test_many_compatible_issues_create_one_ordered_phase(self) -> None:
         first = self.fx.accept_issue(1, "one.txt", "one\n")
@@ -288,7 +228,14 @@ class PhasePackagerCoordinatorTests(unittest.TestCase):
             "pushed": True,
             "scopedDiff": True,
             "focusedTests": {"passed": True},
-            "independentTerraVerification": True,
+            "independentNarrowReview": {
+                "accepted": True,
+                "headSha": source.sha,
+                "gitTree": tree,
+                "paths": ["declared-checkpoint-scope"],
+                "reviewer": {"actor": "independent-reviewer", "role": "reviewer"},
+                "implementerActor": "implementer",
+            },
             "manifestEvidence": True,
             "classification": "tests",
             "acceptance": "PKT-05 lean checkpoint",
@@ -346,8 +293,6 @@ class PhasePackagerCoordinatorTests(unittest.TestCase):
         self.assertTrue(contract["checksExactHead"])
         self.assertTrue(contract["cancelObsolete"])
         self.assertFalse(contract["startsFull"])
-        self.assertIn("github.event.pull_request.base.sha", fast)
-        self.assertIn("--baseline-sha", fast)
         live = (ROOT / ".github/workflows/linktrend-review-packager.yml").read_text(encoding="utf-8")
         self.assertEqual(fast, live)
         full = (ROOT / coordinator.FULL_WORKFLOW_REL).read_text(encoding="utf-8")
@@ -432,6 +377,44 @@ class PhasePackagerCoordinatorTests(unittest.TestCase):
         for key in record_schema["required"]:
             self.assertIn(key, cursor["record"])
 
+    def test_typed_provider_consumer_handoff_is_carried_and_written_separately(self) -> None:
+        one = self.fx.accept_issue(171, "typed.txt", "typed\n")
+        provider = {"repository": "owner/provider", "commit": "a" * 40, "tree": "b" * 40}
+        consumer = {"repository": "owner/consumer", "commit": "c" * 40, "tree": "d" * 40}
+        receipt = {
+            "status": "accepted",
+            "protected": True,
+            "receiptDigest": "sha256:" + "e" * 64,
+            "provider": provider,
+        }
+        typed = coordinator.build_provider_consumer_handoff(
+            provider=provider,
+            consumer=consumer,
+            artifact_digest="sha256:" + "f" * 64,
+            contract_digest="sha256:" + "1" * 64,
+            verdict="accepted",
+            lifecycle_state="accepted",
+            accepted_receipt=receipt,
+        )
+        result = self.fx.assemble([one], provider_consumer_handoff=typed)
+        self.assertEqual(result["providerConsumerHandoff"], typed)
+        state_dir = Path(result["stateDir"])
+        self.assertEqual(
+            json.loads((state_dir / "provider-consumer-handoff.json").read_text(encoding="utf-8")),
+            typed,
+        )
+        phase_schema_path = ROOT / "core/managed-core/schemas/phase-handoff.schema.json"
+        phase_schema = json.loads(phase_schema_path.read_text(encoding="utf-8"))
+        typed_schema_path = ROOT / "core/managed-core/schemas/provider-consumer-handoff.schema.json"
+        typed_schema = json.loads(typed_schema_path.read_text(encoding="utf-8"))
+        resolver = RefResolver(
+            phase_schema_path.as_uri(),
+            phase_schema,
+            store={typed_schema_path.as_uri(): typed_schema, typed_schema["$id"]: typed_schema},
+        )
+        errors = list(Draft202012Validator(phase_schema, resolver=resolver).iter_errors(result["handoff"]))
+        self.assertEqual(errors, [])
+
     def test_does_not_push_protected_branches(self) -> None:
         one = self.fx.accept_issue(18, "protect.txt", "protect\n")
         before = git(self.fx.work, "rev-parse", "origin/development")
@@ -455,66 +438,6 @@ class PhasePackagerCoordinatorAdversarialTests(unittest.TestCase):
     def setUp(self) -> None:
         self.fx = Fixture()
         self.addCleanup(self.fx.cleanup)
-
-    def test_internal_packet_branch_requires_exact_manifest_identity(self) -> None:
-        sha = "a" * 40
-        manifest = {
-            "packets": [{"id": "PKT-01", "issues": ["ISS-01"]}],
-            "issues": [{"id": "ISS-01", "packetId": "PKT-01"}],
-        }
-        source = coordinator.parse_accept(
-            f"issue/pkt-01-iss-01-20260824@{sha}",
-            1,
-            execution_manifest=manifest,
-        )
-        self.assertEqual(source.packet_id, "PKT-01")
-        self.assertEqual(source.issue_id, "ISS-01")
-        with self.assertRaisesRegex(coordinator.CoordinatorError, "identity_evidence_required"):
-            coordinator.parse_accept(f"issue/pkt-01-iss-01-20260824@{sha}", 1)
-        with self.assertRaisesRegex(coordinator.CoordinatorError, "packet_identity_mismatch"):
-            coordinator.parse_accept(
-                f"issue/pkt-02-iss-01-20260824@{sha}",
-                1,
-                execution_manifest=manifest,
-            )
-
-    def test_internal_issue_branch_can_bind_packet_from_handoff(self) -> None:
-        sha = "b" * 40
-        branch = "issue/iss-04-noncoding-model-routing"
-        handoff = {
-            "acceptedCommits": [
-                {"branch": branch, "packetId": "PKT-04", "issueId": "ISS-04", "order": 1}
-            ]
-        }
-        source = coordinator.parse_accept(f"{branch}@{sha}", 1, handoff=handoff)
-        self.assertEqual(source.to_dict()["packetId"], "PKT-04")
-        self.assertEqual(source.to_dict()["issueId"], "ISS-04")
-        with self.assertRaisesRegex(coordinator.CoordinatorError, "ambiguous_issue_identity"):
-            coordinator.parse_accept(
-                f"issue/pkt-01-iss-01-iss-02-20260824@{sha}",
-                1,
-                handoff=handoff,
-            )
-
-    def test_internal_branch_identity_sources_must_converge(self) -> None:
-        sha = "c" * 40
-        branch = "issue/pkt-01-iss-01-20260824"
-        manifest = {
-            "packets": [{"id": "PKT-01", "issues": ["ISS-01"]}],
-            "issues": [{"id": "ISS-01", "packetId": "PKT-01"}],
-        }
-        handoff = {
-            "acceptedCommits": [
-                {"branch": branch, "packetId": "PKT-02", "issueId": "ISS-01", "order": 1}
-            ]
-        }
-        with self.assertRaisesRegex(coordinator.CoordinatorError, "ambiguous_issue_identity"):
-            coordinator.parse_accept(
-                f"{branch}@{sha}",
-                1,
-                execution_manifest=manifest,
-                handoff=handoff,
-            )
 
     def test_cli_assemble_refuses_memory_github_without_credentials(self) -> None:
         one = self.fx.accept_issue(21, "cli.txt", "cli\n")

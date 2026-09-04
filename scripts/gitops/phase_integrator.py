@@ -39,9 +39,6 @@ except ModuleNotFoundError:  # pragma: no cover - exercised by package-style tes
 PHASE_RECORD_REL = Path(".linktrend/phase-delivery-record.json")
 INTEGRATOR_ROLE = "integrator"
 ISSUE_BRANCH_RE = re.compile(r"^issue/([1-9][0-9]{0,8})-(.+)$")
-GOVERNED_ISSUE_BRANCH_RE = re.compile(r"^issue/(?P<slug>[a-z0-9]+(?:-[a-z0-9]+)*)$")
-PACKET_ID_RE = re.compile(r"^[A-Z][A-Z0-9]*-[0-9]{2,}$")
-ISSUE_ID_RE = re.compile(r"^ISS-[0-9]{2,}$")
 TERMINAL_PHASE_STATES = frozenset({"main-promoted", "stopped", "blocked", "cancelled"})
 
 
@@ -67,8 +64,6 @@ class IssueTip:
     acceptance_sha: str | None = None
     live_sha: str | None = None
     included: bool = False
-    packet_id: str | None = None
-    issue_id: str | None = None
 
     def __post_init__(self) -> None:
         if not self.branch.startswith("issue/"):
@@ -79,58 +74,22 @@ class IssueTip:
             raise PhaseLifecycleError("acceptance_sha_mismatch", self.branch)
         if self.live_sha is not None and normalize_sha(self.live_sha) != normalize_sha(self.sha):
             raise PhaseLifecycleError("stale_issue_tip", self.branch)
-        if self.issue_id is not None and (
-            not isinstance(self.issue_id, str) or not ISSUE_ID_RE.fullmatch(self.issue_id)
-        ):
-            raise PhaseLifecycleError("invalid_issue_identity", self.branch)
-        if self.packet_id is not None and (
-            not isinstance(self.packet_id, str) or not PACKET_ID_RE.fullmatch(self.packet_id)
-        ):
-            raise PhaseLifecycleError("invalid_packet_identity", self.branch)
-        numeric_branch = ISSUE_BRANCH_RE.fullmatch(self.branch)
-        if numeric_branch and (self.packet_id is not None or self.issue_id is not None):
-            expected_issue = f"ISS-{numeric_branch.group(1)}"
-            if self.packet_id is not None or self.issue_id != expected_issue:
-                raise PhaseLifecycleError("issue_identity_mismatch", self.branch)
-        if not numeric_branch:
-            if not self.issue_id:
-                raise PhaseLifecycleError("invalid_issue_branch", self.branch)
-            if not GOVERNED_ISSUE_BRANCH_RE.fullmatch(self.branch):
-                raise PhaseLifecycleError("invalid_issue_branch", self.branch)
-            tokens = re.findall(r"(?:pkt|iss)-[0-9]+", self.branch.split("/", 1)[1])
-            issue_tokens = [token for token in tokens if token.startswith("iss-")]
-            packet_tokens = [token for token in tokens if token.startswith("pkt-")]
-            if len(issue_tokens) != 1 or len(packet_tokens) > 1:
-                raise PhaseLifecycleError("ambiguous_issue_identity", self.branch)
-            branch_issue = issue_tokens[0]
-            if branch_issue != self.issue_id.lower():
-                raise PhaseLifecycleError("issue_identity_mismatch", self.branch)
-            branch_packet = packet_tokens[0] if packet_tokens else ""
-            if branch_packet and (not self.packet_id or branch_packet != self.packet_id.lower()):
-                raise PhaseLifecycleError("packet_identity_mismatch", self.branch)
 
     @property
     def issue_number(self) -> str:
         match = ISSUE_BRANCH_RE.fullmatch(self.branch)
         if not match:
-            if not self.issue_id:
-                raise PhaseLifecycleError("invalid_issue_branch", self.branch)
-            return self.issue_id
+            raise PhaseLifecycleError("invalid_issue_branch", self.branch)
         return match.group(1)
 
     def to_dict(self) -> dict[str, Any]:
-        result = {
+        return {
             "branch": self.branch,
             "sha": normalize_sha(self.sha),
             "accepted": bool(self.accepted),
             "included": bool(self.included),
             "acceptanceSha": normalize_sha(self.acceptance_sha) if self.acceptance_sha else None,
         }
-        if self.packet_id is not None:
-            result["packetId"] = self.packet_id
-        if self.issue_id is not None:
-            result["issueId"] = self.issue_id
-        return result
 
 
 @dataclass(frozen=True)
@@ -201,8 +160,6 @@ def validate_issue_batch(
             acceptance_sha=raw.get("acceptanceSha", raw.get("acceptedSha")),
             live_sha=raw.get("liveSha", raw.get("tipSha")),
             included=bool(raw.get("included")),
-            packet_id=raw.get("packetId"),
-            issue_id=raw.get("issueId"),
         )
         number = item.issue_number
         if number in seen_numbers or item.branch in seen_branches:
