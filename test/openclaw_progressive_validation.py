@@ -531,7 +531,7 @@ class ProgressiveValidationTests(unittest.TestCase):
         self.assertTrue(result["ok"], result)
         self.assertEqual(result["classification"], "customization_only")
         self.assertTrue(result["customizationOnly"])
-        self.assertFalse(result["protectedAdmission"])
+        self.assertTrue(result["protectedAdmission"])
         self.assertIsNone(result["hold"])
         self.assertEqual(result["receiptBaselineCommit"], rec["baselineCommit"])
         self.assertEqual(result["fullRunPin"]["commit"], rec["baselineCommit"])
@@ -562,7 +562,7 @@ class ProgressiveValidationTests(unittest.TestCase):
         self.assertFalse(result["protectedAdmission"])
         self.assertEqual(result["receiptBaselineCommit"], rec["baselineCommit"])
 
-    def test_customization_only_plus_focused_classifier_does_not_grant_protected_admission(self):
+    def test_customization_only_plus_focused_classifier_grants_protected_admission(self):
         tmp, root, rec = self.fixture(); self.addCleanup(tmp.cleanup)
         self.install_boundary(root)
         git(root, "add", ".linktrend/openclaw-prime")
@@ -585,7 +585,7 @@ class ProgressiveValidationTests(unittest.TestCase):
         )
         self.assertTrue(result["ok"], result)
         self.assertEqual(result["classification"], "customization_only")
-        self.assertFalse(result["protectedAdmission"])
+        self.assertTrue(result["protectedAdmission"])
         self.assertEqual(
             result["classifierPathsRequiringFocusedChecks"],
             [".github/openclaw_progressive_validation.py"],

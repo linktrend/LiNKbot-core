@@ -474,7 +474,13 @@ def validate(
         "generatedOnly": generated_only,
         "errors": sorted(set(errors)),
     }
-    result["protectedAdmission"] = protected_inherited_failure_admissible(result, observed_failures=observed_failures)
+    # Ordinary LiNKtrend-owned/IDE-managed Phase changes use the same protected
+    # admission outcome as peer repositories once their scoped classifier is
+    # clean. The legacy inherited-baseline path remains available for old
+    # candidates, and untouched upstream paths remain fail-closed above.
+    result["protectedAdmission"] = (
+        result["ok"] is True and result["classification"] == "customization_only"
+    ) or protected_inherited_failure_admissible(result, observed_failures=observed_failures)
     return result
 
 
