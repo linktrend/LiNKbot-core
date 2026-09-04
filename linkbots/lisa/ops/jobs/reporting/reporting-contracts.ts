@@ -1,6 +1,21 @@
 export const DIGEST_DEADLINES = ["07:00", "17:00"] as const;
 export const FLASH_DEADLINES = ["10:45", "12:45", "14:45", "20:45", "22:45"] as const;
 
+/** Digest cron starts 15 minutes before the visible deadline. */
+export const DIGEST_PREPARATION_DEADLINES = {
+  "07:00": "06:45",
+  "17:00": "16:45",
+} as const satisfies Record<(typeof DIGEST_DEADLINES)[number], string>;
+
+/** Other visible recurring messages use a five-minute preparation lead. */
+export const FLASH_PREPARATION_DEADLINES = {
+  "10:45": "10:40",
+  "12:45": "12:40",
+  "14:45": "14:40",
+  "20:45": "20:40",
+  "22:45": "22:40",
+} as const satisfies Record<(typeof FLASH_DEADLINES)[number], string>;
+
 export type LisaReportSource =
   | "user_report"
   | "calendar"
@@ -95,6 +110,9 @@ function assertText(value: string, label: string): void {
   }
   if (value.includes("{{") || value.includes("}}") || value.includes("|")) {
     throw new Error(`${label} contains an unresolved placeholder or table syntax`);
+  }
+  if (/\p{Extended_Pictographic}/u.test(value)) {
+    throw new Error(`${label} contains emoji`);
   }
 }
 

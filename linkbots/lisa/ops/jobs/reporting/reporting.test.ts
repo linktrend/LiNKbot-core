@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   EMAIL_FAILURE_PLAN,
   FLASH_DEADLINES,
+  FLASH_PREPARATION_DEADLINES,
   type LisaCalendarItem,
   type LisaEmailItem,
   type LisaReportItem,
@@ -282,32 +283,39 @@ describe("Lisa operational reporting", () => {
   });
 
   it("plans digest and flash delivery separately and only claims completion from a receipt", () => {
-    expect(planDigestDelivery("digest-2026-08-13-0700", "07:00", "06:40")).toEqual({
+    expect(planDigestDelivery("digest-2026-08-13-0700", "07:00", "06:45")).toEqual({
       channels: ["telegram", "email"],
       idempotencyKey: "digest-2026-08-13-0700",
       deadline: "07:00",
-      preparationDeadline: "06:40",
+      preparationDeadline: "06:45",
       retryCount: 1,
       receiptRequired: true,
       browserChatCopy: true,
     });
-    expect(planFlashDelivery("flash-2026-08-13-1445", "14:45", "14:25").channels).toEqual([
+    expect(() => planDigestDelivery("digest-2026-08-13-0700", "07:00", "06:40")).toThrow(
+      "06:45 or 16:45",
+    );
+    expect(planFlashDelivery("flash-2026-08-13-1445", "14:45", "14:40").channels).toEqual([
       "telegram",
     ]);
+    expect(() => planFlashDelivery("flash-2026-08-13-1445", "14:45", "14:25")).toThrow(
+      "five-minute lead",
+    );
     for (const deadline of FLASH_DEADLINES) {
-      expect(planFlashDelivery(`flash-${deadline}`, deadline, "before-deadline").deadline).toBe(
-        deadline,
-      );
+      expect(
+        planFlashDelivery(`flash-${deadline}`, deadline, FLASH_PREPARATION_DEADLINES[deadline])
+          .deadline,
+      ).toBe(deadline);
     }
     expect(() => claimDeliveryCompleted(undefined)).toThrow("channel receipt");
-    expect(
-      claimDeliveryCompleted({
-        channel: "telegram",
-        idempotencyKey: "k",
-        receiptId: "r",
-        receivedAt: "2026-08-13T14:45:00+08:00",
-      }),
-    ).toBe("completed");
+    const telegramReceipt = {
+      channel: "telegram" as const,
+      idempotencyKey: "k",
+      receiptId: "r",
+      receivedAt: "2026-08-13T14:45:00+08:00",
+    };
+    expect(claimDeliveryCompleted(telegramReceipt)).toBe("completed");
+    expect(claimDeliveryCompleted(telegramReceipt, [telegramReceipt])).toBe("duplicate");
     expect(EMAIL_FAILURE_PLAN).toEqual({
       retryCount: 1,
       browserChatCopy: true,
@@ -359,6 +367,19 @@ describe("Lisa operational reporting", () => {
         batteryStatus: "Fresh",
       }),
     ).toThrow("placeholder");
+    expect(() =>
+      renderFlashReport({
+        deadline: "10:45",
+        status: "On track",
+        completed: [item("Ship it 🚀")],
+        inProgress: [],
+        issues: [],
+        decisions: [],
+        supervisedAgents: [],
+        nextExpectedResult: "Next",
+        batteryStatus: "Fresh",
+      }),
+    ).toThrow("emoji");
     expect(() =>
       renderFlashReport({
         deadline: "10:45",

@@ -83,7 +83,7 @@ describe("WP-02 deterministic Local/VPS reconciliation", () => {
     assert.equal(result.receipt.unresolvedCount, 0);
     assert.doesNotMatch(
       JSON.stringify(result),
-      /synthetic private|message body|token=|password=/iu,
+      /synthetic private|message body|token[=]|password[=]/iu,
     );
   });
 
