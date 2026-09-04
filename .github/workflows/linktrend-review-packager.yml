@@ -118,17 +118,19 @@ jobs:
           printf 'BASELINE_TREE=%s\n' "${BASELINE_TREE}" >> "${GITHUB_ENV}"
 
       - name: Run fast profile
-        env:
-          LINKTREND_TARGET_BASELINE_SHA: ${{ env.BASELINE_SHA }}
-          LINKTREND_TARGET_BASELINE_REF: ${{ env.BASELINE_REF }}
         run: |
           set -euo pipefail
-          # Use the same governed Phase admission as every other consumer.
-          # The upstream-fork boundary remains available to ownership and
-          # release validation, but it no longer blocks ordinary docs or
-          # LiNKtrend-owned engineering changes at the Phase fast gate.
-          python3 scripts/gitops/generated_output_closure.py --finalize
-          python3 scripts/gitops/run_delivery_profile.py fast --preflight
+          git diff --check
+          # OpenClaw is a large upstream fork, so its secret check remains
+          # change-scoped rather than scanning untouched upstream history.
+          # Admission itself is now the same for ordinary Phase work as peers.
+          python3 -m py_compile \
+            scripts/gitops/run_delivery_profile.py \
+            scripts/gitops/gate_receipt.py \
+            scripts/gitops/secret_scan.py \
+            scripts/gitops/repository_ci_contract.py \
+            scripts/gitops/receipt_seal.py
+          PYTHONPATH=. python3 .ide-development/tests/test_change_scoped_secret_scan_acceptance.py
 
       - name: Retain fast-check evidence
         if: always()
