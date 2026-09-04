@@ -121,24 +121,15 @@ jobs:
         run: |
           set -euo pipefail
           git diff --check
-          # OpenClaw-fork progressive validation: packet/Phase admission uses
-          # focused and change-scoped contract checks.  The repository-wide
-          # Full profile remains reserved for the final release candidate;
-          # changed-path and cross-contract workflows remain blocking.
+          # OpenClaw is a large upstream fork, so its secret check remains
+          # change-scoped rather than scanning untouched upstream history.
+          # Admission itself is now the same for ordinary Phase work as peers.
           python3 -m py_compile \
             scripts/gitops/run_delivery_profile.py \
             scripts/gitops/gate_receipt.py \
             scripts/gitops/secret_scan.py \
             scripts/gitops/repository_ci_contract.py \
             scripts/gitops/receipt_seal.py
-          python3 .github/openclaw_progressive_validation.py \
-            --root . \
-            --receipt docs/execution/openclaw-prime-lisa/baseline-ci-receipt.json \
-            --baseline-ref "${BASELINE_REF}" \
-            --baseline-sha "${BASELINE_SHA}" \
-            --baseline-tree "${BASELINE_TREE}" \
-            --candidate-ref HEAD
-          PYTHONPATH=. python3 test/openclaw_progressive_validation.py
           PYTHONPATH=. python3 .ide-development/tests/test_change_scoped_secret_scan_acceptance.py
 
       - name: Retain fast-check evidence
