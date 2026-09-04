@@ -533,7 +533,7 @@ describe("Stage MiniMax PDF canary command", () => {
       const receipt = planStagePdfCanary({
         mode: "execute",
         outputDir: dir,
-        executeGateEnv: { OPENROUTER_API_KEY: "redacted-test-value-not-printed" },
+        executeGateEnv: { OPENROUTER_API_KEY: "$OPENROUTER_API_KEY" },
       });
       assert.equal(receipt.status, "blocked_no_execute_gate");
       assert.equal(receipt.spend, false);

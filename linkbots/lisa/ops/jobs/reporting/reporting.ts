@@ -8,7 +8,9 @@ import {
   assertRenderedReport,
   assertSafeReportItem,
   DIGEST_DEADLINES,
+  DIGEST_PREPARATION_DEADLINES,
   FLASH_DEADLINES,
+  FLASH_PREPARATION_DEADLINES,
   type LisaCalendarItem,
   type LisaChannelReceipt,
   type LisaDecision,
@@ -292,6 +294,9 @@ export function planDigestDelivery(
   if (!DIGEST_DEADLINES.includes(deadline)) {
     throw new Error("invalid digest deadline");
   }
+  if (preparationDeadline !== DIGEST_PREPARATION_DEADLINES[deadline]) {
+    throw new Error("digest preparation must start at 06:45 or 16:45");
+  }
   return planDelivery(["telegram", "email"], key, deadline, preparationDeadline, true);
 }
 
@@ -303,10 +308,24 @@ export function planFlashDelivery(
   if (!FLASH_DEADLINES.includes(deadline)) {
     throw new Error("invalid Flash Report deadline");
   }
+  if (preparationDeadline !== FLASH_PREPARATION_DEADLINES[deadline]) {
+    throw new Error("flash preparation must use a five-minute lead");
+  }
   return planDelivery(["telegram"], key, deadline, preparationDeadline);
 }
 
-export function claimDeliveryCompleted(receipt: LisaChannelReceipt | undefined): "completed" {
+export function claimDeliveryCompleted(
+  receipt: LisaChannelReceipt | undefined,
+  priorReceipts: readonly LisaChannelReceipt[] = [],
+): "completed" | "duplicate" {
   assertDeliveryReceipt(receipt);
+  if (
+    priorReceipts.some(
+      (prior) =>
+        prior.idempotencyKey === receipt.idempotencyKey && prior.channel === receipt.channel,
+    )
+  ) {
+    return "duplicate";
+  }
   return "completed";
 }

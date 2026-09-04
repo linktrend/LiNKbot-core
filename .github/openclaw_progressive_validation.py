@@ -12,13 +12,17 @@ import json
 import re
 import subprocess
 import tempfile
+from importlib.util import module_from_spec, spec_from_file_location
 from pathlib import Path
 
 POLICY_ID = "openclaw-fork-progressive-validation-v1"
 POLICY_DIGEST = "sha256:fa3f448e33fbc05e4b9676628a8be1f67bb020cc0baf58da6dd8fe720d0c26f0"
 BASELINE_RUN_ID = 32917935092
-BASELINE_COMMIT = "c98757b598e753ce0344037a3f0ae6321121f6c6"
-BASELINE_TREE = "76dd3b81b3db9ffaff614ca3d0561b26a7fb5705"
+# GitHub-true Full CI identity for run 32917935092. Fast Checks may use a
+# later protected development SHA as the execution base; that execution base
+# is not a Full rebind and must not be written into this pin.
+BASELINE_COMMIT = "428c6bc9ba21b2358934aa0d311911791fa3fd21"
+BASELINE_TREE = "a29648096f9872a7f3d727aef79b0cb63a31ff07"
 FAILURE_JOB = "checks-node-core-test-nondist-shard"
 BASELINE_RECEIPT_KIND = "openclaw-fork-baseline-ci-receipt"
 BASELINE_RECEIPT_POLICY_ID = POLICY_ID
@@ -180,6 +184,22 @@ CLASSIFIER_PATHS = frozenset(
         ".github/openclaw_progressive_validation.py",
     }
 )
+# Classifier/receipt files are focused-check scope, not a Full identity rewrite
+# and not a waiver of inherited failure-contract paths.
+FOCUSED_CLASSIFIER_SCOPE = CLASSIFIER_PATHS | BASELINE_RECEIPT_REBIND_SCOPE
+CUSTOMIZATION_BOUNDARY_REL = ".linktrend/openclaw-prime/customization-boundary.json"
+CUSTOMIZATION_CLASSIFIER_REL = ".linktrend/openclaw-prime/validate_customization_boundary.py"
+CUSTOMIZATION_ADMITTED_CLASSES = frozenset(
+    {
+        "linktrend-owned",
+        "ide-managed",
+        "ide-managed-overlay",
+        "ide-managed-and-linktrend-owned",
+        "ide-transaction-changed",
+    }
+)
+HOLD_CUSTOMIZATION_UNAVAILABLE = "HOLD: customization_only_admission_unavailable"
+HOLD_FULL_PIN_EXECUTION_UNMATCHED = "HOLD: full_identity_unrewritten_execution_base_unmatched"
 
 
 def _canonical_failure_contract() -> list[dict[str, object]]:
@@ -239,6 +259,44 @@ def git(root: Path, *args: str) -> str:
 
 def _is_sha(value: object) -> bool:
     return bool(re.fullmatch(r"[0-9a-f]{40}", str(value or "")))
+
+
+def _load_customization_classifier(root: Path):
+    path = root / CUSTOMIZATION_CLASSIFIER_REL
+    spec = spec_from_file_location("openclaw_prime_customization_boundary", path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError("customization_boundary")
+    module = module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def _customization_scope_errors(root: Path, changed: tuple[str, ...]) -> list[str]:
+    """Admit only Prime customization/v2.5.2 paths plus focused classifier files."""
+    boundary_path = root / CUSTOMIZATION_BOUNDARY_REL
+    classifier_path = root / CUSTOMIZATION_CLASSIFIER_REL
+    if not boundary_path.is_file() or boundary_path.is_symlink():
+        return ["customization_boundary"]
+    if not classifier_path.is_file() or classifier_path.is_symlink():
+        return ["customization_boundary"]
+    try:
+        manifest = json.loads(boundary_path.read_text(encoding="utf-8"))
+        classifier = _load_customization_classifier(root)
+    except (OSError, UnicodeError, json.JSONDecodeError, RuntimeError):
+        return ["customization_boundary"]
+    disallowed = False
+    for path in changed:
+        if path in FOCUSED_CLASSIFIER_SCOPE:
+            continue
+        try:
+            kind = classifier.classify(path, manifest)
+        except Exception:
+            return ["customization_boundary"]
+        if kind not in CUSTOMIZATION_ADMITTED_CLASSES:
+            disallowed = True
+    if disallowed:
+        return ["customization_scope"]
+    return []
 
 
 def _is_ancestor(root: Path, ancestor: str, descendant: str) -> bool:
@@ -304,6 +362,13 @@ def validate(
     if receipt.get("policyId") != POLICY_ID or receipt.get("policyDigest") != POLICY_DIGEST: errors.append("policy")
     if receipt.get("reuse") != "exact baseline commit/tree, policy digest, workflow, run and complete unchanged failure contract only": errors.append("reuse")
     if receipt.get("changedFailuresBlock") is not True or receipt.get("scope") != "fork-only" or receipt.get("upstreamMutation") is not False: errors.append("scope")
+    if "preservedOriginBaseline" in receipt:
+        errors.append("preserved_origin_forbidden")
+    receipt_baseline = str(receipt.get("baselineCommit") or "")
+    receipt_tree = str(receipt.get("baselineTree") or "")
+    full_pin_intact = receipt_baseline == BASELINE_COMMIT and receipt_tree == BASELINE_TREE
+    if not full_pin_intact:
+        errors.append("full_pin")
     if receipt.get("inheritedFailures") != _canonical_failure_contract(): errors.append("failure_contract")
     baseline_checks = receipt.get("baselineChecks")
     if (
@@ -314,10 +379,10 @@ def validate(
         errors.append("baseline_checks")
     if baseline_sha is not None and not _is_sha(baseline_sha): errors.append("baseline_sha")
     if baseline_tree is not None and not _is_sha(baseline_tree): errors.append("baseline_tree")
-    receipt_baseline = str(receipt.get("baselineCommit") or "")
-    receipt_tree = str(receipt.get("baselineTree") or "")
     baseline = resolved_tree = candidate = ""
     receipt_chained = False
+    customization_only_candidate = False
+    pending_transition_errors: list[str] = []
     receipt_transition: tuple[str, ...] = ()
     try:
         baseline = git(root, "rev-parse", f"{baseline_sha or baseline_ref}^{{commit}}")
@@ -334,6 +399,12 @@ def validate(
             )
             if valid_transition:
                 receipt_chained = True
+            elif full_pin_intact:
+                # Execution base moved; Full pin stays. Do not rewrite identity
+                # and do not publish a failed chain as a receipt hop.
+                customization_only_candidate = True
+                pending_transition_errors = transition_errors
+                receipt_transition = ()
             else:
                 errors.extend(transition_errors)
                 errors.append("baseline_commit")
@@ -360,10 +431,34 @@ def validate(
             errors.append("changed_failure_contract")
         else:
             changed_failure = []
+    if customization_only_candidate and "changed_failure_contract" not in errors:
+        scope_errors = _customization_scope_errors(root, changed)
+        errors.extend(scope_errors)
+        if scope_errors:
+            errors.extend(pending_transition_errors)
     generated_only = bool(changed) and set(changed) <= {BASELINE_RECEIPT_PATH}
+    if errors:
+        classification = "blocking"
+    elif customization_only_candidate:
+        classification = "customization_only"
+    else:
+        classification = "inherited_baseline_failure"
+    hold = None
+    if "customization_scope" in errors or "customization_boundary" in errors:
+        hold = HOLD_CUSTOMIZATION_UNAVAILABLE
+    elif "preserved_origin_forbidden" in errors or "full_pin" in errors or (
+        "baseline_commit" in errors and not customization_only_candidate and not receipt_chained
+    ):
+        hold = HOLD_FULL_PIN_EXECUTION_UNMATCHED
     result = {
         "ok": not errors,
-        "classification": "inherited_baseline_failure" if not errors else "blocking",
+        "classification": classification,
+        "hold": hold,
+        "fullRunPin": {
+            "runId": BASELINE_RUN_ID,
+            "commit": BASELINE_COMMIT,
+            "tree": BASELINE_TREE,
+        },
         "baselineRef": baseline_ref,
         "baselineCommit": baseline,
         "baselineTree": resolved_tree,
@@ -371,6 +466,7 @@ def validate(
         "receiptBaselineTree": receipt_tree,
         "receiptChained": receipt_chained,
         "receiptTransitionPaths": list(receipt_transition),
+        "customizationOnly": customization_only_candidate and not errors,
         "candidateCommit": candidate,
         "changedPaths": list(changed),
         "changedFailureContractPaths": changed_failure,

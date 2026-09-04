@@ -1,0 +1,370 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://linktrend.local/openclaw-prime-lisa/execution-approval-snapshot.schema.json",
+  "title": "OpenClaw Prime execution-approval snapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schemaVersion",
+    "kind",
+    "snapshotId",
+    "approvalScope",
+    "workerIssueAuthorized",
+    "approvedProtectedDevelopment",
+    "frozenDispatchAuthority",
+    "principalPolicy",
+    "ideManaged",
+    "forbiddenActions",
+    "packetDag",
+    "runtimeAuthority",
+    "externalPrerequisites",
+    "packets",
+    "holds",
+    "verification"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "const": "./execution-approval-snapshot.schema.json"
+    },
+    "schemaVersion": { "type": "integer", "const": 1 },
+    "kind": {
+      "type": "string",
+      "const": "openclaw-prime-lisa-execution-approval-snapshot"
+    },
+    "snapshotId": { "type": "string", "minLength": 1 },
+    "approvalScope": {
+      "type": "string",
+      "const": "execution-approval-overlay-on-protected-development"
+    },
+    "workerIssueAuthorized": { "type": "boolean", "const": false },
+    "approvedProtectedDevelopment": { "$ref": "#/$defs/identity" },
+    "frozenDispatchAuthority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "authorityId",
+        "sha256",
+        "executionAuthorizedAtCheckpoint",
+        "rewrittenByThisSnapshot"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "const": "docs/execution/openclaw-prime-lisa/dispatch-authority.json"
+        },
+        "authorityId": {
+          "type": "string",
+          "const": "openclaw-prime-lisa-dispatch-authority-v4"
+        },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "executionAuthorizedAtCheckpoint": { "type": "boolean", "const": false },
+        "rewrittenByThisSnapshot": { "type": "boolean", "const": false }
+      }
+    },
+    "principalPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "primaryExecutor",
+        "fallbackOrConcurrentExecutor",
+        "parallelism",
+        "dispatchAuthorizedRule",
+        "duplicateImplementation"
+      ],
+      "properties": {
+        "primaryExecutor": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["transport", "modelId", "fast"],
+          "properties": {
+            "transport": { "type": "string", "const": "cursor-sdk" },
+            "modelId": { "type": "string", "const": "cursor-grok-4.6-medium" },
+            "fast": { "type": "boolean", "const": false }
+          }
+        },
+        "fallbackOrConcurrentExecutor": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["transport", "modelId", "reasoning", "usage"],
+          "properties": {
+            "transport": { "type": "string", "const": "codex-cli" },
+            "modelId": { "type": "string", "const": "gpt-5.6-luna" },
+            "reasoning": { "type": "string", "const": "high" },
+            "usage": {
+              "type": "string",
+              "const": "fallback-on-same-packet-or-separate-concurrent-packet-with-distinct-id-and-non-overlapping-owned-paths"
+            }
+          }
+        },
+        "parallelism": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["mode", "protocolCitation", "admissionWithoutCapacitySnapshot"],
+          "properties": {
+            "mode": { "type": "string", "const": "maximum-safe-parallel" },
+            "protocolCitation": {
+              "type": "string",
+              "const": "IDE-Development-v2.5.2-execution-control-stage-1-5-cursor-plus-2-luna-fail-closed-without-complete-capacity-snapshot"
+            },
+            "admissionWithoutCapacitySnapshot": {
+              "type": "string",
+              "const": "HOLD"
+            }
+          }
+        },
+        "dispatchAuthorizedRule": {
+          "type": "string",
+          "const": "customization-scoped-and-dependency-ready-only"
+        },
+        "duplicateImplementation": { "type": "boolean", "const": false }
+      }
+    },
+    "ideManaged": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["packageVersion", "destinationCount", "readOnly", "modifiedByThisSnapshot"],
+      "properties": {
+        "packageVersion": { "type": "string", "const": "2.5.2" },
+        "destinationCount": { "type": "integer", "const": 442 },
+        "readOnly": { "type": "boolean", "const": true },
+        "modifiedByThisSnapshot": { "type": "boolean", "const": false }
+      }
+    },
+    "forbiddenActions": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "packetDag": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "customizationScopedDependencyReady",
+        "readyAfterLocalDependenciesOnly",
+        "blockedByExternalPrerequisites",
+        "notCustomizationScoped",
+        "liveOrProductionForbidden"
+      ],
+      "properties": {
+        "source": {
+          "type": "string",
+          "const": "docs/execution/openclaw-prime-lisa/dispatch-authority.json#packets"
+        },
+        "customizationScopedDependencyReady": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/packetId" },
+          "uniqueItems": true
+        },
+        "readyAfterLocalDependenciesOnly": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/packetId" },
+          "uniqueItems": true
+        },
+        "blockedByExternalPrerequisites": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/packetId" },
+          "uniqueItems": true
+        },
+        "notCustomizationScoped": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/packetId" },
+          "uniqueItems": true
+        },
+        "liveOrProductionForbidden": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/packetId" },
+          "uniqueItems": true
+        }
+      }
+    },
+    "runtimeAuthority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "snapshotPresent",
+        "packetTokenBudgetsPresent",
+        "authenticatedAccountPlanReadbackPresent",
+        "preparedIntentAndEffectiveModelReadbackPresent",
+        "hostedCapacitySnapshotPresent",
+        "failClosed"
+      ],
+      "properties": {
+        "snapshotPresent": { "type": "boolean", "const": false },
+        "packetTokenBudgetsPresent": { "type": "boolean", "const": false },
+        "authenticatedAccountPlanReadbackPresent": { "type": "boolean", "const": false },
+        "preparedIntentAndEffectiveModelReadbackPresent": {
+          "type": "boolean",
+          "const": false
+        },
+        "hostedCapacitySnapshotPresent": { "type": "boolean", "const": false },
+        "failClosed": { "type": "boolean", "const": true }
+      }
+    },
+    "externalPrerequisites": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "platform_contract_accepted",
+        "brain_provider_contract_accepted",
+        "skills_provider_contract_accepted",
+        "libraries_contract_audit_accepted",
+        "autowork_contract_audit_accepted",
+        "skills_google_workspace_release_qualified",
+        "brain_mcp_v2_contract_accepted",
+        "skills_mcp_v2_contract_accepted",
+        "provider_release_set_accepted",
+        "skills_watcher_contracts_accepted"
+      ],
+      "properties": {
+        "platform_contract_accepted": { "$ref": "#/$defs/prerequisiteState" },
+        "brain_provider_contract_accepted": { "$ref": "#/$defs/prerequisiteState" },
+        "skills_provider_contract_accepted": { "$ref": "#/$defs/prerequisiteState" },
+        "libraries_contract_audit_accepted": { "$ref": "#/$defs/prerequisiteState" },
+        "autowork_contract_audit_accepted": { "$ref": "#/$defs/prerequisiteState" },
+        "skills_google_workspace_release_qualified": { "$ref": "#/$defs/prerequisiteState" },
+        "brain_mcp_v2_contract_accepted": { "$ref": "#/$defs/prerequisiteState" },
+        "skills_mcp_v2_contract_accepted": { "$ref": "#/$defs/prerequisiteState" },
+        "provider_release_set_accepted": { "$ref": "#/$defs/prerequisiteState" },
+        "skills_watcher_contracts_accepted": { "$ref": "#/$defs/prerequisiteState" }
+      }
+    },
+    "packets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "PKT-01",
+        "PKT-02",
+        "PKT-03",
+        "PKT-04",
+        "PKT-05",
+        "PKT-06",
+        "PKT-07",
+        "PKT-08",
+        "PKT-09",
+        "PKT-10",
+        "PKT-11",
+        "LP-01",
+        "AW-01"
+      ],
+      "properties": {
+        "PKT-01": { "$ref": "#/$defs/packetDecision" },
+        "PKT-02": { "$ref": "#/$defs/packetDecision" },
+        "PKT-03": { "$ref": "#/$defs/packetDecision" },
+        "PKT-04": { "$ref": "#/$defs/packetDecision" },
+        "PKT-05": { "$ref": "#/$defs/packetDecision" },
+        "PKT-06": { "$ref": "#/$defs/packetDecision" },
+        "PKT-07": { "$ref": "#/$defs/packetDecision" },
+        "PKT-08": { "$ref": "#/$defs/packetDecision" },
+        "PKT-09": { "$ref": "#/$defs/packetDecision" },
+        "PKT-10": { "$ref": "#/$defs/packetDecision" },
+        "PKT-11": { "$ref": "#/$defs/packetDecision" },
+        "LP-01": { "$ref": "#/$defs/packetDecision" },
+        "AW-01": { "$ref": "#/$defs/packetDecision" }
+      }
+    },
+    "holds": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["profile", "commands", "fullOrBroadSuites"],
+      "properties": {
+        "profile": { "type": "string", "const": "focused-owned-paths-and-git-diff-check" },
+        "commands": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 }
+          }
+        },
+        "fullOrBroadSuites": { "type": "string", "const": "forbidden" }
+      }
+    }
+  },
+  "$defs": {
+    "gitSha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "sha256": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "packetId": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9]*-[0-9]{2,}$"
+    },
+    "prerequisiteId": {
+      "type": "string",
+      "enum": [
+        "platform_contract_accepted",
+        "brain_provider_contract_accepted",
+        "skills_provider_contract_accepted",
+        "libraries_contract_audit_accepted",
+        "autowork_contract_audit_accepted",
+        "skills_google_workspace_release_qualified",
+        "brain_mcp_v2_contract_accepted",
+        "skills_mcp_v2_contract_accepted",
+        "provider_release_set_accepted",
+        "skills_watcher_contracts_accepted"
+      ]
+    },
+    "prerequisiteState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["checkpointState", "receiptPresent"],
+      "properties": {
+        "checkpointState": { "type": "string", "const": "PENDING_RUNTIME_EVIDENCE" },
+        "receiptPresent": { "type": "boolean", "const": false }
+      }
+    },
+    "identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "ref", "commit", "tree"],
+      "properties": {
+        "repository": { "type": "string", "const": "linktrend/openclaw_prime" },
+        "ref": { "type": "string", "const": "development" },
+        "commit": { "$ref": "#/$defs/gitSha" },
+        "tree": { "$ref": "#/$defs/gitSha" }
+      }
+    },
+    "packetDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "customizationScoped",
+        "localDependencies",
+        "externalPrerequisites",
+        "dependencyReady",
+        "dispatchAuthorized",
+        "liveMutationAuthorized",
+        "workerIssueAuthorized",
+        "reason"
+      ],
+      "properties": {
+        "customizationScoped": { "type": "boolean" },
+        "localDependencies": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/packetId" },
+          "uniqueItems": true
+        },
+        "externalPrerequisites": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/prerequisiteId" },
+          "uniqueItems": true
+        },
+        "dependencyReady": { "type": "boolean" },
+        "dispatchAuthorized": { "type": "boolean" },
+        "liveMutationAuthorized": { "type": "boolean", "const": false },
+        "workerIssueAuthorized": { "type": "boolean", "const": false },
+        "reason": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}
