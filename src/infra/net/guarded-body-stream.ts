@@ -16,24 +16,14 @@ const guardedBodyCleanupRegistry = new FinalizationRegistry<{ finalize: () => Pr
  * stream completes, errors, is cancelled, or is garbage-collected unconsumed.
  * Cleanup failures are swallowed: releasing guard resources must never break
  * response consumption.
- *
- * When `maxBytes` is set, cumulative enqueued bytes are capped. On exceed the
- * controller is errored, the source reader is cancelled, and cleanup runs once.
- * Overflow errors never include body/token bytes.
  */
 export function wrapGuardedBodyStream(params: {
   body: ReadableStream<Uint8Array>;
   cleanup: () => Promise<void> | void;
   refreshTimeout?: () => void;
-  maxBytes?: number;
 }): ReadableStream<Uint8Array> {
   let reader: ReadableStreamDefaultReader<Uint8Array> | undefined;
   let finalized = false;
-  let totalBytes = 0;
-  const maxBytes =
-    typeof params.maxBytes === "number" && Number.isFinite(params.maxBytes) && params.maxBytes >= 0
-      ? Math.floor(params.maxBytes)
-      : undefined;
   const cleanupRegistrationToken = {};
   const finalize = async (
     cancelReader: () => Promise<void> = async () => {
@@ -45,18 +35,27 @@ export function wrapGuardedBodyStream(params: {
     }
     finalized = true;
     guardedBodyCleanupRegistry.unregister(cleanupRegistrationToken);
-    try {
-      await cancelReader();
-    } finally {
-      try {
-        reader?.releaseLock();
-      } finally {
+    // Start cancellation before cleanup so its reason reaches the reader, but
+    // let request cleanup abort a retained capture tee before awaiting settlement.
+    const [cancellation, release] = await Promise.allSettled([
+      cancelReader(),
+      (async () => {
         try {
-          await params.cleanup();
-        } catch {
-          // Best effort: guard cleanup must not surface into stream consumers.
+          reader?.releaseLock();
+        } finally {
+          try {
+            await params.cleanup();
+          } catch {
+            // Best effort: guard cleanup must not surface into stream consumers.
+          }
         }
-      }
+      })(),
+    ]);
+    if (release.status === "rejected") {
+      throw release.reason;
+    }
+    if (cancellation.status === "rejected") {
+      throw cancellation.reason;
     }
   };
   const wrappedBody = new ReadableStream<Uint8Array>({
@@ -70,18 +69,6 @@ export function wrapGuardedBodyStream(params: {
           controller.close();
           await finalize();
           return;
-        }
-        if (maxBytes !== undefined) {
-          const nextTotal = totalBytes + chunk.value.byteLength;
-          if (nextTotal > maxBytes) {
-            // Finalize before erroring so cleanup cannot race the consumer rejection.
-            // Do not enqueue the overflowing chunk. Error without body/token bytes.
-            const overflowError = new Error(`Guarded response body exceeds ${maxBytes} bytes`);
-            await finalize();
-            controller.error(overflowError);
-            return;
-          }
-          totalBytes = nextTotal;
         }
         params.refreshTimeout?.();
         controller.enqueue(chunk.value);

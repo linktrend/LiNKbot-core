@@ -1,8 +1,0 @@
-{
-  "tool": "brain_search",
-  "authToken": "fake-valid-token",
-  "arguments": {
-    "query": "test finding",
-    "limit": 3
-  }
-}

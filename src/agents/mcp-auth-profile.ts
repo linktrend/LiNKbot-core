@@ -3,15 +3,16 @@
  */
 import crypto from "node:crypto";
 import type { FetchLike } from "@modelcontextprotocol/sdk/shared/transport.js";
+import { filterStringRecord, isRecord } from "@openclaw/normalization-core/record-coerce";
 import type { OpenClawConfig } from "../config/types.openclaw.js";
 import type { BundleMcpConfig, BundleMcpServerConfig } from "../plugins/bundle-mcp.js";
-import { resolveApiKeyForProfile } from "./auth-profiles/oauth.js";
-import { loadAuthProfileStoreForSecretsRuntime } from "./auth-profiles/store.js";
+import { createLazyRuntimeMethod } from "../shared/lazy-runtime.js";
 import {
   buildMcpHttpFetch,
   withoutMcpAuthorizationHeader,
   withSameOriginMcpHttpHeaders,
 } from "./mcp-http-fetch.js";
+import { operatorMcpOAuthIdentity } from "./mcp-oauth-identity.js";
 import { resolveMcpOAuthAccessToken, type McpOAuthConfig } from "./mcp-oauth.js";
 import { resolveMcpTransportConfig } from "./mcp-transport-config.js";
 
@@ -19,20 +20,6 @@ type McpAuthProfileOptions = {
   cfg?: OpenClawConfig;
   agentDir?: string;
 };
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return Boolean(value && typeof value === "object" && !Array.isArray(value));
-}
-
-function normalizeStringHeaders(value: unknown): Record<string, string> | undefined {
-  if (!isRecord(value)) {
-    return undefined;
-  }
-  const entries = Object.entries(value).filter(
-    (entry): entry is [string, string] => typeof entry[1] === "string",
-  );
-  return entries.length > 0 ? Object.fromEntries(entries) : undefined;
-}
 
 /** Returns the refresh-capable auth profile selected for one MCP server. */
 export function resolveMcpAuthProfileId(rawServer: unknown): string | undefined {
@@ -47,70 +34,17 @@ export function resolveMcpAuthProfileId(rawServer: unknown): string | undefined 
 
 /** Returns whether a server needs an OpenClaw-managed bearer projected externally. */
 export function requiresMcpBearerProjection(rawServer: unknown): boolean {
-  if (!isRecord(rawServer)) {
-    return false;
-  }
-  // Machine tokens must never be externally projected (env/literal headers).
-  if (rawServer.auth === "machine_token") {
-    return false;
-  }
-  if (rawServer.auth !== "oauth") {
+  if (!isRecord(rawServer) || rawServer.auth !== "oauth") {
     return false;
   }
   return Boolean(resolveMcpAuthProfileId(rawServer) || typeof rawServer.url === "string");
 }
 
-/** Fail-closed error when external projection would mint a machine token. */
-export function machineTokenMcpBearerProjectionUnsupportedError(serverName: string): Error {
-  return new Error(
-    `MCP server "${serverName}" uses machine-token auth; machine-token projection is unsupported. External runtimes must acquire tokens via the machine-token provider seam — never env or literal Authorization headers.`,
-  );
-}
-
-async function resolveMcpAuthProfileBearerToken(
-  params: {
-    serverName: string;
-    profileId: string;
-  } & McpAuthProfileOptions,
-): Promise<string> {
-  const store = loadAuthProfileStoreForSecretsRuntime(params.agentDir, {
-    config: params.cfg,
-    externalCliProfileIds: [params.profileId],
-  });
-  const credential = store.profiles[params.profileId];
-  if (!credential) {
-    throw new Error(
-      `MCP server "${params.serverName}" references auth profile "${params.profileId}", but that profile was not found.`,
-    );
-  }
-  if (credential.type !== "oauth") {
-    throw new Error(
-      `MCP server "${params.serverName}" references auth profile "${params.profileId}", but ${credential.type} profiles are not refreshable. Use a refresh-capable OAuth profile.`,
-    );
-  }
-  const resolved = await resolveApiKeyForProfile({
-    cfg: params.cfg,
-    store,
-    profileId: params.profileId,
-    agentDir: params.agentDir,
-  });
-  if (!resolved || resolved.profileType !== "oauth" || !resolved.apiKey) {
-    throw new Error(
-      `MCP server "${params.serverName}" could not resolve refreshable OAuth auth profile "${params.profileId}". Re-authenticate the profile and retry.`,
-    );
-  }
-  if (
-    !resolved.credential ||
-    resolved.credential.type !== "oauth" ||
-    typeof resolved.credential.access !== "string" ||
-    resolved.credential.access.trim().length === 0
-  ) {
-    throw new Error(
-      `MCP server "${params.serverName}" resolved OAuth auth profile "${params.profileId}", but no raw access token was available for bearer projection.`,
-    );
-  }
-  return resolved.credential.access;
-}
+// Keep profile discovery on credential demand; never memoize the store or bearer.
+const resolveMcpAuthProfileBearerToken = createLazyRuntimeMethod(
+  () => import("./mcp-auth-profile.runtime.js"),
+  (runtime) => runtime.resolveMcpAuthProfileBearerToken,
+);
 
 async function resolveMcpBearerToken(params: {
   serverName: string;
@@ -118,10 +52,6 @@ async function resolveMcpBearerToken(params: {
   cfg?: OpenClawConfig;
   agentDir?: string;
 }): Promise<string | undefined> {
-  // Machine tokens must never be minted into projected bearer bundles.
-  if (isRecord(params.server) && params.server.auth === "machine_token") {
-    throw machineTokenMcpBearerProjectionUnsupportedError(params.serverName);
-  }
   const authProfileId = resolveMcpAuthProfileId(params.server);
   if (authProfileId) {
     return await resolveMcpAuthProfileBearerToken({
@@ -152,8 +82,7 @@ async function resolveMcpBearerToken(params: {
     resourceUrl: resolved.url,
   });
   return await resolveMcpOAuthAccessToken({
-    serverName: params.serverName,
-    serverUrl: resolved.url,
+    identity: operatorMcpOAuthIdentity(params.serverName, resolved.url),
     config: resolved.oauth as McpOAuthConfig | undefined,
     fetchFn,
   });
@@ -201,7 +130,6 @@ function stripOpenClawOnlyOAuthConfig(server: BundleMcpServerConfig): BundleMcpS
   const next = { ...server };
   delete next.auth;
   delete next.oauth;
-  delete next.machineToken;
   return next;
 }
 
@@ -220,18 +148,6 @@ export async function resolveMcpBearerBundleConfig(
   const tokenProjection = params.tokenProjection ?? "env";
 
   for (const [serverName, server] of Object.entries(params.config.mcpServers)) {
-    // Machine tokens must never be minted into env/literal Authorization headers.
-    if (isRecord(server) && server.auth === "machine_token") {
-      const error = machineTokenMcpBearerProjectionUnsupportedError(serverName);
-      if (params.omitUnavailableOAuthServers) {
-        nextServers ??= { ...params.config.mcpServers };
-        delete nextServers[serverName];
-        params.onServerUnavailable?.(serverName, error);
-        continue;
-      }
-      throw error;
-    }
-
     let token: string | undefined;
     try {
       token = await resolveMcpBearerToken({
@@ -263,7 +179,7 @@ export async function resolveMcpBearerBundleConfig(
       nextEnv[envVar] = token;
       authorization = `Bearer \${${envVar}}`;
     }
-    const headers = withoutMcpAuthorizationHeader(normalizeStringHeaders(server.headers));
+    const headers = withoutMcpAuthorizationHeader(filterStringRecord(server.headers));
     nextServers ??= { ...params.config.mcpServers };
     nextServers[serverName] = stripOpenClawOnlyOAuthConfig({
       ...server,
